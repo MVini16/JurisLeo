@@ -6,16 +6,18 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import SplashScreen from './pages/SplashScreen'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
+import Onboarding from './pages/Onboarding'
 
 function App() {
   return (
-    // browserouter permite a navegação entre páginas
     <BrowserRouter>
       <Routes>
         {/* rota inicial — splash screen */}
         <Route path="/" element={<SplashScreen />} />
         {/* rota de login */}
         <Route path="/login" element={<Login />} />
+        {/* rota de onboarding — primeiro login */}
+        <Route path="/onboarding" element={<Onboarding />} />
         {/* rota do dashboard */}
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>

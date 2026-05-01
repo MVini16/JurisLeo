@@ -29,7 +29,8 @@ function Login() {
     setCarregando(false)
 
     if (resultado.sucesso) {
-      navigate('/dashboard')
+      // se é registo vai para onboarding, se é login vai para dashboard
+  navigate(modoRegisto ? '/onboarding' : '/dashboard')
     } else {
       // traduz os erros mais comuns do firebase
       if (resultado.erro.includes('invalid-credential')) {

@@ -1,0 +1,201 @@
+/* container principal */
+.splash-container {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a0a0a;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+/* canvas de partículas — fica por cima do fundo mas atrás do conteúdo */
+.splash-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* fundo com gradiente radial */
+.splash-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, #3d1515 0%, #1a0a0a 70%);
+  z-index: 0;
+}
+
+/* conteúdo central */
+.splash-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding: 40px;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* animação de saída */
+.splash-saindo {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+/* balança — começa invisível */
+.splash-logo {
+  width: 90px;
+  height: 90px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* balança visível */
+.splash-logo-visivel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* pratos da balança a oscilar */
+.prato-esquerdo {
+  transform-origin: 20px 25px;
+  animation: oscilar-esquerdo 4s ease-in-out infinite;
+}
+
+.prato-direito {
+  transform-origin: 80px 25px;
+  animation: oscilar-direito 4s ease-in-out infinite;
+}
+
+@keyframes oscilar-esquerdo {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-8deg); }
+}
+
+@keyframes oscilar-direito {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(8deg); }
+}
+
+/* título */
+.splash-titulo {
+  font-family: 'Georgia', serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #C9A84C;
+  letter-spacing: 0.15em;
+  margin: 0;
+  text-shadow: 0 0 40px rgba(201, 168, 76, 0.3);
+  display: flex;
+}
+
+/* cada letra — começa invisível e em baixo */
+.splash-letra {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* letra visível */
+.splash-letra-visivel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* frase motivacional */
+.splash-frase {
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  max-width: 380px;
+  line-height: 1.7;
+  margin: 0;
+  min-height: 3.4rem;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+/* frase visível */
+.splash-frase-visivel {
+  opacity: 1;
+}
+
+/* botão entrar — começa invisível */
+.splash-botao {
+  position: relative;
+  overflow: hidden;
+  margin-top: 8px;
+  padding: 14px 48px;
+  background: transparent;
+  border: 1.5px solid #C9A84C;
+  color: #C9A84C;
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: background 0.3s ease, color 0.3s ease, opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* botão visível */
+.splash-botao-visivel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* hover no botão */
+.splash-botao:hover {
+  background: #C9A84C;
+  color: #1a0a0a;
+}
+
+/* brilho a passar pelo botão */
+.splash-botao-brilho {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 100%
+  );
+  animation: brilho 3s ease-in-out infinite;
+}
+
+@keyframes brilho {
+  0% { left: -100%; }
+  50%, 100% { left: 150%; }
+}
+
+/* adaptação para mobile */
+@media (max-width: 768px) {
+  .splash-titulo {
+    font-size: 2.5rem;
+  }
+
+  .splash-frase {
+    font-size: 0.9rem;
+    max-width: 280px;
+  }
+
+  .splash-botao {
+    padding: 12px 36px;
+    font-size: 0.9rem;
+  }
+
+  .splash-logo {
+    width: 70px;
+    height: 70px;
+  }
+}

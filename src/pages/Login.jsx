@@ -1,6 +1,13 @@
+// importa os hooks do react
 import { useState } from 'react'
+// importa a navegação
 import { useNavigate } from 'react-router-dom'
+// importa as funções de autenticação
 import { login, registar } from '../auth.js'
+// importa o firestore para verificar o onboarding
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '../firebase.js'
+// importa o css
 import './Login.css'
 
 function Login() {
@@ -29,8 +36,27 @@ function Login() {
     setCarregando(false)
 
     if (resultado.sucesso) {
-      // se é registo vai para onboarding, se é login vai para dashboard
-  navigate(modoRegisto ? '/onboarding' : '/dashboard')
+      if (modoRegisto) {
+        // registo novo — vai sempre para onboarding
+        navigate('/onboarding')
+      } else {
+        // login — verifica se o onboarding já foi feito
+        try {
+          const userId = resultado.utilizador.uid
+          const perfilRef = doc(db, 'users', userId, 'perfil', 'dados')
+          const perfilSnap = await getDoc(perfilRef)
+
+          if (perfilSnap.exists() && perfilSnap.data().onboardingFeito) {
+            // onboarding já feito — vai para dashboard
+            navigate('/dashboard')
+          } else {
+            // onboarding não feito — vai para onboarding
+            navigate('/onboarding')
+          }
+        } catch {
+          navigate('/dashboard')
+        }
+      }
     } else {
       // traduz os erros mais comuns do firebase
       if (resultado.erro.includes('invalid-credential')) {

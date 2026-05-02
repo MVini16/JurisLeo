@@ -2,14 +2,17 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-// importa a ligação ao firebase para testar
 import { db } from './firebase.js'
+// importa o provider global do tema
+import { ThemeProvider } from './context/ThemeContext.jsx'
 
-// mostra no console se a ligação foi feita
 console.log('Firebase ligado:', db)
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    {/* envolve toda a app com o tema — agora todas as páginas têm acesso */}
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
   </StrictMode>,
 )

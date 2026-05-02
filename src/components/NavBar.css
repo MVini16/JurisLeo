@@ -1,0 +1,353 @@
+/* ─── layout geral ─────────────────────────────────────────────────────────── */
+.navbar-layout {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+.navbar-conteudo {
+  flex: 1;
+  /* espaço para a tab bar no mobile */
+  padding-bottom: 80px;
+}
+
+/* ─── sidebar — desktop ────────────────────────────────────────────────────── */
+.sidebar {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 220px;
+    min-height: 100vh;
+    background: rgba(255, 255, 255, 0.95);
+    border-right: 1px solid rgba(107, 15, 26, 0.1);
+    padding: 24px 16px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    backdrop-filter: blur(10px);
+    gap: 8px;
+  }
+
+  /* no dark mode a sidebar fica escura */
+  html.dark .sidebar {
+    background: rgba(26, 16, 20, 0.95);
+    border-right-color: rgba(201, 168, 76, 0.15);
+  }
+
+  /* no desktop o conteúdo não precisa de padding bottom */
+  .navbar-conteudo {
+    padding-bottom: 0;
+  }
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px 24px;
+  border-bottom: 1px solid rgba(107, 15, 26, 0.08);
+  margin-bottom: 8px;
+}
+
+.sidebar-logo-texto {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #6B0F1A;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+  width: 100%;
+  text-align: left;
+  transition: background 0.2s ease, color 0.2s ease;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.9rem;
+}
+
+.sidebar-item:hover {
+  background: rgba(107, 15, 26, 0.06);
+}
+
+.sidebar-item.activo {
+  background: rgba(107, 15, 26, 0.08);
+  color: #6B0F1A;
+  font-weight: 700;
+}
+
+html.dark .sidebar-item:hover {
+  background: rgba(201, 168, 76, 0.08);
+}
+
+html.dark .sidebar-item.activo {
+  background: rgba(201, 168, 76, 0.12);
+  color: #C9A84C;
+}
+
+.sidebar-item-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.sidebar-item-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sidebar-mais {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid #6B0F1A;
+  background: none;
+  cursor: pointer;
+  color: #6B0F1A;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: background 0.2s ease;
+  margin-top: 8px;
+}
+
+.sidebar-mais:hover {
+  background: rgba(107, 15, 26, 0.06);
+}
+
+/* ─── ícone + com rotação ao abrir ────────────────────────────────────────── */
+.mais-icone {
+  font-size: 1.4rem;
+  font-weight: 300;
+  line-height: 1;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.mais-icone.aberto {
+  transform: rotate(45deg);
+}
+
+/* ─── overlay escuro ───────────────────────────────────────────────────────── */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 40;
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ─── menu + expandido ─────────────────────────────────────────────────────── */
+.menu-mais {
+  position: fixed;
+  bottom: 90px;
+  right: 24px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .menu-mais {
+    bottom: 24px;
+    left: 230px;
+  }
+}
+
+.menu-mais-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-radius: 50px;
+  border: none;
+  background: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--cor);
+  /* começa invisível */
+  opacity: 0;
+  transform: translateY(10px) scale(0.9);
+  transition: opacity 0.2s ease var(--delay),
+              transform 0.2s ease var(--delay);
+  pointer-events: none;
+}
+
+.menu-mais.aberto .menu-mais-item {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+.menu-mais-item:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+}
+
+.menu-mais-icon {
+  font-size: 1.1rem;
+}
+
+.menu-mais-label {
+  white-space: nowrap;
+}
+
+/* ─── tab bar — mobile ─────────────────────────────────────────────────────── */
+.tabbar {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  padding: 0 8px 12px;
+  background: rgba(255, 255, 255, 0.95);
+  border-top: 1px solid rgba(107, 15, 26, 0.08);
+  backdrop-filter: blur(20px);
+}
+
+html.dark .tabbar {
+  background: rgba(26, 16, 20, 0.95);
+  border-top-color: rgba(201, 168, 76, 0.12);
+}
+
+@media (min-width: 768px) {
+  .tabbar {
+    display: none;
+  }
+}
+
+.tabbar-wrapper {
+  display: flex;
+  width: 100%;
+  position: relative;
+  align-items: flex-end;
+}
+
+/* slider animado — círculo que se move por baixo do activo */
+.tabbar-slider {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  /* divide o espaço pelos 6 itens + botão + */
+  width: calc(100% / 7);
+  height: 36px;
+  background: rgba(107, 15, 26, 0.08);
+  border-radius: 50px;
+  /* animação jello igual ao codepen */
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  pointer-events: none;
+}
+
+html.dark .tabbar-slider {
+  background: rgba(201, 168, 76, 0.12);
+}
+
+.tabbar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex: 1;
+  padding: 8px 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.45;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.tabbar-item.activo {
+  opacity: 1;
+  color: #6B0F1A;
+}
+
+html.dark .tabbar-item.activo {
+  color: #C9A84C;
+}
+
+.tabbar-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.tabbar-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.tabbar-label {
+  font-size: 0.6rem;
+  font-family: 'Lato', sans-serif;
+  white-space: nowrap;
+}
+
+/* ─── botão + central na tab bar ──────────────────────────────────────────── */
+.tabbar-mais {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #6B0F1A, #C9A84C);
+  color: white;
+  font-size: 1.6rem;
+  font-weight: 300;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 8px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(107, 15, 26, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.tabbar-mais:hover {
+  transform: scale(1.05);
+}
+
+.tabbar-mais .mais-icone {
+  transition: transform 0.3s ease;
+}
+
+.tabbar-mais.aberto .mais-icone {
+  transform: rotate(45deg);
+}

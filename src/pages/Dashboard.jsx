@@ -1,8 +1,19 @@
+// dashboard principal da jurisleo
 import { useEffect, useState } from 'react'
 import './Dashboard.css'
 import { useTheme } from '../context/useTheme.js'
+import { useDashboard } from '../hooks/useDashboard.js'
 
-// frases motivacionais — depois vêm todas as 55 do ficheiro real
+// cores por cadeira — usadas nos dots das aulas
+const CORES_CADEIRA = {
+  tgdc2: '#9b59b6',
+  ied2:  '#e91e8c',
+  dc2:   '#3949ab',
+  hdp:   '#e67e22',
+  hip:   '#f1c40f',
+};
+
+// frases motivacionais — muda automaticamente com o dia do ano
 const frases = [
   "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
   "Não contes os dias, faz os dias contarem.",
@@ -11,57 +22,60 @@ const frases = [
   "Cada página estudada é um passo mais perto do fim.",
   "A lei não é apenas palavras — é o peso da razão.",
   "Estudar direito é aprender a pensar com rigor e agir com justiça.",
-]
+  "O direito é a arte do bom e do justo.",
+  "A justiça não é um destino, é um caminho.",
+  "Cada caso prático resolvido é uma vitória silenciosa.",
+];
 
-// escolhe frase com base no dia do ano — muda todos os dias automaticamente
 function getFraseDoDia() {
-  const inicio = new Date(new Date().getFullYear(), 0, 0)
-  const diaDoAno = Math.floor((new Date() - inicio) / 86400000)
-  return frases[diaDoAno % frases.length]
+  const inicio = new Date(new Date().getFullYear(), 0, 0);
+  const diaDoAno = Math.floor((new Date() - inicio) / 86400000);
+  return frases[diaDoAno % frases.length];
 }
 
-// saudação certa consoante a hora do dia
 function getSaudacao() {
-  const hora = new Date().getHours()
-  if (hora < 12) return 'Bom dia'
-  if (hora < 19) return 'Boa tarde'
-  else return 'Boa noite'
+  const hora = new Date().getHours();
+  if (hora < 12) return 'Bom dia';
+  if (hora < 19) return 'Boa tarde';
+  return 'Boa noite';
 }
 
-// dados hardcoded por agora — depois vêm do Firestore
-const proximaFrequencia = { cadeira: 'TGDC II', dias: 12, data: '14 de Maio' }
-const aulasHoje = [
-  { hora: '09:00', cadeira: 'TGDC II', cor: '#7C3AED' },
-  { hora: '11:00', cadeira: 'IED II', cor: '#EC4899' },
-  { hora: '14:00', cadeira: 'DC II', cor: '#1E3A5F' },
-]
-const tarefas = [
-  { texto: 'Resumo — Capítulo 3 de DC II', cadeira: 'DC II', cor: '#1E3A5F' },
-  { texto: 'Caso prático — HDP', cadeira: 'HDP', cor: '#EA580C' },
-  { texto: 'Leitura — IED II p.45', cadeira: 'IED II', cor: '#EC4899' },
-]
+// devolve o primeiro nome apenas — ex: "Leonor Maria" → "Leonor"
+function getPrimeiroNome(nomeCompleto) {
+  return nomeCompleto?.split(' ')[0] || 'Leonor';
+}
 
 function Dashboard() {
-  const { darkMode, toggleTheme } = useTheme()
-  // controla se os elementos já entraram — para as animações de entrada
-  const [visivel, setVisivel] = useState(false)
+  const { darkMode, toggleTheme } = useTheme();
 
-  // activa as animações logo após o componente montar
+  // dados reais do firestore
+  const {
+    nome,
+    aulasHoje,
+    proximaFrequencia,
+    diasParaFrequencia,
+    dataFrequenciaFormatada,
+    loading,
+  } = useDashboard();
+
+  // controla as animações de entrada
+  const [visivel, setVisivel] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setVisivel(true), 50)
-    return () => clearTimeout(t)
-  }, [])
+    const t = setTimeout(() => setVisivel(true), 50);
+    return () => clearTimeout(t);
+  }, []);
 
-  // calcula a percentagem do anel de countdown (12 dias em 30 = 40%)
-  const percentagem = Math.min((proximaFrequencia.dias / 30) * 100, 100)
-  // converte percentagem para o valor do stroke-dashoffset do SVG
-  const circunferencia = 2 * Math.PI * 45
-  const offset = circunferencia - (percentagem / 100) * circunferencia
+  // calcula o anel de countdown
+  // usa os dias reais se houver frequência, senão mostra anel vazio
+  const diasParaMostrar = diasParaFrequencia ?? 0;
+  const percentagem = Math.min((diasParaMostrar / 30) * 100, 100);
+  const circunferencia = 2 * Math.PI * 45;
+  const offset = circunferencia - (percentagem / 100) * circunferencia;
 
   return (
     <div className={`dashboard ${darkMode ? 'dark' : ''} ${visivel ? 'visivel' : ''}`}>
 
-      {/* fundo decorativo — grain + gradiente subtil */}
+      {/* fundo decorativo */}
       <div className="dashboard-bg" />
 
       {/* barra do topo */}
@@ -71,7 +85,7 @@ function Dashboard() {
           <span className="dashboard-subtitulo">Faculdade de Direito · UL</span>
         </div>
 
-        {/* toggle do codepen — estrutura exacta */}
+        {/* toggle de tema */}
         <button
           className="theme-toggle"
           role="switch"
@@ -97,55 +111,65 @@ function Dashboard() {
         </button>
       </header>
 
-      {/* conteúdo principal com scroll */}
+      {/* conteúdo principal */}
       <main className="dashboard-main">
 
-        {/* saudação + frase */}
+        {/* saudação */}
         <section className="dashboard-greeting anim-entrada" style={{ '--delay': '0.1s' }}>
           <p className="saudacao-label">{getSaudacao()}</p>
-          <h1 className="saudacao-nome">Leonor <span className="saudacao-emoji">👋</span></h1>
+          <h1 className="saudacao-nome">
+            {/* mostra o primeiro nome enquanto carrega, atualiza quando o firestore responde */}
+            {getPrimeiroNome(nome)} <span className="saudacao-emoji">👋</span>
+          </h1>
           <p className="frase-do-dia">"{getFraseDoDia()}"</p>
         </section>
 
         {/* grelha de cards */}
         <div className="dashboard-grid">
 
-          {/* card countdown — destaque maior */}
+          {/* card countdown — próxima frequência */}
           <div className="card card-countdown anim-entrada" style={{ '--delay': '0.2s' }}>
             <div className="card-header">
               <span className="card-icon">⚖️</span>
               <span className="card-titulo">Próxima Frequência</span>
             </div>
-            <div className="countdown-conteudo">
-              {/* anel SVG animado em dourado */}
-              <div className="countdown-anel">
-                <svg viewBox="0 0 100 100">
-                  {/* círculo de fundo */}
-                  <circle cx="50" cy="50" r="45" className="anel-fundo" />
-                  {/* círculo de progresso — animado via CSS */}
-                  <circle
-                    cx="50" cy="50" r="45"
-                    className="anel-progresso"
-                    strokeDasharray={circunferencia}
-                    strokeDashoffset={offset}
-                  />
-                </svg>
-                <div className="countdown-centro">
-                  <span className="countdown-numero">{proximaFrequencia.dias}</span>
-                  <span className="countdown-unidade">dias</span>
+
+            {/* se não houver frequência no calendário mostra mensagem */}
+            {!proximaFrequencia ? (
+              <div className="countdown-vazio">
+                <p>Nenhuma frequência marcada no calendário.</p>
+                <span>Adiciona uma no 📅 Calendário</span>
+              </div>
+            ) : (
+              <div className="countdown-conteudo">
+                {/* anel svg animado */}
+                <div className="countdown-anel">
+                  <svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" className="anel-fundo" />
+                    <circle
+                      cx="50" cy="50" r="45"
+                      className="anel-progresso"
+                      strokeDasharray={circunferencia}
+                      strokeDashoffset={offset}
+                    />
+                  </svg>
+                  <div className="countdown-centro">
+                    <span className="countdown-numero">{diasParaMostrar}</span>
+                    <span className="countdown-unidade">dias</span>
+                  </div>
+                </div>
+                <div className="countdown-info">
+                  {/* nome da cadeira da frequência */}
+                  <p className="countdown-cadeira">
+                    {proximaFrequencia.cadeira?.toUpperCase() || proximaFrequencia.titulo}
+                  </p>
+                  <p className="countdown-data">{dataFrequenciaFormatada}</p>
+                  <div className="countdown-barra-container">
+                    <div className="countdown-barra" style={{ width: `${percentagem}%` }} />
+                  </div>
                 </div>
               </div>
-              <div className="countdown-info">
-                <p className="countdown-cadeira">{proximaFrequencia.cadeira}</p>
-                <p className="countdown-data">{proximaFrequencia.data}</p>
-                <div className="countdown-barra-container">
-                  <div
-                    className="countdown-barra"
-                    style={{ width: `${percentagem}%` }}
-                  />
-                </div>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* card aulas de hoje */}
@@ -153,45 +177,47 @@ function Dashboard() {
             <div className="card-header">
               <span className="card-icon">📚</span>
               <span className="card-titulo">Aulas de Hoje</span>
+              {aulasHoje.length > 0 && (
+                <span className="card-badge">{aulasHoje.length}</span>
+              )}
             </div>
-            <ul className="lista-aulas">
-              {aulasHoje.map((aula, i) => (
-                <li key={i} className="aula-item">
-                  {/* bolinha colorida com a cor da cadeira */}
-                  <span className="aula-dot" style={{ background: aula.cor }} />
-                  <span className="aula-hora">{aula.hora}</span>
-                  <span className="aula-cadeira">{aula.cadeira}</span>
-                </li>
-              ))}
-            </ul>
+
+            {/* sem aulas hoje */}
+            {aulasHoje.length === 0 ? (
+              <p className="card-vazio">
+                {loading ? 'A carregar...' : 'Sem aulas hoje 🎉'}
+              </p>
+            ) : (
+              <ul className="lista-aulas">
+                {aulasHoje.map((aula, i) => (
+                  <li key={i} className="aula-item">
+                    <span
+                      className="aula-dot"
+                      style={{ background: CORES_CADEIRA[aula.cadeira] || '#b8963e' }}
+                    />
+                    <span className="aula-hora">{aula.horaInicio}</span>
+                    <span className="aula-cadeira">{aula.titulo || aula.cadeira?.toUpperCase()}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
-          {/* card tarefas */}
+          {/* card tarefas — por agora mantém placeholder até a página de tarefas estar feita */}
           <div className="card card-tarefas anim-entrada" style={{ '--delay': '0.4s' }}>
             <div className="card-header">
               <span className="card-icon">✅</span>
               <span className="card-titulo">Tarefas Pendentes</span>
-              <span className="card-badge">{tarefas.length}</span>
             </div>
-            <ul className="lista-tarefas">
-              {tarefas.map((tarefa, i) => (
-                <li key={i} className="tarefa-item">
-                  <div className="tarefa-checkbox" />
-                  <div className="tarefa-info">
-                    <span className="tarefa-texto">{tarefa.texto}</span>
-                    <span className="tarefa-cadeira" style={{ color: tarefa.cor }}>
-                      {tarefa.cadeira}
-                    </span>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <p className="card-vazio card-vazio--em-breve">
+              Em breve — quando as tarefas estiverem implementadas aparecerão aqui automaticamente.
+            </p>
           </div>
 
         </div>
       </main>
     </div>
-  )
+  );
 }
 
-export default Dashboard
+export default Dashboard;

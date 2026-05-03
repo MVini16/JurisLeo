@@ -3,10 +3,13 @@
   display: flex;
   min-height: 100vh;
   position: relative;
+  /* bloqueia scroll horizontal em toda a app */
+  overflow-x: hidden;
 }
 
 .navbar-conteudo {
   flex: 1;
+  overflow-x: hidden;
   /* espaço para a tab bar no mobile */
   padding-bottom: 80px;
 }
@@ -33,13 +36,11 @@
     gap: 8px;
   }
 
-  /* no dark mode a sidebar fica escura */
   html.dark .sidebar {
     background: rgba(26, 16, 20, 0.95);
     border-right-color: rgba(201, 168, 76, 0.15);
   }
 
-  /* no desktop o conteúdo não precisa de padding bottom */
   .navbar-conteudo {
     padding-bottom: 0;
   }
@@ -164,7 +165,7 @@ html.dark .sidebar-item.activo {
   to { opacity: 1; }
 }
 
-/* ─── menu + expandido ─────────────────────────────────────────────────────── */
+/* ─── menu + expandido — desktop ───────────────────────────────────────────── */
 .menu-mais {
   position: fixed;
   bottom: 90px;
@@ -180,6 +181,7 @@ html.dark .sidebar-item.activo {
   .menu-mais {
     bottom: 24px;
     left: 230px;
+    right: auto;
   }
 }
 
@@ -197,12 +199,13 @@ html.dark .sidebar-item.activo {
   font-size: 0.88rem;
   font-weight: 700;
   color: var(--cor);
-  /* começa invisível */
   opacity: 0;
   transform: translateY(10px) scale(0.9);
   transition: opacity 0.2s ease var(--delay),
               transform 0.2s ease var(--delay);
   pointer-events: none;
+  /* garante que não sai fora do ecrã */
+  white-space: nowrap;
 }
 
 .menu-mais.aberto .menu-mais-item {
@@ -222,6 +225,40 @@ html.dark .sidebar-item.activo {
 
 .menu-mais-label {
   white-space: nowrap;
+}
+
+/* ─── menu + mobile — abre para cima e alinhado à direita do botão ─────────── */
+@media (max-width: 767px) {
+  .menu-mais {
+    /* ancora ao centro do botão + da tab bar */
+    bottom: 90px;
+    /* fica alinhado para que os itens não saiam do ecrã */
+    right: 12px;
+    left: auto;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    gap: 8px;
+    max-width: calc(100vw - 24px);
+  }
+
+  .menu-mais-item {
+    /* no mobile é mais compacto */
+    padding: 10px 16px;
+    font-size: 0.84rem;
+    gap: 10px;
+    /* animação de entrada vem da direita */
+    transform: translateX(20px) scale(0.9);
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .menu-mais.aberto .menu-mais-item {
+    transform: translateX(0) scale(1);
+  }
+
+  .menu-mais-item:active {
+    transform: scale(0.96);
+  }
 }
 
 /* ─── tab bar — mobile ─────────────────────────────────────────────────────── */
@@ -256,17 +293,15 @@ html.dark .tabbar {
   align-items: flex-end;
 }
 
-/* slider animado — círculo que se move por baixo do activo */
+/* slider animado */
 .tabbar-slider {
   position: absolute;
   top: 8px;
   left: 0;
-  /* divide o espaço pelos 6 itens + botão + */
   width: calc(100% / 7);
   height: 36px;
   background: rgba(107, 15, 26, 0.08);
   border-radius: 50px;
-  /* animação jello igual ao codepen */
   transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   pointer-events: none;
 }

@@ -4,6 +4,8 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } f
 import { auth } from "./firebase.js";
 // importa a função que cria a estrutura do firestore
 import { initializeUserFirestore } from "./initFirestore.js";
+// importa a função que cria a estrutura do calendário
+import { initCalendario } from "./services/initCalendario.js";
 
 // função de registo — cria conta nova
 export async function registar(email, password) {
@@ -11,10 +13,10 @@ export async function registar(email, password) {
     // cria o utilizador no firebase auth
     const resultado = await createUserWithEmailAndPassword(auth, email, password);
     const userId = resultado.user.uid;
-
     // cria a estrutura do firestore para este utilizador
     await initializeUserFirestore(userId);
-
+    // cria a estrutura do calendário para este utilizador
+    await initCalendario(userId);
     return { sucesso: true, utilizador: resultado.user };
   } catch (erro) {
     return { sucesso: false, erro: erro.message };

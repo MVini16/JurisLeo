@@ -1,0 +1,603 @@
+/* ============================================================
+   modal criar evento
+   ============================================================ */
+
+.mce-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+.mce-overlay.visivel {
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+}
+
+.mce-modal {
+  width: 520px;
+  max-width: 94vw;
+  max-height: 90vh;
+  background: #1a0d10;
+  border: 1px solid rgba(184, 150, 62, 0.25);
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transform: scale(0.92) translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+}
+
+.mce-modal.visivel {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* ------------------------------------------------------------
+   header
+   ------------------------------------------------------------ */
+.mce-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 26px 18px;
+  border-bottom: 1px solid rgba(184, 150, 62, 0.15);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.mce-titulo {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(135deg, #c9a84c, #fff8e7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.mce-fechar {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.mce-fechar:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+/* ------------------------------------------------------------
+   corpo
+   ------------------------------------------------------------ */
+.mce-corpo {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(184, 150, 62, 0.3) transparent;
+}
+
+/* animação stagger nos campos */
+.mce-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: campoEntrar 0.4s ease forwards;
+}
+
+.mce-campo--1 { animation-delay: 0.05s; }
+.mce-campo--2 { animation-delay: 0.10s; }
+.mce-campo--3 { animation-delay: 0.15s; }
+.mce-campo--4 { animation-delay: 0.20s; }
+.mce-campo--5 { animation-delay: 0.25s; }
+.mce-campo--6 { animation-delay: 0.30s; }
+.mce-campo--7 { animation-delay: 0.35s; }
+.mce-campo--8 { animation-delay: 0.40s; }
+
+@keyframes campoEntrar {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mce-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.35);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.mce-input {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 11px 14px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  font-family: 'Playfair Display', Georgia, serif;
+  outline: none;
+  transition: all 0.25s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.mce-input:focus {
+  border-color: rgba(184, 150, 62, 0.6);
+  background: rgba(184, 150, 62, 0.08);
+  box-shadow: 0 0 0 3px rgba(184, 150, 62, 0.1);
+}
+
+/* input de data e hora */
+.mce-input[type="date"],
+.mce-input[type="time"] {
+  color-scheme: dark;
+}
+
+.mce-textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.6;
+}
+
+/* linha com múltiplos inputs */
+.mce-linha {
+  flex-direction: row;
+  gap: 12px;
+}
+
+.mce-sublinha {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ------------------------------------------------------------
+   tipos de evento
+   ------------------------------------------------------------ */
+.mce-tipos {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mce-tipo-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 60px;
+}
+
+.mce-tipo-btn span:first-child {
+  font-size: 20px;
+}
+
+.mce-tipo-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mce-tipo-btn.ativo {
+  background: linear-gradient(135deg, rgba(107, 39, 55, 0.5), rgba(184, 150, 62, 0.3));
+  border-color: rgba(184, 150, 62, 0.5);
+  color: #c9a84c;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(107, 39, 55, 0.3);
+}
+
+/* ------------------------------------------------------------
+   cadeiras
+   ------------------------------------------------------------ */
+.mce-cadeiras {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mce-cadeira-btn {
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.2s ease;
+}
+
+.mce-cadeira-btn:hover {
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.mce-cadeira-btn.ativo {
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ------------------------------------------------------------
+   importância
+   ------------------------------------------------------------ */
+.mce-importancias {
+  display: flex;
+  gap: 8px;
+}
+
+.mce-imp-btn {
+  flex: 1;
+  padding: 9px 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mce-imp-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.mce-imp-btn--baixa.ativo {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: rgba(76, 175, 80, 0.5);
+  color: #a5d6a7;
+}
+
+.mce-imp-btn--media.ativo {
+  background: rgba(251, 192, 45, 0.2);
+  border-color: rgba(251, 192, 45, 0.5);
+  color: #ffe082;
+}
+
+.mce-imp-btn--alta.ativo {
+  background: rgba(229, 57, 53, 0.2);
+  border-color: rgba(229, 57, 53, 0.5);
+  color: #ef9a9a;
+}
+
+/* ------------------------------------------------------------
+   estado
+   ------------------------------------------------------------ */
+.mce-estados {
+  display: flex;
+  gap: 8px;
+}
+
+.mce-estado-btn {
+  flex: 1;
+  padding: 9px 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mce-estado-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.mce-estado-btn.ativo {
+  background: linear-gradient(135deg, rgba(107, 39, 55, 0.4), rgba(184, 150, 62, 0.2));
+  border-color: rgba(184, 150, 62, 0.4);
+  color: #c9a84c;
+  font-weight: 700;
+}
+
+/* ------------------------------------------------------------
+   toggle conta falta
+   ------------------------------------------------------------ */
+.mce-toggle-linha {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mce-toggle {
+  width: 46px;
+  height: 26px;
+  border-radius: 13px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  position: relative;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+}
+
+.mce-toggle.ativo {
+  background: linear-gradient(135deg, #6b2737, #b8963e);
+}
+
+.mce-toggle__bolinha {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.mce-toggle.ativo .mce-toggle__bolinha {
+  transform: translateX(20px);
+}
+
+/* ------------------------------------------------------------
+   erro
+   ------------------------------------------------------------ */
+.mce-erro {
+  font-size: 12px;
+  color: #ef9a9a;
+  background: rgba(229, 57, 53, 0.1);
+  border: 1px solid rgba(229, 57, 53, 0.3);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 0;
+  animation: campoEntrar 0.3s ease forwards;
+}
+
+/* ------------------------------------------------------------
+   footer
+   ------------------------------------------------------------ */
+.mce-footer {
+  display: flex;
+  gap: 12px;
+  padding: 18px 26px;
+  border-top: 1px solid rgba(184, 150, 62, 0.15);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.mce-btn-cancelar {
+  flex: 1;
+  padding: 12px 0;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Playfair Display', Georgia, serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mce-btn-cancelar:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mce-btn-guardar {
+  flex: 2;
+  padding: 12px 0;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #6b2737, #b8963e);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Playfair Display', Georgia, serif;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 20px rgba(107, 39, 55, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+}
+
+.mce-btn-guardar:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(107, 39, 55, 0.55);
+}
+
+.mce-btn-guardar:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.mce-btn-guardar.guardando {
+  background: linear-gradient(135deg, #6b2737, #b8963e);
+  opacity: 0.85;
+}
+
+/* spinner de loading */
+.mce-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: rodar 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes rodar {
+  to { transform: rotate(360deg); }
+}
+
+/* ------------------------------------------------------------
+   animação de sucesso
+   ------------------------------------------------------------ */
+.mce-sucesso {
+  position: absolute;
+  inset: 0;
+  background: #1a0d10;
+  border-radius: 24px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.mce-sucesso__check {
+  width: 80px;
+  height: 80px;
+}
+
+.mce-sucesso__check svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* círculo animado */
+.mce-sucesso__circulo {
+  fill: none;
+  stroke: #b8963e;
+  stroke-width: 2;
+  stroke-dasharray: 157;
+  stroke-dashoffset: 157;
+  animation: desenharCirculo 0.6s ease forwards;
+}
+
+@keyframes desenharCirculo {
+  to { stroke-dashoffset: 0; }
+}
+
+/* visto animado */
+.mce-sucesso__visto {
+  fill: none;
+  stroke: #b8963e;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: desenharVisto 0.4s ease 0.5s forwards;
+}
+
+@keyframes desenharVisto {
+  to { stroke-dashoffset: 0; }
+}
+
+.mce-sucesso__texto {
+  font-size: 18px;
+  font-weight: 700;
+  color: #c9a84c;
+  margin: 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  animation: subirTexto 0.4s ease 0.7s both;
+}
+
+@keyframes subirTexto {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* partículas douradas */
+.mce-sucesso__particulas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mce-sucesso__particula {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c9a84c;
+  top: 50%;
+  left: 50%;
+  animation: particula 0.8s ease calc(var(--i) * 0.05s) both;
+}
+
+/* posiciona as partículas em círculo */
+.mce-sucesso__particula:nth-child(1)  { --angulo: 0deg; }
+.mce-sucesso__particula:nth-child(2)  { --angulo: 30deg; }
+.mce-sucesso__particula:nth-child(3)  { --angulo: 60deg; }
+.mce-sucesso__particula:nth-child(4)  { --angulo: 90deg; }
+.mce-sucesso__particula:nth-child(5)  { --angulo: 120deg; }
+.mce-sucesso__particula:nth-child(6)  { --angulo: 150deg; }
+.mce-sucesso__particula:nth-child(7)  { --angulo: 180deg; }
+.mce-sucesso__particula:nth-child(8)  { --angulo: 210deg; }
+.mce-sucesso__particula:nth-child(9)  { --angulo: 240deg; }
+.mce-sucesso__particula:nth-child(10) { --angulo: 270deg; }
+.mce-sucesso__particula:nth-child(11) { --angulo: 300deg; }
+.mce-sucesso__particula:nth-child(12) { --angulo: 330deg; }
+
+@keyframes particula {
+  0%   { opacity: 1; transform: translate(-50%, -50%) rotate(var(--angulo)) translateY(0); }
+  100% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--angulo)) translateY(-80px); }
+}
+
+/* ------------------------------------------------------------
+   responsivo mobile
+   ------------------------------------------------------------ */
+@media (max-width: 768px) {
+  .mce-modal {
+    max-height: 95vh;
+    border-radius: 20px 20px 0 0;
+    align-self: flex-end;
+  }
+
+  .mce-overlay {
+    align-items: flex-end;
+  }
+
+  .mce-linha {
+    flex-direction: column;
+  }
+
+  .mce-tipos {
+    gap: 6px;
+  }
+
+  .mce-tipo-btn {
+    padding: 8px 10px;
+    font-size: 10px;
+  }
+}

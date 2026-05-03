@@ -1,9 +1,897 @@
-function Calendario() {
-  return (
-    <div style={{ padding: '24px', fontFamily: 'Georgia' }}>
-      <h1>Calendário</h1>
-    </div>
-  )
+// página principal do calendário
+import { useState, useRef } from 'react';
+import { db } from '../firebase.js';
+import { getAuth } from 'firebase/auth';
+import { useCalendario } from '../hooks/useCalendario.js';
+import ModalCriarEvento from '../components/ModalCriarEvento.jsx';
+import './Calendario.css';
+
+// nomes dos meses em português
+const MESES = [
+  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+];
+
+// nomes dos dias em português
+const DIAS_SEMANA = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+const DIAS_SEMANA_CURTO = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+// cores por cadeira
+const CORES_CADEIRA = {
+  tgdc2: '#9b59b6',
+  ied2:  '#e91e8c',
+  dc2:   '#3949ab',
+  hdp:   '#e67e22',
+  hip:   '#f1c40f',
+};
+
+// ícones por tipo de evento
+const ICONES_TIPO = {
+  aula:       '📚',
+  frequencia: '⚡',
+  oral:       '🎤',
+  entrega:    '📝',
+  outro:      '📌',
+};
+
+// hook simples para detetar mobile
+function useIsMobile() {
+  return window.innerWidth <= 768;
 }
 
-export default Calendario
+export default function Calendario() {
+  const { eventos, loading } = useCalendario();
+
+  const hoje = new Date();
+
+  // data selecionada — começa no dia de hoje
+  const [dataSelecionada, setDataSelecionada] = useState(new Date());
+
+  // vista atual
+  const [vista, setVista] = useState('diaria');
+
+  // mes e ano para a vista mensal
+  const [mesAtual, setMesAtual] = useState(new Date().getMonth());
+  const [anoAtual, setAnoAtual] = useState(new Date().getFullYear());
+
+  // painel lateral da vista mensal (desktop) / bottom sheet (mobile)
+  const [painelDia, setPainelDia] = useState(null);
+
+  // modal de criar evento aberto ou fechado
+  const [modalAberto, setModalAberto] = useState(false);
+
+  // evento selecionado para ver detalhes
+  const [eventoDetalhe, setEventoDetalhe] = useState(null);
+
+  // evento a editar
+  const [eventoEditar, setEventoEditar] = useState(null);
+
+  // filtra os eventos de um dia específico
+  function eventosDoDia(data) {
+    return eventos.filter((ev) => {
+      const dataEv = ev.data instanceof Date ? ev.data : ev.data?.toDate?.();
+      if (!dataEv) return false;
+      return (
+        dataEv.getDate() === data.getDate() &&
+        dataEv.getMonth() === data.getMonth() &&
+        dataEv.getFullYear() === data.getFullYear()
+      );
+    }).sort((a, b) => a.horaInicio?.localeCompare(b.horaInicio));
+  }
+
+  // verifica se dois dias são o mesmo
+  function mesmoDia(a, b) {
+    return (
+      a.getDate() === b.getDate() &&
+      a.getMonth() === b.getMonth() &&
+      a.getFullYear() === b.getFullYear()
+    );
+  }
+
+  // avança ou recua consoante a vista
+  function navegar(direcao) {
+    if (vista === 'diaria') {
+      const nova = new Date(dataSelecionada);
+      nova.setDate(nova.getDate() + direcao);
+      setDataSelecionada(nova);
+    } else if (vista === 'semanal') {
+      const nova = new Date(dataSelecionada);
+      // no mobile avança 3 dias, no desktop avança 7
+      const dias = useIsMobile() ? 3 : 7;
+      nova.setDate(nova.getDate() + direcao * dias);
+      setDataSelecionada(nova);
+    } else if (vista === 'mensal' || vista === 'lista') {
+      let novoMes = mesAtual + direcao;
+      let novoAno = anoAtual;
+      if (novoMes > 11) { novoMes = 0; novoAno++; }
+      if (novoMes < 0)  { novoMes = 11; novoAno--; }
+      setMesAtual(novoMes);
+      setAnoAtual(novoAno);
+    }
+  }
+
+  // volta ao dia de hoje
+  function irParaHoje() {
+    const h = new Date();
+    setDataSelecionada(h);
+    setMesAtual(h.getMonth());
+    setAnoAtual(h.getFullYear());
+  }
+
+  // título do header
+  function tituloHeader() {
+    if (vista === 'diaria') {
+      return `${DIAS_SEMANA[dataSelecionada.getDay()]}, ${dataSelecionada.getDate()} de ${MESES[dataSelecionada.getMonth()]}`;
+    }
+    if (vista === 'mensal' || vista === 'lista') {
+      return `${MESES[mesAtual]} ${anoAtual}`;
+    }
+    if (vista === 'semanal') {
+      return `Semana de ${dataSelecionada.getDate()} de ${MESES[dataSelecionada.getMonth()]}`;
+    }
+  }
+
+  // ao clicar num dia na vista mensal
+  function clicarDiaMensal(data) {
+    setDataSelecionada(data);
+    setPainelDia(data);
+  }
+
+  // ir para a vista diária de um dia específico
+  function irParaVistaDiaria(data) {
+    setDataSelecionada(data);
+    setVista('diaria');
+    setPainelDia(null);
+  }
+
+  if (loading) {
+    return <div className="cal-loading">A carregar calendário...</div>;
+  }
+
+  return (
+    <div className="cal-wrapper">
+
+      {/* header desktop */}
+      <div className="cal-header">
+        <div className="cal-header__nav">
+          <button className="cal-btn-nav" onClick={() => navegar(-1)}>‹</button>
+          <h2 className="cal-header__titulo">{tituloHeader()}</h2>
+          <button className="cal-btn-nav" onClick={() => navegar(1)}>›</button>
+        </div>
+        <div className="cal-header__controlos">
+          <button className="cal-btn-hoje" onClick={irParaHoje}>Hoje</button>
+          <div className="cal-vistas">
+            {['diaria', 'semanal', 'mensal', 'lista'].map((v) => (
+              <button
+                key={v}
+                className={`cal-vista-btn ${vista === v ? 'ativo' : ''}`}
+                onClick={() => { setVista(v); setPainelDia(null); }}
+              >
+                {v.charAt(0).toUpperCase() + v.slice(1)}
+              </button>
+            ))}
+          </div>
+          <button className="cal-btn-add" onClick={() => setModalAberto(true)}>+ Evento</button>
+        </div>
+      </div>
+
+      {/* header mobile — separado e adaptado */}
+      <div className="cal-header-mobile">
+        {/* linha de cima: seta + título + seta + botão hoje */}
+        <div className="cal-header-mobile__topo">
+          <button className="cal-btn-nav-mobile" onClick={() => navegar(-1)}>‹</button>
+          <h2 className="cal-header-mobile__titulo">{tituloHeader()}</h2>
+          <button className="cal-btn-nav-mobile" onClick={() => navegar(1)}>›</button>
+          <button className="cal-btn-hoje-mobile" onClick={irParaHoje}>Hoje</button>
+        </div>
+        {/* tabs de vista com slider animado */}
+        <div className="cal-tabs-mobile">
+          {[
+            { key: 'diaria',  label: 'Dia',    icon: '☀️' },
+            { key: 'semanal', label: 'Semana', icon: '📅' },
+            { key: 'mensal',  label: 'Mês',    icon: '🗓️' },
+            { key: 'lista',   label: 'Lista',  icon: '📋' },
+          ].map((v) => (
+            <button
+              key={v.key}
+              className={`cal-tab-mobile ${vista === v.key ? 'ativo' : ''}`}
+              onClick={() => { setVista(v.key); setPainelDia(null); }}
+            >
+              <span className="cal-tab-mobile__icon">{v.icon}</span>
+              <span className="cal-tab-mobile__label">{v.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* conteúdo */}
+      <div className="cal-conteudo">
+
+        {vista === 'diaria' && (
+          <VistaDiaria
+            data={dataSelecionada}
+            eventos={eventosDoDia(dataSelecionada)}
+            onEventoClick={setEventoDetalhe}
+            ICONES_TIPO={ICONES_TIPO}
+            CORES_CADEIRA={CORES_CADEIRA}
+          />
+        )}
+
+        {vista === 'semanal' && (
+          <VistaSemanal
+            data={dataSelecionada}
+            eventos={eventos}
+            eventosDoDia={eventosDoDia}
+            onDiaClick={(d) => { setDataSelecionada(d); setVista('diaria'); }}
+            onEventoClick={setEventoDetalhe}
+            ICONES_TIPO={ICONES_TIPO}
+            CORES_CADEIRA={CORES_CADEIRA}
+            hoje={hoje}
+            mesmoDia={mesmoDia}
+            DIAS_SEMANA_CURTO={DIAS_SEMANA_CURTO}
+          />
+        )}
+
+        {vista === 'mensal' && (
+          <div className="cal-mensal-wrapper">
+            <VistaMensal
+              mes={mesAtual}
+              ano={anoAtual}
+              eventos={eventos}
+              eventosDoDia={eventosDoDia}
+              onDiaClick={clicarDiaMensal}
+              diaSelecionado={painelDia}
+              hoje={hoje}
+              mesmoDia={mesmoDia}
+              CORES_CADEIRA={CORES_CADEIRA}
+              ICONES_TIPO={ICONES_TIPO}
+            />
+            {/* painel desktop */}
+            {painelDia && (
+              <PainelDia
+                data={painelDia}
+                eventos={eventosDoDia(painelDia)}
+                onIrParaDia={irParaVistaDiaria}
+                onFechar={() => setPainelDia(null)}
+                onEventoClick={setEventoDetalhe}
+                ICONES_TIPO={ICONES_TIPO}
+                CORES_CADEIRA={CORES_CADEIRA}
+                MESES={MESES}
+                DIAS_SEMANA={DIAS_SEMANA}
+              />
+            )}
+          </div>
+        )}
+
+        {vista === 'lista' && (
+          <VistaLista
+            eventos={eventos}
+            mes={mesAtual}
+            ano={anoAtual}
+            onEventoClick={setEventoDetalhe}
+            ICONES_TIPO={ICONES_TIPO}
+            CORES_CADEIRA={CORES_CADEIRA}
+            MESES={MESES}
+            DIAS_SEMANA={DIAS_SEMANA}
+          />
+        )}
+
+      </div>
+
+      {/* bottom sheet mobile para o painel do dia (vista mensal) */}
+      {painelDia && (
+        <BottomSheet
+          data={painelDia}
+          eventos={eventosDoDia(painelDia)}
+          onIrParaDia={irParaVistaDiaria}
+          onFechar={() => setPainelDia(null)}
+          onEventoClick={setEventoDetalhe}
+          ICONES_TIPO={ICONES_TIPO}
+          CORES_CADEIRA={CORES_CADEIRA}
+          MESES={MESES}
+          DIAS_SEMANA={DIAS_SEMANA}
+        />
+      )}
+
+      {/* fab — botão flutuante de adicionar evento (só mobile) */}
+      <button className="cal-fab" onClick={() => setModalAberto(true)}>
+        <span className="cal-fab__icone">+</span>
+      </button>
+
+      {/* modal de criar evento */}
+      {modalAberto && (
+        <ModalCriarEvento
+          onFechar={() => setModalAberto(false)}
+          dataInicial={dataSelecionada}
+        />
+      )}
+
+      {/* modal de detalhes do evento */}
+      {eventoDetalhe && (
+        <ModalEvento
+          evento={eventoDetalhe}
+          onFechar={() => setEventoDetalhe(null)}
+          onEditar={(ev) => { setEventoDetalhe(null); setEventoEditar(ev); }}
+          onApagar={() => setEventoDetalhe(null)}
+          ICONES_TIPO={ICONES_TIPO}
+          CORES_CADEIRA={CORES_CADEIRA}
+          MESES={MESES}
+          DIAS_SEMANA={DIAS_SEMANA}
+        />
+      )}
+
+      {/* modal de editar evento */}
+      {eventoEditar && (
+        <ModalCriarEvento
+          onFechar={() => setEventoEditar(null)}
+          dataInicial={dataSelecionada}
+          eventoExistente={eventoEditar}
+        />
+      )}
+
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------
+// vista diária — com toggle mobile entre resumo e timeline
+// ------------------------------------------------------------------
+function VistaDiaria({ data, eventos, onEventoClick, ICONES_TIPO, CORES_CADEIRA }) {
+  const horas = Array.from({ length: 15 }, (_, i) => i + 8);
+  // toggle mobile: 'resumo' ou 'timeline'
+  const [modoMobile, setModoMobile] = useState('resumo');
+
+  function eventosNaHora(hora) {
+    return eventos.filter((ev) => {
+      if (!ev.horaInicio) return false;
+      return parseInt(ev.horaInicio.split(':')[0]) === hora;
+    });
+  }
+
+  return (
+    <div className="cal-diaria">
+
+      {/* toggle mobile entre resumo e timeline */}
+      <div className="cal-diaria__toggle-mobile">
+        <button
+          className={`cal-diaria__toggle-btn ${modoMobile === 'resumo' ? 'ativo' : ''}`}
+          onClick={() => setModoMobile('resumo')}
+        >
+          📋 Resumo
+        </button>
+        <button
+          className={`cal-diaria__toggle-btn ${modoMobile === 'timeline' ? 'ativo' : ''}`}
+          onClick={() => setModoMobile('timeline')}
+        >
+          ⏱️ Timeline
+        </button>
+      </div>
+
+      {/* sidebar — escondida no mobile quando modo timeline */}
+      <div className={`cal-diaria__sidebar ${modoMobile === 'timeline' ? 'mobile-oculto' : ''}`}>
+        <div className="cal-diaria__sidebar-data">
+          <span className="cal-diaria__sidebar-dia">{data.getDate()}</span>
+          <span className="cal-diaria__sidebar-mes">
+            {['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][data.getMonth()]}
+          </span>
+        </div>
+        <div className="cal-diaria__sidebar-eventos">
+          <p className="cal-diaria__sidebar-titulo">Hoje tens</p>
+          {eventos.length === 0 && (
+            <p className="cal-diaria__sidebar-vazio">Dia livre! 🎉</p>
+          )}
+          {eventos.map((ev) => (
+            <div
+              key={ev.id}
+              className="cal-diaria__sidebar-item"
+              style={{ borderLeftColor: CORES_CADEIRA[ev.cadeira] || '#b8963e' }}
+              onClick={() => onEventoClick(ev)}
+            >
+              <span className="cal-diaria__sidebar-item-hora">{ev.horaInicio}</span>
+              <span className="cal-diaria__sidebar-item-nome">{ICONES_TIPO[ev.tipo] || '📌'} {ev.titulo}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* timeline — escondida no mobile quando modo resumo */}
+      <div className={`cal-diaria__timeline ${modoMobile === 'resumo' ? 'mobile-oculto' : ''}`}>
+        {horas.map((hora) => (
+          <div key={hora} className="cal-diaria__hora">
+            <span className="cal-diaria__hora-label">{String(hora).padStart(2, '0')}:00</span>
+            <div className="cal-diaria__hora-slot">
+              {eventosNaHora(hora).map((ev) => (
+                <div
+                  key={ev.id}
+                  className="cal-diaria__evento"
+                  style={{ backgroundColor: CORES_CADEIRA[ev.cadeira] || '#b8963e' }}
+                  onClick={() => onEventoClick(ev)}
+                >
+                  <span className="cal-diaria__evento-icone">{ICONES_TIPO[ev.tipo] || '📌'}</span>
+                  <div className="cal-diaria__evento-info">
+                    <span className="cal-diaria__evento-titulo">{ev.titulo}</span>
+                    <span className="cal-diaria__evento-hora">{ev.horaInicio} – {ev.horaFim}</span>
+                  </div>
+                  {ev.importancia === 'alta' && <span className="cal-diaria__evento-badge">!</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------
+// vista semanal — 7 dias no desktop, 3 dias no mobile
+// ------------------------------------------------------------------
+function VistaSemanal({ data, eventosDoDia, onDiaClick, onEventoClick, ICONES_TIPO, CORES_CADEIRA, hoje, mesmoDia, DIAS_SEMANA_CURTO }) {
+  const isMobile = window.innerWidth <= 768;
+
+  function diasDaSemana() {
+    const dias = [];
+    const inicio = new Date(data);
+
+    if (isMobile) {
+      // mobile: dia selecionado no centro (ontem, hoje, amanhã)
+      inicio.setDate(inicio.getDate() - 1);
+      for (let i = 0; i < 3; i++) {
+        const d = new Date(inicio);
+        d.setDate(inicio.getDate() + i);
+        dias.push(d);
+      }
+    } else {
+      // desktop: semana completa de segunda a domingo
+      const diaSemana = inicio.getDay() === 0 ? 6 : inicio.getDay() - 1;
+      inicio.setDate(inicio.getDate() - diaSemana);
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(inicio);
+        d.setDate(inicio.getDate() + i);
+        dias.push(d);
+      }
+    }
+    return dias;
+  }
+
+  const dias = diasDaSemana();
+  const numColunas = isMobile ? 3 : 7;
+  const horas = Array.from({ length: 15 }, (_, i) => i + 8);
+
+  return (
+    <div className="cal-semanal" style={{ '--num-dias': numColunas }}>
+      <div className="cal-semanal__header">
+        <div className="cal-semanal__header-vazio" />
+        {dias.map((d, i) => (
+          <div
+            key={i}
+            className={`cal-semanal__header-dia ${mesmoDia(d, hoje) ? 'hoje' : ''}`}
+            onClick={() => onDiaClick(d)}
+          >
+            <span className="cal-semanal__header-dia-nome">{DIAS_SEMANA_CURTO[d.getDay()]}</span>
+            <span className="cal-semanal__header-dia-num">{d.getDate()}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="cal-semanal__body">
+        {horas.map((hora) => (
+          <div key={hora} className="cal-semanal__row" style={{ gridTemplateColumns: `60px repeat(${numColunas}, 1fr)` }}>
+            <span className="cal-semanal__hora-label">{String(hora).padStart(2, '0')}:00</span>
+            {dias.map((d, i) => {
+              const evs = eventosDoDia(d).filter(ev => ev.horaInicio && parseInt(ev.horaInicio.split(':')[0]) === hora);
+              return (
+                <div key={i} className={`cal-semanal__cel ${mesmoDia(d, hoje) ? 'hoje' : ''}`}>
+                  {evs.map((ev) => (
+                    <div
+                      key={ev.id}
+                      className="cal-semanal__evento"
+                      style={{ backgroundColor: CORES_CADEIRA[ev.cadeira] || '#b8963e' }}
+                      onClick={() => onEventoClick(ev)}
+                    >
+                      <span>{ICONES_TIPO[ev.tipo] || '📌'} {ev.titulo}</span>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------
+// vista mensal
+// ------------------------------------------------------------------
+function VistaMensal({ mes, ano, eventosDoDia, onDiaClick, diaSelecionado, hoje, mesmoDia, CORES_CADEIRA, ICONES_TIPO }) {
+  function gerarGrid() {
+    const primeiroDia = new Date(ano, mes, 1).getDay();
+    const diasNoMes = new Date(ano, mes + 1, 0).getDate();
+    const diasMesAnterior = new Date(ano, mes, 0).getDate();
+    const grid = [];
+
+    const inicioOffset = primeiroDia === 0 ? 6 : primeiroDia - 1;
+    for (let i = inicioOffset - 1; i >= 0; i--) {
+      grid.push({ data: new Date(ano, mes - 1, diasMesAnterior - i), outroMes: true });
+    }
+    for (let i = 1; i <= diasNoMes; i++) {
+      grid.push({ data: new Date(ano, mes, i), outroMes: false });
+    }
+    const resto = 42 - grid.length;
+    for (let i = 1; i <= resto; i++) {
+      grid.push({ data: new Date(ano, mes + 1, i), outroMes: true });
+    }
+
+    return grid;
+  }
+
+  const grid = gerarGrid();
+
+  return (
+    <div className="cal-mensal">
+      <div className="cal-mensal__cabecalho">
+        {['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'].map((d) => (
+          <div key={d} className="cal-mensal__cabecalho-dia">{d}</div>
+        ))}
+      </div>
+
+      <div className="cal-mensal__grid">
+        {grid.map(({ data, outroMes }, i) => {
+          const evsDia = eventosDoDia(data);
+          const isHoje = mesmoDia(data, hoje);
+          const isSelecionado = diaSelecionado && mesmoDia(data, diaSelecionado);
+          const barras = evsDia.slice(0, 2);
+          const pontosExtra = evsDia.length > 2 ? evsDia.slice(2) : [];
+
+          return (
+            <div
+              key={i}
+              className={`cal-mensal__dia ${outroMes ? 'outro-mes' : ''} ${isHoje ? 'hoje' : ''} ${isSelecionado ? 'selecionado' : ''}`}
+              onClick={() => onDiaClick(data)}
+            >
+              <span className="cal-mensal__dia-num">{data.getDate()}</span>
+              <div className="cal-mensal__dia-eventos">
+                {barras.map((ev) => (
+                  <div
+                    key={ev.id}
+                    className="cal-mensal__dia-barra"
+                    style={{ backgroundColor: CORES_CADEIRA[ev.cadeira] || '#b8963e' }}
+                    title={ev.titulo}
+                  >
+                    <span className="cal-mensal__dia-barra-icone">{ICONES_TIPO[ev.tipo] || '📌'}</span>
+                    <span className="cal-mensal__dia-barra-nome">{ev.titulo}</span>
+                  </div>
+                ))}
+                {pontosExtra.length > 0 && (
+                  <div className="cal-mensal__dia-pontos">
+                    {pontosExtra.map((ev) => (
+                      <span
+                        key={ev.id}
+                        className="cal-mensal__dia-ponto"
+                        style={{ backgroundColor: CORES_CADEIRA[ev.cadeira] || '#b8963e' }}
+                        title={ev.titulo}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------
+// painel lateral do dia selecionado (desktop only)
+// ------------------------------------------------------------------
+function PainelDia({ data, eventos, onIrParaDia, onFechar, onEventoClick, ICONES_TIPO, CORES_CADEIRA, MESES, DIAS_SEMANA }) {
+  return (
+    <div className="cal-painel">
+      <div className="cal-painel__header">
+        <div>
+          <p className="cal-painel__dia-semana">{DIAS_SEMANA[data.getDay()]}</p>
+          <p className="cal-painel__data">{data.getDate()} de {MESES[data.getMonth()]}</p>
+        </div>
+        <div className="cal-painel__acoes">
+          <button className="cal-btn-hoje" onClick={() => onIrParaDia(data)}>Ver dia</button>
+          <button className="cal-painel__fechar" onClick={onFechar}>✕</button>
+        </div>
+      </div>
+      <div className="cal-painel__eventos">
+        {eventos.length === 0 && (
+          <p className="cal-diaria__sidebar-vazio">Dia livre! 🎉</p>
+        )}
+        {eventos.map((ev) => (
+          <div
+            key={ev.id}
+            className="cal-painel__evento"
+            style={{ borderLeftColor: CORES_CADEIRA[ev.cadeira] || '#b8963e' }}
+            onClick={() => onEventoClick(ev)}
+          >
+            <div className="cal-painel__evento-topo">
+              <span className="cal-painel__evento-icone">{ICONES_TIPO[ev.tipo] || '📌'}</span>
+              <span className="cal-painel__evento-titulo">{ev.titulo}</span>
+              {ev.importancia === 'alta' && <span className="cal-painel__evento-importante">!</span>}
+            </div>
+            <span className="cal-painel__evento-hora">{ev.horaInicio} – {ev.horaFim}</span>
+            {ev.notas && <span className="cal-painel__evento-notas">{ev.notas}</span>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------
+// bottom sheet mobile — sobe quando clica num dia na vista mensal
+// ------------------------------------------------------------------
+function BottomSheet({ data, eventos, onIrParaDia, onFechar, onEventoClick, ICONES_TIPO, CORES_CADEIRA, MESES, DIAS_SEMANA }) {
+  const sheetRef = useRef(null);
+  // arrastar para fechar
+  const startY = useRef(null);
+  const currentY = useRef(0);
+
+  function onTouchStart(e) {
+    startY.current = e.touches[0].clientY;
+  }
+
+  function onTouchMove(e) {
+    const delta = e.touches[0].clientY - startY.current;
+    if (delta > 0) {
+      currentY.current = delta;
+      if (sheetRef.current) {
+        sheetRef.current.style.transform = `translateY(${delta}px)`;
+        sheetRef.current.style.transition = 'none';
+      }
+    }
+  }
+
+  function onTouchEnd() {
+    // se arrastou mais de 120px fecha o sheet
+    if (currentY.current > 120) {
+      onFechar();
+    } else {
+      // volta à posição original com animação
+      if (sheetRef.current) {
+        sheetRef.current.style.transition = 'transform 0.35s cubic-bezier(0.32, 0.72, 0, 1)';
+        sheetRef.current.style.transform = 'translateY(0)';
+      }
+    }
+    currentY.current = 0;
+  }
+
+  return (
+    <div className="cal-bottom-sheet-overlay" onClick={onFechar}>
+      <div
+        className="cal-bottom-sheet"
+        ref={sheetRef}
+        onClick={(e) => e.stopPropagation()}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        {/* drag handle */}
+        <div className="cal-bottom-sheet__handle" />
+
+        <div className="cal-bottom-sheet__header">
+          <div>
+            <p className="cal-bottom-sheet__dia-semana">{DIAS_SEMANA[data.getDay()]}</p>
+            <p className="cal-bottom-sheet__data">{data.getDate()} de {MESES[data.getMonth()]}</p>
+          </div>
+          <div className="cal-bottom-sheet__acoes">
+            <button className="cal-btn-hoje" onClick={() => onIrParaDia(data)}>Ver dia</button>
+          </div>
+        </div>
+
+        <div className="cal-bottom-sheet__eventos">
+          {eventos.length === 0 && (
+            <p className="cal-diaria__sidebar-vazio" style={{ textAlign: 'center', padding: '24px 0' }}>
+              Dia livre! 🎉
+            </p>
+          )}
+          {eventos.map((ev) => (
+            <div
+              key={ev.id}
+              className="cal-bottom-sheet__evento"
+              style={{ borderLeftColor: CORES_CADEIRA[ev.cadeira] || '#b8963e' }}
+              onClick={() => { onEventoClick(ev); onFechar(); }}
+            >
+              <div className="cal-bottom-sheet__evento-topo">
+                <span>{ICONES_TIPO[ev.tipo] || '📌'}</span>
+                <span className="cal-bottom-sheet__evento-titulo">{ev.titulo}</span>
+                {ev.importancia === 'alta' && <span className="cal-painel__evento-importante">!</span>}
+              </div>
+              <span className="cal-painel__evento-hora">{ev.horaInicio} – {ev.horaFim}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------
+// vista lista
+// ------------------------------------------------------------------
+function VistaLista({ eventos, mes, ano, onEventoClick, ICONES_TIPO, CORES_CADEIRA, MESES, DIAS_SEMANA }) {
+  const eventosMes = eventos
+    .filter((ev) => {
+      const d = ev.data instanceof Date ? ev.data : ev.data?.toDate?.();
+      return d && d.getMonth() === mes && d.getFullYear() === ano;
+    })
+    .sort((a, b) => {
+      const da = a.data instanceof Date ? a.data : a.data?.toDate?.();
+      const db_ = b.data instanceof Date ? b.data : b.data?.toDate?.();
+      return da - db_;
+    });
+
+  const grupos = {};
+  eventosMes.forEach((ev) => {
+    const d = ev.data instanceof Date ? ev.data : ev.data?.toDate?.();
+    const chave = d.toDateString();
+    if (!grupos[chave]) grupos[chave] = { data: d, eventos: [] };
+    grupos[chave].eventos.push(ev);
+  });
+
+  return (
+    <div className="cal-lista">
+      {Object.keys(grupos).length === 0 && (
+        <p className="cal-placeholder">Sem eventos em {MESES[mes]} 📭</p>
+      )}
+      {Object.values(grupos).map((grupo, i) => (
+        <div key={i} className="cal-lista__grupo">
+          <div className="cal-lista__grupo-header">
+            <span className="cal-lista__grupo-dia">{grupo.data.getDate()}</span>
+            <div>
+              <p className="cal-lista__grupo-semana">{DIAS_SEMANA[grupo.data.getDay()]}</p>
+              <p className="cal-lista__grupo-mes">{MESES[grupo.data.getMonth()]}</p>
+            </div>
+          </div>
+          <div className="cal-lista__grupo-eventos">
+            {grupo.eventos.map((ev) => (
+              <div
+                key={ev.id}
+                className="cal-lista__evento"
+                style={{ borderLeftColor: CORES_CADEIRA[ev.cadeira] || '#b8963e' }}
+                onClick={() => onEventoClick(ev)}
+              >
+                <span className="cal-lista__evento-icone">{ICONES_TIPO[ev.tipo] || '📌'}</span>
+                <div className="cal-lista__evento-info">
+                  <span className="cal-lista__evento-titulo">{ev.titulo}</span>
+                  <span className="cal-lista__evento-hora">{ev.horaInicio} – {ev.horaFim}</span>
+                  {ev.notas && <span className="cal-lista__evento-notas">{ev.notas}</span>}
+                </div>
+                {ev.importancia === 'alta' && <span className="cal-lista__evento-badge">!</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------
+// modal de detalhes do evento
+// ------------------------------------------------------------------
+function ModalEvento({ evento, onFechar, onEditar, onApagar, ICONES_TIPO, CORES_CADEIRA, MESES, DIAS_SEMANA }) {
+  const [confirmandoApagar, setConfirmandoApagar] = useState(false);
+  const [apagando, setApagando] = useState(false);
+
+  const data = evento.data instanceof Date ? evento.data : evento.data?.toDate?.();
+  const cor = CORES_CADEIRA[evento.cadeira] || '#b8963e';
+
+  async function apagarEvento() {
+    setApagando(true);
+    try {
+      const auth = getAuth();
+      const userId = auth.currentUser?.uid;
+      const { doc, deleteDoc } = await import('firebase/firestore');
+      await deleteDoc(doc(db, 'users', userId, 'eventos', evento.id));
+      onApagar();
+    } catch (e) {
+      setApagando(false);
+    }
+  }
+
+  return (
+    <div className="cal-modal-overlay" onClick={onFechar}>
+      <div className="cal-modal" onClick={(e) => e.stopPropagation()}>
+
+        <div className="cal-modal__topo" style={{ backgroundColor: cor }}>
+          <span className="cal-modal__icone">{ICONES_TIPO[evento.tipo] || '📌'}</span>
+          <button className="cal-modal__fechar" onClick={onFechar}>✕</button>
+        </div>
+
+        <div className="cal-modal__corpo">
+          <h3 className="cal-modal__titulo">{evento.titulo}</h3>
+
+          {data && (
+            <div className="cal-modal__linha">
+              <span className="cal-modal__label">📅 Data</span>
+              <span>{DIAS_SEMANA[data.getDay()]}, {data.getDate()} de {MESES[data.getMonth()]}</span>
+            </div>
+          )}
+
+          {evento.horaInicio && (
+            <div className="cal-modal__linha">
+              <span className="cal-modal__label">🕐 Hora</span>
+              <span>{evento.horaInicio} – {evento.horaFim}</span>
+            </div>
+          )}
+
+          {evento.cadeira && (
+            <div className="cal-modal__linha">
+              <span className="cal-modal__label">📚 Cadeira</span>
+              <span style={{ color: cor, fontWeight: 600 }}>{evento.cadeira.toUpperCase()}</span>
+            </div>
+          )}
+
+          {evento.tipo && (
+            <div className="cal-modal__linha">
+              <span className="cal-modal__label">🏷️ Tipo</span>
+              <span style={{ textTransform: 'capitalize' }}>{evento.tipo}</span>
+            </div>
+          )}
+
+          {evento.importancia && (
+            <div className="cal-modal__linha">
+              <span className="cal-modal__label">⚡ Importância</span>
+              <span className={`cal-modal__importancia ${evento.importancia}`}>
+                {evento.importancia.charAt(0).toUpperCase() + evento.importancia.slice(1)}
+              </span>
+            </div>
+          )}
+
+          {evento.estado && (
+            <div className="cal-modal__linha">
+              <span className="cal-modal__label">✅ Estado</span>
+              <span style={{ textTransform: 'capitalize' }}>{evento.estado}</span>
+            </div>
+          )}
+
+          {evento.notas && (
+            <div className="cal-modal__notas">
+              <span className="cal-modal__label">📝 Notas</span>
+              <p>{evento.notas}</p>
+            </div>
+          )}
+
+          <div className="cal-modal__acoes">
+            {!confirmandoApagar ? (
+              <>
+                <button className="cal-modal__btn-editar" onClick={() => onEditar(evento)}>
+                  ✏️ Editar
+                </button>
+                <button className="cal-modal__btn-apagar" onClick={() => setConfirmandoApagar(true)}>
+                  🗑️ Apagar
+                </button>
+              </>
+            ) : (
+              <div className="cal-modal__confirmar">
+                <p>Tens a certeza que queres apagar este evento?</p>
+                <div className="cal-modal__confirmar-btns">
+                  <button className="cal-modal__btn-cancelar" onClick={() => setConfirmandoApagar(false)}>
+                    Cancelar
+                  </button>
+                  <button
+                    className="cal-modal__btn-confirmar"
+                    onClick={apagarEvento}
+                    disabled={apagando}
+                  >
+                    {apagando ? 'A apagar...' : 'Apagar'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+}

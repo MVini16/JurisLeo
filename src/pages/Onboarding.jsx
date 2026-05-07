@@ -234,7 +234,7 @@ function EasterEgg({ fase, setFase, avancar }) {
       ]
     },
     4: {
-      texto: 'AAAAA! Então és tu a tal princesa encantada de quem ele me falou! 👸⚖️\n\nEle disse que ias precisar de ajuda com a faculdade… Não te preocupes, estou aqui para isso!\n\nVamos fazer de ti a melhor advogada de Lisboa? 🏛️',
+      texto: 'AAAAA! Então és tu a tal princesa encantada de quem ele me falou! 👸⚖️\n\nEle disse que ias precisar de ajuda com a faculdade… Não te preocupes, estou aqui para isso!\n\nVamos fazer de ti a melhor advogada de Portugal? 🏛️',
       botoes: [{ label: 'Vamos a isso! 🚀', acao: () => { setFase(5); avancar() } }]
     },
   }

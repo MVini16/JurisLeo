@@ -123,7 +123,7 @@ function NavBar({ children }) {
     <div className="navbar-layout">
 
       {/* sidebar — só visível no desktop */}
-      <aside className="sidebar">
+      <aside className="sidebar no-print">
         <div className="sidebar-logo">
           <span>⚖️</span>
           <span className="sidebar-logo-texto">JurisLeo</span>
@@ -158,18 +158,22 @@ function NavBar({ children }) {
         {children}
       </main>
 
-      {ajuda && <BotaoAjuda titulo={ajuda.titulo} texto={ajuda.texto} pontos={ajuda.pontos} />}
+      {ajuda && (
+        <div className="no-print">
+          <BotaoAjuda titulo={ajuda.titulo} texto={ajuda.texto} pontos={ajuda.pontos} />
+        </div>
+      )}
 
       {/* overlay escuro quando o menu + está aberto */}
       {menuAberto && (
         <div
-          className="menu-overlay"
+          className="menu-overlay no-print"
           onClick={() => setMenuAberto(false)}
         />
       )}
 
       {/* menu + expandido — itens a aparecerem em leque */}
-      <div className={`menu-mais ${menuAberto ? 'aberto' : ''}`}>
+      <div className={`menu-mais no-print ${menuAberto ? 'aberto' : ''}`}>
         {itensMais.map((item, i) => (
           <button
             key={i}
@@ -188,13 +192,13 @@ function NavBar({ children }) {
 
       {/* aviso simples para acções ainda não construídas */}
       {avisoEmBreve && (
-        <div className="menu-aviso-em-breve">
+        <div className="menu-aviso-em-breve no-print">
           {avisoEmBreve} — ainda a caminho. Em breve por aqui! 🚧
         </div>
       )}
 
       {/* tab bar — só visível no mobile */}
-      <nav className="tabbar">
+      <nav className="tabbar no-print">
         <div className="tabbar-wrapper">
 
           {/* slider animado por baixo do item activo */}

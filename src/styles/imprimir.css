@@ -1,0 +1,16 @@
+/* estilos para impressão / exportação em pdf — esconde tudo o que é
+   "chrome" da app (navegação, botões) e deixa só o conteúdo */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .navbar-conteudo {
+    padding: 0 !important;
+  }
+}

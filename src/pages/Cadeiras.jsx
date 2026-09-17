@@ -25,8 +25,11 @@ export default function Cadeiras() {
   return (
     <div className={`cadeiras-pagina ${darkMode ? 'dark' : ''}`}>
       <header className="cadeiras-header">
-        <h1 className="cadeiras-titulo">Cadeiras</h1>
-        <span className="cadeiras-subtitulo">1.º semestre · Turma A</span>
+        <div>
+          <h1 className="cadeiras-titulo">Cadeiras</h1>
+          <span className="cadeiras-subtitulo">1.º semestre · Turma A</span>
+        </div>
+        <button className="cadeiras-btn-imprimir no-print" onClick={() => window.print()}>🖨️ Imprimir</button>
       </header>
 
       {loading && <p className="cadeiras-loading">A carregar cadeiras...</p>}

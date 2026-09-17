@@ -6,6 +6,7 @@ import { getAuth } from 'firebase/auth';
 import { db } from '../services/firebase.js';
 import { logout } from '../services/auth.js';
 import { limparCadeirasAntigas, seedCadeiras } from '../services/initFirestore.js';
+import { exportarDadosComoFicheiro } from '../services/exportar.js';
 import { useTheme } from '../context/useTheme.js';
 import './Perfil.css';
 
@@ -16,6 +17,7 @@ export default function Perfil() {
   const [aSair, setASair] = useState(false);
   const [aRepor, setARepor] = useState(false);
   const [reposto, setReposto] = useState(false);
+  const [aExportar, setAExportar] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
@@ -53,6 +55,18 @@ export default function Perfil() {
     navigate('/dashboard');
   }
 
+  // descarrega uma cópia de segurança de todos os dados, em json
+  async function exportarDados() {
+    const userId = getAuth().currentUser?.uid;
+    if (!userId) return;
+    setAExportar(true);
+    try {
+      await exportarDadosComoFicheiro(userId);
+    } finally {
+      setAExportar(false);
+    }
+  }
+
   const email = getAuth().currentUser?.email;
 
   return (
@@ -81,6 +95,16 @@ export default function Perfil() {
           </button>
         </div>
         <button className="perfil-btn-tutorial" onClick={reverTutorial}>Rever o tutorial</button>
+      </section>
+
+      <section className="perfil-seccao">
+        <h2 className="perfil-seccao__titulo">Os teus dados</h2>
+        <p className="perfil-manutencao-texto">
+          Descarrega uma cópia de segurança de tudo — cadeiras, notas, faltas, anotações, casos e mais — num ficheiro.
+        </p>
+        <button className="perfil-btn-reparar" onClick={exportarDados} disabled={aExportar}>
+          {aExportar ? 'A preparar...' : '⬇ Exportar os meus dados'}
+        </button>
       </section>
 
       <section className="perfil-seccao">

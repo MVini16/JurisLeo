@@ -46,21 +46,21 @@ export async function initializeUserFirestore(userId) {
       aulasTeoricasPrevistas: cadeira.aulasTeoricasPrevistas,
     });
 
-    // faltas — limite prático a mostrar: 7 faltas injustificadas no semestre
-    // (ver secção 5.4.1: ceil(30/4) - 1 = 7)
+    // faltas — campos de entrada do motor de faltas (src/services/faltas.js)
     await setDoc(doc(cadeiraRef, "faltas", "dados"), {
-      teoricas: 0,
-      praticas: 0,
-      limite: 7,
+      aulasPraticasLecionadas: 0,
+      faltasInjustificadas: 0,
+      faltasJustificadas: 0,
     });
 
-    // avaliação
+    // avaliação — campos de entrada do motor de avaliação (src/services/avaliacao.js)
     await setDoc(doc(cadeiraRef, "avaliacao", "dados"), {
-      notaFrequencia: null,
-      notaParticipacao: null,
-      notaFinal: null,
-      metodoAtivo: cadeira.metodo,
-      status: "em curso",
+      provaEscrita: null,
+      outrosElementos: null,
+      exameEscrito: null,
+      exameOral: null,
+      exameRecurso: null,
+      melhoriaOral: null,
     });
   }
 }

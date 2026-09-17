@@ -1,0 +1,172 @@
+.cadeiras-pagina {
+  min-height: 100vh;
+  padding: 28px 24px 100px;
+  max-width: 720px;
+  margin: 0 auto;
+  font-family: 'Lato', sans-serif;
+  color: var(--text-light);
+  transition: color 0.4s ease;
+}
+
+.cadeiras-pagina.dark {
+  color: var(--text-dark);
+}
+
+.cadeiras-header {
+  margin-bottom: 24px;
+}
+
+.cadeiras-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--burgundy);
+}
+
+.cadeiras-pagina.dark .cadeiras-titulo {
+  color: var(--gold);
+}
+
+.cadeiras-subtitulo {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.55;
+}
+
+.cadeiras-loading,
+.cadeiras-vazio {
+  opacity: 0.5;
+  font-style: italic;
+  padding: 32px 0;
+}
+
+.cadeiras-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cartao-cadeira {
+  display: flex;
+  text-align: left;
+  border: none;
+  background: rgba(107, 15, 26, 0.03);
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.cadeiras-pagina.dark .cartao-cadeira {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.cartao-cadeira:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.cartao-cadeira__barra {
+  width: 5px;
+  flex-shrink: 0;
+}
+
+.cartao-cadeira__corpo {
+  padding: 16px 18px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cartao-cadeira__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.cartao-cadeira__abrev {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cartao-cadeira__tag {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: rgba(107, 15, 26, 0.08);
+  opacity: 0.7;
+}
+
+.cadeiras-pagina.dark .cartao-cadeira__tag {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.cartao-cadeira__nome {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.cartao-cadeira__regente {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  margin-bottom: 12px;
+}
+
+.cartao-cadeira__rodape {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.chip--aprovada { background: rgba(46, 125, 50, 0.15); color: #2e7d32; }
+.chip--excluida { background: rgba(211, 47, 47, 0.15); color: #d32f2f; }
+.chip--admitidaEscrito,
+.chip--admitidaOral { background: rgba(201, 168, 76, 0.2); color: #9a7a1e; }
+.chip--passaMetodoB { background: rgba(107, 15, 26, 0.12); color: var(--burgundy); }
+.chip--semDados { background: rgba(120, 120, 120, 0.15); color: #777; }
+
+.chip-semaforo {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chip-semaforo::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chip-semaforo--verde { background: rgba(46, 125, 50, 0.1); color: #2e7d32; }
+.chip-semaforo--verde::before { background: #2e7d32; }
+.chip-semaforo--amarelo { background: rgba(201, 168, 76, 0.15); color: #9a7a1e; }
+.chip-semaforo--amarelo::before { background: #c9a227; }
+.chip-semaforo--vermelho { background: rgba(211, 47, 47, 0.12); color: #d32f2f; }
+.chip-semaforo--vermelho::before { background: #d32f2f; }
+
+@media (min-width: 640px) {
+  .cadeiras-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

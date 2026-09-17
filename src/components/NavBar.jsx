@@ -81,9 +81,9 @@ const itensMais = [
   { label: 'Nova Tarefa', icon: '✅', cor: '#7C3AED', acao: 'navegar', destino: '/tarefas' },
   { label: 'Nova Anotação', icon: '📝', cor: '#1E3A5F', acao: 'em-breve' },
   { label: 'Nova Frequência', icon: '📅', cor: '#6B0F1A', acao: 'frequencia' },
-  { label: 'Oral de Melhoria', icon: '🗣️', cor: '#C9A84C', acao: 'em-breve' },
-  { label: 'Registar Falta', icon: '❌', cor: '#EC4899', acao: 'em-breve' },
-  { label: 'Lançar Nota', icon: '📊', cor: '#EA580C', acao: 'em-breve' },
+  { label: 'Oral de Melhoria', icon: '🗣️', cor: '#C9A84C', acao: 'navegar', destino: '/cadeiras' },
+  { label: 'Registar Falta', icon: '❌', cor: '#EC4899', acao: 'navegar', destino: '/cadeiras' },
+  { label: 'Lançar Nota', icon: '📊', cor: '#EA580C', acao: 'navegar', destino: '/cadeiras' },
 ]
 
 // navBar envolve o conteúdo das páginas principais

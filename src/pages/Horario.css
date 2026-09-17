@@ -1,0 +1,169 @@
+.horario-pagina {
+  min-height: 100vh;
+  padding: 24px 16px 100px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Lato', sans-serif;
+  color: var(--text-light);
+  transition: color 0.4s ease;
+  overflow-x: auto;
+}
+
+.horario-pagina.dark {
+  color: var(--text-dark);
+}
+
+.horario-header {
+  margin-bottom: 20px;
+  padding: 0 8px;
+}
+
+.horario-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--burgundy);
+}
+
+.horario-pagina.dark .horario-titulo {
+  color: var(--gold);
+}
+
+.horario-subtitulo {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.5;
+}
+
+.horario-grid {
+  min-width: 640px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(107, 15, 26, 0.1);
+}
+
+.horario-pagina.dark .horario-grid {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.horario-grid__cabecalho,
+.horario-grid__linha {
+  display: grid;
+  grid-template-columns: 70px repeat(5, 1fr);
+}
+
+.horario-grid__cabecalho {
+  background: rgba(107, 15, 26, 0.06);
+}
+
+.horario-pagina.dark .horario-grid__cabecalho {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.horario-grid__canto {
+  border-right: 1px solid rgba(107, 15, 26, 0.08);
+}
+
+.horario-grid__dia {
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+  border-right: 1px solid rgba(107, 15, 26, 0.08);
+}
+
+.horario-pagina.dark .horario-grid__dia { border-right-color: rgba(255, 255, 255, 0.08); }
+
+.horario-grid__dia.hoje {
+  opacity: 1;
+  color: var(--burgundy);
+  background: rgba(201, 168, 76, 0.12);
+}
+
+.horario-pagina.dark .horario-grid__dia.hoje { color: var(--gold); }
+
+.horario-grid__linha {
+  border-top: 1px solid rgba(107, 15, 26, 0.08);
+}
+
+.horario-pagina.dark .horario-grid__linha { border-top-color: rgba(255, 255, 255, 0.08); }
+
+.horario-grid__tempo {
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid rgba(107, 15, 26, 0.08);
+  gap: 2px;
+}
+
+.horario-pagina.dark .horario-grid__tempo { border-right-color: rgba(255, 255, 255, 0.08); }
+
+.horario-grid__hora {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.horario-grid__hora-fim {
+  font-size: 0.65rem;
+  opacity: 0.5;
+}
+
+.horario-grid__celula {
+  padding: 6px;
+  border-right: 1px solid rgba(107, 15, 26, 0.06);
+  min-height: 64px;
+  display: flex;
+}
+
+.horario-pagina.dark .horario-grid__celula { border-right-color: rgba(255, 255, 255, 0.06); }
+
+.horario-grid__celula.hoje {
+  background: rgba(201, 168, 76, 0.05);
+}
+
+.horario-aula {
+  flex: 1;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--cor) 15%, transparent);
+  border-left: 3px solid var(--cor);
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.horario-aula.em-curso {
+  box-shadow: 0 0 0 2px var(--cor);
+  transform: scale(1.02);
+}
+
+.horario-aula__abrev {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--cor);
+}
+
+.horario-aula__tipo {
+  font-size: 0.65rem;
+  opacity: 0.7;
+}
+
+.horario-aula__sala {
+  font-size: 0.62rem;
+  opacity: 0.5;
+}
+
+.horario-nota {
+  margin-top: 20px;
+  font-size: 0.78rem;
+  opacity: 0.5;
+  text-align: center;
+  padding: 0 16px;
+}

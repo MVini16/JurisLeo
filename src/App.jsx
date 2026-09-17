@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard'
 // páginas novas
 import Horario from './pages/Horario'
 import Cadeiras from './pages/Cadeiras'
+import Cadeira from './pages/Cadeira'
 import Tarefas from './pages/Tarefas'
 import Calendario from './pages/Calendario'
 import Perfil from './pages/Perfil'
@@ -27,6 +28,7 @@ function App() {
         <Route path="/dashboard" element={<NavBar><Dashboard /></NavBar>} />
         <Route path="/horario" element={<NavBar><Horario /></NavBar>} />
         <Route path="/cadeiras" element={<NavBar><Cadeiras /></NavBar>} />
+        <Route path="/cadeiras/:id" element={<NavBar><Cadeira /></NavBar>} />
         <Route path="/tarefas" element={<NavBar><Tarefas /></NavBar>} />
         <Route path="/calendario" element={<NavBar><Calendario /></NavBar>} />
         <Route path="/perfil" element={<NavBar><Perfil /></NavBar>} />

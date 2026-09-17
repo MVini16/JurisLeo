@@ -1,0 +1,138 @@
+.perfil-pagina {
+  min-height: 100vh;
+  padding: 32px 24px 100px;
+  max-width: 480px;
+  margin: 0 auto;
+  font-family: 'Lato', sans-serif;
+  color: var(--text-light);
+  transition: color 0.4s ease;
+}
+
+.perfil-pagina.dark {
+  color: var(--text-dark);
+}
+
+.perfil-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.perfil-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--burgundy), var(--gold));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.perfil-nome {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.perfil-email {
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+
+.perfil-seccao {
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: rgba(107, 15, 26, 0.03);
+}
+
+.perfil-pagina.dark .perfil-seccao {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.perfil-seccao__titulo {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.5;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.perfil-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.perfil-linha__label {
+  font-size: 0.85rem;
+  opacity: 0.65;
+}
+
+.perfil-linha__valor {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.perfil-toggle {
+  width: 44px;
+  height: 26px;
+  border-radius: 20px;
+  border: none;
+  background: rgba(107, 15, 26, 0.15);
+  cursor: pointer;
+  position: relative;
+  transition: background 0.25s ease;
+}
+
+.perfil-toggle.ativo {
+  background: var(--gold);
+}
+
+.perfil-toggle__bolinha {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.25s ease;
+}
+
+.perfil-toggle.ativo .perfil-toggle__bolinha {
+  transform: translateX(18px);
+}
+
+.perfil-btn-sair {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: 1px solid rgba(211, 47, 47, 0.3);
+  background: rgba(211, 47, 47, 0.06);
+  color: #d32f2f;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 8px;
+  transition: background 0.2s ease;
+}
+
+.perfil-btn-sair:hover:not(:disabled) {
+  background: rgba(211, 47, 47, 0.12);
+}
+
+.perfil-btn-sair:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

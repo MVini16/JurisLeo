@@ -2,10 +2,12 @@
 import { doc, setDoc } from "firebase/firestore";
 // importa a ligação à base de dados
 import { db } from "./firebase.js";
+// importa as cadeiras reais do 2.º ano, s1
+import { cadeirasS1, dadosLeonor } from "../data/dadosLeonor.js";
 
 // função principal que cria toda a estrutura
 export async function initializeUserFirestore(userId) {
-  
+
   // referência ao documento do utilizador
   const userRef = doc(db, "users", userId);
 
@@ -13,9 +15,10 @@ export async function initializeUserFirestore(userId) {
   await setDoc(doc(userRef, "perfil", "dados"), {
     nome: "",
     curso: "Licenciatura em Direito",
-    ano: "1º Ano",
-    turma: "Turma A",
-    subturma: "Subturma 6",
+    ano: `${dadosLeonor.ano}º Ano`,
+    turma: `Turma ${dadosLeonor.turma === 'TA' ? 'A' : dadosLeonor.turma}`,
+    subturma: `Subturma ${dadosLeonor.subturma}`,
+    anoLetivo: dadosLeonor.anoLetivo,
     objetivos: [],
     criadoEm: new Date(),
   });
@@ -27,33 +30,28 @@ export async function initializeUserFirestore(userId) {
     emailNotificacoes: "",
   });
 
-  // lista das cadeiras com as cores definidas
-  const cadeiras = [
-    { id: "tgdc2", nome: "Teoria Geral Direito Civil II", cor: "roxo", prof: "Prof. Doutor António Barreto Menezes Cordeiro", ects: 0, metodo: "A" },
-    { id: "ied2", nome: "Introdução ao Estudo do Direito II", cor: "rosa", prof: "Prof. Doutor José Alberto Vieira", ects: 0, metodo: "A" },
-    { id: "dc2", nome: "Direito Constitucional II", cor: "azul", prof: "Prof. Doutor Paulo Otero", ects: 0, metodo: "A" },
-    { id: "hdp", nome: "História do Direito Português", cor: "laranja", prof: "Prof.ª Doutora Sílvia Alves", ects: 0, metodo: "A" },
-    { id: "hip", nome: "História das Ideias Políticas", cor: "amarelo", prof: "Prof.ª Doutora Susana Videira", ects: 0, metodo: "A" },
-  ];
-
   // cria cada cadeira com as suas sub-colecções
-  for (const cadeira of cadeiras) {
+  for (const cadeira of cadeirasS1) {
     const cadeiraRef = doc(userRef, "cadeiras", cadeira.id);
 
     // info da cadeira
     await setDoc(cadeiraRef, {
       nome: cadeira.nome,
+      abrev: cadeira.abrev,
       cor: cadeira.cor,
-      prof: cadeira.prof,
-      ects: cadeira.ects,
+      regente: cadeira.regente,
       metodo: cadeira.metodo,
+      optativa: cadeira.optativa,
+      aulasPraticasPrevistas: cadeira.aulasPraticasPrevistas,
+      aulasTeoricasPrevistas: cadeira.aulasTeoricasPrevistas,
     });
 
-    // faltas
+    // faltas — limite prático a mostrar: 7 faltas injustificadas no semestre
+    // (ver secção 5.4.1: ceil(30/4) - 1 = 7)
     await setDoc(doc(cadeiraRef, "faltas", "dados"), {
       teoricas: 0,
       praticas: 0,
-      limite: 0,
+      limite: 7,
     });
 
     // avaliação
@@ -61,10 +59,8 @@ export async function initializeUserFirestore(userId) {
       notaFrequencia: null,
       notaParticipacao: null,
       notaFinal: null,
-      metodoAtivo: "A",
+      metodoAtivo: cadeira.metodo,
       status: "em curso",
     });
   }
-
-  console.log("estrutura do firestore criada com sucesso!");
 }

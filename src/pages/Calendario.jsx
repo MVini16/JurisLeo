@@ -1,9 +1,10 @@
 // página principal do calendário
 import { useState, useRef, useEffect } from 'react';
-import { db } from '../firebase.js';
+import { db } from '../services/firebase.js';
 import { getAuth } from 'firebase/auth';
 import { useCalendario } from '../hooks/useCalendario.js';
 import ModalCriarEvento from '../components/ModalCriarEvento.jsx';
+import { coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js';
 import './Calendario.css';
 
 const MESES = [
@@ -13,13 +14,7 @@ const MESES = [
 const DIAS_SEMANA = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
 const DIAS_SEMANA_CURTO = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-const CORES_CADEIRA = {
-  tgdc2: '#9b59b6',
-  ied2:  '#e91e8c',
-  dc2:   '#3949ab',
-  hdp:   '#e67e22',
-  hip:   '#f1c40f',
-};
+const CORES_CADEIRA = coresCadeiras;
 
 const ICONES_TIPO = {
   aula:       '📚',
@@ -625,7 +620,7 @@ function ModalEvento({ evento, onFechar, onEditar, onApagar, ICONES_TIPO, CORES_
       const { doc, deleteDoc } = await import('firebase/firestore');
       await deleteDoc(doc(db, 'users', userId, 'eventos', evento.id));
       onApagar();
-    } catch (e) { setApagando(false); }
+    } catch { setApagando(false); }
   }
 
   return (
@@ -639,7 +634,7 @@ function ModalEvento({ evento, onFechar, onEditar, onApagar, ICONES_TIPO, CORES_
           <h3 className="cal-modal__titulo">{evento.titulo}</h3>
           {data && <div className="cal-modal__linha"><span className="cal-modal__label">📅 Data</span><span>{DIAS_SEMANA[data.getDay()]}, {data.getDate()} de {MESES[data.getMonth()]}</span></div>}
           {evento.horaInicio && <div className="cal-modal__linha"><span className="cal-modal__label">🕐 Hora</span><span>{evento.horaInicio} – {evento.horaFim}</span></div>}
-          {evento.cadeira && <div className="cal-modal__linha"><span className="cal-modal__label">📚 Cadeira</span><span style={{ color: cor, fontWeight: 600 }}>{evento.cadeira.toUpperCase()}</span></div>}
+          {evento.cadeira && <div className="cal-modal__linha"><span className="cal-modal__label">📚 Cadeira</span><span style={{ color: cor, fontWeight: 600 }}>{nomeCurtoCadeira(evento.cadeira)}</span></div>}
           {evento.tipo && <div className="cal-modal__linha"><span className="cal-modal__label">🏷️ Tipo</span><span style={{ textTransform: 'capitalize' }}>{evento.tipo}</span></div>}
           {evento.importancia && <div className="cal-modal__linha"><span className="cal-modal__label">⚡ Importância</span><span className={`cal-modal__importancia ${evento.importancia}`}>{evento.importancia.charAt(0).toUpperCase() + evento.importancia.slice(1)}</span></div>}
           {evento.estado && <div className="cal-modal__linha"><span className="cal-modal__label">✅ Estado</span><span style={{ textTransform: 'capitalize' }}>{evento.estado}</span></div>}

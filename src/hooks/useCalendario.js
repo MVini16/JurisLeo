@@ -1,6 +1,6 @@
 // hook personalizado que vai buscar os dados do calendário ao firestore
 import { useState, useEffect } from 'react';
-import { db } from '../firebase.js';
+import { db } from '../services/firebase.js';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 

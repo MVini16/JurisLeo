@@ -3,10 +3,10 @@ import { useState } from 'react'
 // importa a navegação
 import { useNavigate } from 'react-router-dom'
 // importa as funções de autenticação
-import { login, registar } from '../auth.js'
+import { login, registar } from '../services/auth.js'
 // importa o firestore para verificar o onboarding
 import { doc, getDoc } from 'firebase/firestore'
-import { db } from '../firebase.js'
+import { db } from '../services/firebase.js'
 // importa o css
 import './Login.css'
 

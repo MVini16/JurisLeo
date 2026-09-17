@@ -5,7 +5,7 @@ import { auth } from "./firebase.js";
 // importa a função que cria a estrutura do firestore
 import { initializeUserFirestore } from "./initFirestore.js";
 // importa a função que cria a estrutura do calendário
-import { initCalendario } from "./services/initCalendario.js";
+import { initCalendario } from "./initCalendario.js";
 
 // função de registo — cria conta nova
 export async function registar(email, password) {

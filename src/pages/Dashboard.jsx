@@ -3,15 +3,10 @@ import { useEffect, useState } from 'react'
 import './Dashboard.css'
 import { useTheme } from '../context/useTheme.js'
 import { useDashboard } from '../hooks/useDashboard.js'
+import { coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js'
 
 // cores por cadeira — usadas nos dots das aulas
-const CORES_CADEIRA = {
-  tgdc2: '#9b59b6',
-  ied2:  '#e91e8c',
-  dc2:   '#3949ab',
-  hdp:   '#e67e22',
-  hip:   '#f1c40f',
-};
+const CORES_CADEIRA = coresCadeiras;
 
 // frases motivacionais — muda automaticamente com o dia do ano
 const frases = [
@@ -161,7 +156,7 @@ function Dashboard() {
                 <div className="countdown-info">
                   {/* nome da cadeira da frequência */}
                   <p className="countdown-cadeira">
-                    {proximaFrequencia.cadeira?.toUpperCase() || proximaFrequencia.titulo}
+                    {proximaFrequencia.cadeira ? nomeCurtoCadeira(proximaFrequencia.cadeira) : proximaFrequencia.titulo}
                   </p>
                   <p className="countdown-data">{dataFrequenciaFormatada}</p>
                   <div className="countdown-barra-container">
@@ -196,7 +191,7 @@ function Dashboard() {
                       style={{ background: CORES_CADEIRA[aula.cadeira] || '#b8963e' }}
                     />
                     <span className="aula-hora">{aula.horaInicio}</span>
-                    <span className="aula-cadeira">{aula.titulo || aula.cadeira?.toUpperCase()}</span>
+                    <span className="aula-cadeira">{aula.titulo || nomeCurtoCadeira(aula.cadeira)}</span>
                   </li>
                 ))}
               </ul>

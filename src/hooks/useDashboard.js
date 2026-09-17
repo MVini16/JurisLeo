@@ -1,6 +1,6 @@
 // hook que vai buscar todos os dados do dashboard ao firestore
 import { useState, useEffect } from 'react';
-import { db } from '../firebase.js';
+import { db } from '../services/firebase.js';
 import { doc, onSnapshot, collection } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 

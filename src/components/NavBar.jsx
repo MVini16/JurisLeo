@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import ModalCriarEvento from './ModalCriarEvento.jsx'
 import './NavBar.css'
 
 // itens da navegação principal
@@ -74,13 +75,15 @@ const itens = [
 ]
 
 // itens do menu + (adicionar rápido)
+// acao: 'navegar' vai para uma rota (com estado a pedir para abrir o modal certo),
+// 'frequencia' abre o modal de evento já aqui, 'em-breve' ainda não tem funcionalidade própria
 const itensMais = [
-  { label: 'Nova Tarefa', icon: '✅', cor: '#7C3AED' },
-  { label: 'Nova Anotação', icon: '📝', cor: '#1E3A5F' },
-  { label: 'Nova Frequência', icon: '📅', cor: '#6B0F1A' },
-  { label: 'Oral de Melhoria', icon: '🗣️', cor: '#C9A84C' },
-  { label: 'Registar Falta', icon: '❌', cor: '#EC4899' },
-  { label: 'Lançar Nota', icon: '📊', cor: '#EA580C' },
+  { label: 'Nova Tarefa', icon: '✅', cor: '#7C3AED', acao: 'navegar', destino: '/tarefas' },
+  { label: 'Nova Anotação', icon: '📝', cor: '#1E3A5F', acao: 'em-breve' },
+  { label: 'Nova Frequência', icon: '📅', cor: '#6B0F1A', acao: 'frequencia' },
+  { label: 'Oral de Melhoria', icon: '🗣️', cor: '#C9A84C', acao: 'em-breve' },
+  { label: 'Registar Falta', icon: '❌', cor: '#EC4899', acao: 'em-breve' },
+  { label: 'Lançar Nota', icon: '📊', cor: '#EA580C', acao: 'em-breve' },
 ]
 
 // navBar envolve o conteúdo das páginas principais
@@ -88,9 +91,25 @@ function NavBar({ children }) {
   const navigate = useNavigate()
   const location = useLocation()
   const [menuAberto, setMenuAberto] = useState(false)
+  const [modalFrequenciaAberto, setModalFrequenciaAberto] = useState(false)
+  const [avisoEmBreve, setAvisoEmBreve] = useState(null)
 
   // índice do item activo para o slider
   const indiceActivo = itens.findIndex(i => i.path === location.pathname)
+
+  // trata o clique num item do menu + consoante a sua acção
+  function clicarItemMais(item) {
+    setMenuAberto(false)
+    if (item.acao === 'navegar') {
+      navigate(item.destino, { state: { abrirModal: true } })
+    } else if (item.acao === 'frequencia') {
+      setModalFrequenciaAberto(true)
+    } else {
+      // funcionalidade ainda não construída — avisa em vez de fingir que fez algo
+      setAvisoEmBreve(item.label)
+      setTimeout(() => setAvisoEmBreve(null), 2200)
+    }
+  }
 
   return (
     <div className="navbar-layout">
@@ -148,13 +167,20 @@ function NavBar({ children }) {
               '--delay': `${i * 0.05}s`,
               '--cor': item.cor,
             }}
-            onClick={() => setMenuAberto(false)}
+            onClick={() => clicarItemMais(item)}
           >
             <span className="menu-mais-icon">{item.icon}</span>
             <span className="menu-mais-label">{item.label}</span>
           </button>
         ))}
       </div>
+
+      {/* aviso simples para acções ainda não construídas */}
+      {avisoEmBreve && (
+        <div className="menu-aviso-em-breve">
+          {avisoEmBreve} — ainda a caminho. Em breve por aqui! 🚧
+        </div>
+      )}
 
       {/* tab bar — só visível no mobile */}
       <nav className="tabbar">
@@ -186,6 +212,14 @@ function NavBar({ children }) {
           </button>
         </div>
       </nav>
+
+      {/* modal de nova frequência, aberto a partir do menu + */}
+      {modalFrequenciaAberto && (
+        <ModalCriarEvento
+          tipoInicial="frequencia"
+          onFechar={() => setModalFrequenciaAberto(false)}
+        />
+      )}
 
     </div>
   )

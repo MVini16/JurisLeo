@@ -1,27 +1,16 @@
-// modal para criar um novo evento no calendário
+// modal para criar ou editar um evento no calendário
 import { useState, useEffect } from 'react';
-import { db } from '../firebase.js';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { db } from '../services/firebase.js';
+import { collection, addDoc, updateDoc, doc, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { cadeirasS1, coresCadeiras } from '../data/dadosLeonor.js';
 import './ModalCriarEvento.css';
 
 // cores por cadeira
-const CORES_CADEIRA = {
-  tgdc2: '#9b59b6',
-  ied2:  '#e91e8c',
-  dc2:   '#3949ab',
-  hdp:   '#e67e22',
-  hip:   '#f1c40f',
-};
+const CORES_CADEIRA = coresCadeiras;
 
 // cadeiras disponíveis
-const CADEIRAS = [
-  { id: 'tgdc2', nome: 'TGDC II' },
-  { id: 'ied2',  nome: 'IED II' },
-  { id: 'dc2',   nome: 'DC II' },
-  { id: 'hdp',   nome: 'HDP' },
-  { id: 'hip',   nome: 'HIP' },
-];
+const CADEIRAS = cadeirasS1.map((c) => ({ id: c.id, nome: c.abrev }));
 
 // tipos de evento
 const TIPOS = [
@@ -32,19 +21,46 @@ const TIPOS = [
   { id: 'outro',      nome: 'Outro',       icone: '📌' },
 ];
 
-export default function ModalCriarEvento({ onFechar, dataInicial }) {
-  // estado do formulário
-  const [form, setForm] = useState({
-    titulo:      '',
-    data:        dataInicial ? formatarData(dataInicial) : formatarData(new Date()),
-    horaInicio:  '',
-    horaFim:     '',
-    tipo:        'aula',
-    cadeira:     'tgdc2',
-    notas:       '',
-    importancia: 'media',
-    estado:      'pendente',
-    contaFalta:  false,
+// formata uma data para o input date (yyyy-mm-dd)
+function formatarData(data) {
+  const d = new Date(data);
+  return d.toISOString().split('T')[0];
+}
+
+export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistente, tipoInicial }) {
+  const aEditar = !!eventoExistente;
+
+  // estado do formulário — se receber um evento existente, começa preenchido com os dados dele
+  const [form, setForm] = useState(() => {
+    if (eventoExistente) {
+      const dataEv = eventoExistente.data instanceof Date
+        ? eventoExistente.data
+        : eventoExistente.data?.toDate?.();
+      return {
+        titulo:      eventoExistente.titulo || '',
+        data:        dataEv ? formatarData(dataEv) : formatarData(new Date()),
+        horaInicio:  eventoExistente.horaInicio || '',
+        horaFim:     eventoExistente.horaFim || '',
+        tipo:        eventoExistente.tipo || 'aula',
+        cadeira:     eventoExistente.cadeira || CADEIRAS[0]?.id,
+        notas:       eventoExistente.notas || '',
+        importancia: eventoExistente.importancia || 'media',
+        estado:      eventoExistente.estado || 'pendente',
+        contaFalta:  eventoExistente.contaFalta || false,
+      };
+    }
+    return {
+      titulo:      '',
+      data:        dataInicial ? formatarData(dataInicial) : formatarData(new Date()),
+      horaInicio:  '',
+      horaFim:     '',
+      tipo:        tipoInicial || 'aula',
+      cadeira:     CADEIRAS[0]?.id,
+      notas:       '',
+      importancia: 'media',
+      estado:      'pendente',
+      contaFalta:  false,
+    };
   });
 
   // estados da animação
@@ -61,12 +77,6 @@ export default function ModalCriarEvento({ onFechar, dataInicial }) {
   // atualiza um campo do formulário
   function atualizar(campo, valor) {
     setForm((prev) => ({ ...prev, [campo]: valor }));
-  }
-
-  // formata uma data para o input date (yyyy-mm-dd)
-  function formatarData(data) {
-    const d = new Date(data);
-    return d.toISOString().split('T')[0];
   }
 
   // fecha o modal com animação de saída
@@ -98,7 +108,7 @@ export default function ModalCriarEvento({ onFechar, dataInicial }) {
       // converte a data para timestamp do firestore
       const dataObj = new Date(form.data + 'T' + (form.horaInicio || '00:00') + ':00');
 
-      await addDoc(collection(db, 'users', userId, 'eventos'), {
+      const dados = {
         titulo:      form.titulo.trim(),
         data:        Timestamp.fromDate(dataObj),
         horaInicio:  form.horaInicio,
@@ -109,7 +119,13 @@ export default function ModalCriarEvento({ onFechar, dataInicial }) {
         importancia: form.importancia,
         estado:      form.estado,
         contaFalta:  form.contaFalta,
-      });
+      };
+
+      if (aEditar) {
+        await updateDoc(doc(db, 'users', userId, 'eventos', eventoExistente.id), dados);
+      } else {
+        await addDoc(collection(db, 'users', userId, 'eventos'), dados);
+      }
 
       // animação de sucesso
       setGuardando(false);
@@ -118,7 +134,7 @@ export default function ModalCriarEvento({ onFechar, dataInicial }) {
         fechar();
       }, 1800);
 
-    } catch (e) {
+    } catch {
       setGuardando(false);
       setErro('Erro ao guardar. Tenta outra vez.');
     }
@@ -140,7 +156,7 @@ export default function ModalCriarEvento({ onFechar, dataInicial }) {
                 <path className="mce-sucesso__visto" d="M14 27 l8 8 l16-16" />
               </svg>
             </div>
-            <p className="mce-sucesso__texto">Evento guardado!</p>
+            <p className="mce-sucesso__texto">{aEditar ? 'Evento atualizado!' : 'Evento guardado!'}</p>
             <div className="mce-sucesso__particulas">
               {Array.from({ length: 12 }).map((_, i) => (
                 <span key={i} className="mce-sucesso__particula" style={{ '--i': i }} />
@@ -151,7 +167,7 @@ export default function ModalCriarEvento({ onFechar, dataInicial }) {
 
         {/* header do modal */}
         <div className="mce-header">
-          <h3 className="mce-titulo">Novo Evento</h3>
+          <h3 className="mce-titulo">{aEditar ? 'Editar Evento' : 'Novo Evento'}</h3>
           <button className="mce-fechar" onClick={fechar}>✕</button>
         </div>
 
@@ -309,7 +325,7 @@ export default function ModalCriarEvento({ onFechar, dataInicial }) {
             {guardando ? (
               <span className="mce-spinner" />
             ) : (
-              'Guardar Evento'
+              aEditar ? 'Guardar Alterações' : 'Guardar Evento'
             )}
           </button>
         </div>

@@ -1,27 +1,15 @@
 // página de tarefas da jurisleo
-import { useState, useEffect, useRef } from 'react';
-import { db } from '../firebase.js';
+import { useState, useEffect } from 'react';
+import { db } from '../services/firebase.js';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { useLocation } from 'react-router-dom';
+import { coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Tarefas.css';
 
-// cores por cadeira
-const CORES_CADEIRA = {
-  tgdc2: '#9b59b6',
-  ied2:  '#e91e8c',
-  dc2:   '#3949ab',
-  hdp:   '#e67e22',
-  hip:   '#f1c40f',
-};
-
-// nomes das cadeiras
-const NOMES_CADEIRA = {
-  tgdc2: 'TGDC II',
-  ied2:  'IED II',
-  dc2:   'DC II',
-  hdp:   'HDP',
-  hip:   'HIP',
-};
+// cores e nomes por cadeira
+const CORES_CADEIRA = coresCadeiras;
+const NOMES_CADEIRA = abrevCadeiras;
 
 // tipos de tarefa
 const TIPOS = [
@@ -81,9 +69,11 @@ function useTarefas() {
 
 export default function Tarefas() {
   const { tarefas, loading } = useTarefas();
+  const location = useLocation();
   const [filtro, setFiltro] = useState('todas'); // 'todas' ou id da cadeira
   const [agrupamento, setAgrupamento] = useState('cadeira'); // 'cadeira' ou 'prazo'
-  const [modalAberto, setModalAberto] = useState(false);
+  // abre logo o modal se vier do menu + com o pedido de nova tarefa
+  const [modalAberto, setModalAberto] = useState(!!location.state?.abrirModal);
   const [tarefaEditar, setTarefaEditar] = useState(null);
   const [visivel, setVisivel] = useState(false);
 
@@ -416,7 +406,7 @@ function ModalTarefa({ tarefaExistente, onFechar }) {
 
       setSucesso(true);
       setTimeout(onFechar, 900);
-    } catch (e) {
+    } catch {
       setGuardando(false);
     }
   }

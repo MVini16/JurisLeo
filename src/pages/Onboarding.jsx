@@ -1,22 +1,20 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { doc, setDoc } from 'firebase/firestore'
-import { db } from '../firebase.js'
+import { db } from '../services/firebase.js'
 import { getAuth } from 'firebase/auth'
+import { cadeirasS1 } from '../data/dadosLeonor.js'
+import { useTheme } from '../context/useTheme.js'
 import './Onboarding.css'
 
-// cadeiras pré-definidas da leonor
-const cadeirasPredefinidas = [
-  { id: 'tgdc2', nome: 'Teoria Geral Direito Civil II', cor: '#9b59b6' },
-  { id: 'ied2', nome: 'Introdução ao Estudo do Direito II', cor: '#e91e8c' },
-  { id: 'dc2', nome: 'Direito Constitucional II', cor: '#1a3a6b' },
-  { id: 'hdp', nome: 'História do Direito Português', cor: '#e67e22' },
-  { id: 'hip', nome: 'História das Ideias Políticas', cor: '#f1c40f' },
-]
+// cadeiras reais do 2.º ano, 1.º semestre
+const cadeirasPredefinidas = cadeirasS1.map((c) => ({ id: c.id, nome: c.nome, cor: c.cor }))
 
 function Onboarding() {
   const navigate = useNavigate()
   const auth = getAuth()
+  // usa o tema partilhado por toda a app, para a escolha se aplicar já
+  const { darkMode, toggleTheme } = useTheme()
 
   // ecrã atual (1 a 6)
   const [ecra, setEcra] = useState(1)
@@ -24,9 +22,8 @@ function Onboarding() {
   // dados recolhidos
   const [nome, setNome] = useState('')
   const [curso, setCurso] = useState('Licenciatura em Direito')
-  const [ano, setAno] = useState('1º Ano')
+  const [ano, setAno] = useState('2º Ano')
   const [cadeiras, setCadeiras] = useState(cadeirasPredefinidas.map(c => ({ ...c, ativa: true })))
-  const [tema, setTema] = useState('dark')
   const [notificacoes, setNotificacoes] = useState(true)
   const [notasAnteriores, setNotasAnteriores] = useState(false)
 
@@ -53,18 +50,19 @@ function Onboarding() {
       curso,
       ano,
       turma: 'Turma A',
-      subturma: 'Subturma 6',
+      subturma: 'Subturma 7',
       objetivos: [],
       onboardingFeito: true,
       criadoEm: new Date(),
     })
 
-    // guarda as configurações
+    // guarda as configurações — o tema já vai sendo sincronizado pelo ThemeContext,
+    // aqui só confirmamos o valor atual e as restantes preferências
     await setDoc(doc(userRef, 'configuracoes', 'dados'), {
-      tema,
+      tema: darkMode ? 'dark' : 'light',
       notificacoesAtivas: notificacoes,
       emailNotificacoes: '',
-    })
+    }, { merge: true })
 
     navigate('/dashboard')
   }
@@ -76,7 +74,7 @@ function Onboarding() {
       case 2: return <Ecra2 curso={curso} setCurso={setCurso} ano={ano} setAno={setAno} avancar={avancar} recuar={recuar} />
       case 3: return <Ecra3 nome={nome} cadeiras={cadeiras} setCadeiras={setCadeiras} avancar={avancar} recuar={recuar} easterEggFase={easterEggFase} setEasterEggFase={setEasterEggFase} />
       case 4: return <Ecra4 avancar={avancar} recuar={recuar} />
-      case 5: return <Ecra5 tema={tema} setTema={setTema} notificacoes={notificacoes} setNotificacoes={setNotificacoes} avancar={avancar} recuar={recuar} />
+      case 5: return <Ecra5 darkMode={darkMode} toggleTheme={toggleTheme} notificacoes={notificacoes} setNotificacoes={setNotificacoes} avancar={avancar} recuar={recuar} />
       case 6: return <Ecra6 notasAnteriores={notasAnteriores} setNotasAnteriores={setNotasAnteriores} terminar={terminar} recuar={recuar} />
       default: return null
     }
@@ -275,7 +273,7 @@ function Ecra4({ avancar, recuar }) {
 }
 
 // ── ecrã 5 — preferências ──
-function Ecra5({ tema, setTema, notificacoes, setNotificacoes, avancar, recuar }) {
+function Ecra5({ darkMode, toggleTheme, notificacoes, setNotificacoes, avancar, recuar }) {
   return (
     <div className="ob-ecra">
       <h1 className="ob-titulo">Preferências</h1>
@@ -285,12 +283,12 @@ function Ecra5({ tema, setTema, notificacoes, setNotificacoes, avancar, recuar }
         <span>Tema</span>
         <div className="ob-toggle-tema">
           <button
-            className={`ob-tema-btn ${tema === 'dark' ? 'ob-tema-ativo' : ''}`}
-            onClick={() => setTema('dark')}
+            className={`ob-tema-btn ${darkMode ? 'ob-tema-ativo' : ''}`}
+            onClick={() => { if (!darkMode) toggleTheme() }}
           >🌙 Escuro</button>
           <button
-            className={`ob-tema-btn ${tema === 'light' ? 'ob-tema-ativo' : ''}`}
-            onClick={() => setTema('light')}
+            className={`ob-tema-btn ${!darkMode ? 'ob-tema-ativo' : ''}`}
+            onClick={() => { if (darkMode) toggleTheme() }}
           >☀️ Claro</button>
         </div>
       </div>

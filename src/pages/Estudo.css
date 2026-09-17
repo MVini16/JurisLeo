@@ -139,6 +139,13 @@
   margin-bottom: 20px;
 }
 
+.estudo-resumo__mimo {
+  margin-top: 8px;
+  font-weight: 400;
+  color: inherit;
+  opacity: 0.85;
+}
+
 .estudo-historico {
   margin-top: 12px;
 }

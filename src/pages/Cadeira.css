@@ -178,6 +178,12 @@
   margin-top: 8px;
 }
 
+.cadeira-resultado__mimo {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(120, 120, 120, 0.15);
+}
+
 .cadeira-btn-guardar {
   width: 100%;
   padding: 12px;

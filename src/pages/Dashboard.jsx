@@ -6,28 +6,15 @@ import { useDashboard } from '../hooks/useDashboard.js'
 import { useTarefas } from '../hooks/useTarefas.js'
 import { coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js'
 import Tutorial from '../components/Tutorial.jsx'
+import { useFrase } from '../hooks/useFrase.js'
 
 // cores por cadeira — usadas nos dots das aulas
 const CORES_CADEIRA = coresCadeiras;
 
-// frases motivacionais — muda automaticamente com o dia do ano
-const frases = [
-  "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
-  "Não contes os dias, faz os dias contarem.",
-  "A disciplina é a ponte entre os objectivos e as conquistas.",
-  "Acredita no processo, mesmo quando o resultado ainda não se vê.",
-  "Cada página estudada é um passo mais perto do fim.",
-  "A lei não é apenas palavras — é o peso da razão.",
-  "Estudar direito é aprender a pensar com rigor e agir com justiça.",
-  "O direito é a arte do bom e do justo.",
-  "A justiça não é um destino, é um caminho.",
-  "Cada caso prático resolvido é uma vitória silenciosa.",
-];
-
-function getFraseDoDia() {
-  const inicio = new Date(new Date().getFullYear(), 0, 0);
-  const diaDoAno = Math.floor((new Date() - inicio) / 86400000);
-  return frases[diaDoAno % frases.length];
+// de madrugada o tom muda — o resto do dia usa o banco geral
+function getContextoFrase() {
+  const hora = new Date().getHours();
+  return (hora >= 23 || hora < 6) ? 'madrugada' : 'geral';
 }
 
 function getSaudacao() {
@@ -56,6 +43,8 @@ function Dashboard() {
     tutorialFeito,
     definirTutorialFeito,
   } = useDashboard();
+
+  const frase = useFrase(getContextoFrase());
 
   const { tarefas } = useTarefas();
   const tarefasPendentes = tarefas
@@ -129,7 +118,7 @@ function Dashboard() {
             {/* mostra o primeiro nome enquanto carrega, atualiza quando o firestore responde */}
             {getPrimeiroNome(nome)} <span className="saudacao-emoji">👋</span>
           </h1>
-          <p className="frase-do-dia">"{getFraseDoDia()}"</p>
+          {frase && <p className="frase-do-dia">"{frase}"</p>}
         </section>
 
         {/* grelha de cards */}

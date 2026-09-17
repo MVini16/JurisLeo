@@ -4,8 +4,11 @@ import { useTheme } from '../context/useTheme.js';
 import { useCronometro } from '../hooks/useCronometro.js';
 import { useSessoesEstudo } from '../hooks/useSessoesEstudo.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
+import MensagemCarinhosa from '../components/MensagemCarinhosa.jsx';
 import { cadeirasS1, coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js';
 import './Estudo.css';
+
+const MINUTOS_SESSAO_LONGA = 25;
 
 function formatarTempo(segundosTotais) {
   const m = Math.floor(segundosTotais / 60);
@@ -88,7 +91,12 @@ export default function Estudo() {
 
       {ultimoResumo && (
         <div className="estudo-resumo">
-          ✓ Sessão guardada: {ultimoResumo.minutos} min{ultimoResumo.pausasFeitas > 0 ? `, ${ultimoResumo.pausasFeitas} pausa${ultimoResumo.pausasFeitas === 1 ? '' : 's'}` : ''}
+          <p>✓ Sessão guardada: {ultimoResumo.minutos} min{ultimoResumo.pausasFeitas > 0 ? `, ${ultimoResumo.pausasFeitas} pausa${ultimoResumo.pausasFeitas === 1 ? '' : 's'}` : ''}</p>
+          {ultimoResumo.minutos >= MINUTOS_SESSAO_LONGA && (
+            <div className="estudo-resumo__mimo">
+              <MensagemCarinhosa contexto="sessaoLonga" />
+            </div>
+          )}
         </div>
       )}
 

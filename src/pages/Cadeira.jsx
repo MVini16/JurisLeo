@@ -6,6 +6,10 @@ import { useCadeira } from '../hooks/useCadeira.js';
 import { avaliarCadeira, calcularNotaAC } from '../services/avaliacao.js';
 import { estadoFaltas } from '../services/faltas.js';
 import { getCadeira } from '../data/dadosLeonor.js';
+import { escolherFrase } from '../hooks/useFrase.js';
+import Celebracao from '../components/Celebracao.jsx';
+import EcraConsolo from '../components/EcraConsolo.jsx';
+import MensagemCarinhosa from '../components/MensagemCarinhosa.jsx';
 import './Cadeira.css';
 
 const ROTULO_ESTADO = {
@@ -72,6 +76,8 @@ function SeccaoAvaliacao({ cadeira, infoBase, avaliacaoDados, guardarAvaliacao }
   }));
   const [guardando, setGuardando] = useState(false);
   const [guardado, setGuardado] = useState(false);
+  const [celebracaoAtiva, setCelebracaoAtiva] = useState(false);
+  const [consolo, setConsolo] = useState(null);
 
   const pesos = infoBase?.pesos || { provaEscrita: 0.5, outrosElementos: 0.5 };
   const provaEscritaNum = paraNumero(form.provaEscrita);
@@ -106,6 +112,12 @@ function SeccaoAvaliacao({ cadeira, infoBase, avaliacaoDados, guardarAvaliacao }
     });
     setGuardando(false);
     setGuardado(true);
+
+    if (resultado.estado === 'aprovada') {
+      setCelebracaoAtiva(true);
+    } else if (resultado.estado === 'excluida') {
+      setConsolo({ proximoPasso: resultado.proximoPasso, mensagem: escolherFrase('posNotaBaixa') });
+    }
   }
 
   const mostraEscrito = cadeira.metodo === 'B' || (notaAC != null && notaAC >= 10 && notaAC <= 11);
@@ -154,6 +166,13 @@ function SeccaoAvaliacao({ cadeira, infoBase, avaliacaoDados, guardarAvaliacao }
       <button className="cadeira-btn-guardar" onClick={guardar} disabled={guardando}>
         {guardando ? 'A guardar...' : guardado ? '✓ Guardado' : 'Guardar notas'}
       </button>
+
+      {celebracaoAtiva && (
+        <Celebracao nota={resultado.notaFinal} onTerminar={() => setCelebracaoAtiva(false)} />
+      )}
+      {consolo && (
+        <EcraConsolo proximoPasso={consolo.proximoPasso} mensagem={consolo.mensagem} onFechar={() => setConsolo(null)} />
+      )}
     </section>
   );
 }
@@ -204,6 +223,11 @@ function SeccaoFaltas({ cadeira, faltasDados, guardarFaltas }) {
         <div className={`cadeira-resultado cadeira-resultado--faltas cadeira-resultado--semaforo-${resultado.semaforo}`}>
           <p className="cadeira-resultado__explicacao">{resultado.explicacao}</p>
           {resultado.aviso && <p className="cadeira-resultado__aviso">💡 {resultado.aviso}</p>}
+          {resultado.semaforo !== 'verde' && (
+            <div className="cadeira-resultado__mimo">
+              <MensagemCarinhosa contexto="faltasApertadas" />
+            </div>
+          )}
         </div>
       )}
 

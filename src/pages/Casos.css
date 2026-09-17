@@ -1,0 +1,209 @@
+.casos-pagina {
+  min-height: 100vh;
+  padding: 24px 20px 100px;
+  max-width: 720px;
+  margin: 0 auto;
+  font-family: 'Lato', sans-serif;
+  color: var(--text-light);
+  transition: color 0.4s ease;
+}
+
+.casos-pagina.dark { color: var(--text-dark); }
+
+.casos-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.casos-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--burgundy);
+}
+
+.casos-pagina.dark .casos-titulo { color: var(--gold); }
+
+.casos-contador {
+  font-size: 0.75rem;
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.casos-btn-novo {
+  padding: 9px 18px;
+  border-radius: 20px;
+  border: none;
+  background: linear-gradient(135deg, var(--burgundy), var(--gold));
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.casos-duvidas {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(201, 168, 76, 0.1);
+  border: 1px solid rgba(201, 168, 76, 0.25);
+}
+
+.casos-duvidas__titulo {
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.casos-duvidas__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.casos-duvida-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  text-align: left;
+  border: none;
+  border-left: 3px solid var(--cor);
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+}
+
+.casos-pagina.dark .casos-duvida-item { background: rgba(255, 255, 255, 0.05); }
+
+.casos-duvida-item__cadeira {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--cor);
+  flex-shrink: 0;
+}
+
+.casos-duvida-item__texto {
+  font-size: 0.82rem;
+  opacity: 0.85;
+}
+
+.casos-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.casos-filtro-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(107, 15, 26, 0.15);
+  background: none;
+  color: inherit;
+  opacity: 0.6;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.casos-pagina.dark .casos-filtro-btn { border-color: rgba(255, 255, 255, 0.15); }
+
+.casos-filtro-btn.ativo {
+  opacity: 1;
+  background: var(--cor, var(--burgundy));
+  border-color: transparent;
+  color: #fff;
+}
+
+.casos-vazio {
+  text-align: center;
+  padding: 40px 0;
+  opacity: 0.5;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.casos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.caso-card {
+  text-align: left;
+  border: none;
+  border-left: 3px solid var(--cor);
+  border-radius: 12px;
+  background: rgba(107, 15, 26, 0.03);
+  padding: 14px 16px;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.casos-pagina.dark .caso-card { background: rgba(255, 255, 255, 0.04); }
+
+.caso-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.caso-card__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.caso-card__cadeira {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cor);
+}
+
+.caso-card__estado {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 20px;
+  background: rgba(120, 120, 120, 0.15);
+}
+
+.caso-card__estado--resolvido { background: rgba(46, 125, 50, 0.15); color: #2e7d32; }
+.caso-card__estado--corrigido { background: rgba(61, 90, 128, 0.15); color: #3d5a80; }
+.caso-card__estado--duvida { background: rgba(201, 168, 76, 0.2); color: #9a7a1e; }
+
+.caso-card__titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+
+.caso-card__snippet {
+  font-size: 0.82rem;
+  opacity: 0.6;
+  line-height: 1.4;
+  margin-bottom: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.caso-card__duvidas {
+  font-size: 0.7rem;
+  opacity: 0.7;
+}

@@ -150,6 +150,15 @@ export const ajudaPorRota = {
       'Toca num resultado para ires direta a essa página.',
     ],
   },
+  '/flashcards': {
+    titulo: 'Flashcards',
+    texto: 'Cartões de pergunta e resposta, com repetição espaçada — os que erraste voltam mais cedo, os que sabes bem voltam mais tarde.',
+    pontos: [
+      '"Começar revisão" só mostra os que já estão prontos a rever hoje.',
+      'Toca no cartão para o virares e veres a resposta.',
+      'Os pontinhos mostram o nível — mais pontos, mais bem sabido.',
+    ],
+  },
 };
 
 // resolve o tópico de ajuda certo para um pathname, incluindo rotas dinâmicas

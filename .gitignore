@@ -26,3 +26,6 @@ dist-ssr
 
 # cache local do firebase cli
 .firebase
+
+# repos externos que apareceram na raiz do projeto (não são deste projeto)
+/repos/

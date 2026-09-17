@@ -41,4 +41,9 @@ export default defineConfig({
       },
     }),
   ],
+  test: {
+    // restringe o vitest ao código do projeto — sem isto ele também percorre
+    // pastas fora do projeto (ex: repos/ de outras ferramentas) à procura de testes
+    include: ['src/**/*.test.{js,jsx}'],
+  },
 })

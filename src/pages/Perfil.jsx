@@ -95,6 +95,7 @@ export default function Perfil() {
           </button>
         </div>
         <button className="perfil-btn-tutorial" onClick={reverTutorial}>Rever o tutorial</button>
+        <button className="perfil-btn-tutorial" onClick={() => navigate('/ajuda')}>Central de ajuda</button>
       </section>
 
       <section className="perfil-seccao">

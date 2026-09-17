@@ -1,0 +1,296 @@
+.leituras-pagina {
+  min-height: 100vh;
+  padding: 24px 20px 100px;
+  max-width: 720px;
+  margin: 0 auto;
+  font-family: 'Lato', sans-serif;
+  color: var(--text-light);
+  transition: color 0.4s ease;
+}
+
+.leituras-pagina.dark { color: var(--text-dark); }
+
+.leituras-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.leituras-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--burgundy);
+}
+
+.leituras-pagina.dark .leituras-titulo { color: var(--gold); }
+
+.leituras-btn-novo {
+  padding: 9px 18px;
+  border-radius: 20px;
+  border: none;
+  background: linear-gradient(135deg, var(--burgundy), var(--gold));
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.leituras-form-novo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(107, 15, 26, 0.04);
+  margin-bottom: 18px;
+}
+
+.leituras-pagina.dark .leituras-form-novo { background: rgba(255, 255, 255, 0.05); }
+
+.leituras-form-novo__cadeiras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.leituras-chip-cadeira {
+  padding: 5px 12px;
+  border-radius: 16px;
+  border: 1.5px solid var(--cor);
+  background: none;
+  color: var(--cor);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  opacity: 0.5;
+}
+
+.leituras-chip-cadeira.ativo { opacity: 1; background: var(--cor); color: #fff; }
+
+.leituras-form-novo__linha {
+  display: flex;
+  gap: 10px;
+}
+
+.leituras-form-novo__input {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(107, 15, 26, 0.15);
+  background: rgba(255, 255, 255, 0.6);
+  color: inherit;
+  font-size: 0.86rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.leituras-pagina.dark .leituras-form-novo__input {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.leituras-form-novo__paginas { max-width: 140px; }
+
+.leituras-form-novo__guardar {
+  padding: 9px 18px;
+  border-radius: 20px;
+  border: none;
+  background: var(--gold);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+  align-self: flex-start;
+}
+
+.leituras-form-novo__guardar:disabled { opacity: 0.5; cursor: default; }
+
+.leituras-vazio {
+  text-align: center;
+  padding: 40px 0;
+  opacity: 0.5;
+}
+
+.leituras-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.leitura-card {
+  padding: 16px 18px;
+  border-radius: 14px;
+  border-left: 4px solid var(--cor);
+  background: rgba(107, 15, 26, 0.03);
+}
+
+.leituras-pagina.dark .leitura-card { background: rgba(255, 255, 255, 0.04); }
+
+.leitura-card__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.leitura-card__cadeira {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cor);
+}
+
+.leitura-card__percentagem {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--cor);
+}
+
+.leitura-card__manual {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  margin-bottom: 2px;
+}
+
+.leitura-card__autor {
+  font-size: 0.78rem;
+  opacity: 0.55;
+  margin-bottom: 10px;
+}
+
+.leitura-card__barra-container {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(107, 15, 26, 0.08);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.leituras-pagina.dark .leitura-card__barra-container { background: rgba(255, 255, 255, 0.08); }
+
+.leitura-card__barra {
+  height: 100%;
+  background: var(--cor);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.leitura-card__paginas {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+
+.leitura-card__pagina-input {
+  width: 64px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(107, 15, 26, 0.15);
+  background: rgba(255, 255, 255, 0.6);
+  color: inherit;
+  font-size: 0.8rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.leituras-pagina.dark .leitura-card__pagina-input {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.leitura-card__capitulos {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.leitura-capitulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.leituras-pagina.dark .leitura-capitulo { background: rgba(255, 255, 255, 0.03); }
+
+.leitura-capitulo.lido { opacity: 0.5; }
+.leitura-capitulo.lido .leitura-capitulo__titulo { text-decoration: line-through; }
+
+.leitura-capitulo__check {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--cor);
+  background: none;
+  color: var(--cor);
+  font-size: 0.65rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leitura-capitulo__titulo {
+  flex: 1;
+  font-size: 0.82rem;
+}
+
+.leitura-capitulo__remover {
+  background: none;
+  border: none;
+  opacity: 0.4;
+  cursor: pointer;
+  font-size: 0.7rem;
+}
+
+.leitura-capitulo__remover:hover { opacity: 1; }
+
+.leitura-card__add-input {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px dashed rgba(107, 15, 26, 0.2);
+  background: none;
+  color: inherit;
+  font-size: 0.8rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.leituras-pagina.dark .leitura-card__add-input { border-color: rgba(255, 255, 255, 0.2); }
+
+.leitura-card__rodape {
+  margin-top: 10px;
+}
+
+.leitura-card__link {
+  background: none;
+  border: none;
+  font-size: 0.72rem;
+  opacity: 0.55;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+}
+
+.leitura-card__link:hover { opacity: 1; }
+.leitura-card__link--apagar { color: #d32f2f; }
+
+.leitura-card__confirmar {
+  font-size: 0.72rem;
+  opacity: 0.7;
+}

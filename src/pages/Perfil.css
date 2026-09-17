@@ -113,6 +113,25 @@
   transform: translateX(18px);
 }
 
+.perfil-btn-tutorial {
+  width: 100%;
+  margin-top: 12px;
+  padding: 9px;
+  border-radius: 10px;
+  border: 1px dashed rgba(107, 15, 26, 0.25);
+  background: none;
+  color: var(--burgundy);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.perfil-pagina.dark .perfil-btn-tutorial {
+  border-color: rgba(201, 168, 76, 0.3);
+  color: var(--gold);
+}
+
 .perfil-manutencao-texto {
   font-size: 0.8rem;
   opacity: 0.6;

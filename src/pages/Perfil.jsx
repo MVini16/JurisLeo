@@ -1,7 +1,7 @@
 // perfil — dados académicos, preferências e logout
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { db } from '../services/firebase.js';
 import { logout } from '../services/auth.js';
@@ -45,6 +45,14 @@ export default function Perfil() {
     setReposto(true);
   }
 
+  // volta a mostrar o tutorial do dashboard na próxima vez que lá entrar
+  async function reverTutorial() {
+    const userId = getAuth().currentUser?.uid;
+    if (!userId) return;
+    await setDoc(doc(db, 'users', userId, 'perfil', 'dados'), { tutorialFeito: false }, { merge: true });
+    navigate('/dashboard');
+  }
+
   const email = getAuth().currentUser?.email;
 
   return (
@@ -72,6 +80,7 @@ export default function Perfil() {
             <span className="perfil-toggle__bolinha" />
           </button>
         </div>
+        <button className="perfil-btn-tutorial" onClick={reverTutorial}>Rever o tutorial</button>
       </section>
 
       <section className="perfil-seccao">

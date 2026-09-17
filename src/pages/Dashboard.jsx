@@ -3,7 +3,9 @@ import { useEffect, useState } from 'react'
 import './Dashboard.css'
 import { useTheme } from '../context/useTheme.js'
 import { useDashboard } from '../hooks/useDashboard.js'
+import { useTarefas } from '../hooks/useTarefas.js'
 import { coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js'
+import Tutorial from '../components/Tutorial.jsx'
 
 // cores por cadeira — usadas nos dots das aulas
 const CORES_CADEIRA = coresCadeiras;
@@ -51,7 +53,18 @@ function Dashboard() {
     diasParaFrequencia,
     dataFrequenciaFormatada,
     loading,
+    tutorialFeito,
+    definirTutorialFeito,
   } = useDashboard();
+
+  const { tarefas } = useTarefas();
+  const tarefasPendentes = tarefas
+    .filter((t) => !t.concluida)
+    .sort((a, b) => {
+      if (!a.prazo) return 1;
+      if (!b.prazo) return -1;
+      return a.prazo.localeCompare(b.prazo);
+    });
 
   // controla as animações de entrada
   const [visivel, setVisivel] = useState(false);
@@ -198,19 +211,43 @@ function Dashboard() {
             )}
           </div>
 
-          {/* card tarefas — por agora mantém placeholder até a página de tarefas estar feita */}
+          {/* card tarefas — pendentes reais, mais próximas do prazo primeiro */}
           <div className="card card-tarefas anim-entrada" style={{ '--delay': '0.4s' }}>
             <div className="card-header">
               <span className="card-icon">✅</span>
               <span className="card-titulo">Tarefas Pendentes</span>
+              {tarefasPendentes.length > 0 && (
+                <span className="card-badge">{tarefasPendentes.length}</span>
+              )}
             </div>
-            <p className="card-vazio card-vazio--em-breve">
-              Em breve — quando as tarefas estiverem implementadas aparecerão aqui automaticamente.
-            </p>
+
+            {tarefasPendentes.length === 0 ? (
+              <p className="card-vazio">Nada pendente. Boa! 🎉</p>
+            ) : (
+              <ul className="lista-tarefas">
+                {tarefasPendentes.slice(0, 4).map((t) => (
+                  <li key={t.id} className="tarefa-item">
+                    <span className="tarefa-checkbox" />
+                    <div className="tarefa-info">
+                      <span className="tarefa-texto">{t.titulo}</span>
+                      {t.cadeira && (
+                        <span className="tarefa-cadeira" style={{ color: CORES_CADEIRA[t.cadeira] || '#b8963e' }}>
+                          {nomeCurtoCadeira(t.cadeira)}
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
         </div>
       </main>
+
+      {tutorialFeito === false && (
+        <Tutorial onTerminar={() => definirTutorialFeito(true)} />
+      )}
     </div>
   );
 }

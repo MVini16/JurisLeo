@@ -1,9 +1,10 @@
 // página de tarefas da jurisleo
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { useLocation } from 'react-router-dom';
+import { useTarefas } from '../hooks/useTarefas.js';
 import { coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Tarefas.css';
 
@@ -42,29 +43,6 @@ function estaAtrasada(dataStr) {
   hoje.setHours(0, 0, 0, 0);
   const prazo = new Date(dataStr + 'T00:00:00');
   return prazo < hoje;
-}
-
-// hook que vai buscar tarefas do firestore em tempo real
-function useTarefas() {
-  const [tarefas, setTarefas] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const auth = getAuth();
-    const userId = auth.currentUser?.uid;
-    if (!userId) return;
-
-    const ref = collection(db, 'users', userId, 'tarefas');
-    const unsub = onSnapshot(ref, (snap) => {
-      const dados = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      setTarefas(dados);
-      setLoading(false);
-    });
-
-    return () => unsub();
-  }, []);
-
-  return { tarefas, loading };
 }
 
 export default function Tarefas() {

@@ -1,7 +1,7 @@
 // hook que vai buscar todos os dados do dashboard ao firestore
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { doc, onSnapshot, collection } from 'firebase/firestore';
+import { doc, onSnapshot, collection, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 export function useDashboard() {
@@ -9,6 +9,8 @@ export function useDashboard() {
   const [eventos, setEventos] = useState([]);
   const [aulasSemanais, setAulasSemanais] = useState([]);
   const [loading, setLoading] = useState(true);
+  // null enquanto não sabemos ainda — só decide mostrar o tutorial depois de saber ao certo
+  const [tutorialFeito, setTutorialFeito] = useState(null);
 
   useEffect(() => {
     const auth = getAuth();
@@ -25,6 +27,7 @@ export function useDashboard() {
       } else {
         setNome('Leonor');
       }
+      setTutorialFeito(!!dados?.tutorialFeito);
     });
 
     // vai buscar eventos únicos em tempo real
@@ -131,6 +134,13 @@ export function useDashboard() {
     }
   }
 
+  // marca o tutorial como visto (ou por ver, se quiser rever) no firestore
+  async function definirTutorialFeito(valor) {
+    const userId = getAuth().currentUser?.uid;
+    if (!userId) return;
+    await setDoc(doc(db, 'users', userId, 'perfil', 'dados'), { tutorialFeito: valor }, { merge: true });
+  }
+
   return {
     nome,
     aulasHoje,
@@ -138,5 +148,7 @@ export function useDashboard() {
     diasParaFrequencia,
     dataFrequenciaFormatada,
     loading,
+    tutorialFeito,
+    definirTutorialFeito,
   };
 }

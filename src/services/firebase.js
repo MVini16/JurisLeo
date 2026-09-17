@@ -1,8 +1,8 @@
 // importa a função principal do firebase
 import { initializeApp } from "firebase/app";
 
-// importa o firestore (base de dados)
-import { getFirestore } from "firebase/firestore";
+// importa o firestore (base de dados), com cache local persistente
+import { initializeFirestore, persistentLocalCache, persistentSingleTabManager } from "firebase/firestore";
 
 // importa o authentication
 import { getAuth } from "firebase/auth";
@@ -21,8 +21,12 @@ const firebaseConfig = {
 // inicializa o firebase com a configuração
 const app = initializeApp(firebaseConfig);
 
-// cria e exporta a instância do firestore
-export const db = getFirestore(app);
+// cria e exporta a instância do firestore, com dados guardados em indexeddb —
+// ela abre a app numa sala de aula sem net e continua a ver o que já tinha carregado,
+// e o que escrever offline sincroniza sozinho assim que a rede voltar
+export const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentSingleTabManager() }),
+});
 
 // cria e exporta a instância do auth
 export const auth = getAuth(app);

@@ -14,6 +14,7 @@ import Anotacao from './pages/Anotacao'
 import Casos from './pages/Casos'
 import Caso from './pages/Caso'
 import Estudo from './pages/Estudo'
+import Glossario from './pages/Glossario'
 import Tarefas from './pages/Tarefas'
 import Calendario from './pages/Calendario'
 import Perfil from './pages/Perfil'
@@ -39,6 +40,7 @@ function App() {
         <Route path="/casos" element={<NavBar><Casos /></NavBar>} />
         <Route path="/casos/:id" element={<NavBar><Caso /></NavBar>} />
         <Route path="/estudo" element={<NavBar><Estudo /></NavBar>} />
+        <Route path="/glossario" element={<NavBar><Glossario /></NavBar>} />
         <Route path="/tarefas" element={<NavBar><Tarefas /></NavBar>} />
         <Route path="/calendario" element={<NavBar><Calendario /></NavBar>} />
         <Route path="/perfil" element={<NavBar><Perfil /></NavBar>} />

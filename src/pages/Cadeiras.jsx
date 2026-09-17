@@ -42,6 +42,24 @@ export default function Cadeiras() {
           <CartaoCadeira key={cadeira.id} cadeira={cadeira} onClick={() => navigate(`/cadeiras/${cadeira.id}`)} />
         ))}
       </div>
+
+      <section className="cadeiras-recursos">
+        <h2 className="cadeiras-recursos__titulo">Recursos</h2>
+        <div className="cadeiras-recursos__grid">
+          <button className="cadeiras-recurso" onClick={() => navigate('/glossario')}>
+            <span className="cadeiras-recurso__icon">📚</span>
+            <span>Glossário</span>
+          </button>
+          <button className="cadeiras-recurso" onClick={() => navigate('/artigos')}>
+            <span className="cadeiras-recurso__icon">⚖️</span>
+            <span>Artigos</span>
+          </button>
+          <button className="cadeiras-recurso" onClick={() => navigate('/leituras')}>
+            <span className="cadeiras-recurso__icon">📖</span>
+            <span>Leituras</span>
+          </button>
+        </div>
+      </section>
     </div>
   );
 }

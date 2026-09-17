@@ -170,3 +170,52 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+.cadeiras-recursos {
+  margin-top: 32px;
+}
+
+.cadeiras-recursos__titulo {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.5;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.cadeiras-recursos__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.cadeiras-recurso {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 8px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(107, 15, 26, 0.04);
+  color: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.cadeiras-pagina.dark .cadeiras-recurso { background: rgba(255, 255, 255, 0.05); }
+
+.cadeiras-recurso:hover {
+  transform: translateY(-2px);
+  background: rgba(107, 15, 26, 0.08);
+}
+
+.cadeiras-pagina.dark .cadeiras-recurso:hover { background: rgba(255, 255, 255, 0.09); }
+
+.cadeiras-recurso__icon {
+  font-size: 1.3rem;
+}

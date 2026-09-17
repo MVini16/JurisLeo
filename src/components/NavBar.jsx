@@ -87,6 +87,7 @@ const itensMais = [
   { label: 'Lançar Nota', icon: '📊', cor: '#EA580C', acao: 'navegar', destino: '/cadeiras' },
   { label: 'Estudar', icon: '⏱️', cor: '#0F766E', acao: 'navegar', destino: '/estudo' },
   { label: 'Glossário', icon: '📚', cor: '#7D6B91', acao: 'navegar', destino: '/glossario' },
+  { label: 'Artigos', icon: '⚖️', cor: '#4A6670', acao: 'navegar', destino: '/artigos' },
 ]
 
 // navBar envolve o conteúdo das páginas principais

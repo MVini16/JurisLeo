@@ -1,0 +1,307 @@
+.artigos-pagina {
+  min-height: 100vh;
+  padding: 24px 20px 100px;
+  max-width: 720px;
+  margin: 0 auto;
+  font-family: 'Lato', sans-serif;
+  color: var(--text-light);
+  transition: color 0.4s ease;
+}
+
+.artigos-pagina.dark { color: var(--text-dark); }
+
+.artigos-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.artigos-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--burgundy);
+}
+
+.artigos-pagina.dark .artigos-titulo { color: var(--gold); }
+
+.artigos-contador {
+  font-size: 0.75rem;
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.artigos-btn-novo {
+  padding: 9px 18px;
+  border-radius: 20px;
+  border: none;
+  background: linear-gradient(135deg, var(--burgundy), var(--gold));
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.artigos-form-novo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(107, 15, 26, 0.04);
+  margin-bottom: 16px;
+}
+
+.artigos-pagina.dark .artigos-form-novo { background: rgba(255, 255, 255, 0.05); }
+
+.artigos-form-novo__codigos {
+  display: flex;
+  gap: 6px;
+}
+
+.artigos-chip-codigo {
+  padding: 5px 12px;
+  border-radius: 16px;
+  border: 1.5px solid var(--cor);
+  background: none;
+  color: var(--cor);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  opacity: 0.5;
+}
+
+.artigos-chip-codigo.ativo { opacity: 1; background: var(--cor); color: #fff; }
+
+.artigos-form-novo__linha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.artigos-form-novo__numero {
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.artigos-form-novo__epigrafe { flex: 1; }
+
+.artigos-form-novo__numero,
+.artigos-form-novo__epigrafe,
+.artigos-form-novo__textarea {
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(107, 15, 26, 0.15);
+  background: rgba(255, 255, 255, 0.6);
+  color: inherit;
+  font-size: 0.86rem;
+  font-family: inherit;
+  outline: none;
+  resize: vertical;
+}
+
+.artigos-pagina.dark .artigos-form-novo__numero,
+.artigos-pagina.dark .artigos-form-novo__epigrafe,
+.artigos-pagina.dark .artigos-form-novo__textarea {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.artigos-form-novo__dificuldade {
+  display: flex;
+  gap: 4px;
+}
+
+.artigos-dot-btn {
+  background: none;
+  border: none;
+  font-size: 0.7rem;
+  color: rgba(120, 120, 120, 0.3);
+  cursor: pointer;
+  padding: 2px;
+}
+
+.artigos-dot-btn.ativo { color: var(--gold); }
+
+.artigos-form-novo__guardar {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: none;
+  background: var(--gold);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-family: inherit;
+  margin-left: auto;
+}
+
+.artigos-form-novo__guardar:disabled { opacity: 0.5; cursor: default; }
+
+.artigos-pesquisa {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(107, 15, 26, 0.15);
+  background: rgba(255, 255, 255, 0.6);
+  color: inherit;
+  font-size: 0.88rem;
+  font-family: inherit;
+  outline: none;
+  margin-bottom: 14px;
+}
+
+.artigos-pagina.dark .artigos-pesquisa {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.artigos-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.artigos-filtro-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(107, 15, 26, 0.15);
+  background: none;
+  color: inherit;
+  opacity: 0.6;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.artigos-pagina.dark .artigos-filtro-btn { border-color: rgba(255, 255, 255, 0.15); }
+
+.artigos-filtro-btn.ativo {
+  opacity: 1;
+  background: var(--cor, var(--burgundy));
+  border-color: transparent;
+  color: #fff;
+}
+
+.artigos-vazio {
+  text-align: center;
+  padding: 40px 0;
+  opacity: 0.5;
+}
+
+.artigos-lista {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .artigos-lista { grid-template-columns: repeat(2, 1fr); }
+}
+
+.artigo-card {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border-left: 3px solid var(--cor);
+  background: rgba(107, 15, 26, 0.03);
+}
+
+.artigos-pagina.dark .artigo-card { background: rgba(255, 255, 255, 0.04); }
+
+.artigo-card__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.artigo-card__numero {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--cor);
+}
+
+.artigo-card__dificuldade {
+  display: flex;
+  gap: 2px;
+}
+
+.artigo-card__epigrafe {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+
+.artigo-card__nota {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  opacity: 0.75;
+}
+
+.artigo-card__textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(107, 15, 26, 0.15);
+  background: rgba(255, 255, 255, 0.6);
+  color: inherit;
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  resize: vertical;
+}
+
+.artigos-pagina.dark .artigo-card__textarea {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.artigo-card__acoes-edicao {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.artigo-card__btn-guardar,
+.artigo-card__btn-cancelar {
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.artigo-card__btn-guardar { background: var(--gold); color: #fff; }
+.artigo-card__btn-cancelar { background: rgba(120, 120, 120, 0.15); color: inherit; }
+
+.artigo-card__rodape {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.artigo-card__link {
+  background: none;
+  border: none;
+  font-size: 0.72rem;
+  opacity: 0.55;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+}
+
+.artigo-card__link:hover { opacity: 1; }
+
+.artigo-card__link--apagar { color: #d32f2f; }
+
+.artigo-card__confirmar {
+  font-size: 0.72rem;
+  opacity: 0.7;
+}

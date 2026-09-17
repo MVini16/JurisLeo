@@ -24,12 +24,25 @@ body {
   min-height: 100vh;
 }
 
-/* modo escuro automático */
+/* antes de o react montar, segue o sistema operativo como palpite inicial */
 @media (prefers-color-scheme: dark) {
   body {
     background-color: var(--bg-dark);
     color: var(--text-dark);
   }
+}
+
+/* depois de montar, o tema escolhido na app manda sempre — o ThemeContext põe
+   esta classe no <html>, e tem de vencer o palpite do sistema operativo acima,
+   senão as duas fontes de verdade desencontram-se e as cores entram em conflito */
+html.dark body {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+html:not(.dark) body {
+  background-color: var(--bg-light);
+  color: var(--text-light);
 }
 
 #root {

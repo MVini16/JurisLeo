@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useAnotacoes } from '../hooks/useAnotacoes.js';
+import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Anotacoes.css';
 
@@ -31,6 +32,7 @@ export default function Anotacoes() {
 
   return (
     <div className={`anotacoes-pagina ${darkMode ? 'dark' : ''}`}>
+      <BotaoVoltar />
       <header className="anotacoes-header">
         <div>
           <h1 className="anotacoes-titulo">Anotações</h1>

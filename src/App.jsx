@@ -17,6 +17,7 @@ import Estudo from './pages/Estudo'
 import Glossario from './pages/Glossario'
 import Artigos from './pages/Artigos'
 import Leituras from './pages/Leituras'
+import Pesquisa from './pages/Pesquisa'
 import Tarefas from './pages/Tarefas'
 import Calendario from './pages/Calendario'
 import Perfil from './pages/Perfil'
@@ -45,6 +46,7 @@ function App() {
         <Route path="/glossario" element={<NavBar><Glossario /></NavBar>} />
         <Route path="/artigos" element={<NavBar><Artigos /></NavBar>} />
         <Route path="/leituras" element={<NavBar><Leituras /></NavBar>} />
+        <Route path="/pesquisa" element={<NavBar><Pesquisa /></NavBar>} />
         <Route path="/tarefas" element={<NavBar><Tarefas /></NavBar>} />
         <Route path="/calendario" element={<NavBar><Calendario /></NavBar>} />
         <Route path="/perfil" element={<NavBar><Perfil /></NavBar>} />

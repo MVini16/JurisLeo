@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useTheme } from '../context/useTheme.js';
 import { useArtigos } from '../hooks/useArtigos.js';
+import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Artigos.css';
 
 const CODIGOS = ['CC', 'CPA', 'CRP', 'CT', 'outro'];
@@ -32,6 +33,7 @@ export default function Artigos() {
 
   return (
     <div className={`artigos-pagina ${darkMode ? 'dark' : ''}`}>
+      <BotaoVoltar destino="/cadeiras" />
       <header className="artigos-header">
         <div>
           <h1 className="artigos-titulo">Artigos</h1>

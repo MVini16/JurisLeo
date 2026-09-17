@@ -1,0 +1,13 @@
+.botao-voltar {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.6;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: 'Lato', sans-serif;
+  padding: 4px 0 14px;
+  display: block;
+}
+
+.botao-voltar:hover { opacity: 1; }

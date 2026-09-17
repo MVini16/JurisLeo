@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import ModalCriarEvento from './ModalCriarEvento.jsx'
+import DicaPrimeiraVez from './DicaPrimeiraVez.jsx'
+import BotaoAjuda from './BotaoAjuda.jsx'
+import { resolverAjuda } from '../data/ajuda.js'
 import './NavBar.css'
 
 // itens da navegação principal
@@ -99,6 +102,9 @@ function NavBar({ children }) {
   // índice do item activo para o slider
   const indiceActivo = itens.findIndex(i => i.path === location.pathname)
 
+  // tópico de ajuda da página actual, para a dica de primeira visita e o botão de ajuda
+  const ajuda = resolverAjuda(location.pathname)
+
   // trata o clique num item do menu + consoante a sua acção
   function clicarItemMais(item) {
     setMenuAberto(false)
@@ -148,8 +154,11 @@ function NavBar({ children }) {
 
       {/* conteúdo da página */}
       <main className="navbar-conteudo">
+        {ajuda && <DicaPrimeiraVez chave={ajuda.chave} titulo={ajuda.titulo} texto={ajuda.texto} />}
         {children}
       </main>
+
+      {ajuda && <BotaoAjuda titulo={ajuda.titulo} texto={ajuda.texto} pontos={ajuda.pontos} />}
 
       {/* overlay escuro quando o menu + está aberto */}
       {menuAberto && (

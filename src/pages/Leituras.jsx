@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useTheme } from '../context/useTheme.js';
 import { useLeituras } from '../hooks/useLeituras.js';
+import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Leituras.css';
 
@@ -12,6 +13,7 @@ export default function Leituras() {
 
   return (
     <div className={`leituras-pagina ${darkMode ? 'dark' : ''}`}>
+      <BotaoVoltar destino="/cadeiras" />
       <header className="leituras-header">
         <h1 className="leituras-titulo">Leituras</h1>
         <button className="leituras-btn-novo" onClick={() => setFormAberto((f) => !f)}>{formAberto ? 'Fechar' : '+ Novo manual'}</button>

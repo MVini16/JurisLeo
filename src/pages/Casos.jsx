@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useCasos } from '../hooks/useCasos.js';
+import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Casos.css';
 
@@ -32,6 +33,7 @@ export default function Casos() {
 
   return (
     <div className={`casos-pagina ${darkMode ? 'dark' : ''}`}>
+      <BotaoVoltar />
       <header className="casos-header">
         <div>
           <h1 className="casos-titulo">Casos Práticos</h1>

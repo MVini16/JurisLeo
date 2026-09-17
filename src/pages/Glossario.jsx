@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useTheme } from '../context/useTheme.js';
 import { useGlossario } from '../hooks/useGlossario.js';
+import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Glossario.css';
 
@@ -24,6 +25,7 @@ export default function Glossario() {
 
   return (
     <div className={`glossario-pagina ${darkMode ? 'dark' : ''}`}>
+      <BotaoVoltar destino="/cadeiras" />
       <header className="glossario-header">
         <div>
           <h1 className="glossario-titulo">Glossário</h1>

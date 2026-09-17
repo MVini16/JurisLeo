@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useTheme } from '../context/useTheme.js';
 import { useCronometro } from '../hooks/useCronometro.js';
 import { useSessoesEstudo } from '../hooks/useSessoesEstudo.js';
+import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js';
 import './Estudo.css';
 
@@ -39,6 +40,7 @@ export default function Estudo() {
 
   return (
     <div className={`estudo-pagina ${darkMode ? 'dark' : ''}`}>
+      <BotaoVoltar />
       <header className="estudo-header">
         <h1 className="estudo-titulo">Estudo</h1>
         <span className="estudo-subtitulo">{totalRecente} min nas últimas {sessoes.length} sessões</span>

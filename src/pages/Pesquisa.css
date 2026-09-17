@@ -1,0 +1,119 @@
+.pesquisa-pagina {
+  min-height: 100vh;
+  padding: 24px 20px 100px;
+  max-width: 640px;
+  margin: 0 auto;
+  font-family: 'Lato', sans-serif;
+  color: var(--text-light);
+  transition: color 0.4s ease;
+}
+
+.pesquisa-pagina.dark { color: var(--text-dark); }
+
+.pesquisa-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--burgundy);
+  margin-bottom: 16px;
+}
+
+.pesquisa-pagina.dark .pesquisa-titulo { color: var(--gold); }
+
+.pesquisa-input {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(107, 15, 26, 0.15);
+  background: rgba(255, 255, 255, 0.6);
+  color: inherit;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  margin-bottom: 20px;
+}
+
+.pesquisa-pagina.dark .pesquisa-input {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.pesquisa-input:focus { border-color: var(--gold); }
+
+.pesquisa-dica {
+  text-align: center;
+  opacity: 0.5;
+  font-size: 0.85rem;
+  padding: 40px 12px;
+  line-height: 1.6;
+}
+
+.pesquisa-resultados {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.pesquisa-grupo__titulo {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.5;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.pesquisa-grupo__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pesquisa-resultado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: left;
+  border: none;
+  border-left: 3px solid var(--cor);
+  border-radius: 10px;
+  background: rgba(107, 15, 26, 0.03);
+  padding: 10px 14px;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  width: 100%;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.pesquisa-pagina.dark .pesquisa-resultado { background: rgba(255, 255, 255, 0.04); }
+
+.pesquisa-resultado:hover {
+  transform: translateX(2px);
+  background: rgba(107, 15, 26, 0.07);
+}
+
+.pesquisa-pagina.dark .pesquisa-resultado:hover { background: rgba(255, 255, 255, 0.08); }
+
+.pesquisa-resultado__etiqueta {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--cor);
+}
+
+.pesquisa-resultado__titulo {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.pesquisa-resultado__subtitulo {
+  font-size: 0.78rem;
+  opacity: 0.55;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}

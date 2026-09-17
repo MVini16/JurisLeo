@@ -1,0 +1,214 @@
+.anotacao-editor {
+  min-height: 100vh;
+  padding: 20px 20px 100px;
+  max-width: 640px;
+  margin: 0 auto;
+  font-family: 'Lato', sans-serif;
+  color: var(--text-light);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: color 0.4s ease;
+}
+
+.anotacao-editor.dark { color: var(--text-dark); }
+
+.anotacao-editor__loading {
+  opacity: 0.5;
+  font-style: italic;
+  padding: 32px 0;
+}
+
+.anotacao-editor__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.anotacao-editor__voltar {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.6;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.anotacao-editor__voltar:hover { opacity: 1; }
+
+.anotacao-editor__estrela {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: rgba(120, 120, 120, 0.5);
+  line-height: 1;
+}
+
+.anotacao-editor__estrela.ativa { color: var(--gold); }
+
+.anotacao-editor__titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  border: none;
+  background: none;
+  outline: none;
+  color: inherit;
+  padding: 4px 0;
+  border-bottom: 2px solid rgba(107, 15, 26, 0.15);
+}
+
+.anotacao-editor.dark .anotacao-editor__titulo { border-bottom-color: rgba(255, 255, 255, 0.15); }
+
+.anotacao-editor__cadeiras,
+.anotacao-editor__tipos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.anotacao-editor__cadeira-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--cor);
+  background: none;
+  color: var(--cor);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  opacity: 0.5;
+  transition: all 0.2s ease;
+}
+
+.anotacao-editor__cadeira-btn.ativo {
+  opacity: 1;
+  background: var(--cor);
+  color: #fff;
+}
+
+.anotacao-editor__tipo-btn {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 10px;
+  border: 1.5px solid rgba(120, 120, 120, 0.25);
+  background: none;
+  color: inherit;
+  opacity: 0.55;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.anotacao-editor__tipo-btn.ativo {
+  opacity: 1;
+  border-color: var(--cor, var(--burgundy));
+  color: var(--cor, var(--burgundy));
+  background: color-mix(in srgb, var(--cor, var(--burgundy)) 12%, transparent);
+}
+
+.anotacao-editor__conteudo {
+  flex: 1;
+  min-height: 280px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(107, 15, 26, 0.15);
+  background: rgba(255, 255, 255, 0.5);
+  color: inherit;
+  font-size: 0.92rem;
+  font-family: inherit;
+  line-height: 1.6;
+  outline: none;
+  resize: vertical;
+}
+
+.anotacao-editor.dark .anotacao-editor__conteudo {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.anotacao-editor__conteudo:focus { border-color: var(--gold); }
+
+.anotacao-editor__tags {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(107, 15, 26, 0.12);
+  background: rgba(255, 255, 255, 0.5);
+  color: inherit;
+  font-size: 0.82rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.anotacao-editor.dark .anotacao-editor__tags {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.anotacao-editor__rascunho-linha {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  opacity: 0.65;
+  cursor: pointer;
+}
+
+.anotacao-editor__acoes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.anotacao-editor__btn-guardar {
+  flex: 1;
+  padding: 13px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--burgundy), var(--gold));
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.anotacao-editor__btn-guardar:disabled { opacity: 0.55; cursor: default; }
+
+.anotacao-editor__btn-apagar {
+  padding: 13px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(211, 47, 47, 0.3);
+  background: rgba(211, 47, 47, 0.06);
+  color: #d32f2f;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.anotacao-editor__confirmar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.anotacao-editor__btn-sim,
+.anotacao-editor__btn-nao {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.anotacao-editor__btn-sim { background: #d32f2f; color: #fff; }
+.anotacao-editor__btn-nao { background: rgba(120, 120, 120, 0.15); color: inherit; }

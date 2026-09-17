@@ -79,7 +79,7 @@ const itens = [
 // 'frequencia' abre o modal de evento já aqui, 'em-breve' ainda não tem funcionalidade própria
 const itensMais = [
   { label: 'Nova Tarefa', icon: '✅', cor: '#7C3AED', acao: 'navegar', destino: '/tarefas' },
-  { label: 'Nova Anotação', icon: '📝', cor: '#1E3A5F', acao: 'em-breve' },
+  { label: 'Nova Anotação', icon: '📝', cor: '#1E3A5F', acao: 'navegar', destino: '/anotacoes/nova' },
   { label: 'Nova Frequência', icon: '📅', cor: '#6B0F1A', acao: 'frequencia' },
   { label: 'Oral de Melhoria', icon: '🗣️', cor: '#C9A84C', acao: 'navegar', destino: '/cadeiras' },
   { label: 'Registar Falta', icon: '❌', cor: '#EC4899', acao: 'navegar', destino: '/cadeiras' },

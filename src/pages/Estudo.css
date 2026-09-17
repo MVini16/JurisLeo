@@ -1,0 +1,195 @@
+.estudo-pagina {
+  min-height: 100vh;
+  padding: 24px 20px 100px;
+  max-width: 520px;
+  margin: 0 auto;
+  font-family: 'Lato', sans-serif;
+  color: var(--text-light);
+  transition: color 0.4s ease;
+}
+
+.estudo-pagina.dark { color: var(--text-dark); }
+
+.estudo-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.estudo-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--burgundy);
+}
+
+.estudo-pagina.dark .estudo-titulo { color: var(--gold); }
+
+.estudo-subtitulo {
+  font-size: 0.75rem;
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.estudo-cadeiras {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.estudo-cadeira-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--cor, rgba(120, 120, 120, 0.3));
+  background: none;
+  color: var(--cor, inherit);
+  opacity: 0.5;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.estudo-cadeira-btn.ativo {
+  opacity: 1;
+  background: var(--cor, var(--burgundy));
+  color: #fff;
+  border-color: transparent;
+}
+
+.estudo-cadeira-btn:disabled { cursor: default; }
+
+.estudo-cronometro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 28px;
+}
+
+.estudo-cronometro__numero {
+  font-family: 'Playfair Display', serif;
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--cor);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.estudo-cronometro__pausas {
+  font-size: 0.78rem;
+  opacity: 0.5;
+}
+
+.estudo-acoes {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.estudo-btn-principal {
+  padding: 14px 32px;
+  border-radius: 30px;
+  border: none;
+  background: var(--cor, var(--burgundy));
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.estudo-btn-secundario {
+  padding: 14px 24px;
+  border-radius: 30px;
+  border: 1px solid rgba(120, 120, 120, 0.3);
+  background: none;
+  color: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.estudo-btn-terminar {
+  padding: 14px 24px;
+  border-radius: 30px;
+  border: 1px solid rgba(211, 47, 47, 0.3);
+  background: rgba(211, 47, 47, 0.06);
+  color: #d32f2f;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.estudo-resumo {
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(46, 125, 50, 0.1);
+  color: #2e7d32;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.estudo-historico {
+  margin-top: 12px;
+}
+
+.estudo-historico__titulo {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.5;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.estudo-vazio {
+  opacity: 0.5;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.estudo-historico__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.estudo-sessao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border-left: 3px solid var(--cor);
+  background: rgba(107, 15, 26, 0.03);
+}
+
+.estudo-pagina.dark .estudo-sessao { background: rgba(255, 255, 255, 0.04); }
+
+.estudo-sessao__cadeira {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--cor);
+  min-width: 46px;
+}
+
+.estudo-sessao__minutos {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.estudo-sessao__data {
+  margin-left: auto;
+  font-size: 0.72rem;
+  opacity: 0.5;
+}

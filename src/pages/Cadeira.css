@@ -215,3 +215,137 @@
   padding: 12px 0;
   line-height: 1.5;
 }
+
+/* tabs da cadeira */
+.cadeira-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  margin: 0 -4px 16px;
+  padding: 0 4px 4px;
+  scrollbar-width: none;
+}
+
+.cadeira-tabs::-webkit-scrollbar { display: none; }
+
+.cadeira-tab {
+  flex: 0 0 auto;
+  min-height: var(--toque-min);
+  padding: 0 16px;
+  border-radius: 22px;
+  border: 1.5px solid rgba(120, 120, 120, 0.3);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cadeira-tab.ativo {
+  background: var(--burgundy);
+  border-color: var(--burgundy);
+  color: #fff;
+}
+
+.cadeira-pagina.dark .cadeira-tab.ativo { background: var(--gold); border-color: var(--gold); color: var(--bg-dark); }
+
+.cadeira-tab-corpo { display: flex; flex-direction: column; gap: 12px; }
+
+.cadeira-tab-acao {
+  min-height: var(--toque-min);
+  border: none;
+  border-radius: 12px;
+  background: var(--burgundy);
+  color: #fff;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.cadeira-pagina.dark .cadeira-tab-acao { background: var(--gold); color: var(--bg-dark); }
+
+.cadeira-link {
+  min-height: var(--toque-min);
+  border: none;
+  background: none;
+  color: var(--burgundy);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cadeira-pagina.dark .cadeira-link { color: var(--gold); }
+
+/* cartões do resumo */
+.cadeira-resumo-cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: none;
+  background: rgba(120, 120, 120, 0.08);
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cadeira-resumo-cartao--info { cursor: default; }
+.cadeira-resumo-cartao--aprovada { background: rgba(46, 125, 91, 0.1); }
+.cadeira-resumo-cartao--faltas-verde { background: rgba(46, 125, 91, 0.1); }
+.cadeira-resumo-cartao--faltas-amarelo { background: rgba(201, 132, 62, 0.14); }
+.cadeira-resumo-cartao--faltas-vermelho { background: rgba(179, 66, 58, 0.1); }
+
+.cadeira-resumo-cartao__rotulo {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.6;
+}
+
+.cadeira-resumo-cartao strong { font-size: 1rem; }
+.cadeira-resumo-cartao__texto { font-size: 0.84rem; line-height: 1.45; opacity: 0.8; }
+
+/* ficha */
+.cadeira-ficha__titulo {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  opacity: 0.7;
+  margin: 6px 0 8px;
+}
+
+.cadeira-ficha__lista { display: flex; flex-direction: column; gap: 10px; }
+.cadeira-ficha__lista > div { display: flex; flex-direction: column; gap: 1px; }
+.cadeira-ficha__lista dt { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.55; }
+.cadeira-ficha__lista dd { margin: 0; font-size: 0.92rem; line-height: 1.45; }
+
+/* listas de conteúdo */
+.cadeira-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+
+.cadeira-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(120, 120, 120, 0.25);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cadeira-item--estatico { cursor: default; }
+.cadeira-item span { font-size: 0.8rem; opacity: 0.7; }
+.cadeira-flash-resumo { font-size: 0.9rem; opacity: 0.8; }

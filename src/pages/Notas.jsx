@@ -37,7 +37,7 @@ export default function Notas() {
   const location = useLocation();
   const { cadeiras, avaliacoes, loading, guardarNota, guardarPesos } = useNotas();
 
-  const [modal, setModal] = useState(location.state?.abrirModal ? { cadeiraId: null } : null);
+  const [modal, setModal] = useState(location.state?.abrirModal ? { cadeiraId: location.state?.cadeiraId ?? null } : null);
   const [celebracao, setCelebracao] = useState(null);
   const [consolo, setConsolo] = useState(null);
 

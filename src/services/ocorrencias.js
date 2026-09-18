@@ -85,3 +85,18 @@ export function aulaAgoraESeguinte(ocorrenciasHoje, agora = new Date()) {
   const seguinte = ordenadas.find((o) => paraMinutos(o.horaInicio) > minutos);
   return { emCurso: emCurso || null, seguinte: seguinte || null };
 }
+
+// próxima aula (a começar depois de agora), ignorando as canceladas
+export function proximaAula(ocorrencias, agora = new Date()) {
+  const comInicio = ocorrencias
+    .filter((o) => o.horaInicio && o.estadoAula !== 'cancelada')
+    .map((o) => {
+      const inicio = new Date(o.data);
+      const [h, m] = o.horaInicio.split(':').map(Number);
+      inicio.setHours(h, m, 0, 0);
+      return { o, inicio };
+    })
+    .filter(({ inicio }) => inicio > agora)
+    .sort((a, b) => a.inicio - b.inicio);
+  return comInicio[0]?.o || null;
+}

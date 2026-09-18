@@ -5,6 +5,9 @@ import { useCadeiras } from '../hooks/useCadeiras.js';
 import { useCadeira } from '../hooks/useCadeira.js';
 import { estadoDaCadeira, pesosDaCadeira } from '../services/notas.js';
 import { estadoFaltas } from '../services/faltas.js';
+import { useAulasSemanais } from '../hooks/useAulasSemanais.js';
+import { gerarOcorrencias, proximaAula } from '../services/ocorrencias.js';
+import { dataNatural } from '../services/datas.js';
 import { getCadeira } from '../data/dadosLeonor.js';
 import './Cadeiras.css';
 
@@ -20,6 +23,7 @@ const ROTULO_ESTADO = {
 export default function Cadeiras() {
   const { darkMode } = useTheme();
   const { cadeiras, loading } = useCadeiras();
+  const { aulas } = useAulasSemanais();
   const navigate = useNavigate();
 
   return (
@@ -42,7 +46,7 @@ export default function Cadeiras() {
 
       <div className="cadeiras-grid">
         {cadeiras.map((cadeira) => (
-          <CartaoCadeira key={cadeira.id} cadeira={cadeira} onClick={() => navigate(`/cadeiras/${cadeira.id}`)} />
+          <CartaoCadeira key={cadeira.id} cadeira={cadeira} aulas={aulas} onClick={() => navigate(`/cadeiras/${cadeira.id}`)} />
         ))}
       </div>
 
@@ -79,8 +83,9 @@ export default function Cadeiras() {
   );
 }
 
-function CartaoCadeira({ cadeira, onClick }) {
+function CartaoCadeira({ cadeira, aulas, onClick }) {
   const { faltasDados, avaliacaoDados } = useCadeira(cadeira.id);
+  const proxima = proximaAula(aulas.filter((a) => a.cadeira === cadeira.id).flatMap((a) => gerarOcorrencias(a)));
   const infoBase = getCadeira(cadeira.id);
   const cor = cadeira.cor || '#b8963e';
 
@@ -108,6 +113,11 @@ function CartaoCadeira({ cadeira, onClick }) {
         </div>
         <h2 className="cartao-cadeira__nome">{cadeira.nome}</h2>
         <p className="cartao-cadeira__regente">{cadeira.regente}</p>
+        {proxima && (
+          <p className="cartao-cadeira__proxima">
+            Próxima aula: {dataNatural(proxima.data)} · {proxima.horaInicio}{proxima.sala ? ` · ${proxima.sala}` : ''}
+          </p>
+        )}
 
         <div className="cartao-cadeira__rodape">
           {avaliacao && (

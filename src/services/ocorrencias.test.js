@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { gerarOcorrencias, idOcorrencia, tipoDaAula, comEstados, aulaAgoraESeguinte, paraMinutos } from './ocorrencias.js';
+import { gerarOcorrencias, idOcorrencia, tipoDaAula, comEstados, aulaAgoraESeguinte, paraMinutos, proximaAula } from './ocorrencias.js';
 
 const aulaBase = {
   id: 'abc',
@@ -109,5 +109,23 @@ describe('paraMinutos', () => {
   it('converte hh:mm', () => {
     expect(paraMinutos('14:30')).toBe(870);
     expect(paraMinutos('')).toBeNull();
+  });
+});
+
+describe('proximaAula', () => {
+  const o = (id, dia, hora, extra = {}) => ({ id, data: new Date(2026, 8, dia), horaInicio: hora, ...extra });
+
+  it('devolve a primeira que ainda não começou', () => {
+    const lista = [o('a', 7, '14:00'), o('b', 7, '16:10'), o('c', 8, '14:00')];
+    expect(proximaAula(lista, new Date(2026, 8, 7, 15, 0)).id).toBe('b');
+  });
+
+  it('ignora as canceladas', () => {
+    const lista = [o('a', 7, '16:10', { estadoAula: 'cancelada' }), o('b', 8, '14:00')];
+    expect(proximaAula(lista, new Date(2026, 8, 7, 15, 0)).id).toBe('b');
+  });
+
+  it('sem aulas futuras devolve null', () => {
+    expect(proximaAula([o('a', 7, '14:00')], new Date(2026, 8, 20, 9, 0))).toBeNull();
   });
 });

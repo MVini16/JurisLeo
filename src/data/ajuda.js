@@ -32,13 +32,13 @@ export const ajudaPorRota = {
     ],
   },
   '/cadeiras/:id': {
-    titulo: 'Notas e Faltas desta cadeira',
-    texto: 'Aqui lanças os elementos de avaliação e as faltas, e vês logo o que isso significa segundo o regulamento.',
+    titulo: 'A tua cadeira',
+    texto: 'Tudo sobre esta cadeira num sítio: estado da avaliação, faltas, anotações, casos, leituras e flashcards.',
     pontos: [
-      'Preenche a prova escrita e outros elementos para veres a nota de avaliação contínua.',
-      'Os campos de exame escrito e oral só aparecem quando fazem sentido para o teu caso.',
-      '"Guardar" grava; o texto por baixo explica sempre o que vem a seguir.',
-      'Em Faltas, os números "agora" e "até final do semestre" são propositalmente diferentes — no início do semestre cada falta pesa mais.',
+      'Usa as abas no topo para mudar de secção.',
+      'Em "Notas" vês onde estás no regulamento e lanças notas.',
+      'Em "Faltas" o número grande é quantas ainda podes dar até ao fim do semestre. No início do semestre cada falta pesa mais.',
+      'O que ainda não tem conteúdo diz-te o que fazer para o começares.',
     ],
   },
   '/notas': {

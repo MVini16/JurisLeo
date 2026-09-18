@@ -159,6 +159,10 @@ React 19 + Vite · Firebase (Auth Email/Password, Firestore com cache offline pe
 - **Inconsistência interna desta spec, caso 25 (secção 6.5):** a tabela diz `excluida` com nota 10, o texto ao lado diz "aprovada com 10". O código segue o texto (média arredondada) e está marcado como caso limite. **A confirmar com o Vini e a Leonor.**
 - **Inconsistência interna desta spec, faltas:** a tabela 7.5 usa 26 aulas previstas, a secção 5.4 usa 30. Os testes em `faltas.test.js` seguem a tabela (26). Os dados reais da Leonor usam 30.
 - **Modelo de dados:** a secção 9 descreve o que está em produção. As coleções `notas`, `faltas`, `aulas`, `sumarios`, `mensagensDele` e `feedback` da versão original **não existem**.
+- **Intervalos dos flashcards:** a secção 14.7 diz 1, 3, 7, 16 e 35 dias. O código (`repeticaoEspacada.js`) usa 1, 2, 4, 7 e 15. **A confirmar com o Vini** qual vale, porque a fase 9 tem "intervalos certos" como critério de aceitação.
+- **Banco de frases:** `frases.js` tem cerca de 120 frases organizadas em 8 contextos (geral, madrugada, pós-nota-boa, pós-nota-excelente, pós-nota-baixa, sessão-longa, faltas-apertadas, antes-de-frequência). A secção 16.1 pede 150, com 6 tons, autoria "dele" e quotas por tom. O formato e as quotas ainda não existem.
+- **Sem traço no código:** botão "falta-me motivação", ecrã depois da 1h, aviso dos 90 minutos, modo "estou a passar-me", importador de backup, notificações push, dedicatória nos PDF, sebenta compilada, "algo está mal aqui" e `feedback`.
+- **Secções 25 (registo de bem-estar) e 26 (consola do Vini):** não têm fase na secção 22 e nada disto existe no código. Ver 22.1.
 - **Nomes reais do Firestore:** caminho `users/{uid}` (não `utilizadores`), aulas em `aulasSemanais` (não `aulas`), tema em `configuracoes/dados` (não em `preferencias`).
 
 ---
@@ -927,7 +931,7 @@ users/{uid}
 
 Os campos das coleções de conteúdo (`anotacoes`, `casos`, `glossario`, `artigos`, `leituras`, `flashcards`) que não vêm dos hooks estão definidos nos formulários das respetivas páginas. Consultar o formulário antes de os usar.
 
-**Ainda não existem** (planeadas para as fases seguintes): coleção de registo de faltas individuais, estado por ocorrência de aula (`estadoAula`), sumários de aula, `mensagensDele`, `feedback`.
+**Ainda não existem** (planeadas): registo de faltas individuais, estado por ocorrência de aula (`estadoAula`), `sumarios`, `mensagensDele`, `feedback`, `registosDiarios` e `streakRegisto` (secção 25), `resumo/estado`, `alertas` e `sessaoAjuda` (secção 26). Nas secções 25 e 26 os caminhos vinham escritos com `utilizadores` em vez de `users` e foram corrigidos.
 
 ### 9.1 Regras de segurança — em produção
 
@@ -1283,7 +1287,7 @@ Sistema transversal, não ecrã a ecrã. Estes 20 pontos são requisitos, não s
 
 1. **Onboarding sem nada obrigatório.** Tudo saltável, tudo editável depois no Perfil. O ecrã 4 (horário) e o 6 (notas) passam a ser úteis mas continuam saltáveis.
 2. **Estados vazios que ensinam.** Nunca "sem tarefas". Sempre "ainda não tens tarefas, toca no + para criares a primeira".
-3. **Dica de primeira visita** por ecrã, uma vez, guardada em `localStorage`, nunca volta.
+3. **Dica de primeira visita** por ecrã, uma vez, nunca volta. *(No código está guardada em `perfil/dados.dicasVistas`, no Firestore, e não em `localStorage`, para não voltar a aparecer noutro dispositivo. Mantém-se assim.)*
 4. **Desfazer em tudo o que apaga.** O apagar real no Firestore só acontece quando o toast de 5 segundos expira.
 5. **Confirmação só onde dói.** Apagar uma anotação com mais de 200 caracteres pede confirmação. Apagar uma tarefa não.
 6. **Guardar automático** com debounce de 800ms e indicador discreto "guardado".
@@ -1432,7 +1436,7 @@ A Leonor usa iPhone. Isto é o que realmente importa:
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#14100F",
-  "theme_color": "#7B1E2B",
+  "theme_color": "#6B0F1A",
   "icons": [
     { "src": "/icone-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/icone-512.png", "sizes": "512x512", "type": "image/png" },
@@ -1552,6 +1556,29 @@ Se uma fase envolver decisão visual nova (layout, paleta, tipo de animação), 
 | **12** | PWA, offline, notificações, ecrã de instalação no iOS (secção 18) | instala no iPhone, funciona offline, notifica depois de instalada | `fase 12: pwa, offline e notificações` |
 | **13** | Exportação e backup (secção 19) | PDF com dedicatória, JSON exporta e importa | `fase 13: exportar e backup` |
 | **14** | Animações temáticas de direito, marcos, carta escondida, polimento final | passa os 5 testes da secção 20 | `fase 14: animações temáticas e polimento final` |
+
+### 22.1 Estado das fases (auditado em 18-09-2026)
+
+A numeração acima é a da spec. O prompt de trabalho da sessão de 18-09-2026 usa outra (blocos A a D). Legenda: ✅ feito · ⚠️ parcial · ❌ por fazer.
+
+| Fase | Estado | O que existe e o que falta |
+|---|---|---|
+| **0** | ⚠️ quase | 6 dos 8 pontos de 3.3 feitos, regras publicadas, `.env` fora do Git. Faltam o ponto 3 (Oral de Melhoria, Registar Falta e Lançar Nota só navegam) e o ponto 7 (ecrãs 4 e 6 do Onboarding). A estrutura de pastas da secção 8 está por completar |
+| **1** | ⚠️ parcial | ✅ seed do 2.º ano, Dashboard ligado, countdown para 30/11. ❌ `calendarioEscolar.js`, `planoEstudos2Ano.js`, `tokens.css` |
+| **2** | ⚠️ parcial | ✅ motor de avaliação e testes (caso 25 a confirmar), celebração e consolo ligados. ❌ página `/notas`, árvore, simulador, pesos editáveis, média anual, histórico |
+| **3** | ⚠️ parcial | ✅ motor de faltas e testes. Não cumpre o ponto 7.4 (ver 3.4). ❌ página `/faltas`, registo em dois toques, lembrete das 24 h, histórico |
+| **4** | ⚠️ parcial | ✅ lista de cadeiras com semáforo e estado. ⚠️ horário só de leitura. ❌ tabs da cadeira, ficha, timeline, horário editável, vista de hoje, aula de agora |
+| **5** | ⚠️ parcial | ✅ dica de primeira visita, botão de ajuda por ecrã, central de Ajuda, tutorial. Os 20 pontos por verificar um a um |
+| **6** | ⚠️ parcial | ✅ ~120 frases originais, celebração, consolo, mensagem carinhosa. ❌ 150 frases com tons e quotas, autoria "dele", botão de motivação, ecrã da 1h |
+| **7** | ⚠️ parcial | ✅ anotações e pesquisa global. ❌ sebenta compilada, sumários de aula. Guardar automático e rascunho por verificar |
+| **8** | ✅ | casos práticos com estrutura jurídica, estados e painel de dúvidas agregadas |
+| **9** | ⚠️ | ✅ artigos, glossário, flashcards, leituras. Os intervalos diferem da spec (ver 3.4) |
+| **10** | ❌ | sem `coincidencias.js` nem Modo Frequência |
+| **11** | ⚠️ parcial | ✅ tarefas e cronómetro de estudo. ❌ subtarefas, aviso dos 90 min, modo "estou a passar-me" |
+| **12** | ⚠️ parcial | ✅ PWA instalável e offline (`persistentLocalCache`). ❌ notificações e ecrã de instalação para iOS |
+| **13** | ⚠️ parcial | ✅ backup JSON e impressão limpa. ❌ importador, markdown, dedicatória, sebenta |
+| **14** | ❌ | animações temáticas, marcos, carta escondida |
+| — | ❌ | **Secções 25 e 26** (registo de bem-estar e consola do Vini) não têm fase atribuída na tabela acima e não existem no código |
 
 ---
 
@@ -1684,14 +1711,14 @@ Existe, em contrapartida, uma entrada discreta na secção de Ajuda, ao lado dos
 ### 25.15 Modelo de dados
 
 ```
-utilizadores/{uid}/registosDiarios/{data}   // id = 'AAAA-MM-DD'
+users/{uid}/registosDiarios/{data}   // id = 'AAAA-MM-DD'
   manha:  { humor, energia, motivacao, sono, preenchidoEm }
   noite:  { humor, energia, motivacao, texto, opcionais: {}, preenchidoEm }
   apagado: bool
   apagadoEm: timestamp
   // quando apagado é true, manha e noite são removidos por completo
 
-utilizadores/{uid}/streakRegisto
+users/{uid}/streakRegisto
   diasSeguidos, ultimoRegisto, restaurosUsados, restaurosDisponiveis
 ```
 
@@ -1709,7 +1736,7 @@ A consola não serve para ele descobrir coisas sobre ela às escondidas. Serve p
 
 ### 26.2 Autenticação — email nas regras mais PIN
 
-Regras do Firestore (substituem as da secção 9.1):
+Regras do Firestore (substituem as da secção 9.1). *Corrigidas em 18-09-2026: o caminho é `users/{uid}` como em produção, e a regra genérica passou a `{documento=**}`. A versão original, com `{doc}`, só cobria um nível e teria negado o acesso a `cadeiras/{id}/faltas/dados` e `cadeiras/{id}/avaliacao/dados`. `EMAIL_DO_VINI_AQUI` continua por preencher e exige que o Vini tenha a sua própria conta no Firebase Auth, com o email verificado.*
 
 ```
 rules_version = '2';
@@ -1727,7 +1754,7 @@ service cloud.firestore {
         && request.auth.token.email in ['EMAIL_DO_VINI_AQUI'];
     }
 
-    match /utilizadores/{uid} {
+    match /users/{uid} {
       allow read:  if ehDono(uid) || ehAdmin();
       allow write: if ehDono(uid);
 
@@ -1746,8 +1773,9 @@ service cloud.firestore {
         allow read, write: if ehDono(uid) || ehAdmin();
       }
 
-      // tudo o resto: ela escreve, ele só lê
-      match /{colecao}/{doc} {
+      // tudo o resto: ela escreve, ele só lê (recursivo, para apanhar também
+      // cadeiras/{id}/faltas/dados e cadeiras/{id}/avaliacao/dados)
+      match /{colecao}/{documento=**} {
         allow read:  if ehDono(uid) || ehAdmin();
         allow write: if ehDono(uid) && !(colecao in ['mensagensDele']);
       }
@@ -1948,7 +1976,7 @@ A consola não é um painel de números para explorar, é uma triagem. Abre a re
 > **Solução obrigatória: documento de resumo.** A app dela mantém um único documento agregado, atualizado quando ela grava qualquer coisa. A consola lê esse documento mais o de alertas, dois documentos no total, e só vai buscar detalhe quando ele abre um cartão.
 
 ```
-utilizadores/{uid}/resumo/estado
+users/{uid}/resumo/estado
   atualizadoEm
   presenca: { online, ultimaAtividade, ecraAtual, versaoApp, pwaInstalada }
   bemEstar: {
@@ -1979,7 +2007,7 @@ utilizadores/{uid}/resumo/estado
     ultimoBackup, tamanhoDadosLocais
   }
 
-utilizadores/{uid}/alertas/{id}
+users/{uid}/alertas/{id}
   tipo: 'erro' | 'pedidoAjuda' | 'faltasNoLimite' | 'prazoAExpirar' |
         'datasEmFalta' | 'versaoAntiga' | 'bemEstar3Dias'
   severidade: 'info' | 'aviso' | 'urgente'

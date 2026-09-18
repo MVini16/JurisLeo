@@ -1,3 +1,45 @@
 /* acrescentos ao calendário: estados de aula, famílias, multi-dia, choques e marcas de fundo */
 .cal-modal__estado-aula { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
 .cal-modal__estado-nota { font-size: 0.75rem; opacity: 0.6; }
+
+/* filtro por família */
+.cal-familias {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 0 12px;
+  scrollbar-width: none;
+}
+
+.cal-familias::-webkit-scrollbar { display: none; }
+
+.cal-familia-chip {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--toque-min);
+  padding: 0 14px;
+  border-radius: 22px;
+  border: 1.5px solid rgba(120, 120, 120, 0.35);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 0.55;
+}
+
+.cal-familia-chip.ativo {
+  opacity: 1;
+  border-color: var(--cor);
+  background: color-mix(in srgb, var(--cor) 14%, transparent);
+}
+
+.cal-familia-chip__ponto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--cor);
+}

@@ -1,13 +1,17 @@
 // hook personalizado que vai buscar os dados do calendário ao firestore
-import { useState, useEffect } from 'react';
+// junta eventos únicos com as ocorrências das aulas semanais (com o estado marcado: fui, faltei...)
+import { useState, useEffect, useMemo } from 'react';
 import { db } from '../services/firebase.js';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { gerarOcorrencias, comEstados } from '../services/ocorrencias.js';
+import { useEstadosAula } from './useEstadosAula.js';
 
 export function useCalendario() {
   const [eventos, setEventos] = useState([]);
   const [aulasSemanais, setAulasSemanais] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { estados, marcar } = useEstadosAula();
 
   useEffect(() => {
     const auth = getAuth();
@@ -44,44 +48,12 @@ export function useCalendario() {
     };
   }, []);
 
-  // gera as ocorrências das aulas semanais entre dataInicio e dataFim
-  function gerarOcorrencias(aula) {
-    const ocorrencias = [];
-    const inicio = aula.dataInicio.toDate();
-    const fim = aula.dataFim.toDate();
-    const atual = new Date(inicio);
+  const todosEventos = useMemo(() => {
+    const unicos = eventos.map((ev) => ({ ...ev, chave: ev.id }));
+    const aulas = comEstados(aulasSemanais.flatMap((a) => gerarOcorrencias(a)), estados)
+      .map((o) => ({ ...o, chave: o.ocorrenciaId }));
+    return [...unicos, ...aulas];
+  }, [eventos, aulasSemanais, estados]);
 
-    // avança até ao primeiro dia da semana correto
-    while (atual.getDay() !== aula.diaSemana) {
-      atual.setDate(atual.getDate() + 1);
-    }
-
-    // gera uma ocorrência para cada semana até ao fim do semestre
-    while (atual <= fim) {
-      ocorrencias.push({
-        id: `${aula.id}-${atual.toISOString()}`,
-        titulo: aula.titulo,
-        data: new Date(atual),
-        horaInicio: aula.horaInicio,
-        horaFim: aula.horaFim,
-        cadeira: aula.cadeira,
-        sala: aula.sala,
-        tipo: 'aula',
-        contaFalta: aula.contaFalta,
-        repetido: true,
-      });
-      // avança 7 dias para a semana seguinte
-      atual.setDate(atual.getDate() + 7);
-    }
-
-    return ocorrencias;
-  }
-
-  // junta eventos únicos com ocorrências das aulas semanais
-  const todosEventos = [
-    ...eventos,
-    ...aulasSemanais.flatMap(gerarOcorrencias),
-  ];
-
-  return { eventos: todosEventos, loading };
+  return { eventos: todosEventos, loading, marcar };
 }

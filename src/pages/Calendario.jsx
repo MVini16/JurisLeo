@@ -4,8 +4,11 @@ import { db } from '../services/firebase.js';
 import { getAuth } from 'firebase/auth';
 import { useCalendario } from '../hooks/useCalendario.js';
 import ModalCriarEvento from '../components/ModalCriarEvento.jsx';
+import BotoesEstadoAula from '../components/BotoesEstadoAula.jsx';
+import { ICONE_ESTADO_AULA } from '../data/estadosAula.js';
 import { coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js';
 import './Calendario.css';
+import './CalendarioExtra.css';
 
 const MESES = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -16,6 +19,12 @@ const DIAS_SEMANA_CURTO = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
 const CORES_CADEIRA = coresCadeiras;
 
+// selo do estado da aula (fui, faltei...) ao lado do título
+function selo(ev) {
+  const icone = ICONE_ESTADO_AULA[ev.estadoAula];
+  return icone ? ` ${icone}` : '';
+}
+
 const ICONES_TIPO = {
   aula:       '📚',
   frequencia: '⚡',
@@ -25,7 +34,7 @@ const ICONES_TIPO = {
 };
 
 export default function Calendario() {
-  const { eventos, loading } = useCalendario();
+  const { eventos, loading, marcar } = useCalendario();
   const hoje = new Date();
   const [dataSelecionada, setDataSelecionada] = useState(new Date());
   const [vista, setVista] = useState('diaria');
@@ -33,7 +42,9 @@ export default function Calendario() {
   const [anoAtual, setAnoAtual] = useState(new Date().getFullYear());
   const [painelDia, setPainelDia] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
-  const [eventoDetalhe, setEventoDetalhe] = useState(null);
+  const [detalheBase, setEventoDetalhe] = useState(null);
+  // mantém o detalhe sempre com o estado mais recente (ex.: acabei de marcar "fui")
+  const eventoDetalhe = detalheBase ? (eventos.find((e) => e.chave === detalheBase.chave) || detalheBase) : null;
   const [eventoEditar, setEventoEditar] = useState(null);
 
   function eventosDoDia(data) {
@@ -192,7 +203,7 @@ export default function Calendario() {
       </button>
 
       {modalAberto && <ModalCriarEvento onFechar={() => setModalAberto(false)} dataInicial={dataSelecionada} />}
-      {eventoDetalhe && <ModalEvento evento={eventoDetalhe} onFechar={() => setEventoDetalhe(null)} onEditar={(ev) => { setEventoDetalhe(null); setEventoEditar(ev); }} onApagar={() => setEventoDetalhe(null)} ICONES_TIPO={ICONES_TIPO} CORES_CADEIRA={CORES_CADEIRA} MESES={MESES} DIAS_SEMANA={DIAS_SEMANA} />}
+      {eventoDetalhe && <ModalEvento evento={eventoDetalhe} onMarcar={marcar} onFechar={() => setEventoDetalhe(null)} onEditar={(ev) => { setEventoDetalhe(null); setEventoEditar(ev); }} onApagar={() => setEventoDetalhe(null)} ICONES_TIPO={ICONES_TIPO} CORES_CADEIRA={CORES_CADEIRA} MESES={MESES} DIAS_SEMANA={DIAS_SEMANA} />}
       {eventoEditar && <ModalCriarEvento onFechar={() => setEventoEditar(null)} dataInicial={dataSelecionada} eventoExistente={eventoEditar} />}
 
     </div>
@@ -228,7 +239,7 @@ function VistaDiaria({ data, eventos, onEventoClick, ICONES_TIPO, CORES_CADEIRA 
           {eventos.map((ev) => (
             <div key={ev.id} className="cal-diaria__sidebar-item" style={{ borderLeftColor: CORES_CADEIRA[ev.cadeira] || '#b8963e' }} onClick={() => onEventoClick(ev)}>
               <span className="cal-diaria__sidebar-item-hora">{ev.horaInicio}</span>
-              <span className="cal-diaria__sidebar-item-nome">{ICONES_TIPO[ev.tipo] || '📌'} {ev.titulo}</span>
+              <span className="cal-diaria__sidebar-item-nome">{ICONES_TIPO[ev.tipo] || '📌'} {ev.titulo}{selo(ev)}</span>
             </div>
           ))}
         </div>
@@ -243,7 +254,7 @@ function VistaDiaria({ data, eventos, onEventoClick, ICONES_TIPO, CORES_CADEIRA 
                 <div key={ev.id} className="cal-diaria__evento" style={{ backgroundColor: CORES_CADEIRA[ev.cadeira] || '#b8963e' }} onClick={() => onEventoClick(ev)}>
                   <span className="cal-diaria__evento-icone">{ICONES_TIPO[ev.tipo] || '📌'}</span>
                   <div className="cal-diaria__evento-info">
-                    <span className="cal-diaria__evento-titulo">{ev.titulo}</span>
+                    <span className="cal-diaria__evento-titulo">{ev.titulo}{selo(ev)}</span>
                     <span className="cal-diaria__evento-hora">{ev.horaInicio} – {ev.horaFim}</span>
                   </div>
                   {ev.importancia === 'alta' && <span className="cal-diaria__evento-badge">!</span>}
@@ -482,7 +493,7 @@ function PainelDia({ data, eventos, onIrParaDia, onFechar, onEventoClick, ICONES
           <div key={ev.id} className="cal-painel__evento" style={{ borderLeftColor: CORES_CADEIRA[ev.cadeira] || '#b8963e' }} onClick={() => onEventoClick(ev)}>
             <div className="cal-painel__evento-topo">
               <span className="cal-painel__evento-icone">{ICONES_TIPO[ev.tipo] || '📌'}</span>
-              <span className="cal-painel__evento-titulo">{ev.titulo}</span>
+              <span className="cal-painel__evento-titulo">{ev.titulo}{selo(ev)}</span>
               {ev.importancia === 'alta' && <span className="cal-painel__evento-importante">!</span>}
             </div>
             <span className="cal-painel__evento-hora">{ev.horaInicio} – {ev.horaFim}</span>
@@ -544,7 +555,7 @@ function BottomSheet({ data, eventos, onIrParaDia, onFechar, onEventoClick, ICON
             <div key={ev.id} className="cal-bottom-sheet__evento" style={{ borderLeftColor: CORES_CADEIRA[ev.cadeira] || '#b8963e' }} onClick={() => { onEventoClick(ev); onFechar(); }}>
               <div className="cal-bottom-sheet__evento-topo">
                 <span>{ICONES_TIPO[ev.tipo] || '📌'}</span>
-                <span className="cal-bottom-sheet__evento-titulo">{ev.titulo}</span>
+                <span className="cal-bottom-sheet__evento-titulo">{ev.titulo}{selo(ev)}</span>
                 {ev.importancia === 'alta' && <span className="cal-painel__evento-importante">!</span>}
               </div>
               <span className="cal-painel__evento-hora">{ev.horaInicio} – {ev.horaFim}</span>
@@ -589,7 +600,7 @@ function VistaLista({ eventos, mes, ano, onEventoClick, ICONES_TIPO, CORES_CADEI
               <div key={ev.id} className="cal-lista__evento" style={{ borderLeftColor: CORES_CADEIRA[ev.cadeira] || '#b8963e' }} onClick={() => onEventoClick(ev)}>
                 <span className="cal-lista__evento-icone">{ICONES_TIPO[ev.tipo] || '📌'}</span>
                 <div className="cal-lista__evento-info">
-                  <span className="cal-lista__evento-titulo">{ev.titulo}</span>
+                  <span className="cal-lista__evento-titulo">{ev.titulo}{selo(ev)}</span>
                   <span className="cal-lista__evento-hora">{ev.horaInicio} – {ev.horaFim}</span>
                   {ev.notas && <span className="cal-lista__evento-notas">{ev.notas}</span>}
                 </div>
@@ -606,7 +617,7 @@ function VistaLista({ eventos, mes, ano, onEventoClick, ICONES_TIPO, CORES_CADEI
 // ------------------------------------------------------------------
 // modal de detalhes do evento
 // ------------------------------------------------------------------
-function ModalEvento({ evento, onFechar, onEditar, onApagar, ICONES_TIPO, CORES_CADEIRA, MESES, DIAS_SEMANA }) {
+function ModalEvento({ evento, onMarcar, onFechar, onEditar, onApagar, ICONES_TIPO, CORES_CADEIRA, MESES, DIAS_SEMANA }) {
   const [confirmandoApagar, setConfirmandoApagar] = useState(false);
   const [apagando, setApagando] = useState(false);
   const data = evento.data instanceof Date ? evento.data : evento.data?.toDate?.();
@@ -639,6 +650,15 @@ function ModalEvento({ evento, onFechar, onEditar, onApagar, ICONES_TIPO, CORES_
           {evento.importancia && <div className="cal-modal__linha"><span className="cal-modal__label">⚡ Importância</span><span className={`cal-modal__importancia ${evento.importancia}`}>{evento.importancia.charAt(0).toUpperCase() + evento.importancia.slice(1)}</span></div>}
           {evento.estado && <div className="cal-modal__linha"><span className="cal-modal__label">✅ Estado</span><span style={{ textTransform: 'capitalize' }}>{evento.estado}</span></div>}
           {evento.notas && <div className="cal-modal__notas"><span className="cal-modal__label">📝 Notas</span><p>{evento.notas}</p></div>}
+          {/* aulas do horário: marca como correu (não se editam aqui, mudam-se no Horário) */}
+          {evento.repetido && (
+            <div className="cal-modal__estado-aula">
+              <span className="cal-modal__label">Como correu?</span>
+              <BotoesEstadoAula estado={evento.estadoAula} onEscolher={(estado) => onMarcar(evento, estado)} />
+              {evento.tipoAula === 'pratica' && <p className="cal-modal__estado-nota">Só as faltas às aulas práticas contam para o limite.</p>}
+            </div>
+          )}
+          {!evento.repetido && (
           <div className="cal-modal__acoes">
             {!confirmandoApagar ? (
               <>
@@ -655,6 +675,7 @@ function ModalEvento({ evento, onFechar, onEditar, onApagar, ICONES_TIPO, CORES_
               </div>
             )}
           </div>
+          )}
         </div>
       </div>
     </div>

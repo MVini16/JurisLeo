@@ -1,0 +1,3 @@
+/* acrescentos ao calendário: estados de aula, famílias, multi-dia, choques e marcas de fundo */
+.cal-modal__estado-aula { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.cal-modal__estado-nota { font-size: 0.75rem; opacity: 0.6; }

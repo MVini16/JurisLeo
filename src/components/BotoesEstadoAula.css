@@ -1,0 +1,25 @@
+.botoes-estado {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.botoes-estado__btn {
+  min-height: var(--toque-min);
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(120, 120, 120, 0.35);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.botoes-estado__btn.ativo { font-weight: 800; }
+.botoes-estado__btn--fui.ativo { border-color: var(--sucesso); background: rgba(46, 125, 91, 0.15); }
+.botoes-estado__btn--faltei.ativo { border-color: var(--perigo); background: rgba(179, 66, 58, 0.14); }
+.botoes-estado__btn--stotFaltou.ativo { border-color: var(--info); background: rgba(61, 90, 128, 0.15); }
+.botoes-estado__btn--cancelada.ativo { border-color: var(--aviso); background: rgba(201, 132, 62, 0.16); }
+.botoes-estado__btn:disabled { opacity: 0.5; }

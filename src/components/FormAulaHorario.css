@@ -1,0 +1,128 @@
+.form-aula-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 310;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.form-aula {
+  width: 100%;
+  max-width: 520px;
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 12px 20px calc(20px + env(safe-area-inset-bottom));
+  border-radius: 22px 22px 0 0;
+  background: var(--bg-light);
+  color: var(--text-light);
+  font-family: 'Lato', sans-serif;
+  animation: form-aula-entrar 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html.dark .form-aula { background: var(--bg-dark); color: var(--text-dark); }
+
+.form-aula__handle {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(120, 120, 120, 0.4);
+  margin: 0 auto 14px;
+}
+
+.form-aula__titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  color: var(--burgundy);
+}
+
+html.dark .form-aula__titulo { color: var(--gold); }
+
+.form-aula__label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.6;
+  margin: 14px 0 8px;
+}
+
+.form-aula__opcoes { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.form-aula__chip {
+  min-height: var(--toque-min);
+  padding: 0 14px;
+  border-radius: 22px;
+  border: 1.5px solid rgba(120, 120, 120, 0.35);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-aula__chip.ativo {
+  border-color: var(--cor, var(--burgundy));
+  background: rgba(107, 15, 26, 0.1);
+  color: var(--burgundy);
+}
+
+html.dark .form-aula__chip.ativo {
+  border-color: var(--cor, var(--gold));
+  background: rgba(201, 168, 76, 0.15);
+  color: var(--gold);
+}
+
+.form-aula__input {
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(120, 120, 120, 0.35);
+  background: rgba(255, 255, 255, 0.6);
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+html.dark .form-aula__input { background: rgba(255, 255, 255, 0.06); }
+
+.form-aula__aviso {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(201, 132, 62, 0.16);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.form-aula__nota { font-size: 0.75rem; opacity: 0.6; margin-top: 12px; }
+.form-aula__erro { font-size: 0.83rem; color: var(--perigo); margin-top: 8px; }
+
+.form-aula__botoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+.form-aula__btn {
+  flex: 1;
+  min-width: 96px;
+  min-height: var(--toque-min);
+  border-radius: 12px;
+  border: none;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.form-aula__btn--pri { background: var(--burgundy); color: #fff; }
+html.dark .form-aula__btn--pri { background: var(--gold); color: var(--bg-dark); }
+.form-aula__btn--sec { background: none; border: 1.5px solid rgba(120, 120, 120, 0.35); color: inherit; }
+.form-aula__btn--perigo { background: var(--perigo); color: #fff; }
+.form-aula__btn:disabled { opacity: 0.5; }
+
+@keyframes form-aula-entrar {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

@@ -1,0 +1,95 @@
+.arvore {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.arvore__passo {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  padding: 0 0 14px 0;
+}
+
+/* linha que liga os passos */
+.arvore__passo::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 24px;
+  bottom: 0;
+  width: 2px;
+  background: rgba(120, 120, 120, 0.25);
+}
+
+.arvore__passo:last-of-type::before { display: none; }
+
+.arvore__marca {
+  flex: 0 0 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(120, 120, 120, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  background: transparent;
+}
+
+.arvore__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.arvore__titulo {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.arvore__regra {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  opacity: 0.75;
+}
+
+/* passo em que estás */
+.arvore__passo--atual .arvore__marca {
+  border-color: var(--gold);
+  background: var(--gold);
+  animation: arvore-pulso 2.4s ease-in-out infinite;
+}
+
+.arvore__passo--atual .arvore__titulo { color: var(--burgundy); }
+html.dark .arvore__passo--atual .arvore__titulo { color: var(--gold); }
+
+/* passo já feito */
+.arvore__passo--feito .arvore__marca {
+  border-color: var(--sucesso);
+  color: var(--sucesso);
+}
+
+/* o que ainda não é contigo fica esbatido */
+.arvore__passo--esbatido { opacity: 0.4; }
+
+.arvore__fim {
+  margin-top: 4px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.arvore__fim--aprovada { background: rgba(46, 125, 91, 0.15); color: var(--sucesso); }
+.arvore__fim--excluida { background: rgba(120, 120, 120, 0.15); }
+
+@keyframes arvore-pulso {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+}

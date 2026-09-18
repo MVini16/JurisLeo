@@ -1,0 +1,285 @@
+.notas-pagina {
+  min-height: 100vh;
+  padding: 24px 20px 100px;
+  max-width: 720px;
+  margin: 0 auto;
+  font-family: 'Lato', sans-serif;
+  color: var(--text-light);
+}
+
+.notas-pagina.dark { color: var(--text-dark); }
+
+.notas-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.notas-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: var(--burgundy);
+}
+
+.notas-pagina.dark .notas-titulo { color: var(--gold); }
+
+.notas-subtitulo {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.55;
+}
+
+.notas-btn-lancar {
+  min-height: var(--toque-min);
+  padding: 0 18px;
+  border-radius: 22px;
+  border: none;
+  background: linear-gradient(135deg, var(--burgundy), var(--gold));
+  color: #fff;
+  font-weight: 700;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.notas-loading { opacity: 0.6; padding: 20px 0; }
+
+/* média do ano */
+.notas-media {
+  padding: 18px;
+  border-radius: 16px;
+  background: rgba(201, 168, 76, 0.12);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  margin-bottom: 18px;
+}
+
+.notas-media__titulo {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.65;
+  margin-bottom: 6px;
+}
+
+.notas-media__linha {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.notas-media__numero {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--burgundy);
+}
+
+.notas-pagina.dark .notas-media__numero { color: var(--gold); }
+
+.notas-media__escala {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 20px;
+  background: rgba(107, 15, 26, 0.12);
+}
+
+.notas-media__vazio,
+.notas-media__detalhe { font-size: 0.88rem; line-height: 1.5; opacity: 0.8; }
+
+/* o bónus tem linha própria, separada da média */
+.notas-media__bonus {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(120, 120, 120, 0.25);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+.notas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* cartão de cada cadeira */
+.nota-cartao {
+  display: flex;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(120, 120, 120, 0.2);
+}
+
+.notas-pagina.dark .nota-cartao { background: rgba(255, 255, 255, 0.05); }
+
+.nota-cartao__barra {
+  flex: 0 0 6px;
+  background: var(--cor);
+}
+
+.nota-cartao__corpo {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 16px 16px;
+}
+
+.nota-cartao__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.nota-cartao__abrev {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.nota-chip {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(120, 120, 120, 0.18);
+}
+
+.nota-chip--aprovada { background: rgba(46, 125, 91, 0.2); color: var(--sucesso); }
+.nota-chip--admitidaEscrito,
+.nota-chip--admitidaOral { background: rgba(201, 168, 76, 0.28); color: #9a7a1e; }
+.nota-chip--passaMetodoB { background: rgba(107, 15, 26, 0.15); color: var(--burgundy); }
+.nota-chip--excluida { background: rgba(120, 120, 120, 0.25); }
+
+.nota-cartao__explicacao { font-size: 0.92rem; line-height: 1.5; }
+.nota-cartao__proximo { font-size: 0.85rem; line-height: 1.45; opacity: 0.75; margin-top: 6px; }
+.nota-cartao__aviso { font-size: 0.8rem; opacity: 0.75; margin-top: 6px; }
+
+.nota-cartao__numeros {
+  display: flex;
+  gap: 16px;
+  margin: 12px 0 4px;
+}
+
+.nota-numero {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.nota-numero small {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+}
+
+.nota-numero strong {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+}
+
+.nota-numero--final strong { color: var(--burgundy); }
+.notas-pagina.dark .nota-numero--final strong { color: var(--gold); }
+
+.nota-cartao__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.nota-acao {
+  min-height: var(--toque-min);
+  padding: 0 14px;
+  border-radius: 22px;
+  border: 1.5px solid rgba(120, 120, 120, 0.35);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nota-acao.ativo {
+  border-color: var(--burgundy);
+  color: var(--burgundy);
+  background: rgba(107, 15, 26, 0.08);
+}
+
+.notas-pagina.dark .nota-acao.ativo {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(201, 168, 76, 0.12);
+}
+
+.nota-acao--pri {
+  border: none;
+  background: var(--burgundy);
+  color: #fff;
+}
+
+.notas-pagina.dark .nota-acao--pri {
+  background: var(--gold);
+  color: var(--bg-dark);
+}
+
+.nota-acao:disabled { opacity: 0.5; }
+
+.nota-painel {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(120, 120, 120, 0.2);
+}
+
+/* simulador */
+.simulador__label { display: block; font-size: 0.9rem; margin-bottom: 8px; }
+
+.simulador__slider {
+  width: 100%;
+  min-height: var(--toque-min);
+  accent-color: var(--burgundy);
+}
+
+.notas-pagina.dark .simulador__slider { accent-color: var(--gold); }
+
+.simulador__escala {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  opacity: 0.55;
+}
+
+.simulador__resultado {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(120, 120, 120, 0.1);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+/* impossível diz-se com jeito: tom informativo, sem vermelho */
+.simulador__resultado--impossivel { background: rgba(61, 90, 128, 0.14); }
+
+.pesos__linha { font-size: 0.9rem; margin-bottom: 4px; }
+.pesos__nota { font-size: 0.8rem; line-height: 1.5; opacity: 0.7; margin: 8px 0 12px; }
+.pesos__erro { font-size: 0.82rem; color: var(--perigo); margin-top: 8px; }
+
+.notas-aviso {
+  margin-top: 22px;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  opacity: 0.55;
+  text-align: center;
+}

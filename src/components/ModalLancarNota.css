@@ -1,0 +1,151 @@
+.lancar-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.lancar-modal {
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 12px 20px calc(24px + env(safe-area-inset-bottom));
+  border-radius: 22px 22px 0 0;
+  background: var(--bg-light);
+  color: var(--text-light);
+  font-family: 'Lato', sans-serif;
+  animation: lancar-entrar 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html.dark .lancar-modal {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+.lancar-handle {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(120, 120, 120, 0.4);
+  margin: 0 auto 14px;
+}
+
+.lancar-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  color: var(--burgundy);
+  margin-bottom: 8px;
+}
+
+html.dark .lancar-titulo { color: var(--gold); }
+
+.lancar-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.6;
+  margin: 16px 0 8px;
+}
+
+.lancar-opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lancar-chip {
+  min-height: var(--toque-min);
+  padding: 0 16px;
+  border-radius: 22px;
+  border: 1.5px solid rgba(120, 120, 120, 0.35);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lancar-chip.ativo {
+  border-color: var(--cor, var(--burgundy));
+  background: rgba(107, 15, 26, 0.1);
+  color: var(--burgundy);
+}
+
+html.dark .lancar-chip.ativo {
+  border-color: var(--cor, var(--gold));
+  background: rgba(201, 168, 76, 0.15);
+  color: var(--gold);
+}
+
+.lancar-input {
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(120, 120, 120, 0.35);
+  background: rgba(255, 255, 255, 0.6);
+  color: inherit;
+  font-family: inherit;
+  font-size: 1.1rem;
+  outline: none;
+}
+
+html.dark .lancar-input { background: rgba(255, 255, 255, 0.06); }
+.lancar-input:focus { border-color: var(--gold); }
+
+.lancar-previsao {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(120, 120, 120, 0.1);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.lancar-erro {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: var(--perigo);
+}
+
+.lancar-botoes {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.lancar-btn {
+  flex: 1;
+  min-height: var(--toque-min);
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+}
+
+.lancar-btn--sec {
+  background: none;
+  border: 1.5px solid rgba(120, 120, 120, 0.35);
+  color: inherit;
+}
+
+.lancar-btn--pri {
+  background: linear-gradient(135deg, var(--burgundy), var(--gold));
+  color: #fff;
+}
+
+.lancar-btn:disabled { opacity: 0.5; cursor: default; }
+
+@keyframes lancar-entrar {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

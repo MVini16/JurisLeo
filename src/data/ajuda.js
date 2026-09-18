@@ -41,6 +41,16 @@ export const ajudaPorRota = {
       'Em Faltas, os números "agora" e "até final do semestre" são propositalmente diferentes — no início do semestre cada falta pesa mais.',
     ],
   },
+  '/notas': {
+    titulo: 'Notas',
+    texto: 'O estado de cada cadeira segundo o regulamento de avaliação, explicado por palavras, mais a tua média do ano.',
+    pontos: [
+      '"Lançar nota" grava um elemento de avaliação e mostra logo o que isso significa.',
+      '"Onde estou" mostra o caminho do regulamento e em que passo estás.',
+      '"Simular" diz-te que nota precisas no exame para chegares à nota que queres.',
+      '"Pesos" deixa-te ajustar a ponderação da contínua, se o regente tiver fixado outra.',
+    ],
+  },
   '/tarefas': {
     titulo: 'Tarefas',
     texto: 'Tudo o que tens para fazer, agrupado por cadeira ou por prazo.',

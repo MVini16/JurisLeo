@@ -49,3 +49,25 @@ html:not(.dark) body {
   width: 100%;
   min-height: 100vh;
 }
+
+/* cores semânticas e das famílias de eventos — partilhadas pelas páginas novas */
+:root {
+  --sucesso: #2e7d5b;
+  --aviso: #c9843e;
+  --perigo: #b3423a;
+  --info: #3d5a80;
+  --familia-ferias: #3d5a80;
+  --familia-social: #b5838d;
+  --familia-saude: #2e6f5e;
+  --feriado: #b3423a;
+  --toque-min: 44px;
+}
+
+/* quem pede menos movimento não leva animações */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

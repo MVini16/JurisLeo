@@ -120,3 +120,16 @@ html.dark .celebracao-nota { color: #C9A84C; }
   line-height: 1.5;
   opacity: 0.75;
 }
+
+.celebracao-saltar {
+  margin-top: 10px;
+  min-height: var(--toque-min);
+  padding: 0 18px;
+  border: none;
+  background: none;
+  color: inherit;
+  opacity: 0.6;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}

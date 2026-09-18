@@ -10,7 +10,7 @@ export default function Celebracao({ ativa = true, nota, onTerminar }) {
   const [frase] = useState(() => escolherFrase(nota >= 16 ? 'posNotaExcelente' : 'posNotaBoa'));
 
   useEffect(() => {
-    const t = setTimeout(onTerminar, 3400);
+    const t = setTimeout(onTerminar, 2500);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -32,6 +32,7 @@ export default function Celebracao({ ativa = true, nota, onTerminar }) {
         </svg>
         <span className="celebracao-nota">{nota}</span>
         <p className="celebracao-frase">{frase}</p>
+        <button className="celebracao-saltar" onClick={onTerminar}>Saltar</button>
       </div>
     </div>
   );

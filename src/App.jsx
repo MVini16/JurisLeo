@@ -10,6 +10,7 @@ import Horario from './pages/Horario'
 import Cadeiras from './pages/Cadeiras'
 import Cadeira from './pages/Cadeira'
 import Notas from './pages/Notas'
+import Faltas from './pages/Faltas'
 import Anotacoes from './pages/Anotacoes'
 import Anotacao from './pages/Anotacao'
 import Casos from './pages/Casos'
@@ -42,6 +43,7 @@ function App() {
         <Route path="/cadeiras" element={<NavBar><Cadeiras /></NavBar>} />
         <Route path="/cadeiras/:id" element={<NavBar><Cadeira /></NavBar>} />
         <Route path="/notas" element={<NavBar><Notas /></NavBar>} />
+        <Route path="/faltas" element={<NavBar><Faltas /></NavBar>} />
         <Route path="/anotacoes" element={<NavBar><Anotacoes /></NavBar>} />
         <Route path="/anotacoes/:id" element={<NavBar><Anotacao /></NavBar>} />
         <Route path="/casos" element={<NavBar><Casos /></NavBar>} />

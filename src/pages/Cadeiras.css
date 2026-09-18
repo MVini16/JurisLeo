@@ -241,3 +241,27 @@
 .cadeiras-recurso__icon {
   font-size: 1.3rem;
 }
+
+.cadeiras-atalhos {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.cadeiras-atalho {
+  flex: 1;
+  min-height: var(--toque-min);
+  border-radius: 14px;
+  border: 1.5px solid rgba(107, 15, 26, 0.25);
+  background: none;
+  color: var(--burgundy);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.cadeiras-pagina.dark .cadeiras-atalho {
+  border-color: rgba(201, 168, 76, 0.35);
+  color: var(--gold);
+}

@@ -51,6 +51,16 @@ export const ajudaPorRota = {
       '"Pesos" deixa-te ajustar a ponderação da contínua, se o regente tiver fixado outra.',
     ],
   },
+  '/faltas': {
+    titulo: 'Faltas',
+    texto: 'Quantas faltas ainda podes dar em cada cadeira, e o registo de cada uma.',
+    pontos: [
+      'Para registar: toca na cadeira e depois em "Faltei". O motivo pode ficar para depois.',
+      'O número grande é quantas faltas ainda podes dar até ao fim do semestre.',
+      'No início do semestre cada falta pesa mais, porque a conta é feita sobre as aulas já dadas.',
+      'Se justificares uma falta, tens até ao fim do dia útil seguinte para entregar o comprovativo.',
+    ],
+  },
   '/tarefas': {
     titulo: 'Tarefas',
     texto: 'Tudo o que tens para fazer, agrupado por cadeira ou por prazo.',

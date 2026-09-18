@@ -1,7 +1,7 @@
 // inicializa o calendário do utilizador no firestore com o horário real do 1.º semestre
 
 import { db } from './firebase.js';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, getDocs, Timestamp } from 'firebase/firestore';
 import { horarioS1, temposLetivos, calendarioS1, abrevCadeiras } from '../data/dadosLeonor.js';
 
 const INICIO_AULAS = new Date(calendarioS1.inicioAulas + 'T00:00:00');
@@ -25,6 +25,7 @@ function gerarAulasIniciais() {
       dataInicio: Timestamp.fromDate(INICIO_AULAS),
       dataFim: Timestamp.fromDate(FIM_AULAS),
       // só as práticas contam para o motor de faltas
+      tipoAula: aula.tipo,
       contaFalta: aula.tipo === 'pratica',
     };
   });
@@ -58,6 +59,14 @@ function gerarEventosIniciais() {
 export async function initCalendario(userId) {
   await initAulasSemanais(userId);
   await initEventos(userId);
+}
+
+// carrega o horário real do semestre para quem ainda não o tem (só cria se a coleção estiver vazia)
+export async function carregarHorarioInicial(userId) {
+  const existentes = await getDocs(collection(db, 'users', userId, 'aulasSemanais'));
+  if (!existentes.empty) return false;
+  await initAulasSemanais(userId);
+  return true;
 }
 
 // cria os templates das aulas semanais no firestore

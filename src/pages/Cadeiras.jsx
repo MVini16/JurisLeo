@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useCadeiras } from '../hooks/useCadeiras.js';
 import { useCadeira } from '../hooks/useCadeira.js';
-import { avaliarCadeira, calcularNotaAC } from '../services/avaliacao.js';
+import { estadoDaCadeira, pesosDaCadeira } from '../services/notas.js';
 import { estadoFaltas } from '../services/faltas.js';
 import { getCadeira } from '../data/dadosLeonor.js';
 import './Cadeiras.css';
@@ -47,6 +47,10 @@ export default function Cadeiras() {
       </div>
 
       <section className="cadeiras-recursos">
+        <div className="cadeiras-atalhos no-print">
+          <button className="cadeiras-atalho" onClick={() => navigate('/notas')}>📊 Notas</button>
+          <button className="cadeiras-atalho" onClick={() => navigate('/faltas')}>📋 Faltas</button>
+        </div>
         <h2 className="cadeiras-recursos__titulo">Recursos</h2>
         <div className="cadeiras-recursos__grid">
           <button className="cadeiras-recurso" onClick={() => navigate('/glossario')}>
@@ -90,21 +94,9 @@ function CartaoCadeira({ cadeira, onClick }) {
     });
   }
 
-  let avaliacao = null;
-  if (avaliacaoDados) {
-    const pesos = infoBase?.pesos || { provaEscrita: 0.5, outrosElementos: 0.5 };
-    const notaAC = avaliacaoDados.provaEscrita != null && avaliacaoDados.outrosElementos != null
-      ? calcularNotaAC({ provaEscrita: avaliacaoDados.provaEscrita, outrosElementos: avaliacaoDados.outrosElementos, pesos })
-      : null;
-    avaliacao = avaliarCadeira({
-      metodo: cadeira.metodo,
-      notaAC,
-      exameEscrito: avaliacaoDados.exameEscrito,
-      exameOral: avaliacaoDados.exameOral,
-      exameRecurso: avaliacaoDados.exameRecurso,
-      melhoriaOral: avaliacaoDados.melhoriaOral,
-    });
-  }
+  const avaliacao = avaliacaoDados
+    ? estadoDaCadeira({ metodo: cadeira.metodo, avaliacaoDados, pesos: pesosDaCadeira(cadeira, infoBase) }).resultado
+    : null;
 
   return (
     <button className="cartao-cadeira" style={{ '--cor': cor }} onClick={onClick}>
@@ -123,7 +115,7 @@ function CartaoCadeira({ cadeira, onClick }) {
           )}
           {faltas && (
             <span className={`chip-semaforo chip-semaforo--${faltas.semaforo}`}>
-              {faltas.excluida ? 'Excluída' : `${faltas.faltasRestantes} falta${faltas.faltasRestantes === 1 ? '' : 's'} até ao limite`}
+              {faltas.excluidaConfirmada ? 'Excluída' : `${faltas.faltasRestantesSemestre} falta${faltas.faltasRestantesSemestre === 1 ? '' : 's'} até ao limite`}
             </span>
           )}
         </div>

@@ -1,0 +1,67 @@
+.semaforo {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(120, 120, 120, 0.08);
+}
+
+.semaforo--verde { background: rgba(46, 125, 91, 0.1); }
+.semaforo--amarelo { background: rgba(201, 132, 62, 0.14); }
+.semaforo--vermelho { background: rgba(179, 66, 58, 0.1); }
+
+.semaforo__topo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.semaforo__luz {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(120, 120, 120, 0.5);
+}
+
+.semaforo--verde .semaforo__luz { background: var(--sucesso); }
+.semaforo--amarelo .semaforo__luz { background: var(--aviso); }
+.semaforo--vermelho .semaforo__luz { background: var(--perigo); }
+
+.semaforo__rotulo {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.semaforo__numeros {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 10px;
+}
+
+.semaforo__numero {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.semaforo__numero strong {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.semaforo__numero small {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  opacity: 0.7;
+}
+
+/* o número secundário é só informação, por isso fica mais discreto */
+.semaforo__numero--sec strong { font-size: 1.4rem; opacity: 0.75; }
+
+.semaforo__explicacao { font-size: 0.88rem; line-height: 1.5; }
+.semaforo__aviso { font-size: 0.8rem; line-height: 1.5; opacity: 0.8; margin-top: 6px; }
+.semaforo__previstas { font-size: 0.72rem; opacity: 0.55; margin-top: 6px; }

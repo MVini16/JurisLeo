@@ -86,7 +86,7 @@ const itensMais = [
   { label: 'Novo Caso', icon: '⚖️', cor: '#2E6F5E', acao: 'navegar', destino: '/casos/novo' },
   { label: 'Nova Frequência', icon: '📅', cor: '#6B0F1A', acao: 'frequencia' },
   { label: 'Oral de Melhoria', icon: '🗣️', cor: '#C9A84C', acao: 'navegar', destino: '/cadeiras' },
-  { label: 'Registar Falta', icon: '❌', cor: '#EC4899', acao: 'navegar', destino: '/cadeiras' },
+  { label: 'Registar Falta', icon: '❌', cor: '#EC4899', acao: 'navegar', destino: '/faltas' },
   { label: 'Lançar Nota', icon: '📊', cor: '#EA580C', acao: 'navegar', destino: '/notas' },
   { label: 'Estudar', icon: '⏱️', cor: '#0F766E', acao: 'navegar', destino: '/estudo' },
 ]

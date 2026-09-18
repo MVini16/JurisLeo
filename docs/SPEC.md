@@ -1,6 +1,6 @@
 # JURISLEO — ESPECIFICAÇÃO COMPLETA DE CONCLUSÃO
 
-**Versão:** 2.0 (completa)
+**Versão:** 2.0 (completa) · secções 3, 9 e 10 alinhadas com o código em 18-09-2026
 **Data:** 16-09-2026
 **Para:** Claude Code
 **Repositório:** `git@github.com:MVini16/JurisLeo.git`
@@ -97,45 +97,69 @@ DATAS DAS FREQUÊNCIAS:                        ainda não saíram, janela oficia
 
 ---
 
-## 3. ESTADO ATUAL DO CÓDIGO (última sessão: 03-05-2026)
+## 3. ESTADO ATUAL DO CÓDIGO (auditado em 18-09-2026)
+
+> Esta secção foi reescrita a partir de `docs/ESTADO-REAL.md`. A versão original, de 03-05-2026, estava desatualizada: quase tudo o que aí figurava como placeholder já foi construído.
 
 ### 3.1 Stack em uso
 
-React + Vite · Firebase (Auth Email/Password, Firestore região `eur3`, Hosting) · React Router DOM · CSS puro com variáveis · Context API para tema · fonte Playfair Display.
+React 19 + Vite · Firebase (Auth Email/Password, Firestore com cache offline persistente, Hosting) · React Router DOM · CSS puro com variáveis (`src/index.css`) · Context API para tema · `vite-plugin-pwa` · Vitest. Fonte atual: Georgia (ver secção 10).
 
 ### 3.2 Inventário do que existe
 
 | Ficheiro | Estado |
 |---|---|
-| `src/firebase.js` | Funciona. Config via `VITE_*` do `.env` |
-| `src/initFirestore.js` | Funciona, mas **está no sítio errado** e com cadeiras do 1.º ano |
+| `src/services/firebase.js` | Funciona. Config via `VITE_*` do `.env`. Firestore com `persistentLocalCache` |
+| `src/services/initFirestore.js` | Movido para `services/`. Seed com as 5 cadeiras do 2.º ano. Exporta `seedCadeiras` e `limparCadeirasAntigas` |
 | `src/services/auth.js` | Funciona. `registar()`, `login()`, `logout()`, erros em PT |
-| `src/services/initCalendario.js` | Funciona. Aulas semanais e eventos de exemplo |
-| `src/hooks/useCalendario.js` | Funciona. `onSnapshot` em tempo real |
-| `src/context/ThemeContext.jsx` | Funciona. Dark/light em `localStorage` |
-| `src/context/useTheme.js` | Funciona |
-| `src/components/NavBar.jsx` + `.css` | Funciona visualmente. **Menu + não faz nada** |
-| `src/components/ModalCriarEvento.jsx` + `.css` | Funciona ao criar. **Não preenche ao editar** |
-| `src/pages/SplashScreen.jsx` | Completa e bonita. **Não mexer sem razão** |
-| `src/pages/Login.jsx` | Completa |
-| `src/pages/Onboarding.jsx` | Completa, 6 ecrãs, easter egg em 3 fases. **Não guarda tema no Firestore** |
-| `src/pages/Dashboard.jsx` | Bonita. **Dados falsos, não ligada ao Firestore** |
-| `src/pages/Calendario.jsx` + `.css` | 4 vistas funcionais, modal de detalhes, editar e apagar |
-| `src/pages/Horario.jsx` | **Placeholder vazio** |
-| `src/pages/Cadeiras.jsx` | **Placeholder vazio** |
-| `src/pages/Tarefas.jsx` | **Placeholder vazio** |
-| `src/pages/Perfil.jsx` | **Placeholder vazio** |
+| `src/services/initCalendario.js` | Funciona. Gera `aulasSemanais` a partir de `horarioS1` e um evento de frequência indicativo |
+| `src/services/avaliacao.js` + `.test.js` | **Motor feito**, função pura. Exporta `arredondar`, `calcularNotaAC`, `avaliarCadeira`, `simularNotaNecessaria`, `calcularMediaAnual`, `escalaQualitativa` |
+| `src/services/faltas.js` + `.test.js` | **Motor feito**, função pura, `estadoFaltas`. Não segue ainda o ponto 7.4 (ver 3.4) |
+| `src/services/repeticaoEspacada.js` + `.test.js` | Feito (flashcards) |
+| `src/services/exportar.js` | Feito. Exporta tudo para `.json` |
+| `src/context/ThemeContext.jsx` | Funciona. Dark/light em `localStorage` **e** em `configuracoes/dados.tema` (com `useRef` anti-ciclo) |
+| `src/components/NavBar.jsx` | Funciona. Menu + com 8 itens, sidebar no desktop, tab bar no mobile |
+| `src/components/ModalCriarEvento.jsx` | Cria **e edita** (preenche os campos com `eventoExistente`) |
+| `src/components/Celebracao.jsx`, `EcraConsolo.jsx`, `MensagemCarinhosa.jsx` | Feitos, ligados à página da cadeira |
+| `src/components/BotaoAjuda.jsx`, `DicaPrimeiraVez.jsx`, `BotaoVoltar.jsx`, `Tutorial.jsx` | Feitos |
+| `src/pages/SplashScreen.jsx`, `Login.jsx` | Completas |
+| `src/pages/Onboarding.jsx` | 6 ecrãs, easter egg em 3 fases. Guarda o tema em `configuracoes/dados`. **Ecrã 4 (horário) e ecrã 6 (notas anteriores) continuam placeholders** |
+| `src/pages/Dashboard.jsx` | Ligada ao Firestore por `useDashboard` e `useTarefas`. Mostra aulas de hoje, tarefas e frequência. **Falta "aula de agora e seguinte"** |
+| `src/pages/Calendario.jsx` | 4 vistas, modal de detalhes, editar e apagar. Eventos com uma só `data` |
+| `src/pages/Tarefas.jsx` | **Completa** e ligada ao Firestore (criar, editar, concluir, apagar, filtros, agrupamento) |
+| `src/pages/Horario.jsx` | Grelha semanal só de leitura, a partir de `dadosLeonor.js` |
+| `src/pages/Cadeiras.jsx` | Lista com semáforo de faltas e estado de avaliação |
+| `src/pages/Cadeira.jsx` | Formulário de notas e faltas ligado aos motores; celebração e consolo. **Sem tabs** |
+| `src/pages/Perfil.jsx` | Dados, tema, logout, rever tutorial, ajuda, exportar, reparar cadeiras |
+| `src/pages/Anotacoes`, `Anotacao`, `Casos`, `Caso`, `Estudo`, `Glossario`, `Artigos`, `Leituras`, `Pesquisa`, `Flashcards`, `Ajuda` | Feitas |
+| `src/data/` | `dadosLeonor.js`, `motivosFalta.js`, `frases.js`, `ajuda.js` |
+| `src/styles/` | Só `imprimir.css` |
 
-### 3.3 Dívida técnica a liquidar na Fase 0
+### 3.3 Dívida técnica da Fase 0
 
-1. `src/initFirestore.js` → mover para `src/services/initFirestore.js` e corrigir todos os imports
-2. `ModalCriarEvento` não preenche campos quando recebe `eventoExistente`
-3. As 6 opções do menu + da NavBar não estão ligadas a nada
-4. Dashboard mostra nome, frases e countdown falsos
-5. Onboarding recolhe preferência de tema mas não a persiste no Firestore
-6. **Seed de cadeiras é do 1.º ano** (TGDC II, IED II, DC II, HDP, HIP). Ela está no 2.º ano. Substituir por completo.
-7. Ecrã 4 do Onboarding (horário) e ecrã 6 (notas anteriores) são placeholders
-8. Regras do Firestore provavelmente em modo de teste. Verificar e endurecer.
+| # | Item | Estado |
+|---|---|---|
+| 1 | Mover `initFirestore.js` para `services/` | ✅ feito |
+| 2 | `ModalCriarEvento` preencher ao editar | ✅ feito |
+| 3 | Ligar as opções do menu + | ⚠️ parcial: Nova Tarefa, Anotação, Caso, Estudo e Frequência funcionam. **Oral de Melhoria, Registar Falta e Lançar Nota só navegam para `/cadeiras`** (a `Cadeiras.jsx` não lê `state.abrirModal`) |
+| 4 | Dashboard com dados reais | ✅ feito (nome, frase, aulas, tarefas, countdown) |
+| 5 | Onboarding guardar o tema no Firestore | ✅ feito |
+| 6 | Seed do 1.º ano → 2.º ano | ✅ feito |
+| 7 | Ecrãs 4 e 6 do Onboarding | ❌ continuam placeholders |
+| 8 | Regras do Firestore | ✅ endurecidas e publicadas; `firebase.json` referencia regras e índices |
+
+### 3.4 O que ainda não existe, ou difere do resto desta spec
+
+- **Ficheiros de dados em falta:** `calendarioEscolar.js`, `planoEstudos2Ano.js`, `feriados.js`, `erros.js`. As datas do 1.º semestre existem só como `calendarioS1` dentro de `dadosLeonor.js`.
+- **Páginas em falta:** `/notas`, `/faltas`, `/frequencia`, `/assistente`. `Cadeira.jsx` não tem tabs. `Horario.jsx` não mostra docente, não edita e não tem vista de hoje.
+- **Componentes em falta:** `ModalBase`, `Toast`, `EstadoVazio`, `SemaforoFaltas`, `ArvoreAvaliacao`, `EditavelNoSitio`, `BotaoMotivacao`, `IndicadorOffline` e outros da secção 12.
+- **Calendário:** não há `estadoAula`, famílias de eventos, `dataInicio`/`dataFim`, deteção de choques, feriados nem épocas de exames. `aulasPraticasLecionadas` é um número editado à mão em `Cadeira.jsx`.
+- **`simularNotaNecessaria` e `calcularMediaAnual`** existem no motor mas nenhuma página os usa.
+- **Motor de faltas vs. ponto 7.4:** `estadoFaltas` calcula `faltasRestantes` sobre as aulas lecionadas e o semáforo assenta nisso. A secção 5.4.1 pede o número principal sobre as 30 previstas e nunca vermelho antes de metade do semestre só pela proporção corrente. **A resolver na Fase 3.**
+- **Inconsistência interna desta spec, caso 25 (secção 6.5):** a tabela diz `excluida` com nota 10, o texto ao lado diz "aprovada com 10". O código segue o texto (média arredondada) e está marcado como caso limite. **A confirmar com o Vini e a Leonor.**
+- **Inconsistência interna desta spec, faltas:** a tabela 7.5 usa 26 aulas previstas, a secção 5.4 usa 30. Os testes em `faltas.test.js` seguem a tabela (26). Os dados reais da Leonor usam 30.
+- **Modelo de dados:** a secção 9 descreve o que está em produção. As coleções `notas`, `faltas`, `aulas`, `sumarios`, `mensagensDele` e `feedback` da versão original **não existem**.
+- **Nomes reais do Firestore:** caminho `users/{uid}` (não `utilizadores`), aulas em `aulasSemanais` (não `aulas`), tema em `configuracoes/dados` (não em `preferencias`).
 
 ---
 
@@ -850,97 +874,74 @@ src/
 
 ## 9. MODELO DE DADOS FIRESTORE
 
-Tudo debaixo de `utilizadores/{uid}`. Nada global.
+> Esta secção descreve o que **está em produção** (auditado em 18-09-2026). O modelo teórico da versão original foi substituído. Tudo o que a app acrescentar daqui para a frente segue o mesmo padrão.
+
+Tudo debaixo de `users/{uid}`. Nada global.
+
+**Padrão do projeto:** cada subcoleção "de configuração" tem um único documento chamado `dados`. Os motores nunca guardam resultados calculados, só entradas em bruto.
 
 ```
-utilizadores/{uid}
-  ├── (documento)
-  │     perfil: { nome, alcunha, curso, ano, turma, subturma, anoLetivo,
-  │               dataInicioApp, onboardingFeito }
-  │     preferencias: { tema: 'dark'|'light'|'auto', corDestaque,
-  │                     tamanhoLetra: 'normal'|'grande'|'maior',
-  │                     animacoes: bool, notificacoes: bool,
-  │                     avisoPausas: bool, tomFrases: [] }
+users/{uid}
+  ├── perfil/dados
+  │     nome, curso, ano, turma ('Turma A'), subturma ('Subturma 7'), anoLetivo,
+  │     objetivos: [], criadoEm, onboardingFeito,
+  │     tutorialFeito: bool, dicasVistas: { [chave]: true }
   │
-  ├── cadeiras/{id}
-  │     nome, abrev, cor, semestre, regente, professorPratica,
+  ├── configuracoes/dados
+  │     tema: 'dark'|'light', notificacoesAtivas: bool, emailNotificacoes
+  │
+  ├── cadeiras/{id}                        id: 'administrativo-1' | 'dip-1' |
+  │     nome, abrev, cor, regente,                'obrigacoes-1' | 'familia' | 'hri'
   │     metodo: 'A'|'B', optativa: bool,
-  │     pesos: { provaEscrita: 0.5, outrosElementos: 0.5 },
-  │     aulasPraticasPrevistas, aulasPraticasLecionadas,
-  │     manual: { titulo, autor, totalPaginas },
-  │     arquivada: bool
+  │     aulasPraticasPrevistas, aulasTeoricasPrevistas
+  │   ├── faltas/dados
+  │   │     aulasPraticasLecionadas, faltasInjustificadas, faltasJustificadas
+  │   └── avaliacao/dados
+  │         provaEscrita, outrosElementos, exameEscrito, exameOral,
+  │         exameRecurso, melhoriaOral          (todos number 0-20 ou null)
   │
-  ├── notas/{id}
-  │     cadeiraId, acProvaEscrita, acOutrosElementos, notaAC,
-  │     exameEscrito, exameOral, notaEntradaOral, exameRecurso,
-  │     melhoriaOral, notaFinal, estadoCalculado, epoca,
-  │     historico: [{ data, campo, valorAntigo, valorNovo }]
+  ├── aulasSemanais/{id}                   templates que se repetem toda a semana
+  │     titulo, diaSemana (1-5), horaInicio, horaFim, cadeira (id da cadeira),
+  │     sala, dataInicio (Timestamp), dataFim (Timestamp), contaFalta: bool
   │
-  ├── faltas/{id}
-  │     cadeiraId, data, tipoAula: 'pratica'|'teorica',
-  │     justificada: bool, motivo, comprovativoEntregue: bool,
-  │     prazoComprovativo, notas
-  │
-  ├── eventos/{id}
-  │     titulo, tipo, cadeiraId, dataInicio, dataFim, importancia,
-  │     estado, notas, contaFalta, epoca
-  │
-  ├── aulas/{id}
-  │     cadeiraId, diaSemana: 1-7, horaInicio, horaFim, sala,
-  │     tipo: 'teorica'|'pratica', docente, semestre
-  │
-  ├── anotacoes/{id}
-  │     cadeiraId, tipo: 'teorica'|'pratica', titulo, conteudo,
-  │     tags: [], artigosCitados: [], criadoEm, atualizadoEm,
-  │     favorita: bool, rascunho: bool, aulaId
-  │
-  ├── casos/{id}
-  │     cadeiraId, titulo, enunciado,
-  │     estrutura: { factos, questao, enquadramento, subsuncao, conclusao },
-  │     estado: 'porResolver'|'resolvido'|'corrigido'|'duvida',
-  │     duvidas: [], notaDoProfessor, artigosCitados: []
-  │
-  ├── artigos/{id}
-  │     codigo: 'CC'|'CPA'|'CRP'|'CT'|'outro', numero, epigrafe,
-  │     notaPessoal, cadeiraIds: [], dificuldade: 1-3
+  ├── eventos/{id}                         eventos únicos
+  │     titulo, data (Timestamp), horaInicio, horaFim,
+  │     tipo: 'aula'|'frequencia'|'oral'|'entrega'|'outro',
+  │     cadeira (id), notas, importancia: 'baixa'|'media'|'alta',
+  │     estado: 'pendente'|'concluido'|'cancelado', contaFalta: bool
   │
   ├── tarefas/{id}
-  │     titulo, cadeiraId, prazo, prioridade: 1-3, concluida,
-  │     subtarefas: [{ texto, feita }]
+  │     titulo, cadeira (id), tipo: 'resumo'|'caso'|'leitura'|'exercicio'|'outro',
+  │     prioridade: 'alta'|'media'|'baixa', prazo ('yyyy-mm-dd'), notas,
+  │     concluida: bool, criadoEm, atualizadoEm
   │
-  ├── flashcards/{id}
-  │     cadeiraId, frente, tras, proximaRevisao, nivel: 0-4,
-  │     acertos, erros, anotacaoOrigemId
-  │
-  ├── leituras/{id}
-  │     cadeiraId, manual, autor, totalPaginas, paginaAtual,
-  │     capitulos: [{ titulo, paginaInicio, paginaFim, lido }]
-  │
-  ├── glossario/{id}
-  │     termo, significado, cadeiraId, dominado: bool
-  │
-  ├── sumarios/{id}
-  │     cadeiraId, data, bullets: [], materiaDada, aulaId
-  │
-  ├── sessoesEstudo/{id}
-  │     cadeiraId, inicio, fim, minutos, pausasFeitas
-  │
-  ├── mensagensDele/{id}
-  │     texto, tipo, dataAtivacao, lida, aberta, assinatura
-  │
-  └── feedback/{id}
-        texto, ecra, data, lidoPeloVini
+  ├── anotacoes/{id}      criadoEm, atualizadoEm + campos definidos em Anotacao.jsx
+  ├── casos/{id}          criadoEm, atualizadoEm + campos definidos em Caso.jsx
+  ├── glossario/{id}      dominado: bool + campos definidos em Glossario.jsx (termo, ...)
+  ├── artigos/{id}        campos definidos em Artigos.jsx
+  ├── leituras/{id}       capitulos: [], paginaAtual: 0 + campos definidos em Leituras.jsx
+  ├── flashcards/{id}     nivel: 0-4, acertos, erros, proximaRevisao + frente/tras/cadeira
+  └── sessoesEstudo/{id}
+        cadeiraId|null, inicio (Timestamp), fim (Timestamp), minutos, pausasFeitas
 ```
 
-### 9.1 Regras de segurança — escrever e publicar
+Os campos das coleções de conteúdo (`anotacoes`, `casos`, `glossario`, `artigos`, `leituras`, `flashcards`) que não vêm dos hooks estão definidos nos formulários das respetivas páginas. Consultar o formulário antes de os usar.
+
+**Ainda não existem** (planeadas para as fases seguintes): coleção de registo de faltas individuais, estado por ocorrência de aula (`estadoAula`), sumários de aula, `mensagensDele`, `feedback`.
+
+### 9.1 Regras de segurança — em produção
+
+Ficheiro `firestore.rules`, publicado e verificado em 18-09-2026 (um pedido sem autenticação devolve `403 PERMISSION_DENIED`).
 
 ```
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /utilizadores/{uid} {
+    match /users/{uid} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
-      match /{colecao}/{doc} {
+
+      match /{document=**} {
         allow read, write: if request.auth != null && request.auth.uid == uid;
       }
     }
@@ -948,28 +949,36 @@ service cloud.firestore {
 }
 ```
 
-Publica com `firebase deploy --only firestore:rules`. **Não deixes em modo de teste.**
+O `match /{document=**}` recursivo cobre as subcoleções e também os documentos aninhados (`cadeiras/{id}/faltas/dados`, `cadeiras/{id}/avaliacao/dados`). Não simplificar para uma regra mais permissiva.
+
+Publicar com `firebase deploy --only firestore` (regras e índices juntos, porque `firebase.json` referencia os dois). **Não deixar em modo de teste.**
 
 ### 9.2 Índices
 
-Cria índices compostos para as consultas que vais usar de facto (por exemplo `anotacoes` por `cadeiraId` e `atualizadoEm`). O Firebase dá o link do índice no erro da consola: segue-o e guarda no `firestore.indexes.json`.
+`firestore.indexes.json` está vazio. Criar índices compostos só para as consultas que os exigirem: o Firebase dá o link do índice no erro da consola.
+
+### 9.3 Migração
+
+`initFirestore.js` e `initCalendario.js` só correm no registo (`registar()` em `auth.js`). Uma conta já criada não é atualizada sozinha quando o esquema muda. Qualquer alteração de estrutura precisa de uma migração pensada à parte.
 
 ---
 
 ## 10. SISTEMA DE DESIGN — `src/styles/tokens.css`
 
-Base: identidade FDUL, bordô e dourado. A cor de destaque é configurável pela Leonor no Perfil (por defeito a cor preferida dela, campo da secção 2).
+> **Estado real (18-09-2026):** hoje as variáveis vivem em `src/index.css` (`--burgundy: #6B0F1A`, `--gold: #C9A84C`, `--bg-light`, `--bg-dark`, `--text-light`, `--text-dark`, `--border-light`, `--border-dark`) e o corpo usa Georgia. `tokens.css`, Playfair Display e Lato ainda **não** existem no código nem estão carregadas em `index.html`. Os valores abaixo são o alvo. Antes de trocar a fonte, confirmar com o Vini: o `CLAUDE.md` do projeto fixa Georgia.
+
+Base: identidade FDUL, bordô `#6B0F1A` e dourado `#C9A84C`. A cor de destaque é configurável pela Leonor no Perfil (por defeito a cor preferida dela, campo da secção 2).
 
 ```css
 :root {
   /* cores base fdul */
   --bordo-900: #4A1219;
-  --bordo-700: #7B1E2B;
+  --bordo-700: #6B0F1A;   /* bordô principal, igual a --burgundy em index.css */
   --bordo-500: #A33241;
   --bordo-100: #F4E4E7;
 
   --dourado-700: #9A7A1E;
-  --dourado-500: #C9A227;
+  --dourado-500: #C9A84C;  /* dourado principal, igual a --gold em index.css */
   --dourado-300: #E3C766;
   --dourado-100: #FAF3DE;
 
@@ -993,7 +1002,7 @@ Base: identidade FDUL, bordô e dourado. A cor de destaque é configurável pela
 
   /* tipografia */
   --fonte-titulo: 'Playfair Display', Georgia, serif;
-  --fonte-corpo: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --fonte-corpo: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --escala-letra: 1;          /* 1 | 1.125 | 1.25, controlado no perfil */
   --t-xs: calc(0.75rem * var(--escala-letra));
   --t-sm: calc(0.875rem * var(--escala-letra));

@@ -6,6 +6,8 @@ import { useDashboard } from '../hooks/useDashboard.js'
 import { useTarefas } from '../hooks/useTarefas.js'
 import { coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js'
 import Tutorial from '../components/Tutorial.jsx'
+import CartaoAulaAgora from '../components/CartaoAulaAgora.jsx'
+import PerguntaFimDoDia from '../components/PerguntaFimDoDia.jsx'
 import { useFrase } from '../hooks/useFrase.js'
 
 // cores por cadeira — usadas nos dots das aulas
@@ -42,6 +44,7 @@ function Dashboard() {
     loading,
     tutorialFeito,
     definirTutorialFeito,
+    marcarAula,
   } = useDashboard();
 
   const frase = useFrase(getContextoFrase());
@@ -123,6 +126,12 @@ function Dashboard() {
 
         {/* grelha de cards */}
         <div className="dashboard-grid">
+
+          {/* aula a decorrer e a seguir — o que ela mais consulta entre as 14h e as 18h */}
+          <CartaoAulaAgora aulasHoje={aulasHoje} />
+
+          {/* ao fim da tarde, pergunta se as aulas correram todas */}
+          <PerguntaFimDoDia aulasHoje={aulasHoje} onMarcar={marcarAula} />
 
           {/* card countdown — próxima frequência */}
           <div className="card card-countdown anim-entrada" style={{ '--delay': '0.2s' }}>

@@ -1,0 +1,31 @@
+.card-agora { grid-column: 1 / -1; }
+
+.agora-lista { display: flex; flex-direction: column; gap: 10px; }
+
+.agora-linha {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: 'rotulo corpo' 'detalhe detalhe';
+  align-items: center;
+  gap: 2px 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border-left: 4px solid var(--cor);
+  background: color-mix(in srgb, var(--cor) 10%, transparent);
+}
+
+.agora-linha--destaque { background: color-mix(in srgb, var(--cor) 22%, transparent); }
+
+.agora-linha__rotulo {
+  grid-area: rotulo;
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.65;
+}
+
+.agora-linha__corpo { grid-area: corpo; display: flex; align-items: baseline; gap: 8px; }
+.agora-linha__abrev { font-size: 1.05rem; color: var(--cor); }
+.agora-linha__tipo { font-size: 0.78rem; opacity: 0.7; }
+.agora-linha__detalhe { grid-area: detalhe; font-size: 0.82rem; opacity: 0.8; }

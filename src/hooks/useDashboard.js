@@ -3,8 +3,11 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
 import { doc, onSnapshot, collection, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { gerarOcorrencias, comEstados } from '../services/ocorrencias.js';
+import { useEstadosAula } from './useEstadosAula.js';
 
 export function useDashboard() {
+  const { estados, marcar } = useEstadosAula();
   const [nome, setNome] = useState('Leonor'); // fallback enquanto carrega
   const [eventos, setEventos] = useState([]);
   const [aulasSemanais, setAulasSemanais] = useState([]);
@@ -52,36 +55,10 @@ export function useDashboard() {
     };
   }, []);
 
-  // gera as ocorrências das aulas semanais (igual ao useCalendario)
-  function gerarOcorrencias(aula) {
-    const ocorrencias = [];
-    const inicio = aula.dataInicio?.toDate?.();
-    const fim = aula.dataFim?.toDate?.();
-    if (!inicio || !fim) return ocorrencias;
-
-    const atual = new Date(inicio);
-    while (atual.getDay() !== aula.diaSemana) {
-      atual.setDate(atual.getDate() + 1);
-    }
-    while (atual <= fim) {
-      ocorrencias.push({
-        id: `${aula.id}-${atual.toISOString()}`,
-        titulo: aula.titulo,
-        data: new Date(atual),
-        horaInicio: aula.horaInicio,
-        horaFim: aula.horaFim,
-        cadeira: aula.cadeira,
-        tipo: 'aula',
-      });
-      atual.setDate(atual.getDate() + 7);
-    }
-    return ocorrencias;
-  }
-
-  // junta todos os eventos
+  // junta todos os eventos: as aulas vêm das ocorrências partilhadas (sem feriados) com o estado marcado
   const todosEventos = [
     ...eventos,
-    ...aulasSemanais.flatMap(gerarOcorrencias),
+    ...comEstados(aulasSemanais.flatMap((a) => gerarOcorrencias(a)), estados),
   ];
 
   const hoje = new Date();
@@ -150,5 +127,6 @@ export function useDashboard() {
     loading,
     tutorialFeito,
     definirTutorialFeito,
+    marcarAula: marcar,
   };
 }

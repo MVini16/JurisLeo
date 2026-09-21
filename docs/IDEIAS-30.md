@@ -70,6 +70,12 @@ Pesquisa feita a 21-09-2026 em apps de estudo, de flashcards, de foco, de notas 
 | 29 | **Checklists de peças e de revisão** | Modelos do Clio e do Notion | Só estrutura, nunca texto jurídico: "o que tem uma petição", e "antes de entregar: prazos, factos, pedidos, assinatura". Vinda de fontes que o Vini confirme **[fonte a confirmar]** | M |
 | 30 | **Contactos jurídicos** | CRM leve dos escritórios | Professores, colegas, secretarias, tribunais, contactos de estágio, com "voltar a falar com X". Networking também se estuda | P |
 
+## Estado a 21-09-2026: 13 das 30 feitas
+
+Feitas (com testes onde há lógica): **2** confiança de 1 a 5 · **5** cartões em áudio · **9** fichas de jurisprudência · **11** diário de erros · **13** calculadora de prazos · **16** folha de horas de estudo (no Perfil) · **17** mapa de calor · **21** sequência com descanso semanal · **26** portfólio · **27** diário de estágio · **28** família Profissional no calendário · **29** checklists · **30** contactos, com lembrete de "voltar a falar". Além disso, as **perguntas para o stor** e a página **Respirar**.
+
+Por fazer (17): **1** lacunas · **3** agendamento que aprende (espera a decisão dos intervalos) · **4** jogo de pares · **6** baralho até à frequência · **7** modo exame · **8** tópicos de correção · **10** ligações entre notas · **12** mapas mentais · **14** prazos em cadeia · **15** plano de estudo · **18** horas por registar · **19** foco atado a uma tarefa · **20** modo Frequência · **22** missões do dia · **23** sequência a dois · **24** toga · **25** balanço de domingo.
+
 ## Primeira vaga, por ordem
 
 Escolhi as que dão mais efeito com menos código, e que já têm dados na app:

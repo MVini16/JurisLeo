@@ -77,3 +77,14 @@ html:not(.dark) body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* escolha dela em definições → animações: desligadas */
+html[data-animacoes="off"] *,
+html[data-animacoes="off"] *::before,
+html[data-animacoes="off"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0s !important;
+}

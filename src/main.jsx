@@ -5,6 +5,10 @@ import './styles/imprimir.css'
 import App from './App.jsx'
 // importa o provider global do tema
 import { ThemeProvider } from './context/ThemeContext.jsx'
+import { lerPreferencias, aplicarPreferencias } from './services/preferencias.js'
+
+// animações ligadas ou desligadas, conforme a escolha dela neste aparelho
+aplicarPreferencias(lerPreferencias())
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

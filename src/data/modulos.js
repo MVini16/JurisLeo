@@ -28,6 +28,7 @@ export const MODULOS = [
   { id: 'ferrLeituras', categoria: 'ferramentas', grupo: 'Estudar', rota: '/leituras', nome: 'Leituras', descricao: 'Manuais, capítulos e páginas.', defeito: true },
   { id: 'ferrPerguntas', categoria: 'ferramentas', grupo: 'Estudar', rota: '/fichas/perguntas', nome: 'Perguntas para o stor', descricao: 'As dúvidas que levas para a aula.', defeito: true },
   { id: 'ferrChecklists', categoria: 'ferramentas', grupo: 'Estudar', rota: '/fichas/checklists', nome: 'Checklists', descricao: 'Antes de entregar, antes de uma frequência.', defeito: true },
+  { id: 'ferrFrequencia', categoria: 'ferramentas', grupo: 'Estudar', rota: '/frequencia', nome: 'Modo Frequência', descricao: 'Só a prova que vem aí e a matéria por rever.', defeito: true },
   { id: 'ferrPrazos', categoria: 'ferramentas', grupo: 'Estudar', rota: '/prazos', nome: 'Calculadora de prazos', descricao: 'Dias úteis e seguidos, com feriados.', defeito: true },
   { id: 'ferrCasos', categoria: 'ferramentas', grupo: 'Direito', rota: '/casos', nome: 'Casos práticos', descricao: 'Factos, questão, enquadramento e conclusão.', defeito: true },
   { id: 'ferrJurisprudencia', categoria: 'ferramentas', grupo: 'Direito', rota: '/fichas/jurisprudencia', nome: 'Fichas de jurisprudência', descricao: 'Acórdãos que valha a pena guardar.', defeito: true },

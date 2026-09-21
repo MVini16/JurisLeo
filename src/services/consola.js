@@ -7,15 +7,10 @@ import { minutosPorDia, sequenciaAtual, minutosDaSemana } from './estatisticasEs
 import { estaPronto } from './repeticaoEspacada.js';
 import { chaveData } from '../data/feriados.js';
 import { diasEntre } from './datas.js';
+import { proximaProva } from './provas.js';
 import { serieParaGrafico, sequenciaRegisto, alertaPersistencia, ultimoTexto } from './bemEstar.js';
 
 const DIAS_PARA_AVISAR_FREQUENCIA = 7;
-
-function paraData(valor) {
-  if (!valor) return null;
-  if (valor instanceof Date) return valor;
-  return valor.toDate?.() ?? null;
-}
 
 export function contarPalavras(texto) {
   return String(texto ?? '').split(/\s+/).filter(Boolean).length;
@@ -41,19 +36,6 @@ export function resumirCadeira({ cadeira, faltasDados, avaliacaoDados }) {
     : null;
 
   return { id: cadeira.id, abrev: cadeira.abrev || info.abrev || cadeira.id, nome: cadeira.nome || info.nome || cadeira.id, avaliacao, faltas };
-}
-
-// a próxima frequência ou exame que ainda não passou
-function proximaProva(eventos, hoje) {
-  const hojeChave = chaveData(hoje);
-  const provas = eventos
-    .filter((e) => (e.tipo === 'frequencia' || e.tipo === 'exame') && e.estado !== 'cancelado')
-    .map((e) => ({ evento: e, data: paraData(e.data) }))
-    .filter((p) => p.data && chaveData(p.data) >= hojeChave)
-    .sort((a, b) => a.data - b.data);
-  if (provas.length === 0) return null;
-  const { evento, data } = provas[0];
-  return { titulo: evento.titulo, cadeira: evento.cadeira || null, tipo: evento.tipo, data, diasRestantes: diasEntre(hoje, data) };
 }
 
 // junta tudo o que a consola mostra

@@ -32,6 +32,7 @@ import Prazos from './pages/Prazos'
 import Respirar from './pages/Respirar'
 import Consola from './pages/Consola'
 import Frequencia from './pages/Frequencia'
+import Pares from './pages/Pares'
 // componente de navegação — vai envolver todas as páginas principais
 import NavBar from './components/NavBar'
 
@@ -71,6 +72,7 @@ function App() {
         <Route path="/fichas/:tipo" element={<NavBar><Fichas /></NavBar>} />
         <Route path="/respirar" element={<NavBar><Respirar /></NavBar>} />
         <Route path="/frequencia" element={<NavBar><Frequencia /></NavBar>} />
+        <Route path="/pares" element={<NavBar><Pares /></NavBar>} />
         <Route path="/prazos" element={<NavBar><Prazos /></NavBar>} />
         <Route path="/definicoes" element={<NavBar><Definicoes /></NavBar>} />
       </Routes>

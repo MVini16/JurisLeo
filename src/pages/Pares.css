@@ -1,0 +1,65 @@
+/* jogo de pares: quadrados com o texto dos teus cartões */
+.pares-pagina {
+  --acento: var(--burgundy);
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 24px 16px 110px;
+  font-family: 'Georgia', serif;
+}
+
+html.dark .pares-pagina { --acento: var(--gold); }
+
+.pares-titulo { font-size: 1.5rem; margin-top: 8px; }
+.pares-sub { font-size: 0.85rem; opacity: 0.75; margin: 4px 0 16px; }
+.pares-estado { text-align: center; font-size: 0.95rem; margin-bottom: 14px; }
+
+.pares-grelha { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.pares-peca {
+  width: 100%;
+  min-height: 84px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: inherit;
+  font-size: 0.85rem;
+  line-height: 1.3;
+  color: inherit;
+  border-radius: 14px;
+  border: 1.5px solid var(--border-light);
+  background: none;
+  cursor: pointer;
+  transition: transform 120ms ease, background 150ms ease, border-color 150ms ease, opacity 250ms ease;
+}
+
+html.dark .pares-peca { border-color: var(--border-dark); }
+.pares-peca--t { background: color-mix(in srgb, var(--acento) 6%, transparent); }
+.pares-peca:active { transform: scale(0.97); }
+.pares-peca.escolhida { border-color: var(--acento); background: color-mix(in srgb, var(--acento) 18%, transparent); transform: scale(1.03); }
+.pares-peca.feita { border-color: var(--sucesso); background: color-mix(in srgb, var(--sucesso) 16%, transparent); opacity: 0.5; cursor: default; }
+.pares-peca.errada { border-color: var(--perigo); animation: pares-abana 380ms ease; }
+.pares-peca:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+
+@keyframes pares-abana {
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+.pares-fim { text-align: center; margin-top: 20px; }
+.pares-fim p { font-size: 1rem; margin-bottom: 12px; }
+
+.pares-botao {
+  min-height: var(--toque-min);
+  padding: 0 28px;
+  border-radius: 22px;
+  border: 1.5px solid var(--acento);
+  background: color-mix(in srgb, var(--acento) 14%, transparent);
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}

@@ -8,6 +8,8 @@ import BotoesEstadoAula from '../components/BotoesEstadoAula.jsx';
 import { ICONE_ESTADO_AULA } from '../data/estadosAula.js';
 import { nomeCurtoCadeira } from '../data/dadosLeonor.js';
 import { FAMILIAS, corDoEvento, familiaDoEvento } from '../data/familias.js';
+import { nomeFeriado } from '../data/feriados.js';
+import { epocasDoDia } from '../data/calendarioEscolar.js';
 import './Calendario.css';
 import './CalendarioExtra.css';
 
@@ -163,6 +165,9 @@ export default function Calendario() {
         </div>
       </div>
 
+      {/* aviso discreto sobre as datas das épocas de exames */}
+      <p className="cal-aviso-epocas">As datas das épocas de exames são indicativas — confirma sempre no site da faculdade.</p>
+
       {/* filtro por família: um só calendário, com cores e filtro */}
       <div className="cal-familias" role="group" aria-label="Filtrar por família de eventos">
         {FAMILIAS.map((f) => (
@@ -227,9 +232,9 @@ export default function Calendario() {
         <span className="cal-fab__icone">+</span>
       </button>
 
-      {modalAberto && <ModalCriarEvento onFechar={() => setModalAberto(false)} dataInicial={dataSelecionada} />}
+      {modalAberto && <ModalCriarEvento onFechar={() => setModalAberto(false)} dataInicial={dataSelecionada} eventos={todosOsEventos} />}
       {eventoDetalhe && <ModalEvento evento={eventoDetalhe} onMarcar={marcar} onFechar={() => setEventoDetalhe(null)} onEditar={(ev) => { setEventoDetalhe(null); setEventoEditar(ev); }} onApagar={() => setEventoDetalhe(null)} ICONES_TIPO={ICONES_TIPO} MESES={MESES} DIAS_SEMANA={DIAS_SEMANA} />}
-      {eventoEditar && <ModalCriarEvento onFechar={() => setEventoEditar(null)} dataInicial={dataSelecionada} eventoExistente={eventoEditar} />}
+      {eventoEditar && <ModalCriarEvento onFechar={() => setEventoEditar(null)} dataInicial={dataSelecionada} eventoExistente={eventoEditar} eventos={todosOsEventos} />}
 
     </div>
   );
@@ -257,6 +262,7 @@ function VistaDiaria({ data, eventos, onEventoClick, ICONES_TIPO }) {
         <div className="cal-diaria__sidebar-data">
           <span className="cal-diaria__sidebar-dia">{data.getDate()}</span>
           <span className="cal-diaria__sidebar-mes">{['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][data.getMonth()]}</span>
+          {nomeFeriado(data) && <span className="cal-diaria__sidebar-feriado">🎌 {nomeFeriado(data)}</span>}
         </div>
         <div className="cal-diaria__sidebar-eventos">
           <p className="cal-diaria__sidebar-titulo">Hoje tens</p>
@@ -472,9 +478,17 @@ function VistaMensal({ mes, ano, eventosDoDia, onDiaClick, diaSelecionado, hoje,
           const isSelecionado = diaSelecionado && mesmoDia(data, diaSelecionado);
           const barras = evsDia.slice(0, 2);
           const pontosExtra = evsDia.length > 2 ? evsDia.slice(2) : [];
+          const feriado = nomeFeriado(data);
+          const epocas = epocasDoDia(data);
           return (
-            <div key={i} className={`cal-mensal__dia ${outroMes ? 'outro-mes' : ''} ${isHoje ? 'hoje' : ''} ${isSelecionado ? 'selecionado' : ''}`} onClick={() => onDiaClick(data)}>
+            <div
+              key={i}
+              className={`cal-mensal__dia ${outroMes ? 'outro-mes' : ''} ${isHoje ? 'hoje' : ''} ${isSelecionado ? 'selecionado' : ''} ${epocas.length ? 'cal-mensal__dia--epoca' : ''}`}
+              title={epocas.map((e) => e.nome).join(' · ') || undefined}
+              onClick={() => onDiaClick(data)}
+            >
               <span className="cal-mensal__dia-num">{data.getDate()}</span>
+              {feriado && <span className="cal-mensal__dia-feriado" title={feriado}>{feriado}</span>}
               <div className="cal-mensal__dia-eventos">
                 {barras.map((ev) => (
                   <div key={ev.id} className="cal-mensal__dia-barra" style={{ backgroundColor: corDoEvento(ev) }} title={ev.titulo}>

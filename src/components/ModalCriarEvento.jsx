@@ -1,11 +1,13 @@
 // modal para criar ou editar um evento no calendário
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { db } from '../services/firebase.js';
 import { collection, addDoc, updateDoc, doc, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { cadeirasS1, coresCadeiras } from '../data/dadosLeonor.js';
 import { FAMILIAS, familiaDoEvento } from '../data/familias.js';
 import { chaveData } from '../data/feriados.js';
+import { naEpocaNormal } from '../data/calendarioEscolar.js';
+import { detetarChoques, explicarChoque } from '../services/coincidencias.js';
 import './ModalCriarEvento.css';
 
 // cores por cadeira
@@ -30,7 +32,7 @@ function formatarData(data) {
   return chaveData(new Date(data));
 }
 
-export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistente, tipoInicial }) {
+export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistente, tipoInicial, tituloInicial, eventos }) {
   const aEditar = !!eventoExistente;
 
   // estado do formulário — se receber um evento existente, começa preenchido com os dados dele
@@ -39,9 +41,13 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
       const dataEv = eventoExistente.data instanceof Date
         ? eventoExistente.data
         : eventoExistente.data?.toDate?.();
+      const dataFimEv = eventoExistente.dataFim instanceof Date
+        ? eventoExistente.dataFim
+        : eventoExistente.dataFim?.toDate?.();
       return {
         titulo:      eventoExistente.titulo || '',
         data:        dataEv ? formatarData(dataEv) : formatarData(new Date()),
+        dataFim:     dataFimEv ? formatarData(dataFimEv) : '',
         horaInicio:  eventoExistente.horaInicio || '',
         horaFim:     eventoExistente.horaFim || '',
         familia:     familiaDoEvento(eventoExistente),
@@ -54,8 +60,9 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
       };
     }
     return {
-      titulo:      '',
+      titulo:      tituloInicial || '',
       data:        dataInicial ? formatarData(dataInicial) : formatarData(new Date()),
+      dataFim:     '',
       horaInicio:  '',
       horaFim:     '',
       familia:     'faculdade',
@@ -70,6 +77,17 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
 
   // fora da faculdade não faz sentido escolher tipo, cadeira ou "conta falta"
   const daFaculdade = form.familia === 'faculdade';
+
+  // aviso de coincidências em tempo real (art. 39.º) — só avisa, nunca bloqueia.
+  // só calcula se a página que abriu o modal passou a lista de eventos existentes.
+  const avisoChoque = useMemo(() => {
+    if (!eventos || !form.data || !form.titulo.trim()) return null;
+    const outrosEventos = eventos.filter((ev) => !aEditar || ev.id !== eventoExistente.id);
+    const rascunho = { id: '__rascunho__', titulo: form.titulo.trim(), tipo: form.tipo, data: new Date(form.data + 'T00:00:00') };
+    const choques = detetarChoques([...outrosEventos, rascunho], { epocaNormal: naEpocaNormal });
+    const choqueDoRascunho = choques.find((c) => c.a.id === '__rascunho__' || c.b.id === '__rascunho__');
+    return choqueDoRascunho ? explicarChoque(choqueDoRascunho) : null;
+  }, [eventos, form.data, form.tipo, form.titulo, aEditar, eventoExistente]);
 
   // estados da animação
   const [visivel, setVisivel]       = useState(false);
@@ -104,6 +122,10 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
       setErro('A data é obrigatória.');
       return;
     }
+    if (form.dataFim && form.dataFim < form.data) {
+      setErro('A data em que termina não pode ser antes da data de início.');
+      return;
+    }
 
     setErro('');
     setGuardando(true);
@@ -113,12 +135,15 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
       const userId = auth.currentUser?.uid;
       if (!userId) throw new Error('Utilizador não autenticado.');
 
-      // converte a data para timestamp do firestore
+      // converte as datas para timestamp do firestore
       const dataObj = new Date(form.data + 'T' + (form.horaInicio || '00:00') + ':00');
+      // só grava dataFim quando é mesmo um evento de vários dias — evita null vs undefined a mais nos documentos antigos
+      const dataFimObj = form.dataFim && form.dataFim > form.data ? new Date(form.dataFim + 'T00:00:00') : null;
 
       const dados = {
         titulo:      form.titulo.trim(),
         data:        Timestamp.fromDate(dataObj),
+        dataFim:     dataFimObj ? Timestamp.fromDate(dataFimObj) : null,
         horaInicio:  form.horaInicio,
         horaFim:     form.horaFim,
         familia:     form.familia,
@@ -287,6 +312,21 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
               />
             </div>
           </div>
+
+          {/* termina em — opcional, só para eventos de vários dias (ex: férias, semana de exames) */}
+          <div className="mce-campo mce-campo--4">
+            <label className="mce-label">Termina em (opcional)</label>
+            <input
+              className="mce-input"
+              type="date"
+              min={form.data}
+              value={form.dataFim}
+              onChange={(e) => atualizar('dataFim', e.target.value)}
+            />
+          </div>
+
+          {/* aviso de coincidência — nunca bloqueia, só avisa */}
+          {avisoChoque && <p className="mce-aviso-choque">⚠️ {avisoChoque}</p>}
 
           {/* importância */}
           <div className="mce-campo mce-campo--5">

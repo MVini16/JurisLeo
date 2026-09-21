@@ -43,3 +43,31 @@
   border-radius: 50%;
   background: var(--cor);
 }
+
+/* aviso discreto sobre as datas das épocas de exames */
+.cal-aviso-epocas {
+  font-size: 0.72rem;
+  opacity: 0.55;
+  margin: 0 0 10px;
+}
+
+/* marcação de fundo dos dias em época de exames — faixa fina no topo da célula, nunca um evento */
+.cal-mensal__dia--epoca {
+  box-shadow: inset 0 3px 0 0 var(--gold);
+}
+
+.cal-mensal__dia-feriado {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--gold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cal-diaria__sidebar-feriado {
+  font-size: 0.72rem;
+  color: var(--gold);
+  font-weight: 600;
+  margin-top: 2px;
+}

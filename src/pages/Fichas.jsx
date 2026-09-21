@@ -11,6 +11,7 @@ import { chaveData } from '../data/feriados.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import EstadoVazio from '../components/EstadoVazio.jsx';
 import Carregando from '../components/animacoes/Carregando.jsx';
+import Toast from '../components/Toast.jsx';
 import './Ferramentas.css';
 
 function valorLegivel(campo, valor) {
@@ -55,6 +56,7 @@ export default function Fichas() {
   const [erros, setErros] = useState({});
   const [aGuardar, setAGuardar] = useState(false);
   const [apagarPendente, setApagarPendente] = useState(false);
+  const [toast, setToast] = useState(null);
 
   if (!tipo) {
     return (
@@ -91,8 +93,11 @@ export default function Fichas() {
 
   async function confirmarApagar() {
     if (!apagarPendente) { setApagarPendente(true); return; }
+    const guardada = edicao.dados;
     await apagar(edicao.id);
     setEdicao(null);
+    // um toque a mais não pode custar uma ficha: seis segundos para desfazer
+    setToast({ mensagem: 'Ficha apagada.', acao: { texto: 'Desfazer', fn: () => adicionar(guardada) } });
   }
 
   // formulário
@@ -176,6 +181,8 @@ export default function Fichas() {
           );
         })}
       </ul>
+
+      {toast && <Toast mensagem={toast.mensagem} acao={toast.acao} duracao={6000} onFechar={() => setToast(null)} />}
     </div>
   );
 }

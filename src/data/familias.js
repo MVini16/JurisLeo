@@ -7,6 +7,7 @@ export const FAMILIAS = [
   { id: 'ferias', nome: 'Férias e viagens', cor: 'var(--familia-ferias)' },
   { id: 'social', nome: 'Social e pessoal', cor: 'var(--familia-social)' },
   { id: 'saude', nome: 'Saúde e rotina', cor: 'var(--familia-saude)' },
+  { id: 'profissional', nome: 'Profissional', cor: 'var(--familia-profissional)' },
 ];
 
 const IDS = FAMILIAS.map((f) => f.id);

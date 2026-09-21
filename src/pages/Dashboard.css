@@ -565,3 +565,22 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
+/* atalhos para as ferramentas */
+.dash-ferr { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+
+.dash-ferr__chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  padding: 0 14px;
+  border-radius: 22px;
+  border: 1.5px solid var(--border-light);
+  color: inherit;
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+
+.dash-ferr__chip--todas { border-color: var(--burgundy); font-weight: 600; }
+.dash-ferr__chip:active { transform: scale(0.97); }
+.dashboard.dark .dash-ferr__chip { border-color: var(--border-dark); }
+.dashboard.dark .dash-ferr__chip--todas { border-color: var(--gold); }

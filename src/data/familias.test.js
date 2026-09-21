@@ -28,7 +28,9 @@ describe('corDoEvento', () => {
 });
 
 describe('FAMILIAS', () => {
-  it('são quatro', () => {
-    expect(FAMILIAS).toHaveLength(4);
+  it('são cinco, e a profissional serve para diligências e estágio', () => {
+    expect(FAMILIAS).toHaveLength(5);
+    expect(FAMILIAS.map((f) => f.id)).toContain('profissional');
+    expect(corDoEvento({ familia: 'profissional' })).toBe('var(--familia-profissional)');
   });
 });

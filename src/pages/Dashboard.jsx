@@ -1,5 +1,6 @@
 // dashboard principal da jurisleo
 import { Fragment, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import './Dashboard.css'
 import { useTheme } from '../context/useTheme.js'
 import { useDashboard } from '../hooks/useDashboard.js'
@@ -10,6 +11,7 @@ import CartaoAulaAgora from '../components/CartaoAulaAgora.jsx'
 import PerguntaFimDoDia from '../components/PerguntaFimDoDia.jsx'
 import { useFrase } from '../hooks/useFrase.js'
 import { useModulos } from '../hooks/useModulos.js'
+import { MODULOS } from '../data/modulos.js'
 
 // cores por cadeira — usadas nos dots das aulas
 const CORES_CADEIRA = coresCadeiras;
@@ -77,7 +79,24 @@ function Dashboard() {
   const offset = circunferencia - (percentagem / 100) * circunferencia;
 
   // cada cartão do ecrã de início; a ordem e o que aparece vêm das escolhas dela
+  const ferramentasLigadas = MODULOS.filter((m) => m.categoria === 'ferramentas' && ativos[m.id]);
   const cartoes = {
+    ferramentas: (
+      <div className="card anim-entrada" style={{ '--delay': '0.5s' }}>
+        <div className="card-header">
+          <span className="card-icon">🧰</span>
+          <span className="card-titulo">As tuas ferramentas</span>
+        </div>
+        {ferramentasLigadas.length === 0 ? (
+          <p className="card-vazio">Não tens ferramentas ligadas. Liga as que quiseres em Definições.</p>
+        ) : (
+          <div className="dash-ferr">
+            {ferramentasLigadas.slice(0, 6).map((m) => <Link key={m.id} to={m.rota} className="dash-ferr__chip">{m.nome}</Link>)}
+            <Link to="/ferramentas" className="dash-ferr__chip dash-ferr__chip--todas">Ver todas</Link>
+          </div>
+        )}
+      </div>
+    ),
     aulaAgora: (
       <>
               {/* aula a decorrer e a seguir — o que ela mais consulta entre as 14h e as 18h */}

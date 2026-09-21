@@ -8,7 +8,7 @@ import { limparCadeirasAntigas, seedCadeiras } from '../services/initFirestore.j
 import { exportarDadosComoFicheiro } from '../services/exportar.js';
 import { useTheme } from '../context/useTheme.js';
 import { useModulos } from '../hooks/useModulos.js';
-import { MODULOS, CATEGORIAS_MODULOS } from '../data/modulos.js';
+import { MODULOS, CATEGORIAS_MODULOS, GRUPOS_FERRAMENTAS } from '../data/modulos.js';
 import { lerPreferencias, guardarPreferencia, aplicarPreferencias, OPCOES_ABERTURA } from '../services/preferencias.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Definicoes.css';
@@ -118,6 +118,22 @@ export default function Definicoes() {
 
       <section className="def-seccao">
         <h2 className="def-seccao__titulo">{CATEGORIAS_MODULOS[1].nome}</h2>
+        <p className="def-seccao__ajuda">Liga só o que vais usar. O que desligares deixa de aparecer no ecrã de início e nas ferramentas.</p>
+        {GRUPOS_FERRAMENTAS.map((grupo) => (
+          <div key={grupo} className="def-subgrupo">
+            <b className="def-subgrupo__titulo">{grupo}</b>
+            {MODULOS.filter((m) => m.categoria === 'ferramentas' && m.grupo === grupo).map((m) => (
+              <div key={m.id} className="def-linha">
+                <div className="def-texto"><b>{m.nome}</b><span>{m.descricao}</span></div>
+                <Interruptor ligado={ativos[m.id]} rotulo={m.nome} onMudar={() => alternar(m.id)} />
+              </div>
+            ))}
+          </div>
+        ))}
+      </section>
+
+      <section className="def-seccao">
+        <h2 className="def-seccao__titulo">{CATEGORIAS_MODULOS[2].nome}</h2>
         <p className="def-seccao__ajuda">Os atalhos que abrem quando tocas no +.</p>
         {MODULOS.filter((m) => m.categoria === 'atalhos').map((m) => (
           <div key={m.id} className="def-linha">

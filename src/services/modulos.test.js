@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { moduloAtivo, estadoModulos, ordemCartoes, moverCartao } from './modulos.js';
-import { MODULOS, ORDEM_CARTOES_DEFEITO } from '../data/modulos.js';
+import { MODULOS, ORDEM_CARTOES_DEFEITO, GRUPOS_FERRAMENTAS } from '../data/modulos.js';
 
 describe('moduloAtivo', () => {
   it('sem escolha guardada vale o defeito', () => {
@@ -43,11 +43,11 @@ describe('ordemCartoes', () => {
   });
 
   it('põe no fim os cartões novos que ela ainda não tinha', () => {
-    expect(ordemCartoes(['tarefasPendentes', 'aulasHoje'])).toEqual(['tarefasPendentes', 'aulasHoje', 'aulaAgora', 'proximaFrequencia']);
+    expect(ordemCartoes(['tarefasPendentes', 'aulasHoje'])).toEqual(['tarefasPendentes', 'aulasHoje', 'aulaAgora', 'proximaFrequencia', 'ferramentas']);
   });
 
   it('tira ids que já não existem e repetidos', () => {
-    expect(ordemCartoes(['lixo', 'aulasHoje', 'aulasHoje'])).toEqual(['aulasHoje', 'aulaAgora', 'proximaFrequencia', 'tarefasPendentes']);
+    expect(ordemCartoes(['lixo', 'aulasHoje', 'aulasHoje'])).toEqual(['aulasHoje', 'aulaAgora', 'proximaFrequencia', 'tarefasPendentes', 'ferramentas']);
   });
 });
 
@@ -64,5 +64,23 @@ describe('moverCartao', () => {
 
   it('não mexe se o id não existe', () => {
     expect(moverCartao(['a', 'b'], 'z', 1)).toEqual(['a', 'b']);
+  });
+});
+
+describe('ferramentas', () => {
+  it('todas têm rota e grupo conhecido, e ids únicos', () => {
+    const ferr = MODULOS.filter((m) => m.categoria === 'ferramentas');
+    expect(ferr.length).toBeGreaterThan(10);
+    for (const m of ferr) {
+      expect(m.rota).toMatch(/^\//);
+      expect(GRUPOS_FERRAMENTAS).toContain(m.grupo);
+    }
+    const ids = MODULOS.map((m) => m.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('as ferramentas vêm ligadas por defeito e desligam-se', () => {
+    expect(moduloAtivo('ferrPrazos', {})).toBe(true);
+    expect(moduloAtivo('ferrPrazos', { ferrPrazos: false })).toBe(false);
   });
 });

@@ -4,6 +4,7 @@ import { db } from '../services/firebase.js';
 import { collection, addDoc, updateDoc, doc, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { cadeirasS1, coresCadeiras } from '../data/dadosLeonor.js';
+import { FAMILIAS, familiaDoEvento } from '../data/familias.js';
 import './ModalCriarEvento.css';
 
 // cores por cadeira
@@ -41,6 +42,7 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
         data:        dataEv ? formatarData(dataEv) : formatarData(new Date()),
         horaInicio:  eventoExistente.horaInicio || '',
         horaFim:     eventoExistente.horaFim || '',
+        familia:     familiaDoEvento(eventoExistente),
         tipo:        eventoExistente.tipo || 'aula',
         cadeira:     eventoExistente.cadeira || CADEIRAS[0]?.id,
         notas:       eventoExistente.notas || '',
@@ -54,6 +56,7 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
       data:        dataInicial ? formatarData(dataInicial) : formatarData(new Date()),
       horaInicio:  '',
       horaFim:     '',
+      familia:     'faculdade',
       tipo:        tipoInicial || 'aula',
       cadeira:     CADEIRAS[0]?.id,
       notas:       '',
@@ -62,6 +65,9 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
       contaFalta:  false,
     };
   });
+
+  // fora da faculdade não faz sentido escolher tipo, cadeira ou "conta falta"
+  const daFaculdade = form.familia === 'faculdade';
 
   // estados da animação
   const [visivel, setVisivel]       = useState(false);
@@ -113,12 +119,13 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
         data:        Timestamp.fromDate(dataObj),
         horaInicio:  form.horaInicio,
         horaFim:     form.horaFim,
-        tipo:        form.tipo,
-        cadeira:     form.cadeira,
+        familia:     form.familia,
+        tipo:        daFaculdade ? form.tipo : 'outro',
+        cadeira:     daFaculdade ? form.cadeira : null,
         notas:       form.notas.trim(),
         importancia: form.importancia,
         estado:      form.estado,
-        contaFalta:  form.contaFalta,
+        contaFalta:  daFaculdade ? form.contaFalta : false,
       };
 
       if (aEditar) {
@@ -186,43 +193,67 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
             />
           </div>
 
-          {/* tipo de evento */}
+          {/* família — decide se este evento é da faculdade ou não */}
           <div className="mce-campo mce-campo--2">
-            <label className="mce-label">Tipo</label>
-            <div className="mce-tipos">
-              {TIPOS.map((t) => (
+            <label className="mce-label">Família</label>
+            <div className="mce-cadeiras">
+              {FAMILIAS.map((f) => (
                 <button
-                  key={t.id}
-                  className={`mce-tipo-btn ${form.tipo === t.id ? 'ativo' : ''}`}
-                  onClick={() => atualizar('tipo', t.id)}
+                  key={f.id}
+                  className={`mce-cadeira-btn ${form.familia === f.id ? 'ativo' : ''}`}
+                  style={{
+                    borderColor: form.familia === f.id ? f.cor : 'transparent',
+                    backgroundColor: form.familia === f.id ? `color-mix(in srgb, ${f.cor} 20%, transparent)` : 'rgba(255,255,255,0.05)',
+                  }}
+                  onClick={() => atualizar('familia', f.id)}
                 >
-                  <span>{t.icone}</span>
-                  <span>{t.nome}</span>
+                  {f.nome}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* cadeira */}
-          <div className="mce-campo mce-campo--3">
-            <label className="mce-label">Cadeira</label>
-            <div className="mce-cadeiras">
-              {CADEIRAS.map((c) => (
-                <button
-                  key={c.id}
-                  className={`mce-cadeira-btn ${form.cadeira === c.id ? 'ativo' : ''}`}
-                  style={{
-                    '--cor': CORES_CADEIRA[c.id],
-                    borderColor: form.cadeira === c.id ? CORES_CADEIRA[c.id] : 'transparent',
-                    backgroundColor: form.cadeira === c.id ? CORES_CADEIRA[c.id] + '33' : 'rgba(255,255,255,0.05)',
-                  }}
-                  onClick={() => atualizar('cadeira', c.id)}
-                >
-                  {c.nome}
-                </button>
-              ))}
+          {/* tipo de evento — só faz sentido para eventos da faculdade */}
+          {daFaculdade && (
+            <div className="mce-campo mce-campo--3">
+              <label className="mce-label">Tipo</label>
+              <div className="mce-tipos">
+                {TIPOS.map((t) => (
+                  <button
+                    key={t.id}
+                    className={`mce-tipo-btn ${form.tipo === t.id ? 'ativo' : ''}`}
+                    onClick={() => atualizar('tipo', t.id)}
+                  >
+                    <span>{t.icone}</span>
+                    <span>{t.nome}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* cadeira — só faz sentido para eventos da faculdade */}
+          {daFaculdade && (
+            <div className="mce-campo mce-campo--4">
+              <label className="mce-label">Cadeira</label>
+              <div className="mce-cadeiras">
+                {CADEIRAS.map((c) => (
+                  <button
+                    key={c.id}
+                    className={`mce-cadeira-btn ${form.cadeira === c.id ? 'ativo' : ''}`}
+                    style={{
+                      '--cor': CORES_CADEIRA[c.id],
+                      borderColor: form.cadeira === c.id ? CORES_CADEIRA[c.id] : 'transparent',
+                      backgroundColor: form.cadeira === c.id ? CORES_CADEIRA[c.id] + '33' : 'rgba(255,255,255,0.05)',
+                    }}
+                    onClick={() => atualizar('cadeira', c.id)}
+                  >
+                    {c.nome}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* data e horas */}
           <div className="mce-campo mce-campo--4 mce-linha">
@@ -298,16 +329,18 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
             />
           </div>
 
-          {/* conta falta */}
-          <div className="mce-campo mce-campo--8 mce-toggle-linha">
-            <label className="mce-label">Conta como falta?</label>
-            <button
-              className={`mce-toggle ${form.contaFalta ? 'ativo' : ''}`}
-              onClick={() => atualizar('contaFalta', !form.contaFalta)}
-            >
-              <span className="mce-toggle__bolinha" />
-            </button>
-          </div>
+          {/* conta falta — só faz sentido para eventos da faculdade */}
+          {daFaculdade && (
+            <div className="mce-campo mce-campo--8 mce-toggle-linha">
+              <label className="mce-label">Conta como falta?</label>
+              <button
+                className={`mce-toggle ${form.contaFalta ? 'ativo' : ''}`}
+                onClick={() => atualizar('contaFalta', !form.contaFalta)}
+              >
+                <span className="mce-toggle__bolinha" />
+              </button>
+            </div>
+          )}
 
           {/* erro */}
           {erro && <p className="mce-erro">{erro}</p>}

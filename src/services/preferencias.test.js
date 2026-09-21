@@ -14,12 +14,12 @@ describe('lerPreferencias', () => {
 
   it('lê o que foi guardado', () => {
     const s = falso({ [CHAVE_PREFERENCIAS]: JSON.stringify({ animacoes: 'off', abertura: 'nunca' }) });
-    expect(lerPreferencias(s)).toEqual({ animacoes: 'off', abertura: 'nunca' });
+    expect(lerPreferencias(s)).toEqual({ ...PADROES, animacoes: 'off', abertura: 'nunca' });
   });
 
   it('valores inválidos voltam ao padrão, campo a campo', () => {
     const s = falso({ [CHAVE_PREFERENCIAS]: JSON.stringify({ animacoes: 'talvez', abertura: 'curta' }) });
-    expect(lerPreferencias(s)).toEqual({ animacoes: 'on', abertura: 'curta' });
+    expect(lerPreferencias(s)).toEqual({ ...PADROES, animacoes: 'on', abertura: 'curta' });
   });
 
   it('json estragado dá os padrões', () => {
@@ -35,8 +35,8 @@ describe('guardarPreferencia', () => {
   it('guarda uma escolha e mantém as outras', () => {
     const s = falso();
     guardarPreferencia('abertura', 'sempre', s);
-    expect(guardarPreferencia('animacoes', 'off', s)).toEqual({ animacoes: 'off', abertura: 'sempre' });
-    expect(lerPreferencias(s)).toEqual({ animacoes: 'off', abertura: 'sempre' });
+    expect(guardarPreferencia('animacoes', 'off', s)).toEqual({ ...PADROES, animacoes: 'off', abertura: 'sempre' });
+    expect(lerPreferencias(s)).toEqual({ ...PADROES, animacoes: 'off', abertura: 'sempre' });
   });
 
   it('ignora chaves e valores desconhecidos', () => {
@@ -44,6 +44,20 @@ describe('guardarPreferencia', () => {
     expect(guardarPreferencia('abertura', 'inventada', s)).toEqual(PADROES);
     expect(guardarPreferencia('outra', 'on', s)).toEqual(PADROES);
     expect(s.dados[CHAVE_PREFERENCIAS]).toBeUndefined();
+  });
+});
+
+describe('frases e séries', () => {
+  it('por defeito misturam-se as frases e as séries estão ligadas', () => {
+    expect(PADROES.frases).toBe('misto');
+    expect(PADROES.series).toBe('on');
+  });
+
+  it('guardam-se e validam-se', () => {
+    const s = falso();
+    expect(guardarPreferencia('frases', 'citacoes', s).frases).toBe('citacoes');
+    expect(guardarPreferencia('series', 'off', s).series).toBe('off');
+    expect(guardarPreferencia('frases', 'todas', s).frases).toBe('citacoes');
   });
 });
 

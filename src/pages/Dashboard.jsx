@@ -9,7 +9,7 @@ import { coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js'
 import Tutorial from '../components/Tutorial.jsx'
 import CartaoAulaAgora from '../components/CartaoAulaAgora.jsx'
 import PerguntaFimDoDia from '../components/PerguntaFimDoDia.jsx'
-import { useFrase } from '../hooks/useFrase.js'
+import { useFraseDoDia } from '../hooks/useFraseDoDia.js'
 import { useModulos } from '../hooks/useModulos.js'
 import { MODULOS } from '../data/modulos.js'
 
@@ -50,7 +50,7 @@ function Dashboard() {
     marcarAula,
   } = useDashboard();
 
-  const frase = useFrase(getContextoFrase());
+  const frase = useFraseDoDia(getContextoFrase());
 
   // o que ela escolheu ver, e por que ordem
   const { ativos, ordem, carregado: carregadoModulos } = useModulos();
@@ -273,7 +273,13 @@ function Dashboard() {
             {/* mostra o primeiro nome enquanto carrega, atualiza quando o firestore responde */}
             {getPrimeiroNome(nome)} <span className="saudacao-emoji">👋</span>
           </h1>
-          {ativos.fraseDoDia && frase && <p className="frase-do-dia">"{frase}"</p>}
+          {ativos.fraseDoDia && frase && (
+            <p className="frase-do-dia">
+              "{frase.texto}"
+              {frase.pt && <span className="frase-do-dia__pt">{frase.pt}</span>}
+              {frase.legenda && <span className="frase-do-dia__fonte">— {frase.legenda}</span>}
+            </p>
+          )}
         </section>
 
         {/* grelha de cards */}

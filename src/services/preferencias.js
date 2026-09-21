@@ -3,11 +3,13 @@
 // lógica pura: o armazenamento entra por parâmetro, para testar sem o browser
 export const CHAVE_PREFERENCIAS = 'jurisleo-preferencias';
 
-export const PADROES = { animacoes: 'on', abertura: 'dia' };
+export const PADROES = { animacoes: 'on', abertura: 'dia', frases: 'misto', series: 'on' };
 
 const VALIDOS = {
   animacoes: ['on', 'off'],
   abertura: ['dia', 'sempre', 'curta', 'nunca'],
+  frases: ['misto', 'originais', 'citacoes'],
+  series: ['on', 'off'],
 };
 
 export const OPCOES_ABERTURA = [
@@ -15,6 +17,12 @@ export const OPCOES_ABERTURA = [
   { id: 'sempre', nome: 'Sempre completa', descricao: 'Todas as vezes que abres a app.' },
   { id: 'curta', nome: 'Sempre rápida', descricao: 'A mesma animação, mais depressa.' },
   { id: 'nunca', nome: 'Sem abertura', descricao: 'Vais direta para a app.' },
+];
+
+export const OPCOES_FRASES = [
+  { id: 'misto', nome: 'Misturadas', descricao: 'As frases do Vini e citações com fonte, sem repetir.' },
+  { id: 'originais', nome: 'Só as do Vini', descricao: 'As frases escritas para ti.' },
+  { id: 'citacoes', nome: 'Só citações', descricao: 'Brocardos, juristas e falas com fonte.' },
 ];
 
 function armazenamentoPadrao() {

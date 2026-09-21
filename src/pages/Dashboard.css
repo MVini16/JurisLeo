@@ -584,3 +584,7 @@
 .dash-ferr__chip:active { transform: scale(0.97); }
 .dashboard.dark .dash-ferr__chip { border-color: var(--border-dark); }
 .dashboard.dark .dash-ferr__chip--todas { border-color: var(--gold); }
+
+/* legenda e significado das citações */
+.frase-do-dia__pt, .frase-do-dia__fonte { display: block; font-size: 0.78rem; font-style: normal; opacity: 0.75; margin-top: 4px; }
+.frase-do-dia__fonte { font-size: 0.72rem; letter-spacing: 0.02em; }

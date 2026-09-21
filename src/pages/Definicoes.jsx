@@ -9,7 +9,7 @@ import { exportarDadosComoFicheiro } from '../services/exportar.js';
 import { useTheme } from '../context/useTheme.js';
 import { useModulos } from '../hooks/useModulos.js';
 import { MODULOS, CATEGORIAS_MODULOS, GRUPOS_FERRAMENTAS } from '../data/modulos.js';
-import { lerPreferencias, guardarPreferencia, aplicarPreferencias, OPCOES_ABERTURA } from '../services/preferencias.js';
+import { lerPreferencias, guardarPreferencia, aplicarPreferencias, OPCOES_ABERTURA, OPCOES_FRASES } from '../services/preferencias.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Definicoes.css';
 
@@ -170,8 +170,21 @@ export default function Definicoes() {
               <span className="def-texto"><b>{o.nome}</b><span>{o.descricao}</span></span>
             </button>
           ))}
-          <p className="def-nota">Estas duas escolhas valem só neste aparelho.</p>
         </div>
+        <div className="def-grupo" role="radiogroup" aria-label="Frases no ecrã de início">
+          <b className="def-grupo__titulo">Frases no ecrã de início</b>
+          {OPCOES_FRASES.map((o) => (
+            <button key={o.id} type="button" role="radio" aria-checked={prefs.frases === o.id} className={`def-opcao ${prefs.frases === o.id ? 'ativa' : ''}`} onClick={() => escolher('frases', o.id)}>
+              <span className="def-opcao__marca" />
+              <span className="def-texto"><b>{o.nome}</b><span>{o.descricao}</span></span>
+            </button>
+          ))}
+        </div>
+        <div className="def-linha">
+          <div className="def-texto"><b>Falas de séries</b><span>Suits, The Vampire Diaries... só falas curtas, com a fonte por baixo.</span></div>
+          <Interruptor ligado={prefs.series === 'on'} rotulo="Falas de séries" onMudar={() => escolher('series', prefs.series === 'on' ? 'off' : 'on')} />
+        </div>
+        <p className="def-nota">Estas escolhas valem só neste aparelho.</p>
       </section>
 
       {/* ajuda */}

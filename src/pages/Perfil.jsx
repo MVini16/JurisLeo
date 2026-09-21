@@ -7,6 +7,7 @@ import { db } from '../services/firebase.js';
 import { logout } from '../services/auth.js';
 import { useTheme } from '../context/useTheme.js';
 import PerfilEstudo from '../components/PerfilEstudo.jsx';
+import { O_QUE_O_VINI_VE } from '../data/consola.js';
 import './Perfil.css';
 
 export default function Perfil() {
@@ -57,6 +58,14 @@ export default function Perfil() {
         <LinhaInfo label="Turma" valor={perfil?.turma} />
         <LinhaInfo label="Subturma" valor={perfil?.subturma} />
         <LinhaInfo label="Ano letivo" valor={perfil?.anoLetivo} />
+      </section>
+
+      <section className="perfil-seccao">
+        <h2 className="perfil-seccao__titulo">O que o Vini vê</h2>
+        <p className="perfil-manutencao-texto">O Vini tem uma consola para te ajudar. Isto é tudo o que lá aparece:</p>
+        <ul className="perfil-vini-lista">
+          {O_QUE_O_VINI_VE.map((t) => <li key={t}>{t}</li>)}
+        </ul>
       </section>
 
       <button className="perfil-btn-sair" onClick={sair} disabled={aSair}>

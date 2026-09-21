@@ -30,6 +30,7 @@ import Ferramentas from './pages/Ferramentas'
 import Fichas from './pages/Fichas'
 import Prazos from './pages/Prazos'
 import Respirar from './pages/Respirar'
+import Consola from './pages/Consola'
 // componente de navegação — vai envolver todas as páginas principais
 import NavBar from './components/NavBar'
 
@@ -41,6 +42,7 @@ function App() {
         <Route path="/" element={<SplashScreen />} />
         <Route path="/login" element={<Login />} />
         <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/consola" element={<Consola />} />
 
         {/* páginas principais — com navbar */}
         <Route path="/dashboard" element={<NavBar><Dashboard /></NavBar>} />

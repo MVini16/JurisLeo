@@ -2,13 +2,28 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // cada utilizador só pode ler e escrever os seus próprios dados —
-    // esta é a única utilizadora da app, mas a regra fica correcta na mesma
-    match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+    function ehDono(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
 
+    // o email vem assinado pelo firebase auth e não se falsifica no cliente
+    // a conta do vini tem de existir no firebase auth, com o email verificado
+    function ehAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in ['m4rcusv1nni@gmail.com'];
+    }
+
+    // cada utilizador escreve só nos seus dados. o admin (o vini) só lê, nunca escreve:
+    // se aparecer um dado errado, nunca foi ele
+    match /users/{uid} {
+      allow read: if ehDono(uid) || ehAdmin();
+      allow write: if ehDono(uid);
+
+      // recursivo, para apanhar também cadeiras/{id}/faltas/dados e cadeiras/{id}/avaliacao/dados
       match /{document=**} {
-        allow read, write: if request.auth != null && request.auth.uid == uid;
+        allow read: if ehDono(uid) || ehAdmin();
+        allow write: if ehDono(uid);
       }
     }
   }

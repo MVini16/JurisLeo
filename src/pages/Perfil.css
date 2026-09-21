@@ -214,3 +214,5 @@
 .perfil-pagina.dark .perfil-definicoes { border-color: var(--border-dark); }
 .perfil-definicoes svg { width: 22px; height: 22px; }
 .perfil-definicoes:active { transform: scale(0.94); }
+
+.perfil-vini-lista { margin: 8px 0 0 18px; font-size: 0.82rem; line-height: 1.55; opacity: 0.85; }

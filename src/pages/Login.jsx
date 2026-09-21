@@ -9,6 +9,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../services/firebase.js'
 // importa o css
 import './Login.css'
+import { EMAIL_ADMIN } from '../data/consola.js'
 import PoeiraDourada from '../components/animacoes/PoeiraDourada.jsx'
 
 function Login() {
@@ -40,6 +41,9 @@ function Login() {
       if (modoRegisto) {
         // registo novo — vai sempre para onboarding
         navigate('/onboarding')
+      } else if (resultado.utilizador?.email === EMAIL_ADMIN) {
+        // a conta do Vini não tem onboarding: vai direto para a consola
+        navigate('/consola')
       } else {
         // login — verifica se o onboarding já foi feito
         try {

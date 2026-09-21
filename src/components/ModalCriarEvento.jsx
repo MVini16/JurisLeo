@@ -5,6 +5,7 @@ import { collection, addDoc, updateDoc, doc, Timestamp } from 'firebase/firestor
 import { getAuth } from 'firebase/auth';
 import { cadeirasS1, coresCadeiras } from '../data/dadosLeonor.js';
 import { FAMILIAS, familiaDoEvento } from '../data/familias.js';
+import { chaveData } from '../data/feriados.js';
 import './ModalCriarEvento.css';
 
 // cores por cadeira
@@ -18,14 +19,15 @@ const TIPOS = [
   { id: 'aula',       nome: 'Aula',        icone: '📚' },
   { id: 'frequencia', nome: 'Frequência',  icone: '⚡' },
   { id: 'oral',       nome: 'Oral',        icone: '🎤' },
+  { id: 'exame',      nome: 'Exame',       icone: '🎓' },
   { id: 'entrega',    nome: 'Entrega',     icone: '📝' },
   { id: 'outro',      nome: 'Outro',       icone: '📌' },
 ];
 
-// formata uma data para o input date (yyyy-mm-dd)
+// formata uma data para o input date (yyyy-mm-dd), em hora local —
+// nunca por toISOString, que converte para utc e pode mostrar o dia anterior
 function formatarData(data) {
-  const d = new Date(data);
-  return d.toISOString().split('T')[0];
+  return chaveData(new Date(data));
 }
 
 export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistente, tipoInicial }) {

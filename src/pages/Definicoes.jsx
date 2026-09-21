@@ -13,6 +13,14 @@ import { lerPreferencias, guardarPreferencia, aplicarPreferencias, OPCOES_ABERTU
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Definicoes.css';
 
+function Seta({ para }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points={para === 'cima' ? '6 15 12 9 18 15' : '6 9 12 15 18 9'} />
+    </svg>
+  );
+}
+
 function Interruptor({ ligado, onMudar, rotulo }) {
   return (
     <button type="button" role="switch" aria-checked={ligado} aria-label={rotulo} className={`def-switch ${ligado ? 'ligado' : ''}`} onClick={onMudar} />
@@ -90,8 +98,8 @@ export default function Definicoes() {
           return (
             <div key={id} className="def-linha">
               <div className="def-setas">
-                <button type="button" aria-label={`Subir ${m.nome}`} disabled={i === 0} onClick={() => mover(id, -1)}>▲</button>
-                <button type="button" aria-label={`Descer ${m.nome}`} disabled={i === ordem.length - 1} onClick={() => mover(id, 1)}>▼</button>
+                <button type="button" aria-label={`Subir ${m.nome}`} disabled={i === 0} onClick={() => mover(id, -1)}><Seta para="cima" /></button>
+                <button type="button" aria-label={`Descer ${m.nome}`} disabled={i === ordem.length - 1} onClick={() => mover(id, 1)}><Seta para="baixo" /></button>
               </div>
               <div className="def-texto"><b>{m.nome}</b><span>{m.descricao}</span></div>
               {m.fixo

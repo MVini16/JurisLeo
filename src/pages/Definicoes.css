@@ -12,7 +12,7 @@ html.dark .def-pagina { --acento: var(--gold); }
 
 .def-header { margin: 8px 0 20px; }
 .def-titulo { font-size: 1.6rem; font-weight: 700; }
-.def-sub { font-size: 0.85rem; opacity: 0.65; margin-top: 4px; }
+.def-sub { font-size: 0.85rem; opacity: 0.75; margin-top: 4px; }
 
 .def-seccao {
   margin-bottom: 18px;
@@ -35,7 +35,7 @@ html.dark .def-seccao {
   margin-bottom: 4px;
 }
 
-.def-seccao__ajuda { font-size: 0.78rem; opacity: 0.65; margin-bottom: 8px; }
+.def-seccao__ajuda { font-size: 0.8rem; opacity: 0.75; margin-bottom: 8px; }
 
 .def-linha {
   display: flex;
@@ -51,20 +51,24 @@ html.dark .def-linha { border-color: var(--border-dark); }
 
 .def-texto { flex: 1; min-width: 0; display: flex; flex-direction: column; text-align: left; }
 .def-texto b { font-size: 0.92rem; font-weight: 600; }
-.def-texto span { font-size: 0.75rem; opacity: 0.65; margin-top: 2px; }
+.def-texto span { font-size: 0.78rem; opacity: 0.75; margin-top: 2px; }
 
 .def-setas { display: flex; flex-direction: column; gap: 2px; }
 
 .def-setas button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 40px;
   height: 26px;
   border-radius: 8px;
   border: 1px solid var(--border-light);
   background: none;
   color: inherit;
-  font-size: 0.7rem;
   cursor: pointer;
 }
+
+.def-setas svg { width: 14px; height: 14px; }
 
 html.dark .def-setas button { border-color: var(--border-dark); }
 .def-setas button:disabled { opacity: 0.3; cursor: default; }
@@ -171,4 +175,13 @@ html.dark .def-opcao { border-color: var(--border-dark); }
   background: var(--acento);
 }
 
-.def-nota { font-size: 0.72rem; opacity: 0.55; text-align: center; margin-top: 4px; }
+.def-nota { font-size: 0.75rem; opacity: 0.72; text-align: center; margin-top: 4px; }
+
+/* foco de teclado visível, com a cor da página */
+.def-switch:focus-visible,
+.def-opcao:focus-visible,
+.def-btn:focus-visible,
+.def-setas button:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 3px;
+}

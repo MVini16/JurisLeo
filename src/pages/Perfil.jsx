@@ -6,6 +6,7 @@ import { getAuth } from 'firebase/auth';
 import { db } from '../services/firebase.js';
 import { logout } from '../services/auth.js';
 import { useTheme } from '../context/useTheme.js';
+import PerfilEstudo from '../components/PerfilEstudo.jsx';
 import './Perfil.css';
 
 export default function Perfil() {
@@ -46,6 +47,8 @@ export default function Perfil() {
         <h1 className="perfil-nome">{perfil?.nome || 'Leonor'}</h1>
         <p className="perfil-email">{email}</p>
       </header>
+
+      <PerfilEstudo />
 
       <section className="perfil-seccao">
         <h2 className="perfil-seccao__titulo">Dados académicos</h2>

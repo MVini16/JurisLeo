@@ -414,3 +414,9 @@
 }
 
 .revisao-ouvir:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* cartões com lacunas */
+.flashcards-modo { display: flex; gap: 8px; }
+.flashcards-modo__btn { flex: 1; min-height: var(--toque-min); border-radius: 12px; border: 1.5px solid var(--border-dark); background: none; color: inherit; font-family: inherit; font-size: 0.82rem; cursor: pointer; }
+.flashcards-modo__btn.ativo { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 14%, transparent); font-weight: 600; }
+.flashcards-lacunas-previa { font-size: 0.78rem; opacity: 0.8; line-height: 1.4; }

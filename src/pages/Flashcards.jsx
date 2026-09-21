@@ -4,6 +4,7 @@ import { useTheme } from '../context/useTheme.js';
 import { useFlashcards } from '../hooks/useFlashcards.js';
 import { estaPronto, ordenarPorPrioridade, CONFIANCAS } from '../services/repeticaoEspacada.js';
 import { lerEmVozAlta, vozDisponivel } from '../services/voz.js';
+import { converterLacunas } from '../services/lacunas.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Flashcards.css';
@@ -76,11 +77,17 @@ function FormNovoFlashcard({ onGuardar }) {
   const [tras, setTras] = useState('');
   const [cadeiraId, setCadeiraId] = useState(cadeirasS1[0].id);
   const [aGuardar, setAGuardar] = useState(false);
+  const [comLacunas, setComLacunas] = useState(false);
+
+  // com lacunas: uma frase só, com {{ }} à volta do que se quer esconder
+  const lacunas = comLacunas ? converterLacunas(frente) : null;
+  const podeGuardar = comLacunas ? !!lacunas : !!frente.trim() && !!tras.trim();
 
   async function guardar() {
-    if (!frente.trim() || !tras.trim()) return;
+    if (!podeGuardar) return;
     setAGuardar(true);
-    await onGuardar({ frente: frente.trim(), tras: tras.trim(), cadeiraId });
+    if (lacunas) await onGuardar({ frente: lacunas.frente, tras: lacunas.tras, cadeiraId, lacunas: true });
+    else await onGuardar({ frente: frente.trim(), tras: tras.trim(), cadeiraId });
     setAGuardar(false);
   }
 
@@ -91,9 +98,22 @@ function FormNovoFlashcard({ onGuardar }) {
           <button key={c.id} className={`flashcards-chip-cadeira ${cadeiraId === c.id ? 'ativo' : ''}`} style={{ '--cor': c.cor }} onClick={() => setCadeiraId(c.id)}>{c.abrev}</button>
         ))}
       </div>
-      <textarea className="flashcards-form-novo__textarea" placeholder="Frente — a pergunta" rows={2} value={frente} onChange={(e) => setFrente(e.target.value)} autoFocus />
-      <textarea className="flashcards-form-novo__textarea" placeholder="Trás — a resposta" rows={2} value={tras} onChange={(e) => setTras(e.target.value)} />
-      <button className="flashcards-form-novo__guardar" onClick={guardar} disabled={aGuardar || !frente.trim() || !tras.trim()}>
+      <div className="flashcards-modo" role="group" aria-label="Tipo de cartão">
+        <button type="button" className={`flashcards-modo__btn ${!comLacunas ? 'ativo' : ''}`} onClick={() => setComLacunas(false)}>Pergunta e resposta</button>
+        <button type="button" className={`flashcards-modo__btn ${comLacunas ? 'ativo' : ''}`} onClick={() => setComLacunas(true)}>Com lacunas</button>
+      </div>
+      {comLacunas ? (
+        <>
+          <textarea className="flashcards-form-novo__textarea" placeholder="Escreve a frase e põe entre {{ }} o que queres esconder" rows={3} value={frente} onChange={(e) => setFrente(e.target.value)} autoFocus />
+          <p className="flashcards-lacunas-previa">{lacunas ? `Vais ver: ${lacunas.frente}` : 'Exemplo: O contrato é um {{negócio jurídico}} bilateral.'}</p>
+        </>
+      ) : (
+        <>
+          <textarea className="flashcards-form-novo__textarea" placeholder="Frente — a pergunta" rows={2} value={frente} onChange={(e) => setFrente(e.target.value)} autoFocus />
+          <textarea className="flashcards-form-novo__textarea" placeholder="Trás — a resposta" rows={2} value={tras} onChange={(e) => setTras(e.target.value)} />
+        </>
+      )}
+      <button className="flashcards-form-novo__guardar" onClick={guardar} disabled={aGuardar || !podeGuardar}>
         {aGuardar ? 'A guardar...' : 'Guardar'}
       </button>
     </div>

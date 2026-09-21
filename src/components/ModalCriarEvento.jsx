@@ -4,6 +4,8 @@ import { db } from '../services/firebase.js';
 import { collection, addDoc, updateDoc, doc, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { cadeirasS1, coresCadeiras } from '../data/dadosLeonor.js';
+import { FAMILIAS, familiaDoEvento } from '../data/familias.js';
+import { chaveData } from '../data/feriados.js';
 import './ModalCriarEvento.css';
 
 // cores por cadeira
@@ -21,10 +23,10 @@ const TIPOS = [
   { id: 'outro',      nome: 'Outro',       icone: '📌' },
 ];
 
-// formata uma data para o input date (yyyy-mm-dd)
+// formata uma data para o input date (yyyy-mm-dd), em hora local
+// (toISOString converte para utc e pode mostrar o dia anterior)
 function formatarData(data) {
-  const d = new Date(data);
-  return d.toISOString().split('T')[0];
+  return chaveData(new Date(data));
 }
 
 export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistente, tipoInicial }) {
@@ -38,6 +40,7 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
         : eventoExistente.data?.toDate?.();
       return {
         titulo:      eventoExistente.titulo || '',
+        familia:     familiaDoEvento(eventoExistente),
         data:        dataEv ? formatarData(dataEv) : formatarData(new Date()),
         horaInicio:  eventoExistente.horaInicio || '',
         horaFim:     eventoExistente.horaFim || '',
@@ -51,6 +54,7 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
     }
     return {
       titulo:      '',
+      familia:     'faculdade',
       data:        dataInicial ? formatarData(dataInicial) : formatarData(new Date()),
       horaInicio:  '',
       horaFim:     '',
@@ -73,6 +77,9 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
   useEffect(() => {
     requestAnimationFrame(() => setVisivel(true));
   }, []);
+
+  // tipo, cadeira e "conta falta" só existem para eventos da faculdade
+  const daFaculdade = form.familia === 'faculdade';
 
   // atualiza um campo do formulário
   function atualizar(campo, valor) {
@@ -108,17 +115,19 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
       // converte a data para timestamp do firestore
       const dataObj = new Date(form.data + 'T' + (form.horaInicio || '00:00') + ':00');
 
+      // fora da faculdade não há tipo, cadeira nem falta
       const dados = {
         titulo:      form.titulo.trim(),
+        familia:     form.familia,
         data:        Timestamp.fromDate(dataObj),
         horaInicio:  form.horaInicio,
         horaFim:     form.horaFim,
-        tipo:        form.tipo,
-        cadeira:     form.cadeira,
+        tipo:        daFaculdade ? form.tipo : 'outro',
+        cadeira:     daFaculdade ? form.cadeira : null,
         notas:       form.notas.trim(),
         importancia: form.importancia,
         estado:      form.estado,
-        contaFalta:  form.contaFalta,
+        contaFalta:  daFaculdade ? form.contaFalta : false,
       };
 
       if (aEditar) {
@@ -186,6 +195,27 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
             />
           </div>
 
+          {/* família do evento */}
+          <div className="mce-campo mce-campo--1">
+            <label className="mce-label">Família</label>
+            <div className="mce-familias" role="group" aria-label="Família do evento">
+              {FAMILIAS.map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  className={`mce-familia-chip ${form.familia === f.id ? 'ativo' : ''}`}
+                  style={{ '--cor': f.cor }}
+                  aria-pressed={form.familia === f.id}
+                  onClick={() => atualizar('familia', f.id)}
+                >
+                  <span className="mce-familia-chip__ponto" />
+                  {f.nome}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {daFaculdade && (<>
           {/* tipo de evento */}
           <div className="mce-campo mce-campo--2">
             <label className="mce-label">Tipo</label>
@@ -223,6 +253,7 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
               ))}
             </div>
           </div>
+          </>)}
 
           {/* data e horas */}
           <div className="mce-campo mce-campo--4 mce-linha">
@@ -299,15 +330,17 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
           </div>
 
           {/* conta falta */}
-          <div className="mce-campo mce-campo--8 mce-toggle-linha">
-            <label className="mce-label">Conta como falta?</label>
-            <button
-              className={`mce-toggle ${form.contaFalta ? 'ativo' : ''}`}
-              onClick={() => atualizar('contaFalta', !form.contaFalta)}
-            >
-              <span className="mce-toggle__bolinha" />
-            </button>
-          </div>
+          {daFaculdade && (
+            <div className="mce-campo mce-campo--8 mce-toggle-linha">
+              <label className="mce-label">Conta como falta?</label>
+              <button
+                className={`mce-toggle ${form.contaFalta ? 'ativo' : ''}`}
+                onClick={() => atualizar('contaFalta', !form.contaFalta)}
+              >
+                <span className="mce-toggle__bolinha" />
+              </button>
+            </div>
+          )}
 
           {/* erro */}
           {erro && <p className="mce-erro">{erro}</p>}

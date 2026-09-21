@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import { useTheme } from '../context/useTheme.js';
 import { useFlashcards } from '../hooks/useFlashcards.js';
-import { estaPronto, ordenarPorPrioridade } from '../services/repeticaoEspacada.js';
+import { estaPronto, ordenarPorPrioridade, CONFIANCAS } from '../services/repeticaoEspacada.js';
+import { lerEmVozAlta, vozDisponivel } from '../services/voz.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Flashcards.css';
@@ -132,8 +133,8 @@ function SessaoRevisao({ fila, onResponder, onFechar }) {
   const [virado, setVirado] = useState(false);
   const atual = fila[indice];
 
-  async function responder(acertou) {
-    await onResponder(atual, acertou);
+  async function responder(confianca) {
+    await onResponder(atual, confianca);
     if (indice + 1 >= fila.length) {
       onFechar();
     } else {
@@ -160,10 +161,22 @@ function SessaoRevisao({ fila, onResponder, onFechar }) {
       </div>
 
       {virado && (
-        <div className="revisao-acoes">
-          <button className="revisao-btn-errei" onClick={() => responder(false)}>✕ Não sabia</button>
-          <button className="revisao-btn-acertei" onClick={() => responder(true)}>✓ Acertei</button>
+        <div className="revisao-confianca" role="group" aria-label="Como te correu?">
+          <p className="revisao-confianca__titulo">Como te correu?</p>
+          <div className="revisao-confianca__botoes">
+            {CONFIANCAS.map((c) => (
+              <button key={c.valor} type="button" className={`revisao-confianca__btn confianca-${c.valor}`} onClick={() => responder(c.valor)}>
+                <b>{c.valor}</b>
+                <span>{c.nome}</span>
+              </button>
+            ))}
+          </div>
         </div>
+      )}
+      {vozDisponivel() && (
+        <button type="button" className="revisao-ouvir" onClick={() => lerEmVozAlta(virado ? `${atual.frente}. ${atual.tras}` : atual.frente)}>
+          Ouvir {virado ? 'tudo' : 'a pergunta'}
+        </button>
       )}
     </div>
   );

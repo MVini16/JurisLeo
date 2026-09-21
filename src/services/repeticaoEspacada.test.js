@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calcularProximaRevisao, estaPronto, ordenarPorPrioridade } from './repeticaoEspacada.js';
+import { calcularProximaRevisao, calcularProximaRevisaoPorConfianca, CONFIANCAS, estaPronto, ordenarPorPrioridade } from './repeticaoEspacada.js';
 
 describe('calcularProximaRevisao', () => {
   it('sobe de nível e aumenta o intervalo quando acerta', () => {
@@ -56,5 +56,38 @@ describe('ordenarPorPrioridade', () => {
 
     const ordenadas = ordenarPorPrioridade(cartas);
     expect(ordenadas.map((c) => c.id)).toEqual(['c', 'a', 'b']);
+  });
+});
+
+describe('calcularProximaRevisaoPorConfianca', () => {
+  it('tem cinco confianças, de 1 a 5', () => {
+    expect(CONFIANCAS.map((c) => c.valor)).toEqual([1, 2, 3, 4, 5]);
+  });
+
+  it('1 (não sabia) volta ao início', () => {
+    expect(calcularProximaRevisaoPorConfianca(3, 1).novoNivel).toBe(0);
+  });
+
+  it('2 desce um nível, 3 fica, 4 sobe um, 5 sobe dois', () => {
+    expect(calcularProximaRevisaoPorConfianca(2, 2).novoNivel).toBe(1);
+    expect(calcularProximaRevisaoPorConfianca(2, 3).novoNivel).toBe(2);
+    expect(calcularProximaRevisaoPorConfianca(2, 4).novoNivel).toBe(3);
+    expect(calcularProximaRevisaoPorConfianca(2, 5).novoNivel).toBe(4);
+  });
+
+  it('respeita os limites 0 e 4', () => {
+    expect(calcularProximaRevisaoPorConfianca(0, 2).novoNivel).toBe(0);
+    expect(calcularProximaRevisaoPorConfianca(4, 5).novoNivel).toBe(4);
+  });
+
+  it('valores fora de 1 a 5 são corrigidos', () => {
+    expect(calcularProximaRevisaoPorConfianca(2, 9).novoNivel).toBe(4);
+    expect(calcularProximaRevisaoPorConfianca(2, 0).novoNivel).toBe(0);
+    expect(calcularProximaRevisaoPorConfianca(2, 'x').novoNivel).toBe(0);
+  });
+
+  it('a data da próxima revisão segue o nível novo', () => {
+    const { proximaRevisao } = calcularProximaRevisaoPorConfianca(0, 4);
+    expect(Math.round((proximaRevisao - new Date()) / 86400000)).toBe(2);
   });
 });

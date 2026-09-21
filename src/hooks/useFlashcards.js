@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import { calcularProximaRevisao } from '../services/repeticaoEspacada.js';
+import { calcularProximaRevisaoPorConfianca } from '../services/repeticaoEspacada.js';
 
 export function useFlashcards() {
   const [flashcards, setFlashcards] = useState([]);
@@ -42,13 +42,17 @@ export function useFlashcards() {
   }
 
   // regista uma resposta de revisão e actualiza o nível + próxima revisão
-  async function registarResposta(flashcard, acertou) {
+  // resposta: a confiança de 1 a 5 (ou, como antes, true/false: acertou = 4, errou = 2)
+  async function registarResposta(flashcard, resposta) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    const { novoNivel, proximaRevisao } = calcularProximaRevisao(flashcard.nivel ?? 0, acertou);
+    const confianca = typeof resposta === 'number' ? resposta : (resposta ? 4 : 2);
+    const acertou = confianca >= 3;
+    const { novoNivel, proximaRevisao } = calcularProximaRevisaoPorConfianca(flashcard.nivel ?? 0, confianca);
     await updateDoc(doc(db, 'users', userId, 'flashcards', flashcard.id), {
       nivel: novoNivel,
       proximaRevisao,
+      ultimaConfianca: confianca,
       acertos: (flashcard.acertos || 0) + (acertou ? 1 : 0),
       erros: (flashcard.erros || 0) + (acertou ? 0 : 1),
     });

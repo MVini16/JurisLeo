@@ -368,3 +368,49 @@
   background: #2e7d32;
   color: #fff;
 }
+
+/* como te correu: cinco níveis de confiança */
+.revisao-confianca { width: 100%; max-width: 420px; margin: 18px auto 0; }
+.revisao-confianca__titulo { text-align: center; font-size: 0.8rem; opacity: 0.8; margin-bottom: 8px; }
+.revisao-confianca__botoes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+
+.revisao-confianca__btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-height: 58px;
+  padding: 6px 2px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-dark);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.revisao-confianca__btn b { font-size: 1.05rem; }
+.revisao-confianca__btn span { font-size: 0.62rem; line-height: 1.15; text-align: center; opacity: 0.85; }
+.revisao-confianca__btn:active { transform: scale(0.95); }
+.revisao-confianca__btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.revisao-confianca__btn.confianca-1 { border-color: var(--perigo); }
+.revisao-confianca__btn.confianca-2 { border-color: var(--aviso); }
+.revisao-confianca__btn.confianca-3 { border-color: var(--gold); }
+.revisao-confianca__btn.confianca-4 { border-color: var(--sucesso); }
+.revisao-confianca__btn.confianca-5 { border-color: var(--sucesso); background: color-mix(in srgb, var(--sucesso) 22%, transparent); }
+
+.revisao-ouvir {
+  display: block;
+  margin: 14px auto 0;
+  min-height: var(--toque-min);
+  padding: 0 18px;
+  border-radius: 22px;
+  border: 1.5px solid var(--border-dark);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.revisao-ouvir:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }

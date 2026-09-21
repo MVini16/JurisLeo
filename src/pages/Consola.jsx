@@ -2,7 +2,7 @@
 // se a Leonor (ou qualquer outra conta) chegar aqui, volta em silêncio para o início
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { logout } from '../services/auth.js';
+import { login, logout, entrarComGoogle } from '../services/auth.js';
 import { useAcessoAdmin, useDadosDela } from '../hooks/useConsola.js';
 import { UID_DA_LEONOR } from '../data/consola.js';
 import { resumirDados, triagem } from '../services/consola.js';
@@ -24,6 +24,56 @@ const ROTULO_ESTADO = {
 };
 
 const ROTULO_SEMAFORO = { verde: 'Faltas em ordem', amarelo: 'Faltas a chegar ao limite', vermelho: 'Faltas no limite' };
+
+// mensagens simples para os erros de entrada mais comuns
+function mensagemDeErro(erro) {
+  const e = String(erro || '');
+  if (e.includes('operation-not-allowed')) return 'O login com Google ainda não está ativo no Firebase. Usa o email e a palavra-passe, ou ativa o Google (docs/CONSOLA.md).';
+  if (e.includes('popup-closed') || e.includes('cancelled-popup')) return '';
+  if (e.includes('invalid-credential') || e.includes('wrong-password') || e.includes('user-not-found') || e.includes('invalid-email')) return 'Email ou palavra-passe errados.';
+  if (e.includes('too-many-requests')) return 'Demasiadas tentativas. Espera um bocado.';
+  return 'Não consegui entrar. Tenta outra vez.';
+}
+
+// entrada própria da consola: quem escreve /admin no endereço não passa pelo login da app
+function EntrarAdmin() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [erro, setErro] = useState('');
+  const [aEntrar, setAEntrar] = useState(false);
+
+  async function comGoogle() {
+    setErro('');
+    setAEntrar(true);
+    const r = await entrarComGoogle();
+    setAEntrar(false);
+    if (!r.sucesso) setErro(mensagemDeErro(r.erro));
+  }
+
+  async function comEmail(e) {
+    e.preventDefault();
+    setErro('');
+    setAEntrar(true);
+    const r = await login(email.trim(), password);
+    setAEntrar(false);
+    if (!r.sucesso) setErro(mensagemDeErro(r.erro));
+  }
+
+  return (
+    <div className="co-pin">
+      <h1>Consola</h1>
+      <p>Entra com a tua conta.</p>
+      <button type="button" className="co-botao co-botao--principal co-largo" onClick={comGoogle} disabled={aEntrar}>Entrar com Google</button>
+      <p className="co-ou">ou</p>
+      <form className="co-form" onSubmit={comEmail}>
+        <input className="co-campo" type="email" autoComplete="username" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} aria-label="Email" />
+        <input className="co-campo" type="password" autoComplete="current-password" placeholder="Palavra-passe" value={password} onChange={(e) => setPassword(e.target.value)} aria-label="Palavra-passe" />
+        <button type="submit" className="co-botao co-largo" disabled={aEntrar || !email || !password}>Entrar com email</button>
+      </form>
+      {erro && <p className="co-erro" role="alert">{erro}</p>}
+    </div>
+  );
+}
 
 function Cartao({ titulo, children }) {
   return (
@@ -205,7 +255,7 @@ export default function Consola() {
   }, [aberta]);
 
   if (acesso.fase === 'a-verificar') return <Carregando texto="A verificar..." tipo="templo" />;
-  if (acesso.fase === 'sem-sessao') return <Navigate to="/login" replace />;
+  if (acesso.fase === 'sem-sessao') return <EntrarAdmin />;
   if (acesso.fase === 'nao-admin') return <Navigate to="/dashboard" replace />;
 
   if (acesso.fase === 'email-por-verificar') {

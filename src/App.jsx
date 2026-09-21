@@ -43,6 +43,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/consola" element={<Consola />} />
+        <Route path="/admin" element={<Consola />} />
 
         {/* páginas principais — com navbar */}
         <Route path="/dashboard" element={<NavBar><Dashboard /></NavBar>} />

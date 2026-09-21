@@ -1,5 +1,5 @@
 // importa as funções de autenticação do firebase
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 // importa a ligação ao auth e à base de dados
 import { auth } from "./firebase.js";
 // importa a função que cria a estrutura do firestore
@@ -40,5 +40,16 @@ export async function logout() {
     return { sucesso: true };
   } catch (erro) {
     return { sucesso: false, erro: erro.message };
+  }
+}
+
+// entrar com a conta google (usado na consola do vini). o email da conta google já vem verificado.
+// precisa de o "google" estar ativo em firebase → authentication → sign-in method
+export async function entrarComGoogle() {
+  try {
+    const resultado = await signInWithPopup(auth, new GoogleAuthProvider());
+    return { sucesso: true, utilizador: resultado.user };
+  } catch (erro) {
+    return { sucesso: false, erro: erro.code || erro.message };
   }
 }

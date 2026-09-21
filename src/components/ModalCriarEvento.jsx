@@ -19,6 +19,7 @@ const TIPOS = [
   { id: 'aula',       nome: 'Aula',        icone: '📚' },
   { id: 'frequencia', nome: 'Frequência',  icone: '⚡' },
   { id: 'oral',       nome: 'Oral',        icone: '🎤' },
+  { id: 'exame',      nome: 'Exame',       icone: '📖' },
   { id: 'entrega',    nome: 'Entrega',     icone: '📝' },
   { id: 'outro',      nome: 'Outro',       icone: '📌' },
 ];

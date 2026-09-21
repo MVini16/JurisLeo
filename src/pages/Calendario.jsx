@@ -11,6 +11,9 @@ import { FAMILIAS, corDoEvento, familiaDoEvento } from '../data/familias.js';
 import './Calendario.css';
 import './CalendarioExtra.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
+import { chaveData, nomeFeriado } from '../data/feriados.js';
+import { epocasDoDia, naEpocaNormal, AVISO_DATAS_INDICATIVAS } from '../data/calendarioEscolar.js';
+import { detetarChoques, choquesPorDia } from '../services/coincidencias.js';
 
 const MESES = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -29,9 +32,27 @@ const ICONES_TIPO = {
   aula:       '📚',
   frequencia: '⚡',
   oral:       '🎤',
+  exame:      '📖',
   entrega:    '📝',
   outro:      '📌',
 };
+
+// feriado, época de exames e choques de um dia, em frases curtas
+function AvisosDoDia({ data, choques }) {
+  const chave = chaveData(data);
+  const feriado = nomeFeriado(data);
+  const epocas = epocasDoDia(chave);
+  const doDia = choques[chave] || [];
+  if (!feriado && epocas.length === 0 && doDia.length === 0) return null;
+  return (
+    <div className="cal-avisos">
+      {feriado && <p className="cal-aviso cal-aviso--feriado">Feriado: {feriado}. Não há aulas.</p>}
+      {epocas.map((e) => <p key={e.id} className="cal-aviso cal-aviso--epoca">{e.nome}{e.previsivel ? ' (previsível)' : ''}</p>)}
+      {epocas.length > 0 && <p className="cal-aviso__nota">{AVISO_DATAS_INDICATIVAS}</p>}
+      {doDia.map((c, i) => <p key={i} className="cal-aviso cal-aviso--choque">{c.motivo}</p>)}
+    </div>
+  );
+}
 
 export default function Calendario() {
   const { eventos: todosOsEventos, loading, marcar } = useCalendario();
@@ -41,6 +62,16 @@ export default function Calendario() {
     () => todosOsEventos.filter((ev) => familiasAtivas.includes(familiaDoEvento(ev))),
     [todosOsEventos, familiasAtivas]
   );
+
+  // avisa sempre, nunca bloqueia; só mostra choques fortes entre eventos que não são aulas do horário
+  const choques = useMemo(() => {
+    const itens = eventos.map((ev) => {
+      const d = ev.data instanceof Date ? ev.data : ev.data?.toDate?.();
+      return d ? { chave: ev.chave, dia: chaveData(d), tipo: ev.tipo, titulo: ev.titulo, cadeira: ev.cadeira, estadoAula: ev.estadoAula, estado: ev.estado } : null;
+    }).filter(Boolean);
+    const fortes = detetarChoques(itens, { epocaNormal: naEpocaNormal }).filter((c) => c.forte && !c.itens.some((i) => i.tipo === 'aula'));
+    return choquesPorDia(fortes);
+  }, [eventos]);
 
   function alternarFamilia(id) {
     setFamiliasAtivas((atuais) => (atuais.includes(id) ? atuais.filter((f) => f !== id) : [...atuais, id]));
@@ -184,7 +215,7 @@ export default function Calendario() {
       <div className="cal-conteudo">
 
         {vista === 'diaria' && (
-          <VistaDiaria data={dataSelecionada} eventos={eventosDoDia(dataSelecionada)} onEventoClick={setEventoDetalhe} ICONES_TIPO={ICONES_TIPO} />
+          <VistaDiaria data={dataSelecionada} eventos={eventosDoDia(dataSelecionada)} onEventoClick={setEventoDetalhe} ICONES_TIPO={ICONES_TIPO} choques={choques} />
         )}
 
         {vista === 'semanal' && (
@@ -205,9 +236,9 @@ export default function Calendario() {
 
         {vista === 'mensal' && (
           <div className="cal-mensal-wrapper">
-            <VistaMensal mes={mesAtual} ano={anoAtual} eventos={eventos} eventosDoDia={eventosDoDia} onDiaClick={clicarDiaMensal} diaSelecionado={painelDia} hoje={hoje} mesmoDia={mesmoDia} ICONES_TIPO={ICONES_TIPO} />
+            <VistaMensal mes={mesAtual} ano={anoAtual} eventos={eventos} eventosDoDia={eventosDoDia} onDiaClick={clicarDiaMensal} diaSelecionado={painelDia} hoje={hoje} mesmoDia={mesmoDia} ICONES_TIPO={ICONES_TIPO} choques={choques} />
             {painelDia && (
-              <PainelDia data={painelDia} eventos={eventosDoDia(painelDia)} onIrParaDia={irParaVistaDiaria} onFechar={() => setPainelDia(null)} onEventoClick={setEventoDetalhe} ICONES_TIPO={ICONES_TIPO} MESES={MESES} DIAS_SEMANA={DIAS_SEMANA} />
+              <PainelDia data={painelDia} eventos={eventosDoDia(painelDia)} onIrParaDia={irParaVistaDiaria} onFechar={() => setPainelDia(null)} onEventoClick={setEventoDetalhe} ICONES_TIPO={ICONES_TIPO} MESES={MESES} DIAS_SEMANA={DIAS_SEMANA} choques={choques} />
             )}
           </div>
         )}
@@ -220,7 +251,7 @@ export default function Calendario() {
 
       {/* bottom sheet mobile — vista mensal */}
       {painelDia && (
-        <BottomSheet data={painelDia} eventos={eventosDoDia(painelDia)} onIrParaDia={irParaVistaDiaria} onFechar={() => setPainelDia(null)} onEventoClick={setEventoDetalhe} ICONES_TIPO={ICONES_TIPO} MESES={MESES} DIAS_SEMANA={DIAS_SEMANA} />
+        <BottomSheet data={painelDia} eventos={eventosDoDia(painelDia)} onIrParaDia={irParaVistaDiaria} onFechar={() => setPainelDia(null)} onEventoClick={setEventoDetalhe} ICONES_TIPO={ICONES_TIPO} MESES={MESES} DIAS_SEMANA={DIAS_SEMANA} choques={choques} />
       )}
 
       {/* fab mobile */}
@@ -239,7 +270,7 @@ export default function Calendario() {
 // ------------------------------------------------------------------
 // vista diária
 // ------------------------------------------------------------------
-function VistaDiaria({ data, eventos, onEventoClick, ICONES_TIPO }) {
+function VistaDiaria({ data, eventos, onEventoClick, ICONES_TIPO, choques }) {
   const horas = Array.from({ length: 15 }, (_, i) => i + 8);
   const [modoMobile, setModoMobile] = useState('resumo');
 
@@ -261,6 +292,7 @@ function VistaDiaria({ data, eventos, onEventoClick, ICONES_TIPO }) {
         </div>
         <div className="cal-diaria__sidebar-eventos">
           <p className="cal-diaria__sidebar-titulo">Hoje tens</p>
+          <AvisosDoDia data={data} choques={choques} />
           {eventos.length === 0 && <p className="cal-diaria__sidebar-vazio">Dia livre! 🎉</p>}
           {eventos.map((ev) => (
             <div key={ev.id} className="cal-diaria__sidebar-item" style={{ borderLeftColor: corDoEvento(ev) }} onClick={() => onEventoClick(ev)}>
@@ -443,7 +475,7 @@ function VistaSemanal({ data, eventosDoDia, onDiaClick, onEventoClick, onDataCha
 // ------------------------------------------------------------------
 // vista mensal
 // ------------------------------------------------------------------
-function VistaMensal({ mes, ano, eventosDoDia, onDiaClick, diaSelecionado, hoje, mesmoDia, ICONES_TIPO }) {
+function VistaMensal({ mes, ano, eventosDoDia, onDiaClick, diaSelecionado, hoje, mesmoDia, ICONES_TIPO, choques }) {
   function gerarGrid() {
     const primeiroDia = new Date(ano, mes, 1).getDay();
     const diasNoMes = new Date(ano, mes + 1, 0).getDate();
@@ -471,11 +503,16 @@ function VistaMensal({ mes, ano, eventosDoDia, onDiaClick, diaSelecionado, hoje,
           const evsDia = eventosDoDia(data);
           const isHoje = mesmoDia(data, hoje);
           const isSelecionado = diaSelecionado && mesmoDia(data, diaSelecionado);
+          const chave = chaveData(data);
+          const feriado = nomeFeriado(data);
+          const epoca = epocasDoDia(chave)[0];
+          const temChoque = (choques[chave] || []).length > 0;
           const barras = evsDia.slice(0, 2);
           const pontosExtra = evsDia.length > 2 ? evsDia.slice(2) : [];
           return (
-            <div key={i} className={`cal-mensal__dia ${outroMes ? 'outro-mes' : ''} ${isHoje ? 'hoje' : ''} ${isSelecionado ? 'selecionado' : ''}`} onClick={() => onDiaClick(data)}>
-              <span className="cal-mensal__dia-num">{data.getDate()}</span>
+            <div key={i} className={`cal-mensal__dia ${outroMes ? 'outro-mes' : ''} ${isHoje ? 'hoje' : ''} ${isSelecionado ? 'selecionado' : ''} ${feriado ? 'feriado' : ''} ${epoca ? `epoca epoca--${epoca.id}${epoca.previsivel ? ' previsivel' : ''}` : ''}`} onClick={() => onDiaClick(data)}>
+              <span className="cal-mensal__dia-num">{data.getDate()}{temChoque && <b className="cal-mensal__choque" title="Choque ou coincidência de exames">!</b>}</span>
+              {feriado && <span className="cal-mensal__feriado" title={feriado}>{feriado}</span>}
               <div className="cal-mensal__dia-eventos">
                 {barras.map((ev) => (
                   <div key={ev.id} className="cal-mensal__dia-barra" style={{ backgroundColor: corDoEvento(ev) }} title={ev.titulo}>
@@ -500,7 +537,7 @@ function VistaMensal({ mes, ano, eventosDoDia, onDiaClick, diaSelecionado, hoje,
 // ------------------------------------------------------------------
 // painel lateral — desktop only
 // ------------------------------------------------------------------
-function PainelDia({ data, eventos, onIrParaDia, onFechar, onEventoClick, ICONES_TIPO, MESES, DIAS_SEMANA }) {
+function PainelDia({ data, eventos, onIrParaDia, onFechar, onEventoClick, ICONES_TIPO, MESES, DIAS_SEMANA, choques }) {
   return (
     <div className="cal-painel">
       <div className="cal-painel__header">
@@ -514,6 +551,7 @@ function PainelDia({ data, eventos, onIrParaDia, onFechar, onEventoClick, ICONES
         </div>
       </div>
       <div className="cal-painel__eventos">
+        <AvisosDoDia data={data} choques={choques} />
         {eventos.length === 0 && <p className="cal-diaria__sidebar-vazio">Dia livre! 🎉</p>}
         {eventos.map((ev) => (
           <div key={ev.id} className="cal-painel__evento" style={{ borderLeftColor: corDoEvento(ev) }} onClick={() => onEventoClick(ev)}>
@@ -534,7 +572,7 @@ function PainelDia({ data, eventos, onIrParaDia, onFechar, onEventoClick, ICONES
 // ------------------------------------------------------------------
 // bottom sheet mobile
 // ------------------------------------------------------------------
-function BottomSheet({ data, eventos, onIrParaDia, onFechar, onEventoClick, ICONES_TIPO, MESES, DIAS_SEMANA }) {
+function BottomSheet({ data, eventos, onIrParaDia, onFechar, onEventoClick, ICONES_TIPO, MESES, DIAS_SEMANA, choques }) {
   const sheetRef = useRef(null);
   const startY = useRef(null);
   const deltaY = useRef(0);
@@ -576,6 +614,7 @@ function BottomSheet({ data, eventos, onIrParaDia, onFechar, onEventoClick, ICON
           <button className="cal-btn-hoje" onClick={() => onIrParaDia(data)}>Ver dia</button>
         </div>
         <div className="cal-bottom-sheet__eventos">
+          <AvisosDoDia data={data} choques={choques} />
           {eventos.length === 0 && <p className="cal-diaria__sidebar-vazio" style={{ textAlign: 'center', padding: '24px 0' }}>Dia livre! 🎉</p>}
           {eventos.map((ev) => (
             <div key={ev.id} className="cal-bottom-sheet__evento" style={{ borderLeftColor: corDoEvento(ev) }} onClick={() => { onEventoClick(ev); onFechar(); }}>

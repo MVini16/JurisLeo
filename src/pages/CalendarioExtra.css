@@ -43,3 +43,63 @@
   border-radius: 50%;
   background: var(--cor);
 }
+
+/* feriados, épocas de exames e avisos do dia */
+.cal-mensal__dia { position: relative; }
+.cal-mensal__dia.feriado .cal-mensal__dia-num { color: var(--feriado); font-weight: 700; }
+
+.cal-mensal__feriado {
+  display: block;
+  font-size: 0.55rem;
+  line-height: 1.1;
+  color: var(--feriado);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* a época é uma faixa fina no topo da célula, não um evento */
+.cal-mensal__dia.epoca::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: var(--gold);
+}
+
+.cal-mensal__dia.epoca--provasAvaliacaoContinua::before { background: var(--info); }
+.cal-mensal__dia.epoca--escritosEpocaNormal::before,
+.cal-mensal__dia.epoca--oraisEpocaNormal::before { background: var(--burgundy); }
+.cal-mensal__dia.epoca--recurso::before { background: var(--aviso); }
+.cal-mensal__dia.epoca.previsivel::before { background: repeating-linear-gradient(90deg, var(--gold) 0 4px, transparent 4px 7px); }
+
+.cal-mensal__choque {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-left: 3px;
+  border-radius: 50%;
+  background: var(--perigo);
+  color: #fff;
+  font-size: 0.6rem;
+}
+
+.cal-avisos { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+
+.cal-aviso {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--info) 14%, transparent);
+}
+
+.cal-aviso--feriado { background: color-mix(in srgb, var(--feriado) 14%, transparent); }
+.cal-aviso--epoca { background: color-mix(in srgb, var(--gold) 20%, transparent); }
+.cal-aviso--choque { background: color-mix(in srgb, var(--perigo) 16%, transparent); }
+.cal-aviso__nota { font-size: 0.68rem; opacity: 0.72; }
+.cal-aviso__nota::first-letter { text-transform: uppercase; }

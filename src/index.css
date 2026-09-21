@@ -61,6 +61,12 @@ html:not(.dark) body {
   --familia-saude: #2e6f5e;
   --feriado: #b3423a;
   --toque-min: 44px;
+  /* ouro em vários tons e papel, para as animações de abertura e de carregamento */
+  --gold-claro: #F3DFA2;
+  --gold-escuro: #8a6f2a;
+  --pergaminho: #F4ECD9;
+  --pergaminho-sombra: #D9CDB4;
+  --tinta: #3a2a1c;
 }
 
 /* quem pede menos movimento não leva animações */

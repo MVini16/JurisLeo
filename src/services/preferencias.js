@@ -22,7 +22,7 @@ export const OPCOES_ABERTURA = [
 export const OPCOES_FRASES = [
   { id: 'misto', nome: 'Misturadas', descricao: 'As frases do Vini e citações com fonte, sem repetir.' },
   { id: 'originais', nome: 'Só as do Vini', descricao: 'As frases escritas para ti.' },
-  { id: 'citacoes', nome: 'Só citações', descricao: 'Brocardos, juristas e falas com fonte.' },
+  { id: 'citacoes', nome: 'Só citações', descricao: 'Juristas, filósofos, livros, filmes e séries, sempre com o autor.' },
 ];
 
 function armazenamentoPadrao() {

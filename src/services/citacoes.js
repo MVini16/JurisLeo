@@ -21,11 +21,11 @@ export function escolherSemRepetir(ids, saidas = [], aleatorio = Math.random) {
 
 // que frases podem entrar, segundo as escolhas dela
 // modo: 'misto' (originais e citações) | 'originais' | 'citacoes'
-// series: false tira as citações de séries e filmes
+// series: false tira as falas de séries e de filmes (os filósofos e os livros ficam)
 export function reunirFrases({ originais = [], citacoes = [], modo = 'misto', series = true } = {}) {
-  const daSerie = (c) => c.origem === 'serie';
+  const daSerie = (c) => c.origem === 'serie' || c.origem === 'filme';
   const citacoesPermitidas = citacoes.filter((c) => c.fonte?.nome && (series || !daSerie(c)));
-  const comoFrases = citacoesPermitidas.map((c) => ({ id: `c:${c.id}`, texto: c.texto, pt: c.pt, autor: c.autor, fonte: c.fonte, citacao: true }));
+  const comoFrases = citacoesPermitidas.map((c) => ({ id: `c:${c.id}`, texto: c.texto, pt: c.pt, autor: c.autor, fonte: c.fonte, traducao: !!c.traducao, citacao: true }));
   const nossas = originais.map((texto) => ({ id: `o:${texto}`, texto, citacao: false }));
 
   if (modo === 'originais') return nossas;
@@ -36,5 +36,6 @@ export function reunirFrases({ originais = [], citacoes = [], modo = 'misto', se
 // "— Ulpiano, Digesto 1.1.10"
 export function legendaDaFrase(frase) {
   if (!frase?.citacao) return '';
-  return [frase.autor, frase.fonte?.nome].filter(Boolean).join(', ');
+  const base = [frase.autor, frase.fonte?.nome].filter(Boolean).join(', ');
+  return frase.traducao ? `${base} (tradução livre)` : base;
 }

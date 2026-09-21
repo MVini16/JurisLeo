@@ -23,3 +23,12 @@ O que evita a repetição é o método, não o número: cada frase sai uma vez a
 2. Copiar o texto tal e qual, sem corrigir nem traduzir (o teste falha se uma fala de série tiver tradução).
 3. Só usar `primaria` se o texto estiver na obra original, com a referência.
 4. Nunca inventar nem "arredondar" uma citação.
+
+## Atualização: filósofos, livros, filmes e séries (a pedido do Vini)
+
+A pedido do Vini deixou de se verificar cada frase. Entraram **19 filósofos e juristas**, o **Rui Barbosa**, **5 escritores e livros** (Pessoa, Saramago, Atticus Finch, Dumbledore), **4 filmes** (Legally Blonde, A Few Good Men, Empire Strikes Back, Finding Nemo) e **5 séries** (Suits, Gossip Girl, Ted Lasso, The Office, Parks and Recreation).
+
+- Foram escritas **de memória**, só as muito conhecidas, e ficam marcadas `memoria` nos dados (a app não mostra isso). Pode haver pequenas diferenças de palavras: se alguma te parecer estranha, corrige-a em `src/data/citacoes.js` ou apaga-a.
+- Os filósofos estão em português e aparecem com "(tradução livre)". As falas de filmes e séries estão em inglês, tal como foram ditas, e curtas.
+- O interruptor "Falas de séries e filmes" nas Definições esconde as de séries e filmes; os filósofos e os livros ficam sempre.
+- Para pôr as séries de que ela mais gosta, é só dizer quais são: acrescento falas curtas dessas.

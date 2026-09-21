@@ -181,8 +181,8 @@ export default function Definicoes() {
           ))}
         </div>
         <div className="def-linha">
-          <div className="def-texto"><b>Falas de séries</b><span>Suits, The Vampire Diaries... só falas curtas, com a fonte por baixo.</span></div>
-          <Interruptor ligado={prefs.series === 'on'} rotulo="Falas de séries" onMudar={() => escolher('series', prefs.series === 'on' ? 'off' : 'on')} />
+          <div className="def-texto"><b>Falas de séries e filmes</b><span>Suits, Legally Blonde... só falas curtas, com o autor por baixo. Os filósofos ficam sempre.</span></div>
+          <Interruptor ligado={prefs.series === 'on'} rotulo="Falas de séries e filmes" onMudar={() => escolher('series', prefs.series === 'on' ? 'off' : 'on')} />
         </div>
         <p className="def-nota">Estas escolhas valem só neste aparelho.</p>
       </section>

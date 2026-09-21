@@ -1,11 +1,12 @@
 // modal para criar ou editar um evento no calendário
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { collection, addDoc, updateDoc, doc, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, doc, Timestamp, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { cadeirasS1, coresCadeiras } from '../data/dadosLeonor.js';
 import { FAMILIAS, familiaDoEvento } from '../data/familias.js';
 import { chaveData } from '../data/feriados.js';
+import { tarefasEmCadeia, pedeLembretes } from '../services/lembretesProva.js';
 import './ModalCriarEvento.css';
 
 // cores por cadeira
@@ -65,6 +66,7 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
       importancia: 'media',
       estado:      'pendente',
       contaFalta:  false,
+      lembretes:   true,
     };
   });
 
@@ -81,6 +83,11 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
 
   // tipo, cadeira e "conta falta" só existem para eventos da faculdade
   const daFaculdade = form.familia === 'faculdade';
+
+  // ao marcar uma frequência ou um exame novo, oferece os lembretes de estudo (14, 7 e 2 dias antes)
+  const lembretes = !aEditar && daFaculdade && pedeLembretes(form.tipo) && form.data
+    ? tarefasEmCadeia({ titulo: form.titulo, cadeira: form.cadeira, dataProva: form.data })
+    : [];
 
   // atualiza um campo do formulário
   function atualizar(campo, valor) {
@@ -135,6 +142,12 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
         await updateDoc(doc(db, 'users', userId, 'eventos', eventoExistente.id), dados);
       } else {
         await addDoc(collection(db, 'users', userId, 'eventos'), dados);
+        // prazos em cadeia: as tarefas de estudo
+        if (form.lembretes) {
+          for (const t of lembretes) {
+            await addDoc(collection(db, 'users', userId, 'tarefas'), { ...t, criadoEm: serverTimestamp(), atualizadoEm: serverTimestamp() });
+          }
+        }
       }
 
       // animação de sucesso
@@ -341,6 +354,21 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
                 <span className="mce-toggle__bolinha" />
               </button>
             </div>
+          )}
+
+          {/* lembretes de estudo */}
+          {lembretes.length > 0 && (
+            <div className="mce-campo mce-campo--8 mce-toggle-linha">
+              <label className="mce-label">Criar {lembretes.length} lembretes de estudo?</label>
+              <button type="button" role="switch" aria-checked={form.lembretes} className={`mce-toggle ${form.lembretes ? 'ativo' : ''}`} onClick={() => atualizar('lembretes', !form.lembretes)}>
+                <span className="mce-toggle__bolinha" />
+              </button>
+            </div>
+          )}
+          {lembretes.length > 0 && form.lembretes && (
+            <ul className="mce-lembretes">
+              {lembretes.map((t) => <li key={t.prazo}>{t.prazo.split('-').reverse().join('/')}: {t.titulo}</li>)}
+            </ul>
           )}
 
           {/* erro */}

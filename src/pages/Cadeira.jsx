@@ -20,6 +20,7 @@ import SemaforoFaltas from '../components/SemaforoFaltas.jsx';
 import MensagemCarinhosa from '../components/MensagemCarinhosa.jsx';
 import EstadoVazio from '../components/EstadoVazio.jsx';
 import './Cadeira.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 const TABS = [
   { id: 'resumo', rotulo: 'Resumo' },
@@ -57,7 +58,7 @@ export default function Cadeira() {
     [aulasDaCadeira]
   );
 
-  if (loading) return <div className="cadeira-pagina"><p className="cadeira-loading">A carregar...</p></div>;
+  if (loading) return <div className="cadeira-pagina"><Carregando texto="A carregar..." tipo="templo" /></div>;
   if (!cadeira) return <div className="cadeira-pagina"><p className="cadeira-loading">Não encontrei esta cadeira. Volta à lista e tenta outra vez.</p></div>;
 
   const cor = cadeira.cor || '#b8963e';
@@ -174,7 +175,7 @@ function TabResumo({ cadeira, resultado, faltas, pesos, proxima, aulasDaCadeira,
 function TabAnotacoes({ cadeiraId, navigate }) {
   const { anotacoes, loading } = useAnotacoes();
   const lista = anotacoes.filter((a) => a.cadeiraId === cadeiraId);
-  if (loading) return <p className="cadeira-loading">A carregar...</p>;
+  if (loading) return <Carregando texto="A carregar..." />;
   return (
     <>
       <button className="cadeira-tab-acao" onClick={() => navigate('/anotacoes/nova', { state: { cadeiraId } })}>+ Nova anotação</button>
@@ -203,7 +204,7 @@ function TabAnotacoes({ cadeiraId, navigate }) {
 function TabCasos({ cadeiraId, navigate }) {
   const { casos, loading } = useCasos();
   const lista = casos.filter((c) => c.cadeiraId === cadeiraId);
-  if (loading) return <p className="cadeira-loading">A carregar...</p>;
+  if (loading) return <Carregando texto="A carregar..." />;
   return (
     <>
       <button className="cadeira-tab-acao" onClick={() => navigate('/casos/novo')}>+ Novo caso</button>
@@ -264,7 +265,7 @@ function TabFaltas({ cadeira, faltas, lecionadas, navigate }) {
 function TabLeituras({ cadeiraId, navigate }) {
   const { leituras, loading } = useLeituras();
   const lista = leituras.filter((l) => l.cadeiraId === cadeiraId);
-  if (loading) return <p className="cadeira-loading">A carregar...</p>;
+  if (loading) return <Carregando texto="A carregar..." />;
   return (
     <>
       <button className="cadeira-tab-acao" onClick={() => navigate('/leituras')}>Abrir Leituras</button>
@@ -294,7 +295,7 @@ function TabLeituras({ cadeiraId, navigate }) {
 function TabFlashcards({ cadeiraId, navigate }) {
   const { flashcards, loading } = useFlashcards();
   const lista = flashcards.filter((f) => f.cadeiraId === cadeiraId);
-  if (loading) return <p className="cadeira-loading">A carregar...</p>;
+  if (loading) return <Carregando texto="A carregar..." />;
   return (
     <>
       <button className="cadeira-tab-acao" onClick={() => navigate('/flashcards')}>Abrir Flashcards</button>

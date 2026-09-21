@@ -7,6 +7,7 @@ import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import MensagemCarinhosa from '../components/MensagemCarinhosa.jsx';
 import { cadeirasS1, coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js';
 import './Estudo.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 const MINUTOS_SESSAO_LONGA = 25;
 
@@ -102,7 +103,7 @@ export default function Estudo() {
 
       <section className="estudo-historico">
         <h2 className="estudo-historico__titulo">Sessões recentes</h2>
-        {loading && <p className="estudo-vazio">A carregar...</p>}
+        {loading && <Carregando texto="A carregar..." />}
         {!loading && sessoes.length === 0 && <p className="estudo-vazio">Ainda não tens sessões registadas.</p>}
         <div className="estudo-historico__lista">
           {sessoes.map((s) => (

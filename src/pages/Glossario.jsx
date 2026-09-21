@@ -5,6 +5,7 @@ import { useGlossario } from '../hooks/useGlossario.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Glossario.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 export default function Glossario() {
   const { darkMode } = useTheme();
@@ -50,7 +51,7 @@ export default function Glossario() {
         </button>
       </div>
 
-      {loading && <p className="glossario-vazio">A carregar...</p>}
+      {loading && <Carregando texto="A carregar..." />}
       {!loading && filtrados.length === 0 && (
         <div className="glossario-vazio">
           <p>{termos.length === 0 ? 'Ainda não tens termos no glossário.' : 'Nada encontrado.'}</p>

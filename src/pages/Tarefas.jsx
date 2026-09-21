@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import { useTarefas } from '../hooks/useTarefas.js';
 import { coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Tarefas.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 // cores e nomes por cadeira
 const CORES_CADEIRA = coresCadeiras;
@@ -164,7 +165,7 @@ export default function Tarefas() {
       <div className="tarefas-conteudo">
 
         {loading && (
-          <p className="tarefas-loading">A carregar tarefas...</p>
+          <Carregando texto="A carregar tarefas..." />
         )}
 
         {!loading && pendentes.length === 0 && concluidas.length === 0 && (

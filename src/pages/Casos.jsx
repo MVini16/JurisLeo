@@ -6,6 +6,7 @@ import { useCasos } from '../hooks/useCasos.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Casos.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 const ROTULO_ESTADO = {
   porResolver: 'Por resolver',
@@ -73,7 +74,7 @@ export default function Casos() {
         ))}
       </div>
 
-      {loading && <p className="casos-vazio">A carregar...</p>}
+      {loading && <Carregando texto="A carregar..." />}
 
       {!loading && filtrados.length === 0 && (
         <div className="casos-vazio">

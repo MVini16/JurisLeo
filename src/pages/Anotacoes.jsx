@@ -6,6 +6,7 @@ import { useAnotacoes } from '../hooks/useAnotacoes.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Anotacoes.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 function formatarData(timestamp) {
   const d = timestamp?.toDate?.();
@@ -65,7 +66,7 @@ export default function Anotacoes() {
         ))}
       </div>
 
-      {loading && <p className="anotacoes-vazio">A carregar...</p>}
+      {loading && <Carregando texto="A carregar..." />}
 
       {!loading && filtradas.length === 0 && (
         <div className="anotacoes-vazio">

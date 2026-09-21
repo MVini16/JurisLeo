@@ -10,6 +10,7 @@ import { nomeCurtoCadeira } from '../data/dadosLeonor.js';
 import { FAMILIAS, corDoEvento, familiaDoEvento } from '../data/familias.js';
 import './Calendario.css';
 import './CalendarioExtra.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 const MESES = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -115,7 +116,7 @@ export default function Calendario() {
     setPainelDia(null);
   }
 
-  if (loading) return <div className="cal-loading">A carregar calendário...</div>;
+  if (loading) return <Carregando texto="A carregar calendário..." tipo="templo" />;
 
   return (
     <div className="cal-wrapper">

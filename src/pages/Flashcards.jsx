@@ -6,6 +6,7 @@ import { estaPronto, ordenarPorPrioridade } from '../services/repeticaoEspacada.
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Flashcards.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 export default function Flashcards() {
   const { darkMode } = useTheme();
@@ -49,7 +50,7 @@ export default function Flashcards() {
         ))}
       </div>
 
-      {loading && <p className="flashcards-vazio">A carregar...</p>}
+      {loading && <Carregando texto="A carregar..." />}
       {!loading && filtrados.length === 0 && <p className="flashcards-vazio">Ainda não tens flashcards aqui. Toca em "+ Novo" para começares.</p>}
 
       <div className="flashcards-lista">

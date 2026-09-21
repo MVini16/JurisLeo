@@ -5,6 +5,7 @@ import { useTheme } from '../context/useTheme.js';
 import { useCaso } from '../hooks/useCaso.js';
 import { cadeirasS1 } from '../data/dadosLeonor.js';
 import './Caso.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 const ESTADOS = [
   { id: 'porResolver', label: 'Por resolver' },
@@ -27,7 +28,7 @@ export default function Caso() {
   const { darkMode } = useTheme();
   const { caso, loading, novo, criar, guardar, apagar } = useCaso(id);
 
-  if (!novo && loading) return <div className="caso-editor"><p className="caso-editor__loading">A carregar...</p></div>;
+  if (!novo && loading) return <div className="caso-editor"><Carregando texto="A carregar..." tipo="templo" /></div>;
   if (!novo && !caso) return <div className="caso-editor"><p className="caso-editor__loading">Caso não encontrado.</p></div>;
 
   return (

@@ -17,6 +17,7 @@ import MensagemCarinhosa from '../components/MensagemCarinhosa.jsx';
 import EstadoVazio from '../components/EstadoVazio.jsx';
 import Toast from '../components/Toast.jsx';
 import './Faltas.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 export default function Faltas() {
   const { darkMode } = useTheme();
@@ -107,7 +108,7 @@ export default function Faltas() {
         <span className="faltas-subtitulo">Aulas práticas · 1.º semestre</span>
       </header>
 
-      {loading && <p className="faltas-loading">A carregar as tuas faltas...</p>}
+      {loading && <Carregando texto="A carregar as tuas faltas..." />}
 
       {!loading && ordenadas.length === 0 && (
         <EstadoVazio icone="📋" titulo="Ainda não há cadeiras por aqui" texto="Assim que as tuas cadeiras estiverem registadas, é aqui que registas faltas e vês quantas ainda podes dar." />

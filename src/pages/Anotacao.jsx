@@ -5,6 +5,7 @@ import { useTheme } from '../context/useTheme.js';
 import { useAnotacao } from '../hooks/useAnotacao.js';
 import { cadeirasS1 } from '../data/dadosLeonor.js';
 import './Anotacao.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 export default function Anotacao() {
   const { id } = useParams();
@@ -13,7 +14,7 @@ export default function Anotacao() {
   const { darkMode } = useTheme();
   const { anotacao, loading, nova, criar, guardar, apagar } = useAnotacao(id);
 
-  if (!nova && loading) return <div className="anotacao-editor"><p className="anotacao-editor__loading">A carregar...</p></div>;
+  if (!nova && loading) return <div className="anotacao-editor"><Carregando texto="A carregar..." tipo="templo" /></div>;
   if (!nova && !anotacao) return <div className="anotacao-editor"><p className="anotacao-editor__loading">Anotação não encontrada.</p></div>;
 
   return (

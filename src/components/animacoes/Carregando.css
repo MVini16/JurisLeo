@@ -1,0 +1,194 @@
+/* animações de carregamento em ciclo: só transform e opacity */
+
+.carregando {
+  --curva: cubic-bezier(0.45, 0.05, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 0;
+  color: inherit;
+}
+
+.carregando-texto {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  letter-spacing: 0.04em;
+}
+
+.carregando-texto::after {
+  content: '';
+  display: inline-block;
+  width: 1.2em;
+  text-align: left;
+  animation: c-reticencias 1.4s steps(4) infinite;
+}
+
+@keyframes c-reticencias {
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75%, 100% { content: '...'; }
+}
+
+/* ---------- balança ---------- */
+.cb {
+  width: 84px;
+  height: 84px;
+  overflow: visible;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--gold) 45%, transparent));
+  animation: cb-brilho 2.4s ease-in-out infinite;
+}
+
+.cb-feixe { transform-origin: 60px 28px; animation: cb-oscila 2.4s var(--curva) infinite; }
+.cb-prato { animation: cb-contra 2.4s var(--curva) infinite; }
+.cb-prato-e { transform-origin: 20px 28px; }
+.cb-prato-d { transform-origin: 100px 28px; }
+.cb-pivo { animation: cb-pulsa 2.4s ease-in-out infinite; transform-origin: 60px 28px; }
+
+@keyframes cb-oscila {
+  0%, 100% { transform: rotate(-9deg); }
+  50% { transform: rotate(9deg); }
+}
+
+@keyframes cb-contra {
+  0%, 100% { transform: rotate(9deg); }
+  50% { transform: rotate(-9deg); }
+}
+
+@keyframes cb-pulsa {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.35); }
+}
+
+@keyframes cb-brilho {
+  0%, 100% { filter: drop-shadow(0 0 3px color-mix(in srgb, var(--gold) 30%, transparent)); }
+  50% { filter: drop-shadow(0 0 10px color-mix(in srgb, var(--gold-claro) 70%, transparent)); }
+}
+
+/* ---------- templo ---------- */
+.carregando--templo { padding: 40px 0; gap: 16px; }
+
+.ct {
+  --t: 3.6s;
+  position: relative;
+  width: 230px;
+  height: 178px;
+}
+
+.ct-frontao {
+  position: absolute;
+  left: 5px;
+  top: 0;
+  width: 220px;
+  height: 60px;
+  overflow: visible;
+}
+
+.ct-frontao path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ct-desenha var(--t) var(--curva) infinite;
+}
+
+.ct-arquitrave {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 62px;
+  height: 8px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold-escuro), var(--gold-claro), var(--gold-escuro));
+  transform: scaleX(0);
+  animation: ct-arq var(--t) var(--curva) infinite;
+}
+
+.ct-coluna {
+  position: absolute;
+  top: 74px;
+  width: 18px;
+  height: 84px;
+  border-radius: 2px;
+  transform-origin: bottom;
+  transform: scaleY(0);
+  /* caneluras: linhas verticais finas sobre o dourado */
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 4px),
+    linear-gradient(90deg, var(--gold-escuro), var(--gold-claro) 42%, var(--gold) 60%, var(--gold-escuro));
+  animation: ct-coluna var(--t) var(--curva) infinite;
+  animation-delay: calc(var(--c) * 0.1s);
+}
+
+.ct-capitel,
+.ct-base {
+  position: absolute;
+  left: -3px;
+  right: -3px;
+  height: 5px;
+  border-radius: 2px;
+  background: var(--gold);
+}
+
+.ct-capitel { top: -2px; }
+.ct-base { bottom: -1px; }
+
+.ct-degrau {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 160px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  animation: ct-arq var(--t) var(--curva) infinite;
+  animation-delay: calc(var(--d) * 0.12s + 0.3s);
+}
+
+.ct-degrau-2 { top: 167px; left: -10px; right: -10px; }
+.ct-degrau-3 { top: 174px; left: -20px; right: -20px; opacity: 0.85; }
+
+.ct-brilho-caixa {
+  position: absolute;
+  inset: -4px -24px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ct-brilho {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, color-mix(in srgb, var(--gold-claro) 65%, transparent) 50%, transparent 60%);
+  mix-blend-mode: soft-light;
+  transform: translateX(-140%);
+  animation: ct-varre var(--t) ease infinite;
+}
+
+@keyframes ct-desenha {
+  0% { stroke-dashoffset: 1; opacity: 1; }
+  38%, 82% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+@keyframes ct-arq {
+  0%, 8% { transform: scaleX(0); opacity: 1; }
+  30%, 82% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+
+@keyframes ct-coluna {
+  0% { transform: scaleY(0); opacity: 1; }
+  22%, 82% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+
+@keyframes ct-varre {
+  0%, 52% { transform: translateX(-140%); }
+  76%, 100% { transform: translateX(140%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cb, .cb-feixe, .cb-prato, .cb-pivo { animation: none; }
+  .ct-frontao path, .ct-arquitrave, .ct-coluna, .ct-degrau { animation: none; stroke-dashoffset: 0; transform: none; }
+  .ct-brilho, .carregando-texto::after { animation: none; }
+}

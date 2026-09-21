@@ -10,6 +10,7 @@ import { gerarOcorrencias, proximaAula } from '../services/ocorrencias.js';
 import { dataNatural } from '../services/datas.js';
 import { getCadeira } from '../data/dadosLeonor.js';
 import './Cadeiras.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 const ROTULO_ESTADO = {
   aprovada: 'Aprovada',
@@ -36,7 +37,7 @@ export default function Cadeiras() {
         <button className="cadeiras-btn-imprimir no-print" onClick={() => window.print()}>🖨️ Imprimir</button>
       </header>
 
-      {loading && <p className="cadeiras-loading">A carregar cadeiras...</p>}
+      {loading && <Carregando texto="A carregar cadeiras..." />}
 
       {!loading && cadeiras.length === 0 && (
         <div className="cadeiras-vazio">

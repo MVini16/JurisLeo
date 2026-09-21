@@ -5,6 +5,7 @@ import { useLeituras } from '../hooks/useLeituras.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Leituras.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 export default function Leituras() {
   const { darkMode } = useTheme();
@@ -21,7 +22,7 @@ export default function Leituras() {
 
       {formAberto && <FormNovaLeitura onGuardar={async (d) => { await adicionar(d); setFormAberto(false); }} />}
 
-      {loading && <p className="leituras-vazio">A carregar...</p>}
+      {loading && <Carregando texto="A carregar..." />}
       {!loading && leituras.length === 0 && <p className="leituras-vazio">Ainda não tens manuais registados.</p>}
 
       <div className="leituras-lista">

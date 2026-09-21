@@ -4,6 +4,7 @@ import { useTheme } from '../context/useTheme.js';
 import { useArtigos } from '../hooks/useArtigos.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Artigos.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 const CODIGOS = ['CC', 'CPA', 'CRP', 'CT', 'outro'];
 const CORES_CODIGO = { CC: '#7B1E2B', CPA: '#1F3A5F', CRP: '#2E6F5E', CT: '#C9843E', outro: '#5C8374' };
@@ -55,7 +56,7 @@ export default function Artigos() {
         ))}
       </div>
 
-      {loading && <p className="artigos-vazio">A carregar...</p>}
+      {loading && <Carregando texto="A carregar..." />}
       {!loading && filtrados.length === 0 && (
         <div className="artigos-vazio">
           <p>{artigos.length === 0 ? 'Ainda não guardaste nenhum artigo.' : 'Nada encontrado.'}</p>

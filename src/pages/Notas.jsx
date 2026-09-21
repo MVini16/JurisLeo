@@ -15,6 +15,7 @@ import Celebracao from '../components/Celebracao.jsx';
 import EcraConsolo from '../components/EcraConsolo.jsx';
 import EstadoVazio from '../components/EstadoVazio.jsx';
 import './Notas.css';
+import Carregando from '../components/animacoes/Carregando.jsx';
 
 const ROTULO_ESTADO = {
   aprovada: 'Aprovada',
@@ -86,7 +87,7 @@ export default function Notas() {
         <button className="notas-btn-lancar" onClick={() => setModal({ cadeiraId: null })}>+ Lançar nota</button>
       </header>
 
-      {loading && <p className="notas-loading">A carregar as tuas notas...</p>}
+      {loading && <Carregando texto="A carregar as tuas notas..." />}
 
       {!loading && ordenadas.length === 0 && (
         <EstadoVazio

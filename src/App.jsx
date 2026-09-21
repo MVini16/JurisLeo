@@ -25,6 +25,7 @@ import Ajuda from './pages/Ajuda'
 import Tarefas from './pages/Tarefas'
 import Calendario from './pages/Calendario'
 import Perfil from './pages/Perfil'
+import Definicoes from './pages/Definicoes'
 // componente de navegação — vai envolver todas as páginas principais
 import NavBar from './components/NavBar'
 
@@ -58,6 +59,7 @@ function App() {
         <Route path="/tarefas" element={<NavBar><Tarefas /></NavBar>} />
         <Route path="/calendario" element={<NavBar><Calendario /></NavBar>} />
         <Route path="/perfil" element={<NavBar><Perfil /></NavBar>} />
+        <Route path="/definicoes" element={<NavBar><Definicoes /></NavBar>} />
       </Routes>
     </BrowserRouter>
   )

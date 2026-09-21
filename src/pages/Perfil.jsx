@@ -1,23 +1,18 @@
 // perfil — dados académicos, preferências e logout
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { db } from '../services/firebase.js';
 import { logout } from '../services/auth.js';
-import { limparCadeirasAntigas, seedCadeiras } from '../services/initFirestore.js';
-import { exportarDadosComoFicheiro } from '../services/exportar.js';
 import { useTheme } from '../context/useTheme.js';
 import './Perfil.css';
 
 export default function Perfil() {
-  const { darkMode, toggleTheme } = useTheme();
+  const { darkMode } = useTheme();
   const navigate = useNavigate();
   const [perfil, setPerfil] = useState(null);
   const [aSair, setASair] = useState(false);
-  const [aRepor, setARepor] = useState(false);
-  const [reposto, setReposto] = useState(false);
-  const [aExportar, setAExportar] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
@@ -35,42 +30,17 @@ export default function Perfil() {
     navigate('/login');
   }
 
-  // repara contas de teste criadas antes da correção do seed para o 2.º ano —
-  // apaga as cadeiras do 1.º ano e recria as 5 reais
-  async function reporCadeiras() {
-    const userId = getAuth().currentUser?.uid;
-    if (!userId) return;
-    setARepor(true);
-    await limparCadeirasAntigas(userId);
-    await seedCadeiras(userId);
-    setARepor(false);
-    setReposto(true);
-  }
-
-  // volta a mostrar o tutorial do dashboard na próxima vez que lá entrar
-  async function reverTutorial() {
-    const userId = getAuth().currentUser?.uid;
-    if (!userId) return;
-    await setDoc(doc(db, 'users', userId, 'perfil', 'dados'), { tutorialFeito: false }, { merge: true });
-    navigate('/dashboard');
-  }
-
-  // descarrega uma cópia de segurança de todos os dados, em json
-  async function exportarDados() {
-    const userId = getAuth().currentUser?.uid;
-    if (!userId) return;
-    setAExportar(true);
-    try {
-      await exportarDadosComoFicheiro(userId);
-    } finally {
-      setAExportar(false);
-    }
-  }
-
   const email = getAuth().currentUser?.email;
 
   return (
     <div className={`perfil-pagina ${darkMode ? 'dark' : ''}`}>
+      <button type="button" className="perfil-definicoes" onClick={() => navigate('/definicoes')} aria-label="Definições">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
+        </svg>
+      </button>
+
       <header className="perfil-header">
         <div className="perfil-avatar">{(perfil?.nome || 'L').charAt(0).toUpperCase()}</div>
         <h1 className="perfil-nome">{perfil?.nome || 'Leonor'}</h1>
@@ -84,38 +54,6 @@ export default function Perfil() {
         <LinhaInfo label="Turma" valor={perfil?.turma} />
         <LinhaInfo label="Subturma" valor={perfil?.subturma} />
         <LinhaInfo label="Ano letivo" valor={perfil?.anoLetivo} />
-      </section>
-
-      <section className="perfil-seccao">
-        <h2 className="perfil-seccao__titulo">Preferências</h2>
-        <div className="perfil-linha">
-          <span className="perfil-linha__label">Tema escuro</span>
-          <button className={`perfil-toggle ${darkMode ? 'ativo' : ''}`} onClick={toggleTheme}>
-            <span className="perfil-toggle__bolinha" />
-          </button>
-        </div>
-        <button className="perfil-btn-tutorial" onClick={reverTutorial}>Rever o tutorial</button>
-        <button className="perfil-btn-tutorial" onClick={() => navigate('/ajuda')}>Central de ajuda</button>
-      </section>
-
-      <section className="perfil-seccao">
-        <h2 className="perfil-seccao__titulo">Os teus dados</h2>
-        <p className="perfil-manutencao-texto">
-          Descarrega uma cópia de segurança de tudo — cadeiras, notas, faltas, anotações, casos e mais — num ficheiro.
-        </p>
-        <button className="perfil-btn-reparar" onClick={exportarDados} disabled={aExportar}>
-          {aExportar ? 'A preparar...' : '⬇ Exportar os meus dados'}
-        </button>
-      </section>
-
-      <section className="perfil-seccao">
-        <h2 className="perfil-seccao__titulo">Manutenção</h2>
-        <p className="perfil-manutencao-texto">
-          Se esta conta ainda tem as cadeiras antigas do 1.º ano, repõe as 5 cadeiras reais do 2.º ano.
-        </p>
-        <button className="perfil-btn-reparar" onClick={reporCadeiras} disabled={aRepor}>
-          {aRepor ? 'A repor...' : reposto ? '✓ Cadeiras repostas' : 'Repor cadeiras do 2.º ano'}
-        </button>
       </section>
 
       <button className="perfil-btn-sair" onClick={sair} disabled={aSair}>

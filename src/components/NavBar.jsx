@@ -4,6 +4,7 @@ import ModalCriarEvento from './ModalCriarEvento.jsx'
 import DicaPrimeiraVez from './DicaPrimeiraVez.jsx'
 import BotaoAjuda from './BotaoAjuda.jsx'
 import { resolverAjuda } from '../data/ajuda.js'
+import { useModulos } from '../hooks/useModulos.js'
 import './NavBar.css'
 
 // itens da navegação principal
@@ -77,18 +78,34 @@ const itens = [
   },
 ]
 
+// definições ficam junto ao perfil: na barra lateral, e no ecrã do perfil no telemóvel
+const itemDefinicoes = {
+  path: '/definicoes',
+  label: 'Definições',
+  icon: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
+    </svg>
+  ),
+}
+
+// o perfil e as definições contam como o mesmo separador
+const estaAtivo = (item, pathname) =>
+  pathname === item.path || (item.path === '/perfil' && pathname === '/definicoes')
+
 // itens do menu + (adicionar rápido)
 // acao: 'navegar' vai para uma rota (com estado a pedir para abrir o modal certo),
 // 'frequencia' abre o modal de evento já aqui, 'em-breve' ainda não tem funcionalidade própria
 const itensMais = [
-  { label: 'Nova Tarefa', icon: '✅', cor: '#7C3AED', acao: 'navegar', destino: '/tarefas' },
-  { label: 'Nova Anotação', icon: '📝', cor: '#1E3A5F', acao: 'navegar', destino: '/anotacoes/nova' },
-  { label: 'Novo Caso', icon: '⚖️', cor: '#2E6F5E', acao: 'navegar', destino: '/casos/novo' },
-  { label: 'Nova Frequência', icon: '📅', cor: '#6B0F1A', acao: 'frequencia' },
-  { label: 'Oral de Melhoria', icon: '🗣️', cor: '#C9A84C', acao: 'navegar', destino: '/cadeiras' },
-  { label: 'Registar Falta', icon: '❌', cor: '#EC4899', acao: 'navegar', destino: '/faltas' },
-  { label: 'Lançar Nota', icon: '📊', cor: '#EA580C', acao: 'navegar', destino: '/notas' },
-  { label: 'Estudar', icon: '⏱️', cor: '#0F766E', acao: 'navegar', destino: '/estudo' },
+  { modulo: 'atalhoTarefa', label: 'Nova Tarefa', icon: '✅', cor: '#7C3AED', acao: 'navegar', destino: '/tarefas' },
+  { modulo: 'atalhoAnotacao', label: 'Nova Anotação', icon: '📝', cor: '#1E3A5F', acao: 'navegar', destino: '/anotacoes/nova' },
+  { modulo: 'atalhoCaso', label: 'Novo Caso', icon: '⚖️', cor: '#2E6F5E', acao: 'navegar', destino: '/casos/novo' },
+  { modulo: 'atalhoFrequencia', label: 'Nova Frequência', icon: '📅', cor: '#6B0F1A', acao: 'frequencia' },
+  { modulo: 'atalhoOral', label: 'Oral de Melhoria', icon: '🗣️', cor: '#C9A84C', acao: 'navegar', destino: '/cadeiras' },
+  { modulo: 'atalhoFalta', label: 'Registar Falta', icon: '❌', cor: '#EC4899', acao: 'navegar', destino: '/faltas' },
+  { modulo: 'atalhoNota', label: 'Lançar Nota', icon: '📊', cor: '#EA580C', acao: 'navegar', destino: '/notas' },
+  { modulo: 'atalhoEstudar', label: 'Estudar', icon: '⏱️', cor: '#0F766E', acao: 'navegar', destino: '/estudo' },
 ]
 
 // navBar envolve o conteúdo das páginas principais
@@ -98,9 +115,11 @@ function NavBar({ children }) {
   const [menuAberto, setMenuAberto] = useState(false)
   const [modalFrequenciaAberto, setModalFrequenciaAberto] = useState(false)
   const [avisoEmBreve, setAvisoEmBreve] = useState(null)
+  // o que ela escolheu ver no botão +
+  const { ativos } = useModulos()
 
   // índice do item activo para o slider
-  const indiceActivo = itens.findIndex(i => i.path === location.pathname)
+  const indiceActivo = itens.findIndex(i => estaAtivo(i, location.pathname))
 
   // tópico de ajuda da página actual, para a dica de primeira visita e o botão de ajuda
   const ajuda = resolverAjuda(location.pathname)
@@ -133,13 +152,20 @@ function NavBar({ children }) {
           {itens.map((item) => (
             <button
               key={item.path}
-              className={`sidebar-item ${location.pathname === item.path ? 'activo' : ''}`}
+              className={`sidebar-item ${estaAtivo(item, location.pathname) ? 'activo' : ''}`}
               onClick={() => navigate(item.path)}
             >
               <span className="sidebar-item-icon">{item.icon}</span>
               <span className="sidebar-item-label">{item.label}</span>
             </button>
           ))}
+          <button
+            className={`sidebar-item ${location.pathname === itemDefinicoes.path ? 'activo' : ''}`}
+            onClick={() => navigate(itemDefinicoes.path)}
+          >
+            <span className="sidebar-item-icon">{itemDefinicoes.icon}</span>
+            <span className="sidebar-item-label">{itemDefinicoes.label}</span>
+          </button>
         </nav>
 
         {/* botão + na sidebar */}
@@ -174,7 +200,7 @@ function NavBar({ children }) {
 
       {/* menu + expandido — itens a aparecerem em leque */}
       <div className={`menu-mais no-print ${menuAberto ? 'aberto' : ''}`}>
-        {itensMais.map((item, i) => (
+        {itensMais.filter((item) => ativos[item.modulo] !== false).map((item, i) => (
           <button
             key={i}
             className="menu-mais-item"
@@ -210,7 +236,7 @@ function NavBar({ children }) {
           {itens.map((item) => (
             <button
               key={item.path}
-              className={`tabbar-item ${location.pathname === item.path ? 'activo' : ''}`}
+              className={`tabbar-item ${estaAtivo(item, location.pathname) ? 'activo' : ''}`}
               onClick={() => navigate(item.path)}
             >
               <span className="tabbar-icon">{item.icon}</span>

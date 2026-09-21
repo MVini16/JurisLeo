@@ -1,0 +1,174 @@
+/* definições — lista de interruptores por secção */
+.def-pagina {
+  --acento: var(--burgundy);
+  min-height: 100vh;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 24px 16px 110px;
+  font-family: 'Georgia', serif;
+}
+
+html.dark .def-pagina { --acento: var(--gold); }
+
+.def-header { margin: 8px 0 20px; }
+.def-titulo { font-size: 1.6rem; font-weight: 700; }
+.def-sub { font-size: 0.85rem; opacity: 0.65; margin-top: 4px; }
+
+.def-seccao {
+  margin-bottom: 18px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  background: color-mix(in srgb, var(--burgundy) 3%, transparent);
+}
+
+html.dark .def-seccao {
+  border-color: var(--border-dark);
+  background: color-mix(in srgb, var(--text-dark) 5%, transparent);
+}
+
+.def-seccao__titulo {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--acento);
+  margin-bottom: 4px;
+}
+
+.def-seccao__ajuda { font-size: 0.78rem; opacity: 0.65; margin-bottom: 8px; }
+
+.def-linha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 60px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+html.dark .def-linha { border-color: var(--border-dark); }
+.def-linha:last-of-type { border-bottom: none; }
+
+.def-texto { flex: 1; min-width: 0; display: flex; flex-direction: column; text-align: left; }
+.def-texto b { font-size: 0.92rem; font-weight: 600; }
+.def-texto span { font-size: 0.75rem; opacity: 0.65; margin-top: 2px; }
+
+.def-setas { display: flex; flex-direction: column; gap: 2px; }
+
+.def-setas button {
+  width: 40px;
+  height: 26px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  background: none;
+  color: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+html.dark .def-setas button { border-color: var(--border-dark); }
+.def-setas button:disabled { opacity: 0.3; cursor: default; }
+
+.def-fixo {
+  flex: 0 0 auto;
+  font-size: 0.68rem;
+  padding: 5px 9px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--sucesso) 16%, transparent);
+  color: var(--sucesso);
+}
+
+/* interruptor, com área de toque de 44px pelo menos */
+.def-switch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 32px;
+  border-radius: 16px;
+  border: none;
+  background: color-mix(in srgb, var(--text-light) 22%, transparent);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+html.dark .def-switch { background: color-mix(in srgb, var(--text-dark) 22%, transparent); }
+
+.def-switch::before {
+  content: '';
+  position: absolute;
+  inset: -6px -0px;
+}
+
+.def-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s ease;
+}
+
+.def-switch.ligado { background: var(--acento); }
+.def-switch.ligado::after { transform: translateX(20px); }
+
+.def-btn {
+  display: block;
+  width: 100%;
+  min-height: var(--toque-min);
+  margin-top: 10px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-light);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+html.dark .def-btn { border-color: var(--border-dark); }
+.def-btn:disabled { opacity: 0.5; }
+.def-btn:active { transform: scale(0.98); }
+
+/* escolha única (abertura da app) */
+.def-grupo { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+.def-grupo__titulo { font-size: 0.92rem; margin-bottom: 2px; }
+
+.def-opcao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-light);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+html.dark .def-opcao { border-color: var(--border-dark); }
+.def-opcao.ativa { border-color: var(--acento); background: color-mix(in srgb, var(--acento) 10%, transparent); }
+
+.def-opcao__marca {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--acento);
+  position: relative;
+}
+
+.def-opcao.ativa .def-opcao__marca::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--acento);
+}
+
+.def-nota { font-size: 0.72rem; opacity: 0.55; text-align: center; margin-top: 4px; }

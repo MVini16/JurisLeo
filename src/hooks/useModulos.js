@@ -9,7 +9,8 @@ import { estadoModulos, ordemCartoes, moverCartao } from '../services/modulos.js
 export function useModulos() {
   const [guardados, setGuardados] = useState({});
   const [ordemGuardada, setOrdemGuardada] = useState(null);
-  const [carregado, setCarregado] = useState(false);
+  // sem sessão não há nada a esperar: vale o que o registo manda
+  const [carregado, setCarregado] = useState(() => !getAuth().currentUser);
 
   useEffect(() => {
     const userId = getAuth().currentUser?.uid;

@@ -1,5 +1,5 @@
 // dashboard principal da jurisleo
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import './Dashboard.css'
 import { useTheme } from '../context/useTheme.js'
 import { useDashboard } from '../hooks/useDashboard.js'
@@ -9,6 +9,7 @@ import Tutorial from '../components/Tutorial.jsx'
 import CartaoAulaAgora from '../components/CartaoAulaAgora.jsx'
 import PerguntaFimDoDia from '../components/PerguntaFimDoDia.jsx'
 import { useFrase } from '../hooks/useFrase.js'
+import { useModulos } from '../hooks/useModulos.js'
 
 // cores por cadeira — usadas nos dots das aulas
 const CORES_CADEIRA = coresCadeiras;
@@ -49,6 +50,9 @@ function Dashboard() {
 
   const frase = useFrase(getContextoFrase());
 
+  // o que ela escolheu ver, e por que ordem
+  const { ativos, ordem, carregado: carregadoModulos } = useModulos();
+
   const { tarefas } = useTarefas();
   const tarefasPendentes = tarefas
     .filter((t) => !t.concluida)
@@ -71,6 +75,135 @@ function Dashboard() {
   const percentagem = Math.min((diasParaMostrar / 30) * 100, 100);
   const circunferencia = 2 * Math.PI * 45;
   const offset = circunferencia - (percentagem / 100) * circunferencia;
+
+  // cada cartão do ecrã de início; a ordem e o que aparece vêm das escolhas dela
+  const cartoes = {
+    aulaAgora: (
+      <>
+              {/* aula a decorrer e a seguir — o que ela mais consulta entre as 14h e as 18h */}
+              <CartaoAulaAgora aulasHoje={aulasHoje} />
+
+              {/* ao fim da tarde, pergunta se as aulas correram todas */}
+              <PerguntaFimDoDia aulasHoje={aulasHoje} onMarcar={marcarAula} />
+      </>
+    ),
+    proximaFrequencia: (
+      <>
+              {/* card countdown — próxima frequência */}
+              <div className="card card-countdown anim-entrada" style={{ '--delay': '0.2s' }}>
+                <div className="card-header">
+                  <span className="card-icon">⚖️</span>
+                  <span className="card-titulo">Próxima Frequência</span>
+                </div>
+
+                {/* se não houver frequência no calendário mostra mensagem */}
+                {!proximaFrequencia ? (
+                  <div className="countdown-vazio">
+                    <p>Nenhuma frequência marcada no calendário.</p>
+                    <span>Adiciona uma no 📅 Calendário</span>
+                  </div>
+                ) : (
+                  <div className="countdown-conteudo">
+                    {/* anel svg animado */}
+                    <div className="countdown-anel">
+                      <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" className="anel-fundo" />
+                        <circle
+                          cx="50" cy="50" r="45"
+                          className="anel-progresso"
+                          strokeDasharray={circunferencia}
+                          strokeDashoffset={offset}
+                        />
+                      </svg>
+                      <div className="countdown-centro">
+                        <span className="countdown-numero">{diasParaMostrar}</span>
+                        <span className="countdown-unidade">dias</span>
+                      </div>
+                    </div>
+                    <div className="countdown-info">
+                      {/* nome da cadeira da frequência */}
+                      <p className="countdown-cadeira">
+                        {proximaFrequencia.cadeira ? nomeCurtoCadeira(proximaFrequencia.cadeira) : proximaFrequencia.titulo}
+                      </p>
+                      <p className="countdown-data">{dataFrequenciaFormatada}</p>
+                      <div className="countdown-barra-container">
+                        <div className="countdown-barra" style={{ width: `${percentagem}%` }} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+      </>
+    ),
+    aulasHoje: (
+      <>
+              {/* card aulas de hoje */}
+              <div className="card card-aulas anim-entrada" style={{ '--delay': '0.3s' }}>
+                <div className="card-header">
+                  <span className="card-icon">📚</span>
+                  <span className="card-titulo">Aulas de Hoje</span>
+                  {aulasHoje.length > 0 && (
+                    <span className="card-badge">{aulasHoje.length}</span>
+                  )}
+                </div>
+
+                {/* sem aulas hoje */}
+                {aulasHoje.length === 0 ? (
+                  <p className="card-vazio">
+                    {loading ? 'A carregar...' : 'Sem aulas hoje 🎉'}
+                  </p>
+                ) : (
+                  <ul className="lista-aulas">
+                    {aulasHoje.map((aula, i) => (
+                      <li key={i} className="aula-item">
+                        <span
+                          className="aula-dot"
+                          style={{ background: CORES_CADEIRA[aula.cadeira] || '#b8963e' }}
+                        />
+                        <span className="aula-hora">{aula.horaInicio}</span>
+                        <span className="aula-cadeira">{aula.titulo || nomeCurtoCadeira(aula.cadeira)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+      </>
+    ),
+    tarefasPendentes: (
+      <>
+              {/* card tarefas — pendentes reais, mais próximas do prazo primeiro */}
+              <div className="card card-tarefas anim-entrada" style={{ '--delay': '0.4s' }}>
+                <div className="card-header">
+                  <span className="card-icon">✅</span>
+                  <span className="card-titulo">Tarefas Pendentes</span>
+                  {tarefasPendentes.length > 0 && (
+                    <span className="card-badge">{tarefasPendentes.length}</span>
+                  )}
+                </div>
+
+                {tarefasPendentes.length === 0 ? (
+                  <p className="card-vazio">Nada pendente. Boa! 🎉</p>
+                ) : (
+                  <ul className="lista-tarefas">
+                    {tarefasPendentes.slice(0, 4).map((t) => (
+                      <li key={t.id} className="tarefa-item">
+                        <span className="tarefa-checkbox" />
+                        <div className="tarefa-info">
+                          <span className="tarefa-texto">{t.titulo}</span>
+                          {t.cadeira && (
+                            <span className="tarefa-cadeira" style={{ color: CORES_CADEIRA[t.cadeira] || '#b8963e' }}>
+                              {nomeCurtoCadeira(t.cadeira)}
+                            </span>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+      </>
+    ),
+  };
 
   return (
     <div className={`dashboard ${darkMode ? 'dark' : ''} ${visivel ? 'visivel' : ''}`}>
@@ -121,125 +254,13 @@ function Dashboard() {
             {/* mostra o primeiro nome enquanto carrega, atualiza quando o firestore responde */}
             {getPrimeiroNome(nome)} <span className="saudacao-emoji">👋</span>
           </h1>
-          {frase && <p className="frase-do-dia">"{frase}"</p>}
+          {ativos.fraseDoDia && frase && <p className="frase-do-dia">"{frase}"</p>}
         </section>
 
         {/* grelha de cards */}
         <div className="dashboard-grid">
-
-          {/* aula a decorrer e a seguir — o que ela mais consulta entre as 14h e as 18h */}
-          <CartaoAulaAgora aulasHoje={aulasHoje} />
-
-          {/* ao fim da tarde, pergunta se as aulas correram todas */}
-          <PerguntaFimDoDia aulasHoje={aulasHoje} onMarcar={marcarAula} />
-
-          {/* card countdown — próxima frequência */}
-          <div className="card card-countdown anim-entrada" style={{ '--delay': '0.2s' }}>
-            <div className="card-header">
-              <span className="card-icon">⚖️</span>
-              <span className="card-titulo">Próxima Frequência</span>
-            </div>
-
-            {/* se não houver frequência no calendário mostra mensagem */}
-            {!proximaFrequencia ? (
-              <div className="countdown-vazio">
-                <p>Nenhuma frequência marcada no calendário.</p>
-                <span>Adiciona uma no 📅 Calendário</span>
-              </div>
-            ) : (
-              <div className="countdown-conteudo">
-                {/* anel svg animado */}
-                <div className="countdown-anel">
-                  <svg viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="45" className="anel-fundo" />
-                    <circle
-                      cx="50" cy="50" r="45"
-                      className="anel-progresso"
-                      strokeDasharray={circunferencia}
-                      strokeDashoffset={offset}
-                    />
-                  </svg>
-                  <div className="countdown-centro">
-                    <span className="countdown-numero">{diasParaMostrar}</span>
-                    <span className="countdown-unidade">dias</span>
-                  </div>
-                </div>
-                <div className="countdown-info">
-                  {/* nome da cadeira da frequência */}
-                  <p className="countdown-cadeira">
-                    {proximaFrequencia.cadeira ? nomeCurtoCadeira(proximaFrequencia.cadeira) : proximaFrequencia.titulo}
-                  </p>
-                  <p className="countdown-data">{dataFrequenciaFormatada}</p>
-                  <div className="countdown-barra-container">
-                    <div className="countdown-barra" style={{ width: `${percentagem}%` }} />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* card aulas de hoje */}
-          <div className="card card-aulas anim-entrada" style={{ '--delay': '0.3s' }}>
-            <div className="card-header">
-              <span className="card-icon">📚</span>
-              <span className="card-titulo">Aulas de Hoje</span>
-              {aulasHoje.length > 0 && (
-                <span className="card-badge">{aulasHoje.length}</span>
-              )}
-            </div>
-
-            {/* sem aulas hoje */}
-            {aulasHoje.length === 0 ? (
-              <p className="card-vazio">
-                {loading ? 'A carregar...' : 'Sem aulas hoje 🎉'}
-              </p>
-            ) : (
-              <ul className="lista-aulas">
-                {aulasHoje.map((aula, i) => (
-                  <li key={i} className="aula-item">
-                    <span
-                      className="aula-dot"
-                      style={{ background: CORES_CADEIRA[aula.cadeira] || '#b8963e' }}
-                    />
-                    <span className="aula-hora">{aula.horaInicio}</span>
-                    <span className="aula-cadeira">{aula.titulo || nomeCurtoCadeira(aula.cadeira)}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          {/* card tarefas — pendentes reais, mais próximas do prazo primeiro */}
-          <div className="card card-tarefas anim-entrada" style={{ '--delay': '0.4s' }}>
-            <div className="card-header">
-              <span className="card-icon">✅</span>
-              <span className="card-titulo">Tarefas Pendentes</span>
-              {tarefasPendentes.length > 0 && (
-                <span className="card-badge">{tarefasPendentes.length}</span>
-              )}
-            </div>
-
-            {tarefasPendentes.length === 0 ? (
-              <p className="card-vazio">Nada pendente. Boa! 🎉</p>
-            ) : (
-              <ul className="lista-tarefas">
-                {tarefasPendentes.slice(0, 4).map((t) => (
-                  <li key={t.id} className="tarefa-item">
-                    <span className="tarefa-checkbox" />
-                    <div className="tarefa-info">
-                      <span className="tarefa-texto">{t.titulo}</span>
-                      {t.cadeira && (
-                        <span className="tarefa-cadeira" style={{ color: CORES_CADEIRA[t.cadeira] || '#b8963e' }}>
-                          {nomeCurtoCadeira(t.cadeira)}
-                        </span>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
+          {/* só depois de ler as escolhas dela, para os cartões não piscarem */}
+          {carregadoModulos && ordem.filter((id) => ativos[id]).map((id) => <Fragment key={id}>{cartoes[id]}</Fragment>)}
         </div>
       </main>
 

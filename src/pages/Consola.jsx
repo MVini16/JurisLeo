@@ -12,6 +12,7 @@ import {
   lerBloqueio, guardarBloqueio, estaBloqueado, minutosDeBloqueio, aposTentativaErrada, estadoInicialBloqueio, sessaoExpirada,
 } from '../services/pin.js';
 import Carregando from '../components/animacoes/Carregando.jsx';
+import GraficoBemEstar from '../components/GraficoBemEstar.jsx';
 import './Consola.css';
 
 const ROTULO_ESTADO = {
@@ -165,7 +166,20 @@ function Conteudo({ onBloquear }) {
         <>
           <section className="co-bloco">
             <h2>Como ela está</h2>
-            <p className="co-nota">O registo diário de bem-estar ainda não existe na app dela. Quando existir, aparece aqui primeiro.</p>
+            {resumo.bemEstar.temRegistos ? (
+              <>
+                <GraficoBemEstar serie={resumo.bemEstar.serie} />
+                <p className="co-nota">{resumo.bemEstar.sequencia > 0 ? `Contou como está ${resumo.bemEstar.sequencia} ${resumo.bemEstar.sequencia === 1 ? 'dia seguido' : 'dias seguidos'}.` : 'Hoje ainda não contou.'}</p>
+                {resumo.bemEstar.texto && (
+                  <blockquote className="co-texto">
+                    <p>{resumo.bemEstar.texto.texto}</p>
+                    <footer>{resumo.bemEstar.texto.data}</footer>
+                  </blockquote>
+                )}
+              </>
+            ) : (
+              <p className="co-nota">Ainda não registou nenhum dia. Quando o fizer, aparece aqui primeiro.</p>
+            )}
           </section>
 
           <section className="co-bloco">

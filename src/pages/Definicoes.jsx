@@ -11,6 +11,8 @@ import { useModulos } from '../hooks/useModulos.js';
 import { MODULOS, CATEGORIAS_MODULOS, GRUPOS_FERRAMENTAS } from '../data/modulos.js';
 import { lerPreferencias, guardarPreferencia, aplicarPreferencias, OPCOES_ABERTURA, OPCOES_FRASES } from '../services/preferencias.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
+import { useBemEstar } from '../hooks/useBemEstar.js';
+import { CAMPOS_OPCIONAIS, GRUPOS_OPCIONAIS } from '../data/bemEstar.js';
 import './Definicoes.css';
 
 function Seta({ para }) {
@@ -31,6 +33,7 @@ export default function Definicoes() {
   const navigate = useNavigate();
   const { darkMode, toggleTheme } = useTheme();
   const { ativos, ordem, alternar, mover, repor } = useModulos();
+  const { camposAtivos, alternarCampo } = useBemEstar();
   const [prefs, setPrefs] = useState(() => lerPreferencias());
   const [aExportar, setAExportar] = useState(false);
   const [aRepor, setARepor] = useState(false);
@@ -143,6 +146,25 @@ export default function Definicoes() {
         ))}
         <button type="button" className="def-btn" onClick={reporEcra}>{ecraReposto ? '✓ Tudo como estava' : 'Repor o ecrã como estava'}</button>
       </section>
+
+      {/* registo diário: só depois de ela ligar o cartão */}
+      {ativos.bemEstar && (
+      <section className="def-seccao">
+        <h2 className="def-seccao__titulo">Registo diário</h2>
+        <p className="def-seccao__ajuda">À noite podes contar mais do que o essencial. Liga só o que te apetecer: o Vini vê o que responderes.</p>
+        {GRUPOS_OPCIONAIS.map((grupo) => (
+          <div key={grupo} className="def-subgrupo">
+            <b className="def-subgrupo__titulo">{grupo}</b>
+            {CAMPOS_OPCIONAIS.filter((c) => c.grupo === grupo).map((c) => (
+              <div key={c.id} className="def-linha">
+                <div className="def-texto"><b>{c.pergunta}</b></div>
+                <Interruptor ligado={camposAtivos.includes(c.id)} rotulo={c.pergunta} onMudar={() => alternarCampo(c.id)} />
+              </div>
+            ))}
+          </div>
+        ))}
+      </section>
+      )}
 
       {/* aparência */}
       <section className="def-seccao">

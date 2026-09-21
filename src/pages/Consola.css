@@ -108,3 +108,7 @@ html.dark .co-cadeira { border-color: var(--border-dark); }
 
 html.dark .co-campo { border-color: var(--border-dark); }
 .co-campo:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+
+/* a mensagem que ela deixou */
+.co-texto { margin-top: 12px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--acento); background: color-mix(in srgb, var(--acento) 8%, transparent); font-size: 0.9rem; line-height: 1.5; }
+.co-texto footer { font-size: 0.72rem; opacity: 0.7; margin-top: 6px; }

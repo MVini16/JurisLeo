@@ -43,11 +43,11 @@ describe('ordemCartoes', () => {
   });
 
   it('põe no fim os cartões novos que ela ainda não tinha', () => {
-    expect(ordemCartoes(['tarefasPendentes', 'aulasHoje'])).toEqual(['tarefasPendentes', 'aulasHoje', 'aulaAgora', 'proximaFrequencia', 'ferramentas']);
+    expect(ordemCartoes(['tarefasPendentes', 'aulasHoje'])).toEqual(['tarefasPendentes', 'aulasHoje', 'aulaAgora', 'bemEstar', 'proximaFrequencia', 'ferramentas']);
   });
 
   it('tira ids que já não existem e repetidos', () => {
-    expect(ordemCartoes(['lixo', 'aulasHoje', 'aulasHoje'])).toEqual(['aulasHoje', 'aulaAgora', 'proximaFrequencia', 'tarefasPendentes', 'ferramentas']);
+    expect(ordemCartoes(['lixo', 'aulasHoje', 'aulasHoje'])).toEqual(['aulasHoje', 'aulaAgora', 'bemEstar', 'proximaFrequencia', 'tarefasPendentes', 'ferramentas']);
   });
 });
 

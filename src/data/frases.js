@@ -134,6 +134,21 @@ export const frasesPorContexto = {
     'Ainda tens margem, mas cada vez menos. Faz por cuidar dela.',
   ],
 
+  diaDificil: [
+    'Hoje está pesado. Não tens de fingir que não está.',
+    'Obrigada por contares. Não tens de resolver nada agora.',
+    'Um dia mau não é um mau semestre, nem uma má advogada.',
+    'Está tudo bem em só ir aguentando hoje.',
+    'O Vini está do teu lado, mesmo quando o dia não ajuda.',
+    'Dias assim passam. E não tens de os passar sozinha.',
+    'Não precisas de estar bem para valeres muito.',
+    'Hoje o objetivo pode ser só chegar ao fim do dia. Isso já conta.',
+    'Cansaço, desânimo, falta de vontade: também fazem parte de estudar tanto.',
+    'Contaste como estás. Isso já é cuidar de ti.',
+    'Não tens de ser produtiva para mereceres descanso.',
+    'Se quiseres falar, o Vini está aqui. Se não quiseres, também está.',
+  ],
+
   antesFrequencia: [
     'A frequência está a chegar. O que estudaste até agora já é mais do que nada.',
     'Faltam poucos dias. Dá para rever o essencial, não precisas de reler tudo outra vez.',

@@ -6,7 +6,7 @@ import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { auth, db } from '../services/firebase.js';
 import { EMAIL_ADMIN, UID_DA_LEONOR } from '../data/consola.js';
 
-const COLECOES = ['cadeiras', 'tarefas', 'sessoesEstudo', 'anotacoes', 'casos', 'flashcards', 'eventos'];
+const COLECOES = ['cadeiras', 'tarefas', 'sessoesEstudo', 'anotacoes', 'casos', 'flashcards', 'eventos', 'registosDiarios'];
 
 // fases: a-verificar | sem-sessao | nao-admin | email-por-verificar | admin
 export function useAcessoAdmin() {
@@ -36,7 +36,8 @@ export function useDadosDela(ativo) {
         const snap = await getDocs(collection(db, ...base, nome));
         return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
       }));
-      const [cadeiras, tarefas, sessoes, anotacoes, casos, flashcards, eventos] = listas;
+      const [cadeiras, tarefas, sessoes, anotacoes, casos, flashcards, eventos, listaRegistos] = listas;
+      const registosDiarios = Object.fromEntries(listaRegistos.map(({ id, ...resto }) => [id, resto]));
 
       const faltas = {};
       const avaliacoes = {};
@@ -49,7 +50,7 @@ export function useDadosDela(ativo) {
         avaliacoes[c.id] = a.data() || {};
       }));
 
-      setEstado({ dados: { cadeiras, faltas, avaliacoes, tarefas, sessoes, anotacoes, casos, flashcards, eventos }, loading: false, erro: '', lidoEm: new Date() });
+      setEstado({ dados: { cadeiras, faltas, avaliacoes, tarefas, sessoes, anotacoes, casos, flashcards, eventos, registosDiarios }, loading: false, erro: '', lidoEm: new Date() });
     } catch (e) {
       setEstado((prev) => ({ ...prev, loading: false, erro: e?.code === 'permission-denied' ? 'permissao' : 'falhou' }));
     }

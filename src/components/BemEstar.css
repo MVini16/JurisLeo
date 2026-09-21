@@ -1,0 +1,150 @@
+/* registo diário de bem-estar: cartão, formulário, gráfico e histórico */
+.bem-cartao,
+.bem-perfil,
+.bem-form {
+  --acento: var(--burgundy);
+}
+
+html.dark .bem-cartao,
+html.dark .bem-perfil,
+html.dark .bem-form { --acento: var(--gold); }
+
+.bem-cartao { display: flex; flex-direction: column; gap: 12px; }
+.bem-cumprimento { font-size: 1rem; line-height: 1.4; }
+.bem-agradecimento { font-size: 0.92rem; }
+.bem-nota { font-size: 0.78rem; line-height: 1.45; opacity: 0.75; }
+.bem-erro { font-size: 0.82rem; color: var(--perigo); }
+
+.bem-form { display: flex; flex-direction: column; gap: 16px; }
+.bem-pergunta { font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; }
+
+/* cinco níveis com área de toque de pelo menos 56 px, o gesto mais frequente da app */
+.bem-niveis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+
+.bem-nivel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 62px;
+  padding: 6px 2px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-light);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 100ms ease, background 150ms ease;
+}
+
+html.dark .bem-nivel { border-color: var(--border-dark); }
+.bem-nivel__icone { font-size: 1.5rem; line-height: 1; }
+.bem-nivel__texto { font-size: 0.6rem; line-height: 1.15; text-align: center; opacity: 0.85; }
+.bem-nivel.ativo { border-color: var(--acento); background: color-mix(in srgb, var(--acento) 16%, transparent); }
+.bem-nivel.ativo .bem-nivel__texto { font-weight: 700; opacity: 1; }
+.bem-nivel:active { transform: scale(0.95); }
+
+.bem-chips, .bem-periodos { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.bem-chip {
+  min-height: var(--toque-min);
+  padding: 0 14px;
+  border-radius: 22px;
+  border: 1.5px solid var(--border-light);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+html.dark .bem-chip { border-color: var(--border-dark); }
+.bem-chip.ativo { border-color: var(--acento); background: color-mix(in srgb, var(--acento) 14%, transparent); font-weight: 600; }
+
+.bem-texto {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-light);
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+html.dark .bem-texto { border-color: var(--border-dark); }
+.bem-texto + .bem-nota { margin-top: 6px; }
+
+.bem-acoes { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.bem-botao {
+  min-height: var(--toque-min);
+  padding: 0 18px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-light);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+html.dark .bem-botao { border-color: var(--border-dark); }
+.bem-botao--principal { border-color: var(--acento); background: color-mix(in srgb, var(--acento) 14%, transparent); font-weight: 600; }
+.bem-botao:disabled { opacity: 0.5; }
+
+.bem-nivel:focus-visible, .bem-chip:focus-visible, .bem-botao:focus-visible, .bem-texto:focus-visible, .bem-link:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+}
+
+/* gráfico */
+.bem-grafico { margin: 8px 0 0; }
+.bem-grafico svg { width: 100%; height: auto; display: block; }
+.bem-grafico__guia { stroke: currentColor; stroke-opacity: 0.1; stroke-width: 1; }
+.bem-grafico__linha { fill: none; stroke: var(--cor-linha); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.bem-grafico__ponto { fill: var(--cor-linha); }
+.bem-grafico__apagado { fill: currentColor; font-size: 9px; opacity: 0.6; }
+.bem-grafico__legenda { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; font-size: 0.72rem; }
+.bem-grafico__legenda span { display: inline-flex; align-items: center; gap: 6px; }
+.bem-grafico__legenda i { width: 14px; height: 3px; border-radius: 2px; background: var(--cor-linha); }
+.bem-grafico__apagado-legenda { opacity: 0.7; }
+
+.bem-periodos { margin: 12px 0 4px; }
+
+/* histórico */
+.bem-historico { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+.bem-dia {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.82rem;
+}
+
+html.dark .bem-dia { border-color: var(--border-dark); }
+.bem-dia:last-child { border-bottom: none; }
+.bem-dia__data { min-width: 130px; opacity: 0.85; }
+.bem-dia__valores { font-size: 1.1rem; letter-spacing: 0.15em; }
+.bem-dia__apagado { opacity: 0.7; font-style: italic; }
+.bem-dia__acoes { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-left: auto; }
+
+.bem-link {
+  min-height: var(--toque-min);
+  padding: 0 4px;
+  background: none;
+  border: none;
+  color: var(--acento);
+  font-family: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.bem-link--perigo { color: var(--perigo); }

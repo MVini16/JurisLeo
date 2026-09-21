@@ -13,6 +13,10 @@ import { useFraseDoDia } from '../hooks/useFraseDoDia.js'
 import { useModulos } from '../hooks/useModulos.js'
 import { MODULOS } from '../data/modulos.js'
 import Esqueleto from '../components/animacoes/Esqueleto.jsx'
+import CartaoBemEstar from '../components/CartaoBemEstar.jsx'
+import { useBemEstar } from '../hooks/useBemEstar.js'
+import { estaEmBaixo, valoresDoDia } from '../services/bemEstar.js'
+import { chaveData } from '../data/feriados.js'
 
 // cores por cadeira — usadas nos dots das aulas
 const CORES_CADEIRA = coresCadeiras;
@@ -56,6 +60,10 @@ function Dashboard() {
   // o que ela escolheu ver, e por que ordem
   const { ativos, ordem, carregado: carregadoModulos } = useModulos();
 
+  // em baixo, a lista de tarefas aligeira: só as duas mais urgentes (a informação é a mesma, o tom é mais suave)
+  const { registos: registosBemEstar } = useBemEstar();
+  const emBaixoHoje = estaEmBaixo(valoresDoDia(registosBemEstar[chaveData(new Date())]));
+
   const { tarefas } = useTarefas();
   const tarefasPendentes = tarefas
     .filter((t) => !t.concluida)
@@ -82,6 +90,7 @@ function Dashboard() {
   // cada cartão do ecrã de início; a ordem e o que aparece vêm das escolhas dela
   const ferramentasLigadas = MODULOS.filter((m) => m.categoria === 'ferramentas' && ativos[m.id]);
   const cartoes = {
+    bemEstar: <CartaoBemEstar />,
     ferramentas: (
       <div className="card anim-entrada" style={{ '--delay': '0.5s' }}>
         <div className="card-header">
@@ -205,7 +214,7 @@ function Dashboard() {
                   <p className="card-vazio">Nada pendente. Boa! 🎉</p>
                 ) : (
                   <ul className="lista-tarefas">
-                    {tarefasPendentes.slice(0, 4).map((t) => (
+                    {tarefasPendentes.slice(0, emBaixoHoje ? 2 : 4).map((t) => (
                       <li key={t.id} className="tarefa-item">
                         <span className="tarefa-checkbox" />
                         <div className="tarefa-info">

@@ -7,6 +7,7 @@ import { minutosPorDia, sequenciaAtual, minutosDaSemana } from './estatisticasEs
 import { estaPronto } from './repeticaoEspacada.js';
 import { chaveData } from '../data/feriados.js';
 import { diasEntre } from './datas.js';
+import { serieParaGrafico, sequenciaRegisto, alertaPersistencia, ultimoTexto } from './bemEstar.js';
 
 const DIAS_PARA_AVISAR_FREQUENCIA = 7;
 
@@ -56,7 +57,7 @@ function proximaProva(eventos, hoje) {
 }
 
 // junta tudo o que a consola mostra
-export function resumirDados({ cadeiras = [], faltas = {}, avaliacoes = {}, tarefas = [], sessoes = [], anotacoes = [], casos = [], flashcards = [], eventos = [] }, hoje = new Date()) {
+export function resumirDados({ cadeiras = [], faltas = {}, avaliacoes = {}, tarefas = [], sessoes = [], anotacoes = [], casos = [], flashcards = [], eventos = [], registosDiarios = {} }, hoje = new Date()) {
   const porCadeira = cadeiras.map((cadeira) => resumirCadeira({ cadeira, faltasDados: faltas[cadeira.id], avaliacaoDados: avaliacoes[cadeira.id] }));
   const resultados = porCadeira.map((c) => c.avaliacao).filter(Boolean);
 
@@ -80,11 +81,18 @@ export function resumirDados({ cadeiras = [], faltas = {}, avaliacoes = {}, tare
       flashcardsProntos: flashcards.filter((f) => estaPronto(f, hoje)).length,
     },
     proximaProva: proximaProva(eventos, hoje),
+    bemEstar: {
+      temRegistos: Object.keys(registosDiarios).length > 0,
+      serie: serieParaGrafico(registosDiarios, 7, hoje),
+      sequencia: sequenciaRegisto(registosDiarios, hoje),
+      alerta: alertaPersistencia(registosDiarios, hoje),
+      texto: ultimoTexto(registosDiarios),
+    },
   };
 }
 
 // "o que precisa de ti": lista curta e acionável, das mais urgentes para as menos
-export function triagem(resumo) {
+export function triagem(resumo, hoje = new Date()) {
   const itens = [];
 
   for (const c of resumo.cadeiras) {
@@ -111,6 +119,15 @@ export function triagem(resumo) {
   if (prova && prova.diasRestantes <= DIAS_PARA_AVISAR_FREQUENCIA) {
     const quando = prova.diasRestantes === 0 ? 'hoje' : prova.diasRestantes === 1 ? 'amanhã' : `daqui a ${prova.diasRestantes} dias`;
     itens.push({ id: 'prova-proxima', severidade: 'info', titulo: `${prova.titulo || 'Prova'} ${quando}`, detalhe: '' });
+  }
+
+  const bem = resumo.bemEstar;
+  if (bem?.alerta) {
+    const nome = { humor: 'O humor', energia: 'A energia', motivacao: 'A motivação' }[bem.alerta.campo];
+    itens.push({ id: 'bem-estar-persistente', severidade: 'urgente', titulo: `${nome} está em baixo há ${bem.alerta.dias} dias`, detalhe: 'Ela sabe que foste avisado.' });
+  }
+  if (bem?.texto && diasEntre(new Date(`${bem.texto.data}T12:00:00`), hoje) <= 1) {
+    itens.push({ id: 'bem-estar-texto', severidade: 'info', titulo: 'Deixou-te uma mensagem', detalhe: bem.texto.texto });
   }
 
   const ordem = { urgente: 0, aviso: 1, info: 2 };

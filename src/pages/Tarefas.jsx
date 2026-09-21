@@ -8,6 +8,7 @@ import { useTarefas } from '../hooks/useTarefas.js';
 import { coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Tarefas.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
+import MarteloJuiz from '../components/animacoes/MarteloJuiz.jsx';
 
 // cores e nomes por cadeira
 const CORES_CADEIRA = coresCadeiras;
@@ -234,6 +235,7 @@ export default function Tarefas() {
 // ------------------------------------------------------------------
 function TarefaCard({ tarefa, delay, onConcluir, onEditar, onApagar }) {
   const [concluindo, setConcluindo] = useState(false);
+  const [martelo, setMartelo] = useState(false);
   const [confirmApagar, setConfirmApagar] = useState(false);
   const cor = CORES_CADEIRA[tarefa.cadeira] || '#b8963e';
   const tipo = TIPOS.find(t => t.id === tarefa.tipo);
@@ -242,6 +244,11 @@ function TarefaCard({ tarefa, delay, onConcluir, onEditar, onApagar }) {
 
   async function handleConcluir() {
     setConcluindo(true);
+    // ao concluir (não ao desfazer), o martelo de juiz bate
+    if (!tarefa.concluida) {
+      setMartelo(true);
+      setTimeout(() => setMartelo(false), 950);
+    }
     await onConcluir();
     setConcluindo(false);
   }
@@ -251,6 +258,8 @@ function TarefaCard({ tarefa, delay, onConcluir, onEditar, onApagar }) {
       className={`tarefa-card ${tarefa.concluida ? 'concluida' : ''} ${atrasada ? 'atrasada' : ''}`}
       style={{ '--cor': cor, '--delay': `${delay}s` }}
     >
+      {martelo && <MarteloJuiz />}
+
       {/* barra colorida à esquerda */}
       <div className="tarefa-card__barra" style={{ background: cor }} />
 

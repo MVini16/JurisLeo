@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import './styles/imprimir.css'
+import './styles/animacoes.css'
 import App from './App.jsx'
 // importa o provider global do tema
 import { ThemeProvider } from './context/ThemeContext.jsx'

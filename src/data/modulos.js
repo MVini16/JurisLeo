@@ -10,7 +10,7 @@ export const CATEGORIAS_MODULOS = [
 ];
 
 // as ferramentas agrupam-se assim na página Ferramentas e nas Definições
-export const GRUPOS_FERRAMENTAS = ['Estudar', 'Direito', 'Vida profissional'];
+export const GRUPOS_FERRAMENTAS = ['Estudar', 'Direito', 'Vida profissional', 'Bem-estar'];
 
 export const MODULOS = [
   // cartões do dashboard, pela ordem em que aparecem por defeito
@@ -37,6 +37,8 @@ export const MODULOS = [
   { id: 'ferrPortfolio', categoria: 'ferramentas', grupo: 'Vida profissional', rota: '/fichas/portfolio', nome: 'Portfólio', descricao: 'Os trabalhos de que te orgulhas.', defeito: true },
   { id: 'ferrEstagio', categoria: 'ferramentas', grupo: 'Vida profissional', rota: '/fichas/estagio', nome: 'Diário de estágio', descricao: 'Para quando estagiares.', defeito: true },
   { id: 'ferrContactos', categoria: 'ferramentas', grupo: 'Vida profissional', rota: '/fichas/contactos', nome: 'Contactos jurídicos', descricao: 'Com lembrete para voltares a falar.', defeito: true },
+
+  { id: 'ferrRespirar', categoria: 'ferramentas', grupo: 'Bem-estar', rota: '/respirar', nome: 'Respirar', descricao: 'Respiração guiada, para abrandar.', defeito: true },
 
   // atalhos do menu +, com o rótulo exato que já lá está
   { id: 'atalhoTarefa', categoria: 'atalhos', nome: 'Nova Tarefa', descricao: 'Criar uma tarefa.', defeito: true },

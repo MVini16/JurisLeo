@@ -121,6 +121,9 @@ function NavBar({ children }) {
   // índice do item activo para o slider
   const indiceActivo = itens.findIndex(i => estaAtivo(i, location.pathname))
 
+  // abrir uma cadeira é abrir um livro; mudar de anotação é virar a página
+  const variantePagina = location.pathname.startsWith('/cadeiras/') ? 'pagina-livro' : location.pathname.startsWith('/anotacoes/') ? 'pagina-vira' : ''
+
   // tópico de ajuda da página actual, para a dica de primeira visita e o botão de ajuda
   const ajuda = resolverAjuda(location.pathname)
 
@@ -181,7 +184,7 @@ function NavBar({ children }) {
       {/* conteúdo da página */}
       <main className="navbar-conteudo">
         {ajuda && <DicaPrimeiraVez chave={ajuda.chave} titulo={ajuda.titulo} texto={ajuda.texto} />}
-        {children}
+        <div key={location.pathname} className={`pagina-entra ${variantePagina}`}>{children}</div>
       </main>
 
       {ajuda && (

@@ -5,6 +5,7 @@ import { useHistoricoEstudo } from '../hooks/useHistoricoEstudo.js';
 import { minutosPorDia, sequenciaAtual, mapaDeCalor, minutosDaSemana, minutosPorCadeira, textoDuracao } from '../services/estatisticasEstudo.js';
 import { coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js';
 import Carregando from './animacoes/Carregando.jsx';
+import NumeroAnimado from './animacoes/NumeroAnimado.jsx';
 import './PerfilEstudo.css';
 
 const SEMANAS = 12;
@@ -28,7 +29,7 @@ export function PerfilEstudoVista({ dados, onComecar }) {
         <>
           <p className="pe-resumo">
             {dias > 0
-              ? <>Estás com <b>{dias} {dias === 1 ? 'dia seguido' : 'dias seguidos'}</b> a estudar. </>
+              ? <>Estás com <b><NumeroAnimado valor={dias} /> {dias === 1 ? 'dia seguido' : 'dias seguidos'}</b> a estudar. </>
               : <>Hoje é um bom dia para começar uma sequência. </>}
             {dados.semana > 0
               ? <>Esta semana já vais em <b>{textoDuracao(dados.semana)}</b>.</>
@@ -40,9 +41,10 @@ export function PerfilEstudoVista({ dados, onComecar }) {
           <div className="pe-calor" role="img" aria-label={`Mapa de estudo das últimas ${SEMANAS} semanas`}>
             <div className="pe-dias" aria-hidden="true">{DIAS_SEMANA.map((d, i) => <span key={i}>{d}</span>)}</div>
             <div className="pe-grelha">
-              {dados.calor.flat().map((dia) => (
+              {dados.calor.flatMap((semana, s) => semana.map((dia) => ({ ...dia, s }))).map((dia) => (
                 <i
                   key={dia.chave}
+                  style={{ '--s': dia.s }}
                   className={`pe-dia nivel-${dia.nivel} ${dia.futuro ? 'futuro' : ''}`}
                   title={dia.minutos ? `${dia.chave}: ${textoDuracao(dia.minutos)}` : dia.chave}
                 />

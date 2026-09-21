@@ -12,6 +12,7 @@ import PerguntaFimDoDia from '../components/PerguntaFimDoDia.jsx'
 import { useFraseDoDia } from '../hooks/useFraseDoDia.js'
 import { useModulos } from '../hooks/useModulos.js'
 import { MODULOS } from '../data/modulos.js'
+import Esqueleto from '../components/animacoes/Esqueleto.jsx'
 
 // cores por cadeira — usadas nos dots das aulas
 const CORES_CADEIRA = coresCadeiras;
@@ -169,7 +170,7 @@ function Dashboard() {
                 {/* sem aulas hoje */}
                 {aulasHoje.length === 0 ? (
                   <p className="card-vazio">
-                    {loading ? 'A carregar...' : 'Sem aulas hoje 🎉'}
+                    {loading ? <Esqueleto linhas={2} /> : 'Sem aulas hoje 🎉'}
                   </p>
                 ) : (
                   <ul className="lista-aulas">

@@ -1,0 +1,86 @@
+/* respiração guiada: o círculo segue as três fases do ciclo (4 s a inspirar, 2 a segurar, 6 a expirar) */
+.resp-pagina {
+  --acento: var(--burgundy);
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 16px 110px;
+  text-align: center;
+  font-family: 'Georgia', serif;
+}
+
+html.dark .resp-pagina { --acento: var(--gold); }
+
+.resp-titulo { font-size: 1.5rem; margin-top: 8px; }
+.resp-sub { font-size: 0.85rem; opacity: 0.75; margin: 4px 0 8px; }
+
+.resp-cena {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin: 28px auto 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.resp-circulo {
+  position: absolute;
+  inset: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--acento) 55%, white), var(--acento));
+  opacity: 0.85;
+  transform: scale(0.72);
+}
+
+.resp-aneis i {
+  position: absolute;
+  inset: 20px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--acento) 45%, transparent);
+  transform: scale(0.8);
+  opacity: 0.6;
+}
+
+.resp-aneis i:nth-child(2) { inset: 8px; opacity: 0.4; }
+.resp-aneis i:nth-child(3) { inset: 0; opacity: 0.25; }
+
+/* 12 s: cresce em 4 s (0 a 33%), fica em 2 s (33 a 50%), encolhe em 6 s (50 a 100%) */
+.resp-cena.ativa .resp-circulo { animation: resp-respira var(--ciclo) linear infinite; }
+.resp-cena.ativa .resp-aneis i { animation: resp-anel var(--ciclo) linear infinite; }
+.resp-cena.ativa .resp-aneis i:nth-child(2) { animation-delay: 0.15s; }
+.resp-cena.ativa .resp-aneis i:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes resp-respira {
+  0% { transform: scale(0.72); animation-timing-function: ease-in-out; }
+  33.33% { transform: scale(1.12); }
+  50% { transform: scale(1.12); animation-timing-function: ease-in-out; }
+  100% { transform: scale(0.72); }
+}
+
+@keyframes resp-anel {
+  0% { transform: scale(0.8); opacity: 0.2; animation-timing-function: ease-in-out; }
+  33.33% { transform: scale(1.16); opacity: 0.7; }
+  50% { transform: scale(1.16); opacity: 0.7; animation-timing-function: ease-in-out; }
+  100% { transform: scale(0.8); opacity: 0.2; }
+}
+
+.resp-texto { position: relative; z-index: 1; font-size: 1.15rem; color: #fff; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35); }
+.resp-contagem { position: relative; z-index: 1; font-size: 2rem; font-weight: 700; color: #fff; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35); }
+
+.resp-botao {
+  min-height: var(--toque-min);
+  padding: 0 40px;
+  border-radius: 24px;
+  border: 1.5px solid var(--acento);
+  background: color-mix(in srgb, var(--acento) 14%, transparent);
+  color: inherit;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.resp-botao--fantasma { background: none; }
+.resp-botao:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; }
+.resp-final { margin-top: 16px; font-size: 0.9rem; line-height: 1.5; }
+.resp-aviso { margin-top: 28px; font-size: 0.75rem; opacity: 0.72; line-height: 1.45; }

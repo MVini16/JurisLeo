@@ -9,6 +9,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../services/firebase.js'
 // importa o css
 import './Login.css'
+import PoeiraDourada from '../components/animacoes/PoeiraDourada.jsx'
 
 function Login() {
   const navigate = useNavigate()
@@ -77,6 +78,7 @@ function Login() {
     <div className="login-container">
       {/* fundo */}
       <div className="login-bg" />
+      <PoeiraDourada />
 
       {/* card central */}
       <div className="login-card">

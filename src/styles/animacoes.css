@@ -1,0 +1,135 @@
+/* animações partilhadas por toda a app — só transform e opacity, curtas, e saltáveis
+   respeitam prefers-reduced-motion e a escolha dela em definições (index.css) */
+
+:root {
+  --curva-pagina: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ---------- entrada de página ---------- */
+/* fill-mode backwards: no fim a página volta ao estado normal (sem transform preso) */
+.pagina-entra { animation: pagina-entra 250ms var(--curva-pagina) backwards; }
+
+@keyframes pagina-entra {
+  from { opacity: 0; transform: translateY(12px); }
+}
+
+/* abrir uma cadeira: a página abre-se como a capa de um livro */
+.pagina-livro {
+  transform-origin: left center;
+  animation: pagina-livro 520ms var(--curva-pagina) backwards;
+}
+
+@keyframes pagina-livro {
+  from { opacity: 0; transform: perspective(1200px) rotateY(-16deg) translateX(-10px); }
+}
+
+/* passar de uma anotação a outra: virar a página */
+.pagina-vira {
+  transform-origin: left center;
+  animation: pagina-vira 420ms var(--curva-pagina) backwards;
+}
+
+@keyframes pagina-vira {
+  from { opacity: 0.2; transform: perspective(1400px) rotateY(-30deg); filter: brightness(0.8); }
+}
+
+/* ---------- listas em cascata ---------- */
+/* 40 ms entre itens, só nos 8 primeiros; os restantes entram todos de uma vez */
+:is(.stagger, .fx-lista, .fx-grelha, .pe-cadeiras, .artigos-lista, .anotacoes-lista, .cadeira-lista, .cadeiras-grid, .casos-lista, .leituras-lista, .flashcards-lista, .lista-aulas, .lista-tarefas) > * {
+  animation: lista-entra 320ms var(--curva-pagina) backwards;
+}
+
+@keyframes lista-entra {
+  from { opacity: 0; transform: translateY(14px); }
+}
+
+:is(.stagger, .fx-lista, .fx-grelha, .pe-cadeiras, .artigos-lista, .anotacoes-lista, .cadeira-lista, .cadeiras-grid, .casos-lista, .leituras-lista, .flashcards-lista, .lista-aulas, .lista-tarefas) > :nth-child(2) { animation-delay: 40ms; }
+:is(.stagger, .fx-lista, .fx-grelha, .pe-cadeiras, .artigos-lista, .anotacoes-lista, .cadeira-lista, .cadeiras-grid, .casos-lista, .leituras-lista, .flashcards-lista, .lista-aulas, .lista-tarefas) > :nth-child(3) { animation-delay: 80ms; }
+:is(.stagger, .fx-lista, .fx-grelha, .pe-cadeiras, .artigos-lista, .anotacoes-lista, .cadeira-lista, .cadeiras-grid, .casos-lista, .leituras-lista, .flashcards-lista, .lista-aulas, .lista-tarefas) > :nth-child(4) { animation-delay: 120ms; }
+:is(.stagger, .fx-lista, .fx-grelha, .pe-cadeiras, .artigos-lista, .anotacoes-lista, .cadeira-lista, .cadeiras-grid, .casos-lista, .leituras-lista, .flashcards-lista, .lista-aulas, .lista-tarefas) > :nth-child(5) { animation-delay: 160ms; }
+:is(.stagger, .fx-lista, .fx-grelha, .pe-cadeiras, .artigos-lista, .anotacoes-lista, .cadeira-lista, .cadeiras-grid, .casos-lista, .leituras-lista, .flashcards-lista, .lista-aulas, .lista-tarefas) > :nth-child(6) { animation-delay: 200ms; }
+:is(.stagger, .fx-lista, .fx-grelha, .pe-cadeiras, .artigos-lista, .anotacoes-lista, .cadeira-lista, .cadeiras-grid, .casos-lista, .leituras-lista, .flashcards-lista, .lista-aulas, .lista-tarefas) > :nth-child(7) { animation-delay: 240ms; }
+:is(.stagger, .fx-lista, .fx-grelha, .pe-cadeiras, .artigos-lista, .anotacoes-lista, .cadeira-lista, .cadeiras-grid, .casos-lista, .leituras-lista, .flashcards-lista, .lista-aulas, .lista-tarefas) > :nth-child(8) { animation-delay: 280ms; }
+
+/* ---------- toque nos botões ---------- */
+.navbar-conteudo button:not(:disabled),
+.navbar-conteudo a[class] {
+  transition: transform 100ms ease;
+}
+
+.navbar-conteudo button:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+/* ---------- esqueleto: para listas que ainda estão a chegar ---------- */
+.esqueleto {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.esqueleto__bloco {
+  height: 16px;
+  border-radius: 8px;
+  background: linear-gradient(100deg, color-mix(in srgb, currentColor 8%, transparent) 30%, color-mix(in srgb, var(--gold) 26%, transparent) 50%, color-mix(in srgb, currentColor 8%, transparent) 70%);
+  background-size: 300% 100%;
+  animation: esqueleto-brilho 1.6s ease-in-out infinite;
+}
+
+.esqueleto__bloco:nth-child(2n) { width: 70%; }
+.esqueleto__bloco:nth-child(3n) { width: 45%; }
+
+@keyframes esqueleto-brilho {
+  from { background-position: 100% 0; }
+  to { background-position: 0% 0; }
+}
+
+/* ---------- martelo de juiz ao concluir uma tarefa ---------- */
+.martelo {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 54px;
+  height: 54px;
+  margin-top: -27px;
+  pointer-events: none;
+  animation: martelo-aparece 900ms ease both;
+  z-index: 3;
+}
+
+.martelo svg { width: 100%; height: 100%; overflow: visible; }
+.martelo__cabo { transform-origin: 14px 46px; animation: martelo-bate 900ms cubic-bezier(0.5, 0, 0.7, 1) both; }
+.martelo__onda { transform-origin: 30px 46px; opacity: 0; animation: martelo-onda 900ms ease-out both; }
+
+@keyframes martelo-aparece {
+  0% { opacity: 0; transform: scale(0.7); }
+  15%, 80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+@keyframes martelo-bate {
+  0% { transform: rotate(-52deg); }
+  42% { transform: rotate(-52deg); }
+  56% { transform: rotate(4deg); }
+  66% { transform: rotate(-9deg); }
+  78%, 100% { transform: rotate(0); }
+}
+
+@keyframes martelo-onda {
+  0%, 52% { opacity: 0; transform: scale(0.4); }
+  58% { opacity: 0.9; }
+  100% { opacity: 0; transform: scale(2.6); }
+}
+
+/* ---------- poeira dourada de fundo (login) ---------- */
+.poeira-dourada {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---------- números que contam até ao valor ---------- */
+.numero-animado { font-variant-numeric: tabular-nums; }

@@ -29,6 +29,7 @@ import Definicoes from './pages/Definicoes'
 import Ferramentas from './pages/Ferramentas'
 import Fichas from './pages/Fichas'
 import Prazos from './pages/Prazos'
+import Respirar from './pages/Respirar'
 // componente de navegação — vai envolver todas as páginas principais
 import NavBar from './components/NavBar'
 
@@ -64,6 +65,7 @@ function App() {
         <Route path="/perfil" element={<NavBar><Perfil /></NavBar>} />
         <Route path="/ferramentas" element={<NavBar><Ferramentas /></NavBar>} />
         <Route path="/fichas/:tipo" element={<NavBar><Fichas /></NavBar>} />
+        <Route path="/respirar" element={<NavBar><Respirar /></NavBar>} />
         <Route path="/prazos" element={<NavBar><Prazos /></NavBar>} />
         <Route path="/definicoes" element={<NavBar><Definicoes /></NavBar>} />
       </Routes>

@@ -4,6 +4,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useAnotacao } from '../hooks/useAnotacao.js';
 import { cadeirasS1 } from '../data/dadosLeonor.js';
+import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Anotacao.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
 
@@ -82,7 +83,7 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
   return (
     <>
       <div className="anotacao-editor__header">
-        <button className="anotacao-editor__voltar" onClick={onVoltar}>‹ Anotações</button>
+        <BotaoVoltar destino="/anotacoes" texto="‹ Anotações" />
         <button className={`anotacao-editor__estrela ${favorita ? 'ativa' : ''}`} onClick={() => setFavorita((f) => !f)}>
           {favorita ? '★' : '☆'}
         </button>

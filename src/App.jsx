@@ -46,6 +46,8 @@ function App() {
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/consola" element={<Consola />} />
         <Route path="/admin" element={<Consola />} />
+        {/* modo frequência: ecrã cheio, distração zero, também sem navbar */}
+        <Route path="/frequencia" element={<Frequencia />} />
 
         {/* páginas principais — com navbar */}
         <Route path="/dashboard" element={<NavBar><Dashboard /></NavBar>} />
@@ -71,7 +73,6 @@ function App() {
         <Route path="/ferramentas" element={<NavBar><Ferramentas /></NavBar>} />
         <Route path="/fichas/:tipo" element={<NavBar><Fichas /></NavBar>} />
         <Route path="/respirar" element={<NavBar><Respirar /></NavBar>} />
-        <Route path="/frequencia" element={<NavBar><Frequencia /></NavBar>} />
         <Route path="/pares" element={<NavBar><Pares /></NavBar>} />
         <Route path="/prazos" element={<NavBar><Prazos /></NavBar>} />
         <Route path="/definicoes" element={<NavBar><Definicoes /></NavBar>} />

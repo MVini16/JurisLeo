@@ -103,3 +103,17 @@
 .cal-aviso--choque { background: color-mix(in srgb, var(--perigo) 16%, transparent); }
 .cal-aviso__nota { font-size: 0.68rem; opacity: 0.72; }
 .cal-aviso__nota::first-letter { text-transform: uppercase; }
+
+/* aviso discreto sobre as datas das épocas de exames */
+.cal-aviso-epocas {
+  font-size: 0.72rem;
+  opacity: 0.55;
+  margin: 0 0 10px;
+}
+
+.cal-diaria__sidebar-feriado {
+  font-size: 0.72rem;
+  color: var(--gold);
+  font-weight: 600;
+  margin-top: 2px;
+}

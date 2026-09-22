@@ -1557,28 +1557,31 @@ Se uma fase envolver decisão visual nova (layout, paleta, tipo de animação), 
 | **13** | Exportação e backup (secção 19) | PDF com dedicatória, JSON exporta e importa | `fase 13: exportar e backup` |
 | **14** | Animações temáticas de direito, marcos, carta escondida, polimento final | passa os 5 testes da secção 20 | `fase 14: animações temáticas e polimento final` |
 
-### 22.1 Estado das fases (auditado em 18-09-2026)
+### 22.1 Estado das fases (auditado em 22-09-2026)
 
 A numeração acima é a da spec. O prompt de trabalho da sessão de 18-09-2026 usa outra (blocos A a D). Legenda: ✅ feito · ⚠️ parcial · ❌ por fazer.
 
+*Esta tabela ficou desatualizada logo a seguir a ser escrita: foi gravada a meio da sessão de 18-09-2026 (16:45), antes de essa mesma sessão construir Notas, Faltas, Horário e as tabs da cadeira (17:18–17:36). A revisão de 22-09-2026 junta esse trabalho e o da tarefa 14/15 (família no calendário, calendário escolar, coincidências, eventos multi-dia, feriados/épocas visíveis). Tudo isto está na branch `fase-2`, nunca mergeado nem publicado — ver `docs/handoff-18-09-2026.md` para o histórico completo.*
+
 | Fase | Estado | O que existe e o que falta |
 |---|---|---|
-| **0** | ⚠️ quase | 6 dos 8 pontos de 3.3 feitos, regras publicadas, `.env` fora do Git. Faltam o ponto 3 (Oral de Melhoria, Registar Falta e Lançar Nota só navegam) e o ponto 7 (ecrãs 4 e 6 do Onboarding). A estrutura de pastas da secção 8 está por completar |
-| **1** | ⚠️ parcial | ✅ seed do 2.º ano, Dashboard ligado, countdown para 30/11. ❌ `calendarioEscolar.js`, `planoEstudos2Ano.js`, `tokens.css` |
-| **2** | ⚠️ parcial | ✅ motor de avaliação e testes (caso 25 a confirmar), celebração e consolo ligados. ❌ página `/notas`, árvore, simulador, pesos editáveis, média anual, histórico |
-| **3** | ⚠️ parcial | ✅ motor de faltas e testes. Não cumpre o ponto 7.4 (ver 3.4). ❌ página `/faltas`, registo em dois toques, lembrete das 24 h, histórico |
-| **4** | ⚠️ parcial | ✅ lista de cadeiras com semáforo e estado. ⚠️ horário só de leitura. ❌ tabs da cadeira, ficha, timeline, horário editável, vista de hoje, aula de agora |
+| **0** | ⚠️ quase | 6 dos 8 pontos de 3.3 feitos, regras publicadas, `.env` fora do Git. "Oral de Melhoria" já abre o modal certo (22-09); "Registar Falta" e "Lançar Nota" navegam para `/faltas` e `/notas`, que agora são páginas reais, não stubs. Falta só a estrutura de pastas da secção 8 |
+| **1** | ⚠️ parcial | ✅ seed do 2.º ano, Dashboard ligado, countdown para 30/11, `calendarioEscolar.js` (22-09, com `epocasDoDia`/`naEpocaNormal`). ❌ `planoEstudos2Ano.js`, `tokens.css` |
+| **2** | ✅ | motor de avaliação e testes (caso 25 confirmado: fica "aprovada com 10"), página `/notas` com árvore do regulamento, simulador, pesos editáveis e média anual, celebração/consolo ligados |
+| **3** | ✅ | motor de faltas reescrito, cumpre o ponto 7.4 (número principal sobre as 30 previstas). Página `/faltas`: registo em dois toques, lembrete das 24h, histórico |
+| **4** | ✅ | lista de cadeiras com semáforo e estado, tabs da cadeira (7), horário editável e ligado ao Firestore, vista de hoje no telemóvel, aula de agora e seguinte no Dashboard |
 | **5** | ⚠️ parcial | ✅ dica de primeira visita, botão de ajuda por ecrã, central de Ajuda, tutorial. Os 20 pontos por verificar um a um |
 | **6** | ⚠️ parcial | ✅ ~120 frases originais, celebração, consolo, mensagem carinhosa. ❌ 150 frases com tons e quotas, autoria "dele", botão de motivação, ecrã da 1h |
 | **7** | ⚠️ parcial | ✅ anotações e pesquisa global. ❌ sebenta compilada, sumários de aula. Guardar automático e rascunho por verificar |
 | **8** | ✅ | casos práticos com estrutura jurídica, estados e painel de dúvidas agregadas |
 | **9** | ⚠️ | ✅ artigos, glossário, flashcards, leituras. Os intervalos diferem da spec (ver 3.4) |
-| **10** | ❌ | sem `coincidencias.js` nem Modo Frequência |
+| **10** | ⚠️ parcial | ✅ `coincidencias.js` (22-09): choques no mesmo dia (sempre) e em dias consecutivos (época normal), aviso em tempo real no modal, nunca bloqueia. ❌ Modo Frequência |
 | **11** | ⚠️ parcial | ✅ tarefas e cronómetro de estudo. ❌ subtarefas, aviso dos 90 min, modo "estou a passar-me" |
 | **12** | ⚠️ parcial | ✅ PWA instalável e offline (`persistentLocalCache`). ❌ notificações e ecrã de instalação para iOS |
 | **13** | ⚠️ parcial | ✅ backup JSON e impressão limpa. ❌ importador, markdown, dedicatória, sebenta |
 | **14** | ❌ | animações temáticas, marcos, carta escondida |
-| — | ❌ | **Secções 25 e 26** (registo de bem-estar e consola do Vini) não têm fase atribuída na tabela acima e não existem no código |
+| — | ⚠️ parcial | Calendário (fora da numeração 1–14, tarefa 15 da sessão de 18-09): ✅ famílias com filtro (22-09), eventos multi-dia, feriados e faixa de época visíveis nas células (22-09). ❌ Modo Frequência, mostrar choques na própria vista do calendário (só no modal por agora) |
+| — | ❌ | **Secções 25 e 26** (registo de bem-estar e consola do Vini) não têm fase atribuída na tabela acima e não existem no código. A secção 26 (consola, com PIN) é um mal-entendido comum — não existe rota `/consola` nem nada parecido em produção nem na `fase-2`, só na spec |
 
 ---
 

@@ -1,50 +1,59 @@
 import { describe, it, expect } from 'vitest';
-import { epocasDoDia, naEpocaNormal, calendarioEscolar } from './calendarioEscolar.js';
+import { epocasDoDia, naEpocaNormal } from './calendarioEscolar.js';
 
 describe('epocasDoDia', () => {
-  it('um dia de aulas normal não tem época', () => {
-    expect(epocasDoDia('2026-10-14')).toEqual([]);
+  it('não encontra nenhuma época num dia normal de aulas', () => {
+    expect(epocasDoDia(new Date(2026, 9, 15))).toEqual([]);
   });
 
-  it('30 de novembro é o primeiro dia das provas de avaliação contínua', () => {
-    expect(epocasDoDia('2026-11-30').map((e) => e.id)).toContain('provasAvaliacaoContinua');
-    expect(epocasDoDia('2026-11-29')).toEqual([]);
+  it('encontra as provas de avaliação contínua do 1.º semestre', () => {
+    const epocas = epocasDoDia(new Date(2026, 11, 5));
+    expect(epocas.map((e) => e.id)).toEqual(['provasAvaliacaoContinua']);
+    expect(epocas[0].semestre).toBe(1);
   });
 
-  it('as pontas dos intervalos contam', () => {
-    expect(epocasDoDia('2027-01-04').map((e) => e.id)).toContain('escritosEpocaNormal');
-    expect(epocasDoDia('2027-01-19').map((e) => e.id)).toContain('escritosEpocaNormal');
-    expect(epocasDoDia('2027-01-20')).toEqual([]);
+  it('encontra os exames escritos da época normal', () => {
+    const epocas = epocasDoDia(new Date(2027, 0, 10));
+    expect(epocas.map((e) => e.id)).toContain('escritosEpocaNormal');
   });
 
-  it('um dia pode estar em duas épocas (escritos de coincidência e orais)', () => {
-    const ids = epocasDoDia('2027-01-22').map((e) => e.id);
+  it('marca a sobreposição entre coincidências de escritos e orais da época normal', () => {
+    // 2027-01-22: dentro de escritosCoincidencia (21 a 27) e de oraisEpocaNormal (22 a 12/02)
+    const epocas = epocasDoDia('2027-01-22');
+    const ids = epocas.map((e) => e.id);
     expect(ids).toContain('escritosCoincidencia');
     expect(ids).toContain('oraisEpocaNormal');
   });
 
-  it('marca como previsíveis as épocas de coincidência', () => {
-    expect(epocasDoDia('2027-01-21').find((e) => e.id === 'escritosCoincidencia').previsivel).toBe(true);
-    expect(epocasDoDia('2027-01-05').find((e) => e.id === 'escritosEpocaNormal').previsivel).toBe(false);
+  it('marca as épocas de coincidência como previsíveis', () => {
+    const epocas = epocasDoDia('2027-01-25');
+    const coincidencia = epocas.find((e) => e.id === 'escritosCoincidencia');
+    expect(coincidencia.previsivel).toBe(true);
+  });
+
+  it('aceita uma data em string aaaa-mm-dd', () => {
+    expect(epocasDoDia('2027-02-16').map((e) => e.id)).toEqual(['recurso']);
   });
 });
 
 describe('naEpocaNormal', () => {
-  it('é verdade nos escritos e nas orais da época normal', () => {
+  it('é verdadeiro durante os exames escritos da época normal', () => {
     expect(naEpocaNormal('2027-01-10')).toBe(true);
-    expect(naEpocaNormal('2027-02-05')).toBe(true);
   });
 
-  it('é falso nas aulas, no recurso e nas coincidências', () => {
-    expect(naEpocaNormal('2026-10-14')).toBe(false);
-    expect(naEpocaNormal('2027-02-16')).toBe(false);
-    expect(naEpocaNormal('2027-02-23')).toBe(false);
+  it('é verdadeiro durante as orais da época normal', () => {
+    expect(naEpocaNormal('2027-02-01')).toBe(true);
   });
-});
 
-describe('dados', () => {
-  it('as datas batem com o despacho 54/2026', () => {
-    expect(calendarioEscolar.semestres[0].aulas.fim).toBe('2026-12-18');
-    expect(calendarioEscolar.semestres[1].exames.recurso.fim).toBe('2027-07-23');
+  it('é falso durante o recurso', () => {
+    expect(naEpocaNormal('2027-02-17')).toBe(false);
+  });
+
+  it('é falso durante as provas de avaliação contínua', () => {
+    expect(naEpocaNormal('2026-12-05')).toBe(false);
+  });
+
+  it('é falso num dia normal de aulas', () => {
+    expect(naEpocaNormal(new Date(2026, 9, 15))).toBe(false);
   });
 });

@@ -1,5 +1,5 @@
 // modal para criar ou editar um evento no calendário
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { db } from '../services/firebase.js';
 import { collection, addDoc, updateDoc, doc, Timestamp, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
@@ -7,6 +7,8 @@ import { cadeirasS1, coresCadeiras } from '../data/dadosLeonor.js';
 import { FAMILIAS, familiaDoEvento } from '../data/familias.js';
 import { chaveData } from '../data/feriados.js';
 import { tarefasEmCadeia, pedeLembretes } from '../services/lembretesProva.js';
+import { naEpocaNormal } from '../data/calendarioEscolar.js';
+import { detetarChoques, explicarChoque } from '../services/coincidencias.js';
 import './ModalCriarEvento.css';
 
 // cores por cadeira
@@ -25,13 +27,13 @@ const TIPOS = [
   { id: 'outro',      nome: 'Outro',       icone: '📌' },
 ];
 
-// formata uma data para o input date (yyyy-mm-dd), em hora local
-// (toISOString converte para utc e pode mostrar o dia anterior)
+// formata uma data para o input date (yyyy-mm-dd), em hora local —
+// nunca por toISOString, que converte para utc e pode mostrar o dia anterior
 function formatarData(data) {
   return chaveData(new Date(data));
 }
 
-export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistente, tipoInicial }) {
+export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistente, tipoInicial, tituloInicial, eventos }) {
   const aEditar = !!eventoExistente;
 
   // estado do formulário — se receber um evento existente, começa preenchido com os dados dele
@@ -40,10 +42,14 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
       const dataEv = eventoExistente.data instanceof Date
         ? eventoExistente.data
         : eventoExistente.data?.toDate?.();
+      const dataFimEv = eventoExistente.dataFim instanceof Date
+        ? eventoExistente.dataFim
+        : eventoExistente.dataFim?.toDate?.();
       return {
         titulo:      eventoExistente.titulo || '',
         familia:     familiaDoEvento(eventoExistente),
         data:        dataEv ? formatarData(dataEv) : formatarData(new Date()),
+        dataFim:     dataFimEv ? formatarData(dataFimEv) : '',
         horaInicio:  eventoExistente.horaInicio || '',
         horaFim:     eventoExistente.horaFim || '',
         tipo:        eventoExistente.tipo || 'aula',
@@ -55,11 +61,12 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
       };
     }
     return {
-      titulo:      '',
-      familia:     'faculdade',
+      titulo:      tituloInicial || '',
       data:        dataInicial ? formatarData(dataInicial) : formatarData(new Date()),
+      dataFim:     '',
       horaInicio:  '',
       horaFim:     '',
+      familia:     'faculdade',
       tipo:        tipoInicial || 'aula',
       cadeira:     CADEIRAS[0]?.id,
       notas:       '',
@@ -69,6 +76,20 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
       lembretes:   true,
     };
   });
+
+  // fora da faculdade não faz sentido escolher tipo, cadeira ou "conta falta"
+  const daFaculdade = form.familia === 'faculdade';
+
+  // aviso de coincidências em tempo real (art. 39.º) — só avisa, nunca bloqueia.
+  // só calcula se a página que abriu o modal passou a lista de eventos existentes.
+  const avisoChoque = useMemo(() => {
+    if (!eventos || !form.data || !form.titulo.trim()) return null;
+    const outrosEventos = eventos.filter((ev) => !aEditar || ev.id !== eventoExistente.id);
+    const rascunho = { id: '__rascunho__', titulo: form.titulo.trim(), tipo: form.tipo, data: new Date(form.data + 'T00:00:00') };
+    const choques = detetarChoques([...outrosEventos, rascunho], { epocaNormal: naEpocaNormal });
+    const choqueDoRascunho = choques.find((c) => c.a.id === '__rascunho__' || c.b.id === '__rascunho__');
+    return choqueDoRascunho ? explicarChoque(choqueDoRascunho) : null;
+  }, [eventos, form.data, form.tipo, form.titulo, aEditar, eventoExistente]);
 
   // estados da animação
   const [visivel, setVisivel]       = useState(false);
@@ -80,9 +101,6 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
   useEffect(() => {
     requestAnimationFrame(() => setVisivel(true));
   }, []);
-
-  // tipo, cadeira e "conta falta" só existem para eventos da faculdade
-  const daFaculdade = form.familia === 'faculdade';
 
   // ao marcar uma frequência ou um exame novo, oferece os lembretes de estudo (14, 7 e 2 dias antes)
   const lembretes = !aEditar && daFaculdade && pedeLembretes(form.tipo) && form.data
@@ -111,6 +129,10 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
       setErro('A data é obrigatória.');
       return;
     }
+    if (form.dataFim && form.dataFim < form.data) {
+      setErro('A data em que termina não pode ser antes da data de início.');
+      return;
+    }
 
     setErro('');
     setGuardando(true);
@@ -120,14 +142,17 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
       const userId = auth.currentUser?.uid;
       if (!userId) throw new Error('Utilizador não autenticado.');
 
-      // converte a data para timestamp do firestore
+      // converte as datas para timestamp do firestore
       const dataObj = new Date(form.data + 'T' + (form.horaInicio || '00:00') + ':00');
+      // só grava dataFim quando é mesmo um evento de vários dias — evita null vs undefined a mais nos documentos antigos
+      const dataFimObj = form.dataFim && form.dataFim > form.data ? new Date(form.dataFim + 'T00:00:00') : null;
 
       // fora da faculdade não há tipo, cadeira nem falta
       const dados = {
         titulo:      form.titulo.trim(),
         familia:     form.familia,
         data:        Timestamp.fromDate(dataObj),
+        dataFim:     dataFimObj ? Timestamp.fromDate(dataFimObj) : null,
         horaInicio:  form.horaInicio,
         horaFim:     form.horaFim,
         tipo:        daFaculdade ? form.tipo : 'outro',
@@ -229,45 +254,47 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
             </div>
           </div>
 
-          {daFaculdade && (<>
-          {/* tipo de evento */}
-          <div className="mce-campo mce-campo--2">
-            <label className="mce-label">Tipo</label>
-            <div className="mce-tipos">
-              {TIPOS.map((t) => (
-                <button
-                  key={t.id}
-                  className={`mce-tipo-btn ${form.tipo === t.id ? 'ativo' : ''}`}
-                  onClick={() => atualizar('tipo', t.id)}
-                >
-                  <span>{t.icone}</span>
-                  <span>{t.nome}</span>
-                </button>
-              ))}
+          {/* tipo de evento — só faz sentido para eventos da faculdade */}
+          {daFaculdade && (
+            <div className="mce-campo mce-campo--3">
+              <label className="mce-label">Tipo</label>
+              <div className="mce-tipos">
+                {TIPOS.map((t) => (
+                  <button
+                    key={t.id}
+                    className={`mce-tipo-btn ${form.tipo === t.id ? 'ativo' : ''}`}
+                    onClick={() => atualizar('tipo', t.id)}
+                  >
+                    <span>{t.icone}</span>
+                    <span>{t.nome}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* cadeira */}
-          <div className="mce-campo mce-campo--3">
-            <label className="mce-label">Cadeira</label>
-            <div className="mce-cadeiras">
-              {CADEIRAS.map((c) => (
-                <button
-                  key={c.id}
-                  className={`mce-cadeira-btn ${form.cadeira === c.id ? 'ativo' : ''}`}
-                  style={{
-                    '--cor': CORES_CADEIRA[c.id],
-                    borderColor: form.cadeira === c.id ? CORES_CADEIRA[c.id] : 'transparent',
-                    backgroundColor: form.cadeira === c.id ? CORES_CADEIRA[c.id] + '33' : 'rgba(255,255,255,0.05)',
-                  }}
-                  onClick={() => atualizar('cadeira', c.id)}
-                >
-                  {c.nome}
-                </button>
-              ))}
+          {/* cadeira — só faz sentido para eventos da faculdade */}
+          {daFaculdade && (
+            <div className="mce-campo mce-campo--4">
+              <label className="mce-label">Cadeira</label>
+              <div className="mce-cadeiras">
+                {CADEIRAS.map((c) => (
+                  <button
+                    key={c.id}
+                    className={`mce-cadeira-btn ${form.cadeira === c.id ? 'ativo' : ''}`}
+                    style={{
+                      '--cor': CORES_CADEIRA[c.id],
+                      borderColor: form.cadeira === c.id ? CORES_CADEIRA[c.id] : 'transparent',
+                      backgroundColor: form.cadeira === c.id ? CORES_CADEIRA[c.id] + '33' : 'rgba(255,255,255,0.05)',
+                    }}
+                    onClick={() => atualizar('cadeira', c.id)}
+                  >
+                    {c.nome}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-          </>)}
+          )}
 
           {/* data e horas */}
           <div className="mce-campo mce-campo--4 mce-linha">
@@ -299,6 +326,21 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
               />
             </div>
           </div>
+
+          {/* termina em — opcional, só para eventos de vários dias (ex: férias, semana de exames) */}
+          <div className="mce-campo mce-campo--4">
+            <label className="mce-label">Termina em (opcional)</label>
+            <input
+              className="mce-input"
+              type="date"
+              min={form.data}
+              value={form.dataFim}
+              onChange={(e) => atualizar('dataFim', e.target.value)}
+            />
+          </div>
+
+          {/* aviso de coincidência — nunca bloqueia, só avisa */}
+          {avisoChoque && <p className="mce-aviso-choque">⚠️ {avisoChoque}</p>}
 
           {/* importância */}
           <div className="mce-campo mce-campo--5">
@@ -343,7 +385,7 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
             />
           </div>
 
-          {/* conta falta */}
+          {/* conta falta — só faz sentido para eventos da faculdade */}
           {daFaculdade && (
             <div className="mce-campo mce-campo--8 mce-toggle-linha">
               <label className="mce-label">Conta como falta?</label>

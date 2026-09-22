@@ -1,7 +1,6 @@
-// datas oficiais do ano letivo 2026/2027 da fdul
-// fonte: despacho 54/2026 do diretor da fdul, calendário escolar da licenciatura 2026/2027
-// (docs/SPEC.md, secção 5.1, verificado em 16-09-2026)
-// as épocas de exames são indicativas e podem mudar
+// datas oficiais do ano letivo 2026/2027, despacho 54/2026 do diretor da fdul
+// as épocas de exames são indicativas e podem mudar — confirmar sempre no site da faculdade
+import { chaveData } from './feriados.js';
 
 export const ANO_LETIVO = '2026/2027';
 
@@ -48,41 +47,44 @@ export const calendarioEscolar = {
   ],
 };
 
-// nomes que a Leonor vê para cada época
+// nomes das épocas, para mostrar na faixa de fundo do calendário
 const NOMES_EPOCA = {
   provasAvaliacaoContinua: 'Provas de avaliação contínua',
-  escritosEpocaNormal: 'Exames escritos (época normal)',
-  escritosCoincidencia: 'Exames escritos (coincidências)',
-  oraisEpocaNormal: 'Provas orais (época normal)',
-  recurso: 'Exames de recurso',
-  recursoCoincidencia: 'Recurso (coincidências)',
+  escritosEpocaNormal: 'Exames escritos — época normal',
+  escritosCoincidencia: 'Exames escritos — coincidências',
+  oraisEpocaNormal: 'Orais — época normal',
+  recurso: 'Época de recurso',
+  recursoCoincidencia: 'Recurso — coincidências',
 };
 
-// as chaves 'aaaa-mm-dd' comparam-se bem como texto
-function dentro(chave, intervalo) {
-  return chave >= intervalo.inicio && chave <= intervalo.fim;
+function paraChave(data) {
+  return typeof data === 'string' ? data : chaveData(data);
 }
 
-// épocas em que um dia cai, para desenhar a faixa de fundo do calendário
-// devolve [{ id, nome, semestre, previsivel }]; um dia pode estar em mais do que uma
-export function epocasDoDia(chave) {
-  const epocas = [];
-  for (const sem of calendarioEscolar.semestres) {
-    if (dentro(chave, sem.provasAvaliacaoContinua)) {
-      epocas.push({ id: 'provasAvaliacaoContinua', nome: NOMES_EPOCA.provasAvaliacaoContinua, semestre: sem.numero, previsivel: false });
+function dentro(chave, periodo) {
+  return !!periodo && chave >= periodo.inicio && chave <= periodo.fim;
+}
+
+// todas as épocas (avaliação contínua e exames) que cobrem este dia — pode ser mais do que uma,
+// já que as coincidências de escritos e as orais da época normal se sobrepõem. só serve para
+// marcações de fundo discretas na célula do calendário, nunca vira evento por si.
+export function epocasDoDia(data) {
+  const chave = paraChave(data);
+  const resultado = [];
+  for (const semestre of calendarioEscolar.semestres) {
+    if (dentro(chave, semestre.provasAvaliacaoContinua)) {
+      resultado.push({ id: 'provasAvaliacaoContinua', nome: NOMES_EPOCA.provasAvaliacaoContinua, semestre: semestre.numero, previsivel: false });
     }
-    for (const [id, intervalo] of Object.entries(sem.exames)) {
-      if (dentro(chave, intervalo)) {
-        epocas.push({ id, nome: NOMES_EPOCA[id], semestre: sem.numero, previsivel: !!intervalo.previsivel });
+    for (const id of ['escritosEpocaNormal', 'escritosCoincidencia', 'oraisEpocaNormal', 'recurso', 'recursoCoincidencia']) {
+      if (dentro(chave, semestre.exames[id])) {
+        resultado.push({ id, nome: NOMES_EPOCA[id], semestre: semestre.numero, previsivel: !!semestre.exames[id].previsivel });
       }
     }
   }
-  return epocas;
+  return resultado;
 }
 
-// época normal = exames escritos ou orais da época normal
-// é a leitura do regulamento (secção 5.3: "na época normal há coincidência se houver exame
-// no mesmo dia ou em dia consecutivo") — a confirmar com a leonor
-export function naEpocaNormal(chave) {
-  return epocasDoDia(chave).some((e) => e.id === 'escritosEpocaNormal' || e.id === 'oraisEpocaNormal');
+// só a época normal (escritos + orais) — é a que conta para a regra dos dias consecutivos (art. 39.º)
+export function naEpocaNormal(data) {
+  return epocasDoDia(data).some((e) => e.id === 'escritosEpocaNormal' || e.id === 'oraisEpocaNormal');
 }

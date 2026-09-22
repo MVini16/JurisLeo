@@ -28,8 +28,17 @@ html.dark .freq-pagina { --acento: var(--cor-cadeira, var(--gold)); }
 
 .freq-materia { margin-top: 28px; text-align: left; padding: 16px; border-radius: 16px; border: 1px solid var(--border-light); }
 html.dark .freq-materia { border-color: var(--border-dark); }
-.freq-materia h2 { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--acento); margin-bottom: 10px; }
+.freq-materia__topo { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.freq-materia h2 { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--acento); margin: 0; }
 .freq-nota { font-size: 0.78rem; opacity: 0.75; margin: 6px 0 10px; }
+.freq-vazio { font-size: 0.82rem; opacity: 0.7; line-height: 1.5; margin: 6px 0; }
+
+/* escolha entre checklist manual e a partir dos sumários de aula */
+.freq-modo { display: flex; border-radius: 10px; border: 1.5px solid var(--border-light); overflow: hidden; }
+html.dark .freq-modo { border-color: var(--border-dark); }
+.freq-modo button { min-height: 30px; padding: 0 10px; background: none; border: none; color: inherit; font-family: inherit; font-size: 0.7rem; opacity: 0.6; cursor: pointer; }
+.freq-modo button.ativo { background: color-mix(in srgb, var(--acento) 16%, transparent); color: var(--acento); opacity: 1; font-weight: 600; }
+.freq-modo button:focus-visible { outline: 2px solid var(--acento); outline-offset: -2px; }
 
 .freq-progresso { height: 8px; border-radius: 4px; background: color-mix(in srgb, currentColor 12%, transparent); overflow: hidden; }
 .freq-progresso span { display: block; height: 100%; border-radius: 4px; background: var(--acento); transform-origin: left; transition: transform 400ms ease; }

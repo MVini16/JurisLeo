@@ -4,6 +4,7 @@ import { db } from '../services/firebase.js';
 import { doc, onSnapshot, collection, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { gerarOcorrencias, comEstados } from '../services/ocorrencias.js';
+import { proximaFrequencia as calcularProximaFrequencia, diasRestantes } from '../services/frequencia.js';
 import { useEstadosAula } from './useEstadosAula.js';
 
 export function useDashboard() {
@@ -78,37 +79,18 @@ export function useDashboard() {
     .sort((a, b) => a.horaInicio?.localeCompare(b.horaInicio));
 
   // encontra a próxima frequência — evento do tipo 'frequencia' no futuro mais próximo
-  const proximaFrequencia = todosEventos
-    .filter((ev) => {
-      if (ev.tipo !== 'frequencia') return false;
-      const d = ev.data instanceof Date ? ev.data : ev.data?.toDate?.();
-      if (!d) return false;
-      return d >= hoje;
-    })
-    .sort((a, b) => {
-      const da = a.data instanceof Date ? a.data : a.data?.toDate?.();
-      const db_ = b.data instanceof Date ? b.data : b.data?.toDate?.();
-      return da - db_;
-    })[0] || null; // pega o mais próximo, ou null se não houver
+  const proximaFrequencia = calcularProximaFrequencia(todosEventos, hoje);
 
   // calcula os dias que faltam para a próxima frequência
   let diasParaFrequencia = null;
   let dataFrequenciaFormatada = null;
 
   if (proximaFrequencia) {
-    const dataFreq = proximaFrequencia.data instanceof Date
-      ? proximaFrequencia.data
-      : proximaFrequencia.data?.toDate?.();
+    diasParaFrequencia = diasRestantes(proximaFrequencia.data, hoje);
 
-    if (dataFreq) {
-      // diferença em dias (arredondada para cima)
-      const diff = dataFreq - hoje;
-      diasParaFrequencia = Math.ceil(diff / (1000 * 60 * 60 * 24));
-
-      // formata a data em português — ex: "14 de Maio"
-      const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-      dataFrequenciaFormatada = `${dataFreq.getDate()} de ${meses[dataFreq.getMonth()]}`;
-    }
+    // formata a data em português — ex: "14 de Maio"
+    const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    dataFrequenciaFormatada = `${proximaFrequencia.data.getDate()} de ${meses[proximaFrequencia.data.getMonth()]}`;
   }
 
   // marca o tutorial como visto (ou por ver, se quiser rever) no firestore

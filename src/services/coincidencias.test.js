@@ -1,77 +1,141 @@
 import { describe, it, expect } from 'vitest';
-import { detetarChoques, choquesPorDia } from './coincidencias.js';
+import { detetarChoques, choquesPorDia, explicarChoque, TIPOS_PROVA } from './coincidencias.js';
+import { naEpocaNormal } from '../data/calendarioEscolar.js';
 
-const exame = (dia, titulo = 'Exame') => ({ chave: `${titulo}-${dia}`, dia, tipo: 'exame', titulo });
-const freq = (dia, titulo = 'Frequência') => ({ chave: `${titulo}-${dia}`, dia, tipo: 'frequencia', titulo });
-const aula = (dia, titulo = 'Aula', extra = {}) => ({ chave: `${titulo}-${dia}`, dia, tipo: 'aula', titulo, ...extra });
+// datas fixas para os testes, fora de qualquer época real, com época normal simulada manualmente
+const epocaNormalFalsa = (data) => data >= new Date(2100, 0, 1) && data <= new Date(2100, 0, 31);
 
 describe('detetarChoques', () => {
-  it('sem itens no mesmo dia não há choques', () => {
-    expect(detetarChoques([exame('2027-01-05'), exame('2027-01-08')], { epocaNormal: true })).toEqual([]);
+  it('não deteta nada com uma lista vazia', () => {
+    expect(detetarChoques([])).toEqual([]);
   });
 
-  it('dois exames no mesmo dia são coincidência forte, em qualquer época', () => {
-    const [c] = detetarChoques([exame('2027-02-16'), exame('2027-02-16')]);
-    expect(c.coincidencia).toBe(true);
-    expect(c.forte).toBe(true);
+  it('deteta duas provas no mesmo dia, fora de época normal', () => {
+    const itens = [
+      { id: 'a', titulo: 'Frequência DA I', tipo: 'frequencia', data: new Date(2026, 10, 5) },
+      { id: 'b', titulo: 'Frequência DO I', tipo: 'frequencia', data: new Date(2026, 10, 5) },
+    ];
+    const choques = detetarChoques(itens);
+    expect(choques).toHaveLength(1);
+    expect(choques[0].tipo).toBe('mesmoDia');
   });
 
-  it('exames em dias seguidos só são coincidência na época normal', () => {
-    const itens = [exame('2027-01-05'), exame('2027-01-06')];
-    expect(detetarChoques(itens, { epocaNormal: true })).toHaveLength(1);
-    expect(detetarChoques(itens, { epocaNormal: true })[0].coincidencia).toBe(true);
-    expect(detetarChoques(itens, { epocaNormal: false })).toEqual([]);
+  it('não deteta nada em dias consecutivos fora de época normal', () => {
+    const itens = [
+      { id: 'a', titulo: 'Frequência DA I', tipo: 'frequencia', data: new Date(2026, 10, 5) },
+      { id: 'b', titulo: 'Frequência DO I', tipo: 'frequencia', data: new Date(2026, 10, 6) },
+    ];
+    expect(detetarChoques(itens)).toEqual([]);
   });
 
-  it('a época normal pode vir como função do dia', () => {
-    const itens = [exame('2027-01-05'), exame('2027-01-06')];
-    expect(detetarChoques(itens, { epocaNormal: (d) => d === '2027-01-05' })).toHaveLength(1);
-    expect(detetarChoques(itens, { epocaNormal: (d) => d === '2027-01-06' })).toEqual([]);
+  it('deteta dias consecutivos quando ambas as datas estão em época normal', () => {
+    const itens = [
+      { id: 'a', titulo: 'Exame DA I', tipo: 'exame', data: new Date(2100, 0, 10) },
+      { id: 'b', titulo: 'Exame DO I', tipo: 'exame', data: new Date(2100, 0, 11) },
+    ];
+    const choques = detetarChoques(itens, { epocaNormal: epocaNormalFalsa });
+    expect(choques).toHaveLength(1);
+    expect(choques[0].tipo).toBe('diaConsecutivo');
   });
 
-  it('dois exames com dois dias de intervalo não chocam', () => {
-    expect(detetarChoques([exame('2027-01-05'), exame('2027-01-07')], { epocaNormal: true })).toEqual([]);
+  it('não deteta nada com 2 dias de intervalo, mesmo em época normal', () => {
+    const itens = [
+      { id: 'a', titulo: 'Exame DA I', tipo: 'exame', data: new Date(2100, 0, 10) },
+      { id: 'b', titulo: 'Exame DO I', tipo: 'exame', data: new Date(2100, 0, 12) },
+    ];
+    expect(detetarChoques(itens, { epocaNormal: epocaNormalFalsa })).toEqual([]);
   });
 
-  it('frequência e outro evento no mesmo dia é choque forte, mas não coincidência de exames', () => {
-    const [c] = detetarChoques([freq('2026-12-10'), { chave: 'e', dia: '2026-12-10', tipo: 'entrega', titulo: 'Entrega' }]);
-    expect(c.forte).toBe(true);
-    expect(c.coincidencia).toBe(false);
+  it('não conta se só uma das datas está em época normal', () => {
+    const itens = [
+      { id: 'a', titulo: 'Exame DA I', tipo: 'exame', data: new Date(2100, 0, 31) },
+      { id: 'b', titulo: 'Exame DO I', tipo: 'exame', data: new Date(2100, 1, 1) },
+    ];
+    expect(detetarChoques(itens, { epocaNormal: epocaNormalFalsa })).toEqual([]);
   });
 
-  it('duas aulas do horário nunca chocam', () => {
-    expect(detetarChoques([aula('2026-10-05', 'A'), aula('2026-10-05', 'B')])).toEqual([]);
+  it('ignora aulas do horário (repetido: true), mesmo no mesmo dia', () => {
+    const itens = [
+      { id: 'a', titulo: 'Aula DA I', tipo: 'aula', repetido: true, data: new Date(2026, 10, 5) },
+      { id: 'b', titulo: 'Frequência DO I', tipo: 'frequencia', data: new Date(2026, 10, 5) },
+    ];
+    expect(detetarChoques(itens)).toEqual([]);
   });
 
-  it('aula e evento não-forte no mesmo dia é choque fraco', () => {
-    const [c] = detetarChoques([aula('2026-10-05'), { chave: 'x', dia: '2026-10-05', tipo: 'outro', titulo: 'Jantar' }]);
-    expect(c.forte).toBe(false);
+  it('ignora eventos cancelados', () => {
+    const itens = [
+      { id: 'a', titulo: 'Frequência DA I', tipo: 'frequencia', estado: 'cancelado', data: new Date(2026, 10, 5) },
+      { id: 'b', titulo: 'Frequência DO I', tipo: 'frequencia', data: new Date(2026, 10, 5) },
+    ];
+    expect(detetarChoques(itens)).toEqual([]);
   });
 
-  it('aulas canceladas ou dadas pelo stor não contam', () => {
-    expect(detetarChoques([aula('2026-12-10', 'A', { estadoAula: 'cancelada' }), freq('2026-12-10')])).toEqual([]);
-    expect(detetarChoques([aula('2026-12-10', 'A', { estadoAula: 'stotFaltou' }), freq('2026-12-10')])).toEqual([]);
+  it('ignora aulas canceladas ou dadas pelo stor (estadoAula)', () => {
+    const itens = [
+      { id: 'a', titulo: 'Aula DA I', tipo: 'frequencia', estadoAula: 'cancelada', data: new Date(2026, 10, 5) },
+      { id: 'b', titulo: 'Aula DO I', tipo: 'frequencia', estadoAula: 'stotFaltou', data: new Date(2026, 10, 5) },
+      { id: 'c', titulo: 'Frequência DF', tipo: 'frequencia', data: new Date(2026, 10, 5) },
+    ];
+    expect(detetarChoques(itens)).toEqual([]);
   });
 
-  it('eventos cancelados não contam', () => {
-    expect(detetarChoques([{ ...freq('2026-12-10'), estado: 'cancelado' }, exame('2026-12-10')])).toEqual([]);
+  it('ignora tipos que não são prova (entrega, outro, aula)', () => {
+    const itens = [
+      { id: 'a', titulo: 'Entrega de trabalho', tipo: 'entrega', data: new Date(2026, 10, 5) },
+      { id: 'b', titulo: 'Aniversário', tipo: 'outro', data: new Date(2026, 10, 5) },
+    ];
+    expect(detetarChoques(itens)).toEqual([]);
   });
 
-  it('ignora itens sem dia', () => {
-    expect(detetarChoques([{ chave: 'a', tipo: 'exame' }, exame('2027-01-05')])).toEqual([]);
+  it('deteta várias coincidências independentes numa lista maior', () => {
+    const itens = [
+      { id: 'a', titulo: 'Frequência DA I', tipo: 'frequencia', data: new Date(2026, 10, 5) },
+      { id: 'b', titulo: 'Frequência DO I', tipo: 'frequencia', data: new Date(2026, 10, 5) },
+      { id: 'c', titulo: 'Oral DIP I', tipo: 'oral', data: new Date(2026, 11, 1) },
+      { id: 'd', titulo: 'Frequência DF', tipo: 'frequencia', data: new Date(2026, 11, 20) },
+    ];
+    expect(detetarChoques(itens)).toHaveLength(1);
   });
 });
 
 describe('choquesPorDia', () => {
-  it('um choque em dias seguidos aparece nos dois dias', () => {
-    const choques = detetarChoques([exame('2027-01-05'), exame('2027-01-06')], { epocaNormal: true });
-    const porDia = choquesPorDia(choques);
-    expect(porDia['2027-01-05']).toHaveLength(1);
-    expect(porDia['2027-01-06']).toHaveLength(1);
+  it('agrupa os ids em coincidência pelo dia', () => {
+    const itens = [
+      { id: 'a', titulo: 'Frequência DA I', tipo: 'frequencia', data: new Date(2026, 10, 5) },
+      { id: 'b', titulo: 'Frequência DO I', tipo: 'frequencia', data: new Date(2026, 10, 5) },
+    ];
+    const porDia = choquesPorDia(itens);
+    const chave = new Date(2026, 10, 5).toDateString();
+    expect(porDia[chave]).toEqual(['a', 'b']);
   });
 
-  it('um choque no mesmo dia aparece uma só vez', () => {
-    const porDia = choquesPorDia(detetarChoques([exame('2027-02-16'), exame('2027-02-16')]));
-    expect(porDia['2027-02-16']).toHaveLength(1);
+  it('fica vazio quando não há choques', () => {
+    expect(choquesPorDia([])).toEqual({});
+  });
+});
+
+describe('explicarChoque', () => {
+  it('cita a regra do art. 39.º e nomeia as duas provas', () => {
+    const choque = { a: { titulo: 'Frequência DA I' }, b: { titulo: 'Frequência DO I' }, tipo: 'mesmoDia' };
+    const texto = explicarChoque(choque);
+    expect(texto).toContain('Frequência DA I');
+    expect(texto).toContain('Frequência DO I');
+    expect(texto).toContain('39.º');
+    expect(texto).toMatch(/aviso/i);
+  });
+});
+
+describe('integração com naEpocaNormal real', () => {
+  it('deteta dias consecutivos usando a época normal real do 1.º semestre', () => {
+    const itens = [
+      { id: 'a', titulo: 'Exame DA I', tipo: 'exame', data: new Date(2027, 0, 10) },
+      { id: 'b', titulo: 'Exame DO I', tipo: 'exame', data: new Date(2027, 0, 11) },
+    ];
+    const choques = detetarChoques(itens, { epocaNormal: naEpocaNormal });
+    expect(choques).toHaveLength(1);
+  });
+
+  it('TIPOS_PROVA inclui frequencia, oral e exame', () => {
+    expect(TIPOS_PROVA).toEqual(['frequencia', 'oral', 'exame']);
   });
 });

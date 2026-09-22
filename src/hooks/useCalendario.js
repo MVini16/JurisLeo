@@ -6,6 +6,25 @@ import { collection, onSnapshot } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { gerarOcorrencias, comEstados } from '../services/ocorrencias.js';
 import { useEstadosAula } from './useEstadosAula.js';
+import { chaveData } from '../data/feriados.js';
+
+// um evento com dataFim aparece em todos os dias entre data e dataFim, inclusive —
+// cada cópia guarda o mesmo id (para editar/apagar acertarem no documento certo)
+// mas uma chave única (para o react e os filtros por dia distinguirem cada dia)
+function expandirMultiDia(ev) {
+  const inicio = ev.data instanceof Date ? ev.data : ev.data?.toDate?.();
+  const fim = ev.dataFim instanceof Date ? ev.dataFim : ev.dataFim?.toDate?.();
+  if (!inicio || !fim || chaveData(fim) <= chaveData(inicio)) {
+    return [{ ...ev, chave: ev.id }];
+  }
+  const dias = [];
+  const cursor = new Date(inicio);
+  while (chaveData(cursor) <= chaveData(fim)) {
+    dias.push({ ...ev, data: new Date(cursor), chave: `${ev.id}_${chaveData(cursor)}` });
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  return dias;
+}
 
 export function useCalendario() {
   const [eventos, setEventos] = useState([]);
@@ -49,7 +68,7 @@ export function useCalendario() {
   }, []);
 
   const todosEventos = useMemo(() => {
-    const unicos = eventos.map((ev) => ({ ...ev, chave: ev.id }));
+    const unicos = eventos.flatMap(expandirMultiDia);
     const aulas = comEstados(aulasSemanais.flatMap((a) => gerarOcorrencias(a)), estados)
       .map((o) => ({ ...o, chave: o.ocorrenciaId }));
     return [...unicos, ...aulas];

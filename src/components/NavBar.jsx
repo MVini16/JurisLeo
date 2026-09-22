@@ -96,16 +96,17 @@ const estaAtivo = (item, pathname) =>
 
 // itens do menu + (adicionar rápido)
 // acao: 'navegar' vai para uma rota (com estado a pedir para abrir o modal certo),
-// 'frequencia' abre o modal de evento já aqui, 'em-breve' ainda não tem funcionalidade própria
+// 'modal' abre o ModalCriarEvento já aqui (com tipoInicial/tituloInicial), 'em-breve' ainda não tem funcionalidade própria
 const itensMais = [
   { modulo: 'atalhoTarefa', label: 'Nova Tarefa', icon: '✅', cor: '#7C3AED', acao: 'navegar', destino: '/tarefas' },
   { modulo: 'atalhoAnotacao', label: 'Nova Anotação', icon: '📝', cor: '#1E3A5F', acao: 'navegar', destino: '/anotacoes/nova' },
   { modulo: 'atalhoCaso', label: 'Novo Caso', icon: '⚖️', cor: '#2E6F5E', acao: 'navegar', destino: '/casos/novo' },
-  { modulo: 'atalhoFrequencia', label: 'Nova Frequência', icon: '📅', cor: '#6B0F1A', acao: 'frequencia' },
-  { modulo: 'atalhoOral', label: 'Oral de Melhoria', icon: '🗣️', cor: '#C9A84C', acao: 'navegar', destino: '/cadeiras' },
+  { modulo: 'atalhoFrequencia', label: 'Nova Frequência', icon: '📅', cor: '#6B0F1A', acao: 'modal', tipoInicial: 'frequencia' },
+  { modulo: 'atalhoOral', label: 'Oral de Melhoria', icon: '🗣️', cor: '#C9A84C', acao: 'modal', tipoInicial: 'oral', tituloInicial: 'Oral de Melhoria' },
   { modulo: 'atalhoFalta', label: 'Registar Falta', icon: '❌', cor: '#EC4899', acao: 'navegar', destino: '/faltas' },
   { modulo: 'atalhoNota', label: 'Lançar Nota', icon: '📊', cor: '#EA580C', acao: 'navegar', destino: '/notas' },
   { modulo: 'atalhoEstudar', label: 'Estudar', icon: '⏱️', cor: '#0F766E', acao: 'navegar', destino: '/estudo' },
+  { modulo: 'atalhoModoFrequencia', label: 'Modo Frequência', icon: '🎯', cor: '#7B1E2B', acao: 'navegar', destino: '/frequencia' },
 ]
 
 // navBar envolve o conteúdo das páginas principais
@@ -113,7 +114,7 @@ function NavBar({ children }) {
   const navigate = useNavigate()
   const location = useLocation()
   const [menuAberto, setMenuAberto] = useState(false)
-  const [modalFrequenciaAberto, setModalFrequenciaAberto] = useState(false)
+  const [modalRapido, setModalRapido] = useState(null) // { tipoInicial, tituloInicial } | null
   const [avisoEmBreve, setAvisoEmBreve] = useState(null)
   // o que ela escolheu ver no botão +
   const { ativos } = useModulos()
@@ -132,8 +133,8 @@ function NavBar({ children }) {
     setMenuAberto(false)
     if (item.acao === 'navegar') {
       navigate(item.destino, { state: { abrirModal: true } })
-    } else if (item.acao === 'frequencia') {
-      setModalFrequenciaAberto(true)
+    } else if (item.acao === 'modal') {
+      setModalRapido({ tipoInicial: item.tipoInicial, tituloInicial: item.tituloInicial })
     } else {
       // funcionalidade ainda não construída — avisa em vez de fingir que fez algo
       setAvisoEmBreve(item.label)
@@ -257,11 +258,12 @@ function NavBar({ children }) {
         </div>
       </nav>
 
-      {/* modal de nova frequência, aberto a partir do menu + */}
-      {modalFrequenciaAberto && (
+      {/* modal de criação rápida (nova frequência, oral de melhoria), aberto a partir do menu + */}
+      {modalRapido && (
         <ModalCriarEvento
-          tipoInicial="frequencia"
-          onFechar={() => setModalFrequenciaAberto(false)}
+          tipoInicial={modalRapido.tipoInicial}
+          tituloInicial={modalRapido.tituloInicial}
+          onFechar={() => setModalRapido(null)}
         />
       )}
 

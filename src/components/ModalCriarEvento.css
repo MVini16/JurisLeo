@@ -369,6 +369,21 @@
 }
 
 /* ------------------------------------------------------------
+   aviso de coincidência — tom de aviso, não de erro (nunca bloqueia)
+   ------------------------------------------------------------ */
+.mce-aviso-choque {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #ffe082;
+  background: rgba(251, 192, 45, 0.1);
+  border: 1px solid rgba(251, 192, 45, 0.3);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 0;
+  animation: campoEntrar 0.3s ease forwards;
+}
+
+/* ------------------------------------------------------------
    erro
    ------------------------------------------------------------ */
 .mce-erro {

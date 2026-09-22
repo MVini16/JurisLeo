@@ -8,12 +8,12 @@ import BotoesEstadoAula from '../components/BotoesEstadoAula.jsx';
 import { ICONE_ESTADO_AULA } from '../data/estadosAula.js';
 import { nomeCurtoCadeira } from '../data/dadosLeonor.js';
 import { FAMILIAS, corDoEvento, familiaDoEvento } from '../data/familias.js';
+import { chaveData, nomeFeriado } from '../data/feriados.js';
+import { epocasDoDia, naEpocaNormal, AVISO_DATAS_INDICATIVAS } from '../data/calendarioEscolar.js';
+import { detetarChoques, explicarChoque } from '../services/coincidencias.js';
 import './Calendario.css';
 import './CalendarioExtra.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
-import { chaveData, nomeFeriado } from '../data/feriados.js';
-import { epocasDoDia, naEpocaNormal, AVISO_DATAS_INDICATIVAS } from '../data/calendarioEscolar.js';
-import { detetarChoques, choquesPorDia } from '../services/coincidencias.js';
 
 const MESES = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -49,7 +49,7 @@ function AvisosDoDia({ data, choques }) {
       {feriado && <p className="cal-aviso cal-aviso--feriado">Feriado: {feriado}. Não há aulas.</p>}
       {epocas.map((e) => <p key={e.id} className="cal-aviso cal-aviso--epoca">{e.nome}{e.previsivel ? ' (previsível)' : ''}</p>)}
       {epocas.length > 0 && <p className="cal-aviso__nota">{AVISO_DATAS_INDICATIVAS}</p>}
-      {doDia.map((c, i) => <p key={i} className="cal-aviso cal-aviso--choque">{c.motivo}</p>)}
+      {doDia.map((mensagem, i) => <p key={i} className="cal-aviso cal-aviso--choque">{mensagem}</p>)}
     </div>
   );
 }
@@ -63,14 +63,21 @@ export default function Calendario() {
     [todosOsEventos, familiasAtivas]
   );
 
-  // avisa sempre, nunca bloqueia; só mostra choques fortes entre eventos que não são aulas do horário
+  // avisa sempre, nunca bloqueia; só coincidências entre provas (frequência, oral, exame)
   const choques = useMemo(() => {
     const itens = eventos.map((ev) => {
       const d = ev.data instanceof Date ? ev.data : ev.data?.toDate?.();
-      return d ? { chave: ev.chave, dia: chaveData(d), tipo: ev.tipo, titulo: ev.titulo, cadeira: ev.cadeira, estadoAula: ev.estadoAula, estado: ev.estado } : null;
+      return d ? { id: ev.id, titulo: ev.titulo, tipo: ev.tipo, data: d, estado: ev.estado, estadoAula: ev.estadoAula, repetido: ev.repetido } : null;
     }).filter(Boolean);
-    const fortes = detetarChoques(itens, { epocaNormal: naEpocaNormal }).filter((c) => c.forte && !c.itens.some((i) => i.tipo === 'aula'));
-    return choquesPorDia(fortes);
+    const encontrados = detetarChoques(itens, { epocaNormal: naEpocaNormal });
+    const porDia = {};
+    for (const c of encontrados) {
+      const mensagem = explicarChoque(c);
+      for (const dia of new Set([chaveData(c.a.data), chaveData(c.b.data)])) {
+        (porDia[dia] ||= []).push(mensagem);
+      }
+    }
+    return porDia;
   }, [eventos]);
 
   function alternarFamilia(id) {
@@ -195,6 +202,9 @@ export default function Calendario() {
         </div>
       </div>
 
+      {/* aviso discreto sobre as datas das épocas de exames */}
+      <p className="cal-aviso-epocas">As datas das épocas de exames são indicativas — confirma sempre no site da faculdade.</p>
+
       {/* filtro por família: um só calendário, com cores e filtro */}
       <div className="cal-familias" role="group" aria-label="Filtrar por família de eventos">
         {FAMILIAS.map((f) => (
@@ -259,9 +269,9 @@ export default function Calendario() {
         <span className="cal-fab__icone">+</span>
       </button>
 
-      {modalAberto && <ModalCriarEvento onFechar={() => setModalAberto(false)} dataInicial={dataSelecionada} />}
+      {modalAberto && <ModalCriarEvento onFechar={() => setModalAberto(false)} dataInicial={dataSelecionada} eventos={todosOsEventos} />}
       {eventoDetalhe && <ModalEvento evento={eventoDetalhe} onMarcar={marcar} onFechar={() => setEventoDetalhe(null)} onEditar={(ev) => { setEventoDetalhe(null); setEventoEditar(ev); }} onApagar={() => setEventoDetalhe(null)} ICONES_TIPO={ICONES_TIPO} MESES={MESES} DIAS_SEMANA={DIAS_SEMANA} />}
-      {eventoEditar && <ModalCriarEvento onFechar={() => setEventoEditar(null)} dataInicial={dataSelecionada} eventoExistente={eventoEditar} />}
+      {eventoEditar && <ModalCriarEvento onFechar={() => setEventoEditar(null)} dataInicial={dataSelecionada} eventoExistente={eventoEditar} eventos={todosOsEventos} />}
 
     </div>
   );
@@ -289,6 +299,7 @@ function VistaDiaria({ data, eventos, onEventoClick, ICONES_TIPO, choques }) {
         <div className="cal-diaria__sidebar-data">
           <span className="cal-diaria__sidebar-dia">{data.getDate()}</span>
           <span className="cal-diaria__sidebar-mes">{['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][data.getMonth()]}</span>
+          {nomeFeriado(data) && <span className="cal-diaria__sidebar-feriado">🎌 {nomeFeriado(data)}</span>}
         </div>
         <div className="cal-diaria__sidebar-eventos">
           <p className="cal-diaria__sidebar-titulo">Hoje tens</p>
@@ -504,11 +515,11 @@ function VistaMensal({ mes, ano, eventosDoDia, onDiaClick, diaSelecionado, hoje,
           const isHoje = mesmoDia(data, hoje);
           const isSelecionado = diaSelecionado && mesmoDia(data, diaSelecionado);
           const chave = chaveData(data);
-          const feriado = nomeFeriado(data);
           const epoca = epocasDoDia(chave)[0];
           const temChoque = (choques[chave] || []).length > 0;
           const barras = evsDia.slice(0, 2);
           const pontosExtra = evsDia.length > 2 ? evsDia.slice(2) : [];
+          const feriado = nomeFeriado(data);
           return (
             <div key={i} className={`cal-mensal__dia ${outroMes ? 'outro-mes' : ''} ${isHoje ? 'hoje' : ''} ${isSelecionado ? 'selecionado' : ''} ${feriado ? 'feriado' : ''} ${epoca ? `epoca epoca--${epoca.id}${epoca.previsivel ? ' previsivel' : ''}` : ''}`} onClick={() => onDiaClick(data)}>
               <span className="cal-mensal__dia-num">{data.getDate()}{temChoque && <b className="cal-mensal__choque" title="Choque ou coincidência de exames">!</b>}</span>

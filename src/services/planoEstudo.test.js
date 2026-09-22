@@ -58,9 +58,33 @@ describe('propostaDaSemana', () => {
     ];
     const plano = propostaDaSemana(eventos, segunda);
     expect(plano).toHaveLength(7);
+    // DA I (2 dias) é bem mais urgente que DO I (10 dias) — tem de aparecer mais vezes
+    const vezesDAI = plano.filter((d) => d.cadeiraId === 'DA I').length;
+    const vezesDOI = plano.filter((d) => d.cadeiraId === 'DO I').length;
+    expect(vezesDAI).toBeGreaterThan(vezesDOI);
+    expect(vezesDAI + vezesDOI).toBe(7);
     expect(plano[0].cadeiraId).toBe('DA I');
-    expect(plano[1].cadeiraId).toBe('DO I');
     expect(plano[0].motivo).toContain('DA I');
+  });
+
+  it('conta hoje mesmo, tal como proximaProva — não perde a prova de hoje ao meio da tarde', () => {
+    const tardeDeSegunda = new Date(2026, 9, 5, 15, 30);
+    const eventos = [{ tipo: 'frequencia', cadeira: 'DA I', titulo: 'Freq. DA I', data: new Date(2026, 9, 5) }]; // hoje, meia-noite
+    const plano = propostaDaSemana(eventos, tardeDeSegunda);
+    expect(plano).toHaveLength(7);
+    expect(plano[0].cadeiraId).toBe('DA I');
+    expect(plano[0].motivo).toContain('é hoje');
+  });
+
+  it('com pesos iguais (provas igualmente urgentes), reparte por igual', () => {
+    const eventos = [
+      { tipo: 'frequencia', cadeira: 'DA I', titulo: 'a', data: new Date(2026, 9, 10) },
+      { tipo: 'frequencia', cadeira: 'DO I', titulo: 'b', data: new Date(2026, 9, 10) },
+    ];
+    const plano = propostaDaSemana(eventos, segunda);
+    const vezesDAI = plano.filter((d) => d.cadeiraId === 'DA I').length;
+    const vezesDOI = plano.filter((d) => d.cadeiraId === 'DO I').length;
+    expect(Math.abs(vezesDAI - vezesDOI)).toBeLessThanOrEqual(1);
   });
 });
 

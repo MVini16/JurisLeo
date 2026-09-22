@@ -26,12 +26,14 @@ export function diasAteDomingo(hoje = new Date()) {
 // próximas provas (frequência/exame), uma por cadeira — só a mais próxima de cada uma,
 // ordenadas da mais urgente para a menos urgente
 export function provasPorUrgencia(eventos, hoje = new Date()) {
+  const hojeChave = chaveData(hoje);
   const porCadeira = {};
   for (const ev of eventos) {
     if (ev.tipo !== 'frequencia' && ev.tipo !== 'exame') continue;
     if (ev.estado === 'cancelado' || !ev.cadeira) continue;
     const data = paraData(ev);
-    if (!data || data < hoje) continue;
+    // hoje conta, tal como em proximaProva (provas.js) — mesma convenção em toda a app
+    if (!data || chaveData(data) < hojeChave) continue;
     const atual = porCadeira[ev.cadeira];
     if (!atual || data < atual.data) porCadeira[ev.cadeira] = { cadeiraId: ev.cadeira, titulo: ev.titulo, data };
   }
@@ -40,14 +42,38 @@ export function provasPorUrgencia(eventos, hoje = new Date()) {
     .sort((a, b) => a.diasRestantes - b.diasRestantes);
 }
 
-// [{ chave, diaSemana, cadeiraId, motivo }] — um por dia até domingo, sem provas dá lista vazia
+// escolha ponderada e intercalada (round-robin suave, como um load balancer): cada cadeira
+// tem um peso — quanto mais perto a prova, maior o peso — e a que tem mais "crédito"
+// acumulado é escolhida a cada dia. dá a frequência proporcional ao peso, mas espalhada
+// pela semana em vez de em blocos consecutivos.
+function escolherPorDia(provas, numDias) {
+  const pesos = provas.map((p) => 1 / (p.diasRestantes + 1));
+  const totalPeso = pesos.reduce((soma, p) => soma + p, 0);
+  const credito = provas.map(() => 0);
+  const escolhas = [];
+  for (let dia = 0; dia < numDias; dia++) {
+    for (let i = 0; i < provas.length; i++) credito[i] += pesos[i];
+    let indiceEscolhido = 0;
+    for (let i = 1; i < provas.length; i++) {
+      if (credito[i] > credito[indiceEscolhido]) indiceEscolhido = i;
+    }
+    credito[indiceEscolhido] -= totalPeso;
+    escolhas.push(provas[indiceEscolhido]);
+  }
+  return escolhas;
+}
+
+// [{ chave, diaSemana, cadeiraId, motivo }] — um por dia até domingo, sem provas dá lista vazia.
+// as provas mais próximas aparecem mais vezes (ver escolherPorDia).
 export function propostaDaSemana(eventos, hoje = new Date()) {
   const provas = provasPorUrgencia(eventos, hoje);
   if (provas.length === 0) return [];
 
   const dias = diasAteDomingo(hoje);
+  const escolhidas = escolherPorDia(provas, dias.length);
+
   return dias.map((dia, i) => {
-    const prova = provas[i % provas.length];
+    const prova = escolhidas[i];
     return {
       chave: chaveData(dia),
       diaSemana: DIAS_SEMANA[dia.getDay()],

@@ -115,13 +115,21 @@ describe('choquesPorDia', () => {
 });
 
 describe('explicarChoque', () => {
-  it('cita a regra do art. 39.º e nomeia as duas provas', () => {
-    const choque = { a: { titulo: 'Frequência DA I' }, b: { titulo: 'Frequência DO I' }, tipo: 'mesmoDia' };
+  it('entre dois exames, cita o direito a mudar de data do art. 39.º', () => {
+    const choque = { a: { titulo: 'Exame DA I', tipo: 'exame' }, b: { titulo: 'Oral DO I', tipo: 'oral' }, tipo: 'mesmoDia' };
+    const texto = explicarChoque(choque);
+    expect(texto).toContain('Exame DA I');
+    expect(texto).toContain('Oral DO I');
+    expect(texto).toContain('39.º');
+    expect(texto).toMatch(/direito a pedir/i);
+  });
+
+  it('com uma frequência envolvida, não afirma o direito automático a mudar de data', () => {
+    const choque = { a: { titulo: 'Frequência DA I', tipo: 'frequencia' }, b: { titulo: 'Frequência DO I', tipo: 'frequencia' }, tipo: 'mesmoDia' };
     const texto = explicarChoque(choque);
     expect(texto).toContain('Frequência DA I');
     expect(texto).toContain('Frequência DO I');
-    expect(texto).toContain('39.º');
-    expect(texto).toMatch(/aviso/i);
+    expect(texto).not.toMatch(/direito a pedir/i);
   });
 });
 

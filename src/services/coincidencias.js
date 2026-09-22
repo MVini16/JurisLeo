@@ -1,10 +1,19 @@
-// detetor de coincidências de exames — função pura, sem firebase nem react
-// regra (art. 39.º, secção 5.3 da spec): na época normal há coincidência se houver exame
-// no mesmo dia OU em dia consecutivo com outra prova de qualquer época; nas outras épocas
-// só conta o mesmo dia. só avisa, nunca bloqueia nada.
+// detetor de coincidências e outros choques de provas — função pura, sem firebase nem react
+// regra (art. 39.º do regulamento, verificado contra o texto oficial em 22-09-2026): na época
+// normal há coincidência se houver "prova de exame" no mesmo dia OU em dia consecutivo com
+// outra prova de exame de qualquer época; nas outras épocas só conta o mesmo dia. o artigo só
+// fala de "provas de exame" (exame escrito/oral, recurso, melhoria) — nunca menciona a prova
+// escrita de avaliação contínua (frequência), que é uma figura à parte (título II, não título
+// IV do regulamento). por isso frequências continuam a ser detetadas aqui (é informação útil
+// avisar de dois choques no mesmo dia), mas explicarChoque() só invoca o art. 39.º e o direito
+// a mudar de data quando as duas provas em causa são mesmo exames — nunca para frequências.
+// só avisa, nunca bloqueia nada.
 
 // tipos de evento que contam como "prova" para este efeito
 export const TIPOS_PROVA = ['frequencia', 'oral', 'exame'];
+
+// tipos que são mesmo "prova de exame" no sentido do art. 39.º — frequência fica de fora
+const TIPOS_EXAME = ['oral', 'exame'];
 
 function ehProva(item) {
   // aulas do horário (repetidas a partir de aulasSemanais) nunca entram nesta conta
@@ -68,8 +77,14 @@ export function choquesPorDia(itens, opcoes) {
   return porDia;
 }
 
-// frase em linguagem simples para explicar um choque encontrado, citando a regra oficial
+// frase em linguagem simples para explicar um choque encontrado. só cita o art. 39.º e o
+// direito a mudar de data quando as duas provas são mesmo exames — para uma frequência
+// envolvida, o regulamento não dá esse direito, por isso é só um aviso de agenda
 export function explicarChoque({ a, b, tipo }) {
   const quando = tipo === 'mesmoDia' ? 'no mesmo dia' : 'em dias consecutivos';
-  return `"${a.titulo}" e "${b.titulo}" caem ${quando}. Pela regra das coincidências (art. 39.º), tens direito a pedir para uma delas mudar de data — mas isto é só um aviso, nada aqui fica bloqueado.`;
+  const saoAmbosExame = TIPOS_EXAME.includes(a.tipo) && TIPOS_EXAME.includes(b.tipo);
+  if (saoAmbosExame) {
+    return `"${a.titulo}" e "${b.titulo}" caem ${quando}. Pela regra das coincidências (art. 39.º), tens direito a pedir para uma delas mudar de data — mas isto é só um aviso, nada aqui fica bloqueado.`;
+  }
+  return `"${a.titulo}" e "${b.titulo}" caem ${quando}. O art. 39.º não cobre frequências, por isso não há aqui um direito automático a mudar de data — mas vale a pena teres isto em atenção.`;
 }

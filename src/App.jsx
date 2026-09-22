@@ -35,8 +35,17 @@ import Frequencia from './pages/Frequencia'
 import Pares from './pages/Pares'
 // componente de navegação — vai envolver todas as páginas principais
 import NavBar from './components/NavBar'
+import Carregando from './components/animacoes/Carregando.jsx'
+import { useAuthPronto } from './hooks/useAuthPronto.js'
 
 function App() {
+  // só monta as rotas depois do firebase saber se há sessão guardada — sem isto,
+  // um arranque a frio direto numa página com dados (ex: pwa reaberta em /calendario)
+  // fica preso a "a carregar" para sempre, porque os hooks de dados só olham para
+  // a sessão uma vez, ao montar
+  const pronto = useAuthPronto();
+  if (!pronto) return <Carregando texto="A abrir..." tipo="templo" />;
+
   return (
     <BrowserRouter>
       <Routes>

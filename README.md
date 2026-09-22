@@ -1,16 +1,48 @@
-# React + Vite
+# JurisLeo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+App pessoal de organização académica para a Leonor, estudante de Direito na FDUL (2.º ano). Regista horário, cadeiras, tarefas, calendário e faltas, e calcula sozinha o estado de avaliação e de faltas de cada cadeira segundo o regulamento real da faculdade.
 
-Currently, two official plugins are available:
+É uma app de uma só utilizadora, feita por medida para ela — não um produto para terceiros.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+React 19 + Vite + Firebase (Firestore + Authentication) + Firebase Hosting. Projeto Firebase: `jurisleo-67124`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Arrancar localmente
 
-## Expanding the ESLint configuration
+```bash
+npm install
+cp .env.example .env   # preenche com a configuração do Firebase (jurisleo-67124)
+npm run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+A app assume-se mobile-first — testa sempre num viewport de telemóvel.
+
+## Testes e lint
+
+```bash
+npm test        # vitest — motores de negócio (avaliação, faltas, etc.) são funções puras e testadas
+npm run lint     # eslint
+npm run build    # build de produção (vite)
+```
+
+## Deploy
+
+Só manual, nunca automático:
+
+```bash
+npm run build && firebase deploy --only firestore,hosting
+```
+
+`firestore` inclui as regras (`firestore.rules`) e os índices — nunca fazer deploy só do hosting quando eles mudarem.
+
+## Estrutura
+
+- `src/pages/` — um componente por rota
+- `src/components/` — peças reutilizáveis entre páginas
+- `src/services/` — lógica pura de negócio (avaliação, faltas, etc., sem Firebase nem React) e os wrappers do Firebase
+- `src/hooks/` — hooks que ligam a UI aos dados do Firestore
+- `src/context/` — estado partilhado entre páginas (tema)
+- `src/data/` — dados fixos e reais da Leonor (cadeiras, motivos de falta, calendário escolar)
+
+Mais contexto e as regras de trabalho deste projeto estão em `CLAUDE.md`.

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calcularProximaRevisao, calcularProximaRevisaoPorConfianca, CONFIANCAS, estaPronto, ordenarPorPrioridade } from './repeticaoEspacada.js';
+import { calcularProximaRevisao, calcularProximaRevisaoPorConfianca, calcularNovaFacilidade, CONFIANCAS, estaPronto, ordenarPorPrioridade } from './repeticaoEspacada.js';
 
 describe('calcularProximaRevisao', () => {
   it('sobe de nível e aumenta o intervalo quando acerta', () => {
@@ -89,5 +89,30 @@ describe('calcularProximaRevisaoPorConfianca', () => {
   it('a data da próxima revisão segue o nível novo', () => {
     const { proximaRevisao } = calcularProximaRevisaoPorConfianca(0, 4);
     expect(Math.round((proximaRevisao - new Date()) / 86400000)).toBe(3);
+  });
+
+  it('devolve a nova facilidade do cartão', () => {
+    expect(calcularProximaRevisaoPorConfianca(0, 5, 1).novaFacilidade).toBe(1.2);
+  });
+});
+
+describe('calcularNovaFacilidade', () => {
+  it('sobe com confiança alta, desce com confiança baixa', () => {
+    expect(calcularNovaFacilidade(1, 5)).toBe(1.2);
+    expect(calcularNovaFacilidade(1, 1)).toBe(0.7);
+  });
+
+  it('nunca desce abaixo de 0.5', () => {
+    expect(calcularNovaFacilidade(0.5, 1)).toBe(0.5);
+  });
+
+  it('nunca sobe acima de 2.5', () => {
+    expect(calcularNovaFacilidade(2.5, 5)).toBe(2.5);
+  });
+
+  it('um cartão mais fácil afasta-se mais rápido do que um difícil, no mesmo nível', () => {
+    const facil = calcularProximaRevisaoPorConfianca(2, 5, 2); // facilidade alta
+    const dificil = calcularProximaRevisaoPorConfianca(2, 5, 0.5); // facilidade baixa
+    expect(facil.proximaRevisao.getTime()).toBeGreaterThan(dificil.proximaRevisao.getTime());
   });
 });

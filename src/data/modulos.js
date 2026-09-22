@@ -19,6 +19,7 @@ export const MODULOS = [
   { id: 'horasPorRegistar', categoria: 'inicio', nome: 'Ainda não registaste nada hoje', descricao: 'Ao fim do dia, se não houver nenhuma sessão de estudo, pergunta uma vez. Nunca obriga.', defeito: false },
   { id: 'missoesDoDia', categoria: 'inicio', nome: 'Missões do dia', descricao: '25 minutos, 10 cartões, 1 sumário — pequenas metas fixas.', defeito: false },
   { id: 'sequenciaADois', categoria: 'inicio', nome: 'Sequência a dois com o Vini', descricao: 'Ele vê só se já estudaste hoje, sem ranking nem pressão. Vem desligado: ligas tu, se quiseres.', defeito: false },
+  { id: 'balancoDomingo', categoria: 'inicio', nome: 'Balanço de domingo', descricao: 'Ao domingo: horas, cartões, sumários e uma pergunta para a semana.', defeito: false },
   { id: 'proximaFrequencia', categoria: 'inicio', nome: 'Próxima frequência', descricao: 'Quantos dias faltam para a próxima frequência.', fixo: true },
   { id: 'aulasHoje', categoria: 'inicio', nome: 'Aulas de hoje', descricao: 'A lista das aulas do dia.', defeito: true },
   { id: 'tarefasPendentes', categoria: 'inicio', nome: 'Tarefas pendentes', descricao: 'As tarefas com prazo mais próximo.', defeito: true },
@@ -60,4 +61,4 @@ export const MODULOS = [
 ];
 
 // ordem por defeito dos cartões do dashboard
-export const ORDEM_CARTOES_DEFEITO = ['aulaAgora', 'bemEstar', 'missoesDoDia', 'horasPorRegistar', 'proximaFrequencia', 'aulasHoje', 'tarefasPendentes', 'ferramentas'];
+export const ORDEM_CARTOES_DEFEITO = ['aulaAgora', 'bemEstar', 'missoesDoDia', 'horasPorRegistar', 'balancoDomingo', 'proximaFrequencia', 'aulasHoje', 'tarefasPendentes', 'ferramentas'];

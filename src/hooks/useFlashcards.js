@@ -28,6 +28,7 @@ export function useFlashcards() {
     if (!userId) return;
     await addDoc(collection(db, 'users', userId, 'flashcards'), {
       nivel: 0,
+      facilidade: 1,
       acertos: 0,
       erros: 0,
       proximaRevisao: null,
@@ -48,9 +49,10 @@ export function useFlashcards() {
     if (!userId) return;
     const confianca = typeof resposta === 'number' ? resposta : (resposta ? 4 : 2);
     const acertou = confianca >= 3;
-    const { novoNivel, proximaRevisao } = calcularProximaRevisaoPorConfianca(flashcard.nivel ?? 0, confianca);
+    const { novoNivel, novaFacilidade, proximaRevisao } = calcularProximaRevisaoPorConfianca(flashcard.nivel ?? 0, confianca, flashcard.facilidade ?? 1);
     await updateDoc(doc(db, 'users', userId, 'flashcards', flashcard.id), {
       nivel: novoNivel,
+      facilidade: novaFacilidade,
       proximaRevisao,
       ultimaConfianca: confianca,
       ultimaRevisaoEm: serverTimestamp(),

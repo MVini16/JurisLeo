@@ -1,0 +1,29 @@
+.pt { margin: 20px 0; }
+.pt-titulo { font-size: 1.05rem; margin-bottom: 10px; }
+
+.pt-pecas {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.pt-peca {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  padding: 14px 10px;
+  border-radius: 14px;
+  background: rgba(120, 120, 120, 0.08);
+  opacity: 0.55;
+}
+
+.pt-peca.desbloqueada {
+  opacity: 1;
+  background: color-mix(in srgb, var(--gold) 16%, transparent);
+}
+
+.pt-peca__icone { font-size: 1.8rem; }
+.pt-peca__nome { font-size: 0.82rem; font-weight: 700; }
+.pt-peca__descricao { font-size: 0.7rem; opacity: 0.75; line-height: 1.3; }

@@ -8,6 +8,7 @@ import { logout } from '../services/auth.js';
 import { useTheme } from '../context/useTheme.js';
 import PerfilEstudo from '../components/PerfilEstudo.jsx';
 import PerfilBemEstar from '../components/PerfilBemEstar.jsx';
+import PerfilToga from '../components/PerfilToga.jsx';
 import { O_QUE_O_VINI_VE, O_QUE_O_VINI_VE_BEM_ESTAR, O_QUE_O_VINI_VE_SEQUENCIA_A_DOIS } from '../data/consola.js';
 import { useModulos } from '../hooks/useModulos.js';
 import './Perfil.css';
@@ -55,6 +56,8 @@ export default function Perfil() {
       {ativos.bemEstar && <PerfilBemEstar />}
 
       <PerfilEstudo />
+
+      <PerfilToga />
 
       <section className="perfil-seccao">
         <h2 className="perfil-seccao__titulo">Dados académicos</h2>

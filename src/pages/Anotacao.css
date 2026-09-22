@@ -153,6 +153,26 @@
   cursor: pointer;
 }
 
+.anotacao-editor__backlinks {
+  font-size: 0.78rem;
+  opacity: 0.65;
+  margin: 10px 0;
+}
+
+.anotacao-editor__backlink {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--burgundy);
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+  font-size: inherit;
+}
+
+html.dark .anotacao-editor__backlink,
+.anotacao-editor.dark .anotacao-editor__backlink { color: var(--gold); }
+
 .anotacao-editor__acoes {
   display: flex;
   align-items: center;

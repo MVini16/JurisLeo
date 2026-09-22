@@ -45,6 +45,15 @@
   font-family: inherit;
 }
 
+.flashcards-baralho-nota {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(201, 168, 76, 0.14);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  font-size: 0.85rem;
+  margin-bottom: 14px;
+}
+
 .flashcards-revisao-card {
   display: flex;
   align-items: center;

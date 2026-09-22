@@ -2,7 +2,7 @@
 // a checklist tem dois modos, à escolha dela: os teus temas (escritos à mão) ou os sumários
 // das aulas (automática, só para frequências de uma cadeira — guarda-se neste aparelho)
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useFrequencia } from '../hooks/useFrequencia.js';
 import { useFrase } from '../hooks/useFrase.js';
 import { useSumariosCadeira } from '../hooks/useSumariosCadeira.js';
@@ -92,6 +92,12 @@ export default function Frequencia() {
       <Anel dias={prova.diasRestantes} />
       <p className="freq-dias">{textoDosDias(prova.diasRestantes)}</p>
       {frase && <p className="freq-frase">{frase}</p>}
+
+      {prova.cadeira && (
+        <Link className="freq-baralho" to={`/flashcards?cadeira=${prova.cadeira}&baralho=1`}>
+          🗂️ Rever o baralho de {cadeira?.abrev || 'cartões'}
+        </Link>
+      )}
 
       <section className="freq-materia">
         <div className="freq-materia__topo">

@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useCaso } from '../hooks/useCaso.js';
+import { useCasos } from '../hooks/useCasos.js';
+import { useAnotacoes } from '../hooks/useAnotacoes.js';
+import { ondeAparece } from '../services/backlinks.js';
 import { cadeirasS1 } from '../data/dadosLeonor.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Caso.css';
@@ -28,18 +31,22 @@ export default function Caso() {
   const navigate = useNavigate();
   const { darkMode } = useTheme();
   const { caso, loading, novo, criar, guardar, apagar } = useCaso(id);
+  const { casos } = useCasos();
+  const { anotacoes } = useAnotacoes();
 
   if (!novo && loading) return <div className="caso-editor"><Carregando texto="A carregar..." tipo="templo" /></div>;
   if (!novo && !caso) return <div className="caso-editor"><p className="caso-editor__loading">Caso não encontrado.</p></div>;
 
+  const aparecesEm = novo || !caso?.titulo ? [] : ondeAparece(caso.titulo, { anotacoes, casos }, { tipo: 'casos', id });
+
   return (
     <div className={`caso-editor ${darkMode ? 'dark' : ''}`}>
-      <Formulario key={id} caso={caso} novo={novo} criar={criar} guardar={guardar} apagar={apagar} onVoltar={() => navigate('/casos')} />
+      <Formulario key={id} caso={caso} novo={novo} criar={criar} guardar={guardar} apagar={apagar} onVoltar={() => navigate('/casos')} aparecesEm={aparecesEm} onIrPara={(item) => navigate(item.tipo === 'anotacoes' ? `/anotacoes/${item.id}` : `/casos/${item.id}`)} />
     </div>
   );
 }
 
-function Formulario({ caso, novo, criar, guardar, apagar, onVoltar }) {
+function Formulario({ caso, novo, criar, guardar, apagar, onVoltar, aparecesEm = [], onIrPara }) {
   const [titulo, setTitulo] = useState(caso?.titulo || '');
   const [cadeiraId, setCadeiraId] = useState(caso?.cadeiraId || cadeirasS1[0].id);
   const [enunciado, setEnunciado] = useState(caso?.enunciado || '');
@@ -155,6 +162,19 @@ function Formulario({ caso, novo, criar, guardar, apagar, onVoltar }) {
         <span className="caso-editor__label">Nota / feedback do professor</span>
         <textarea className="caso-editor__textarea" rows={2} value={notaDoProfessor} onChange={(e) => setNotaDoProfessor(e.target.value)} placeholder="O que o professor disse na correção..." />
       </label>
+
+      {aparecesEm.length > 0 && (
+        <div className="caso-editor__campo">
+          <span className="caso-editor__label">Onde este caso já apareceu</span>
+          <div className="caso-editor__duvidas">
+            {aparecesEm.map((item) => (
+              <button key={item.tipo + item.id} className="caso-editor__duvida-chip" onClick={() => onIrPara(item)}>
+                <span>{item.titulo}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="caso-editor__acoes">
         {!novo && (

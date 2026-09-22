@@ -1,5 +1,6 @@
 // flashcards com repetição espaçada
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useFlashcards } from '../hooks/useFlashcards.js';
 import { estaPronto, ordenarPorPrioridade, CONFIANCAS } from '../services/repeticaoEspacada.js';
@@ -13,13 +14,19 @@ import Carregando from '../components/animacoes/Carregando.jsx';
 export default function Flashcards() {
   const { darkMode } = useTheme();
   const { flashcards, loading, adicionar, apagar, registarResposta } = useFlashcards();
-  const [filtroCadeira, setFiltroCadeira] = useState('todas');
+  const [searchParams] = useSearchParams();
+  // vindo do modo frequência: /flashcards?cadeira=X&baralho=1 — rever tudo da cadeira, não só o que está pronto
+  const cadeiraDoBaralho = searchParams.get('cadeira');
+  const ehBaralhoFrequencia = searchParams.get('baralho') === '1' && !!cadeiraDoBaralho;
+  const [filtroCadeira, setFiltroCadeira] = useState(cadeiraDoBaralho || 'todas');
   const [formAberto, setFormAberto] = useState(false);
-  const [emRevisao, setEmRevisao] = useState(false);
+  const [emRevisao, setEmRevisao] = useState(ehBaralhoFrequencia);
 
   const prontos = flashcards.filter((f) => estaPronto(f));
   const filtrados = flashcards.filter((f) => filtroCadeira === 'todas' || f.cadeiraId === filtroCadeira);
-  const filaRevisao = ordenarPorPrioridade(prontos.filter((f) => filtroCadeira === 'todas' || f.cadeiraId === filtroCadeira));
+  const filaRevisao = ehBaralhoFrequencia
+    ? filtrados
+    : ordenarPorPrioridade(prontos.filter((f) => filtroCadeira === 'todas' || f.cadeiraId === filtroCadeira));
 
   return (
     <div className={`flashcards-pagina ${darkMode ? 'dark' : ''}`}>
@@ -32,14 +39,18 @@ export default function Flashcards() {
         <button className="flashcards-btn-novo" onClick={() => setFormAberto((f) => !f)}>{formAberto ? 'Fechar' : '+ Novo'}</button>
       </header>
 
-      <div className="flashcards-revisao-card">
-        <div>
-          <strong>{prontos.length}</strong> pronto{prontos.length === 1 ? '' : 's'} para rever hoje
+      {ehBaralhoFrequencia ? (
+        <p className="flashcards-baralho-nota">🎯 Baralho até à frequência: todos os cartões desta cadeira, prontos ou não.</p>
+      ) : (
+        <div className="flashcards-revisao-card">
+          <div>
+            <strong>{prontos.length}</strong> pronto{prontos.length === 1 ? '' : 's'} para rever hoje
+          </div>
+          <button className="flashcards-btn-revisao" onClick={() => setEmRevisao(true)} disabled={filaRevisao.length === 0}>
+            ▶ Começar revisão
+          </button>
         </div>
-        <button className="flashcards-btn-revisao" onClick={() => setEmRevisao(true)} disabled={filaRevisao.length === 0}>
-          ▶ Começar revisão
-        </button>
-      </div>
+      )}
 
       {formAberto && <FormNovoFlashcard onGuardar={async (d) => { await adicionar(d); setFormAberto(false); }} />}
 

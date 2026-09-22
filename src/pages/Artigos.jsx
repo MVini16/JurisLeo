@@ -1,7 +1,11 @@
 // artigos de código guardados como referência pessoal, com nota e dificuldade
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useArtigos } from '../hooks/useArtigos.js';
+import { useAnotacoes } from '../hooks/useAnotacoes.js';
+import { useCasos } from '../hooks/useCasos.js';
+import { ondeAparece } from '../services/backlinks.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Artigos.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
@@ -18,7 +22,10 @@ function ordenarArtigos(lista) {
 
 export default function Artigos() {
   const { darkMode } = useTheme();
+  const navigate = useNavigate();
   const { artigos, loading, adicionar, atualizar, apagar } = useArtigos();
+  const { anotacoes } = useAnotacoes();
+  const { casos } = useCasos();
   const [pesquisa, setPesquisa] = useState('');
   const [filtroCodigo, setFiltroCodigo] = useState('todos');
   const [formAberto, setFormAberto] = useState(false);
@@ -65,7 +72,14 @@ export default function Artigos() {
 
       <div className="artigos-lista">
         {filtrados.map((a) => (
-          <ArtigoCard key={a.id} artigo={a} onAtualizar={(d) => atualizar(a.id, d)} onApagar={() => apagar(a.id)} />
+          <ArtigoCard
+            key={a.id}
+            artigo={a}
+            onAtualizar={(d) => atualizar(a.id, d)}
+            onApagar={() => apagar(a.id)}
+            aparecesEm={ondeAparece(a.numero, { anotacoes, casos })}
+            onIrPara={(item) => navigate(item.tipo === 'anotacoes' ? `/anotacoes/${item.id}` : `/casos/${item.id}`)}
+          />
         ))}
       </div>
     </div>
@@ -113,7 +127,7 @@ function FormNovoArtigo({ onGuardar }) {
   );
 }
 
-function ArtigoCard({ artigo, onAtualizar, onApagar }) {
+function ArtigoCard({ artigo, onAtualizar, onApagar, aparecesEm = [], onIrPara }) {
   const [aEditar, setAEditar] = useState(false);
   const [notaPessoal, setNotaPessoal] = useState(artigo.notaPessoal || '');
   const [confirmarApagar, setConfirmarApagar] = useState(false);
@@ -145,6 +159,16 @@ function ArtigoCard({ artigo, onAtualizar, onApagar }) {
         </>
       ) : (
         artigo.notaPessoal && <p className="artigo-card__nota">{artigo.notaPessoal}</p>
+      )}
+      {aparecesEm.length > 0 && (
+        <p className="artigo-card__backlinks">
+          Onde já usei este artigo: {aparecesEm.map((item, i) => (
+            <span key={item.tipo + item.id}>
+              {i > 0 && ', '}
+              <button className="artigo-card__backlink" onClick={() => onIrPara(item)}>{item.titulo}</button>
+            </span>
+          ))}
+        </p>
       )}
       <div className="artigo-card__rodape">
         {!aEditar && <button className="artigo-card__link" onClick={() => setAEditar(true)}>{artigo.notaPessoal ? 'Editar nota' : '+ Nota'}</button>}

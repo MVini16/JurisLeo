@@ -16,6 +16,7 @@ import Esqueleto from '../components/animacoes/Esqueleto.jsx'
 import CartaoBemEstar from '../components/CartaoBemEstar.jsx'
 import CartaoHorasPorRegistar from '../components/CartaoHorasPorRegistar.jsx'
 import CartaoMissoesDoDia from '../components/CartaoMissoesDoDia.jsx'
+import CartaoBalancoDomingo from '../components/CartaoBalancoDomingo.jsx'
 import { useBemEstar } from '../hooks/useBemEstar.js'
 import { estaEmBaixo, valoresDoDia } from '../services/bemEstar.js'
 import { chaveData } from '../data/feriados.js'
@@ -95,6 +96,7 @@ function Dashboard() {
     bemEstar: <CartaoBemEstar />,
     horasPorRegistar: <CartaoHorasPorRegistar />,
     missoesDoDia: <CartaoMissoesDoDia />,
+    balancoDomingo: <CartaoBalancoDomingo />,
     ferramentas: (
       <div className="card anim-entrada" style={{ '--delay': '0.5s' }}>
         <div className="card-header">

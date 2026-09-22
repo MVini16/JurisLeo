@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useAnotacao } from '../hooks/useAnotacao.js';
+import { useAnotacoes } from '../hooks/useAnotacoes.js';
+import { useCasos } from '../hooks/useCasos.js';
+import { ondeAparece } from '../services/backlinks.js';
 import { cadeirasS1 } from '../data/dadosLeonor.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Anotacao.css';
@@ -14,9 +17,13 @@ export default function Anotacao() {
   const navigate = useNavigate();
   const { darkMode } = useTheme();
   const { anotacao, loading, nova, criar, guardar, apagar } = useAnotacao(id);
+  const { anotacoes } = useAnotacoes();
+  const { casos } = useCasos();
 
   if (!nova && loading) return <div className="anotacao-editor"><Carregando texto="A carregar..." tipo="templo" /></div>;
   if (!nova && !anotacao) return <div className="anotacao-editor"><p className="anotacao-editor__loading">Anotação não encontrada.</p></div>;
+
+  const aparecesEm = nova || !anotacao?.titulo ? [] : ondeAparece(anotacao.titulo, { anotacoes, casos }, { tipo: 'anotacoes', id });
 
   return (
     <div className={`anotacao-editor ${darkMode ? 'dark' : ''}`}>
@@ -29,12 +36,14 @@ export default function Anotacao() {
         guardar={guardar}
         apagar={apagar}
         onVoltar={() => navigate('/anotacoes')}
+        aparecesEm={aparecesEm}
+        onIrPara={(item) => navigate(item.tipo === 'anotacoes' ? `/anotacoes/${item.id}` : `/casos/${item.id}`)}
       />
     </div>
   );
 }
 
-function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, onVoltar }) {
+function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, onVoltar, aparecesEm = [], onIrPara }) {
   const [titulo, setTitulo] = useState(anotacao?.titulo || '');
   const [cadeiraId, setCadeiraId] = useState(anotacao?.cadeiraId || cadeiraInicial || cadeirasS1[0].id);
   const [tipo, setTipo] = useState(anotacao?.tipo || 'teorica');
@@ -133,6 +142,17 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
         <input type="checkbox" checked={rascunho} onChange={(e) => setRascunho(e.target.checked)} />
         <span>Ainda é rascunho</span>
       </label>
+
+      {aparecesEm.length > 0 && (
+        <p className="anotacao-editor__backlinks">
+          Onde já apareceu: {aparecesEm.map((item, i) => (
+            <span key={item.tipo + item.id}>
+              {i > 0 && ', '}
+              <button className="anotacao-editor__backlink" onClick={() => onIrPara(item)}>{item.titulo}</button>
+            </span>
+          ))}
+        </p>
+      )}
 
       <div className="anotacao-editor__acoes">
         {!nova && (

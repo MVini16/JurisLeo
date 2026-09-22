@@ -43,6 +43,7 @@ export const MODULOS = [
   { id: 'ferrGlossario', categoria: 'ferramentas', grupo: 'Direito', rota: '/glossario', nome: 'Glossário', descricao: 'Termos e latim jurídico.', defeito: true },
   { id: 'ferrErros', categoria: 'ferramentas', grupo: 'Direito', rota: '/fichas/erros', nome: 'Diário dos meus erros', descricao: 'O que errei e porquê.', defeito: true },
   { id: 'ferrPesquisa', categoria: 'ferramentas', grupo: 'Direito', rota: '/pesquisa', nome: 'Pesquisa', descricao: 'Procura em tudo o que escreveste.', defeito: true },
+  { id: 'ferrMapasMentais', categoria: 'ferramentas', grupo: 'Direito', rota: '/mapas-mentais', nome: 'Mapas Mentais', descricao: 'Caixas e setas por cadeira ou tema.', defeito: true },
   { id: 'ferrPortfolio', categoria: 'ferramentas', grupo: 'Vida profissional', rota: '/fichas/portfolio', nome: 'Portfólio', descricao: 'Os trabalhos de que te orgulhas.', defeito: true },
   { id: 'ferrEstagio', categoria: 'ferramentas', grupo: 'Vida profissional', rota: '/fichas/estagio', nome: 'Diário de estágio', descricao: 'Para quando estagiares.', defeito: true },
   { id: 'ferrContactos', categoria: 'ferramentas', grupo: 'Vida profissional', rota: '/fichas/contactos', nome: 'Contactos jurídicos', descricao: 'Com lembrete para voltares a falar.', defeito: true },

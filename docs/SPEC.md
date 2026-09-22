@@ -157,9 +157,9 @@ React 19 + Vite · Firebase (Auth Email/Password, Firestore com cache offline pe
 - **`simularNotaNecessaria` e `calcularMediaAnual`** existem no motor mas nenhuma página os usa.
 - **Motor de faltas vs. ponto 7.4:** `estadoFaltas` calcula `faltasRestantes` sobre as aulas lecionadas e o semáforo assenta nisso. A secção 5.4.1 pede o número principal sobre as 30 previstas e nunca vermelho antes de metade do semestre só pela proporção corrente. **A resolver na Fase 3.**
 - **Inconsistência interna desta spec, caso 25 (secção 6.5):** a tabela diz `excluida` com nota 10, o texto ao lado diz "aprovada com 10". O código segue o texto (média arredondada) e está marcado como caso limite. **A confirmar com o Vini e a Leonor.**
-- **Inconsistência interna desta spec, faltas:** a tabela 7.5 usa 26 aulas previstas, a secção 5.4 usa 30. Os testes em `faltas.test.js` seguem a tabela (26). Os dados reais da Leonor usam 30.
+- **Inconsistência interna desta spec, faltas — não é um conflito real (fechado em 22-09-2026):** a tabela 7.5 usa 26 aulas previstas, a secção 5.4 usa 30. `estadoFaltas` é uma função pura que recebe `aulasPraticasPrevistas` como parâmetro — não há um número "certo" fixo no motor. `faltas.test.js` usa 26 só porque divide bem por quarto e metade nos casos de teste, sem pretender ser o número real de nenhuma cadeira. `dadosLeonor.js` (a fonte de verdade das cadeiras reais, por regra do `CLAUDE.md`) usa 30 para todas as cadeiras do 2.º ano — é esse o número que a app usa de facto para a Leonor.
 - **Modelo de dados:** a secção 9 descreve o que está em produção. As coleções `notas`, `faltas`, `aulas`, `sumarios`, `mensagensDele` e `feedback` da versão original **não existem**.
-- **Intervalos dos flashcards:** a secção 14.7 diz 1, 3, 7, 16 e 35 dias. O código (`repeticaoEspacada.js`) usa 1, 2, 4, 7 e 15. **A confirmar com o Vini** qual vale, porque a fase 9 tem "intervalos certos" como critério de aceitação.
+- **Intervalos dos flashcards — resolvido em 22-09-2026:** a secção 14.7 diz 1, 3, 7, 16 e 35 dias; o código tinha ficado com 1, 2, 4, 7 e 15 por engano. Corrigido `repeticaoEspacada.js` para seguir a spec (1, 3, 7, 16, 35).
 - **Banco de frases:** `frases.js` tem cerca de 120 frases organizadas em 8 contextos (geral, madrugada, pós-nota-boa, pós-nota-excelente, pós-nota-baixa, sessão-longa, faltas-apertadas, antes-de-frequência). A secção 16.1 pede 150, com 6 tons, autoria "dele" e quotas por tom. O formato e as quotas ainda não existem.
 - **Sem traço no código:** botão "falta-me motivação", ecrã depois da 1h, aviso dos 90 minutos, modo "estou a passar-me", importador de backup, notificações push, dedicatória nos PDF, sebenta compilada, "algo está mal aqui" e `feedback`.
 - **Secções 25 (registo de bem-estar) e 26 (consola do Vini):** não têm fase na secção 22 e nada disto existe no código. Ver 22.1.
@@ -969,7 +969,7 @@ Publicar com `firebase deploy --only firestore` (regras e índices juntos, porqu
 
 ## 10. SISTEMA DE DESIGN — `src/styles/tokens.css`
 
-> **Estado real (18-09-2026):** hoje as variáveis vivem em `src/index.css` (`--burgundy: #6B0F1A`, `--gold: #C9A84C`, `--bg-light`, `--bg-dark`, `--text-light`, `--text-dark`, `--border-light`, `--border-dark`) e o corpo usa Georgia. `tokens.css`, Playfair Display e Lato ainda **não** existem no código nem estão carregadas em `index.html`. Os valores abaixo são o alvo. Antes de trocar a fonte, confirmar com o Vini: o `CLAUDE.md` do projeto fixa Georgia.
+> **Estado real (18-09-2026, fontes confirmadas em 22-09-2026):** hoje as variáveis vivem em `src/index.css` (`--burgundy: #6B0F1A`, `--gold: #C9A84C`, `--bg-light`, `--bg-dark`, `--text-light`, `--text-dark`, `--border-light`, `--border-dark`) e o corpo usa Georgia. `tokens.css` ainda **não** existe no código. Os valores abaixo são o alvo, exceto a tipografia: **fica Georgia**, como já fixado no `CLAUDE.md` — Playfair Display e Lato eram só uma sugestão desta spec, nunca chegaram a ser carregadas, e não há razão para trocar uma fonte já em uso por outra que exigiria carregar dois ficheiros novos.
 
 Base: identidade FDUL, bordô `#6B0F1A` e dourado `#C9A84C`. A cor de destaque é configurável pela Leonor no Perfil (por defeito a cor preferida dela, campo da secção 2).
 
@@ -1004,9 +1004,9 @@ Base: identidade FDUL, bordô `#6B0F1A` e dourado `#C9A84C`. A cor de destaque �
   --perigo: #B3423A;
   --info: #3D5A80;
 
-  /* tipografia */
-  --fonte-titulo: 'Playfair Display', Georgia, serif;
-  --fonte-corpo: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* tipografia — Georgia para tudo, confirmado em 22-09-2026 (ver nota no topo da secção) */
+  --fonte-titulo: Georgia, 'Times New Roman', serif;
+  --fonte-corpo: Georgia, 'Times New Roman', serif;
   --escala-letra: 1;          /* 1 | 1.125 | 1.25, controlado no perfil */
   --t-xs: calc(0.75rem * var(--escala-letra));
   --t-sm: calc(0.875rem * var(--escala-letra));
@@ -1574,7 +1574,7 @@ A numeração acima é a da spec. O prompt de trabalho da sessão de 18-09-2026 
 | **6** | ⚠️ parcial | ✅ ~120 frases originais, celebração, consolo, mensagem carinhosa. ❌ 150 frases com tons e quotas, autoria "dele", botão de motivação, ecrã da 1h |
 | **7** | ⚠️ parcial | ✅ anotações e pesquisa global. ❌ sebenta compilada, sumários de aula. Guardar automático e rascunho por verificar |
 | **8** | ✅ | casos práticos com estrutura jurídica, estados e painel de dúvidas agregadas |
-| **9** | ⚠️ | ✅ artigos, glossário, flashcards, leituras. Os intervalos diferem da spec (ver 3.4) |
+| **9** | ✅ | artigos, glossário, flashcards, leituras. Intervalos corrigidos para 1,3,7,16,35 (ver 3.4) |
 | **10** | ⚠️ parcial | ✅ `coincidencias.js` (22-09): choques no mesmo dia (sempre) e em dias consecutivos (época normal), aviso em tempo real no modal, nunca bloqueia. ❌ Modo Frequência |
 | **11** | ⚠️ parcial | ✅ tarefas e cronómetro de estudo. ❌ subtarefas, aviso dos 90 min, modo "estou a passar-me" |
 | **12** | ⚠️ parcial | ✅ PWA instalável e offline (`persistentLocalCache`). ❌ notificações e ecrã de instalação para iOS |

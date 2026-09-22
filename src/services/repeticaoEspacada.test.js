@@ -6,7 +6,7 @@ describe('calcularProximaRevisao', () => {
     const { novoNivel, proximaRevisao } = calcularProximaRevisao(0, true);
     expect(novoNivel).toBe(1);
     const dias = Math.round((proximaRevisao - new Date()) / 86400000);
-    expect(dias).toBe(2);
+    expect(dias).toBe(3);
   });
 
   it('nunca passa do nível 4', () => {
@@ -88,6 +88,6 @@ describe('calcularProximaRevisaoPorConfianca', () => {
 
   it('a data da próxima revisão segue o nível novo', () => {
     const { proximaRevisao } = calcularProximaRevisaoPorConfianca(0, 4);
-    expect(Math.round((proximaRevisao - new Date()) / 86400000)).toBe(2);
+    expect(Math.round((proximaRevisao - new Date()) / 86400000)).toBe(3);
   });
 });

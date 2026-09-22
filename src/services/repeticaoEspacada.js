@@ -1,7 +1,9 @@
 // repetição espaçada, estilo leitner — 5 níveis (0 a 4), cada um com um
 // intervalo maior até à próxima revisão. função pura, sem firebase nem react.
+// intervalos definidos na spec (secção 14.7): 1, 3, 7, 16 e 35 dias — o código
+// tinha ficado com 1, 2, 4, 7, 15 por engano; corrigido em 22-09-2026.
 
-const INTERVALOS_DIAS = [1, 2, 4, 7, 15];
+const INTERVALOS_DIAS = [1, 3, 7, 16, 35];
 
 // como ela se sentiu com a resposta, de 1 a 5 (em vez de só certo ou errado)
 export const CONFIANCAS = [

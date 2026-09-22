@@ -32,6 +32,8 @@ export const MODULOS = [
   { id: 'ferrFrequencia', categoria: 'ferramentas', grupo: 'Estudar', rota: '/frequencia', nome: 'Modo Frequência', descricao: 'Só a prova que vem aí e a matéria por rever.', defeito: true },
   { id: 'ferrPrazos', categoria: 'ferramentas', grupo: 'Estudar', rota: '/prazos', nome: 'Calculadora de prazos', descricao: 'Dias úteis e seguidos, com feriados.', defeito: true },
   { id: 'ferrCasos', categoria: 'ferramentas', grupo: 'Direito', rota: '/casos', nome: 'Casos práticos', descricao: 'Factos, questão, enquadramento e conclusão.', defeito: true },
+  { id: 'ferrModoExame', categoria: 'ferramentas', grupo: 'Direito', rota: '/modo-exame', nome: 'Modo Exame', descricao: '90 minutos, um caso do arquivo, sem consultar nada.', defeito: true },
+  { id: 'ferrTopicosCorrecao', categoria: 'ferramentas', grupo: 'Direito', rota: '/topicos-correcao', nome: 'Tópicos de Correção', descricao: 'Compara a tua resposta com a correção: o que reclamar e o que rever.', defeito: true },
   { id: 'ferrJurisprudencia', categoria: 'ferramentas', grupo: 'Direito', rota: '/fichas/jurisprudencia', nome: 'Fichas de jurisprudência', descricao: 'Acórdãos que valha a pena guardar.', defeito: true },
   { id: 'ferrArtigos', categoria: 'ferramentas', grupo: 'Direito', rota: '/artigos', nome: 'Biblioteca de artigos', descricao: 'Referências e notas tuas.', defeito: true },
   { id: 'ferrGlossario', categoria: 'ferramentas', grupo: 'Direito', rota: '/glossario', nome: 'Glossário', descricao: 'Termos e latim jurídico.', defeito: true },

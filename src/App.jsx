@@ -33,6 +33,9 @@ import Respirar from './pages/Respirar'
 import Consola from './pages/Consola'
 import Frequencia from './pages/Frequencia'
 import Pares from './pages/Pares'
+import ModoExame from './pages/ModoExame'
+import TopicosCorrecaoLista from './pages/TopicosCorrecaoLista'
+import TopicosCorrecao from './pages/TopicosCorrecao'
 // componente de navegação — vai envolver todas as páginas principais
 import NavBar from './components/NavBar'
 import Carregando from './components/animacoes/Carregando.jsx'
@@ -84,6 +87,9 @@ function App() {
         <Route path="/respirar" element={<NavBar><Respirar /></NavBar>} />
         <Route path="/pares" element={<NavBar><Pares /></NavBar>} />
         <Route path="/prazos" element={<NavBar><Prazos /></NavBar>} />
+        <Route path="/modo-exame" element={<NavBar><ModoExame /></NavBar>} />
+        <Route path="/topicos-correcao" element={<NavBar><TopicosCorrecaoLista /></NavBar>} />
+        <Route path="/topicos-correcao/:id" element={<NavBar><TopicosCorrecao /></NavBar>} />
         <Route path="/definicoes" element={<NavBar><Definicoes /></NavBar>} />
       </Routes>
     </BrowserRouter>

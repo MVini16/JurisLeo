@@ -1,0 +1,103 @@
+/* modo exame: uma coluna calma, igual em espírito ao modo frequência */
+.me-pagina {
+  --acento: var(--cor, var(--burgundy));
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 16px 110px;
+  font-family: 'Georgia', serif;
+}
+
+html.dark .me-pagina { --acento: var(--cor, var(--gold)); }
+
+.me-titulo { font-size: 1.4rem; margin: 12px 0 6px; text-align: center; }
+.me-intro { font-size: 0.85rem; opacity: 0.75; text-align: center; margin: 0 0 20px; line-height: 1.45; }
+.me-nota { font-size: 0.8rem; opacity: 0.7; text-align: center; margin-top: 12px; }
+
+.me-lista { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+.me-caso {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--toque-min);
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(120, 120, 120, 0.25);
+  border-left: 4px solid var(--cor);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.me-caso__cadeira {
+  flex: 0 0 auto;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--cor);
+}
+
+.me-caso__titulo { font-size: 0.92rem; }
+
+/* ecrã do cronómetro */
+.me-pagina--cronometro { text-align: center; }
+
+.me-cronometro { margin: 20px 0 24px; }
+.me-cronometro__label { display: block; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.6; margin-bottom: 6px; }
+.me-cronometro__tempo { font-size: 3.4rem; font-variant-numeric: tabular-nums; color: var(--acento); }
+.me-cronometro__tempo--aperto { color: var(--perigo); animation: me-pulsar 1s ease-in-out infinite; }
+
+@keyframes me-pulsar {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.me-enunciado {
+  text-align: left;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  margin-bottom: 20px;
+}
+
+html.dark .me-enunciado { border-color: var(--border-dark); }
+
+.me-enunciado__cadeira { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--acento); margin: 0 0 4px; }
+.me-enunciado__titulo { font-size: 1.1rem; margin: 0 0 10px; }
+.me-enunciado__texto { font-size: 0.92rem; line-height: 1.6; white-space: pre-wrap; }
+
+.me-btn-terminar {
+  width: 100%;
+  min-height: var(--toque-min);
+  border-radius: 14px;
+  border: 1.5px solid var(--acento);
+  background: color-mix(in srgb, var(--acento) 12%, transparent);
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.me-btn-terminar:disabled { opacity: 0.5; }
+
+.me-resposta {
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border-light);
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 14px;
+  resize: vertical;
+}
+
+html.dark .me-resposta { border-color: var(--border-dark); }
+
+.me-guardado { text-align: center; }
+.me-guardado p { font-size: 0.95rem; margin-bottom: 16px; }

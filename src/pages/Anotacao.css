@@ -25,17 +25,12 @@
   justify-content: space-between;
 }
 
-.anotacao-editor__voltar {
-  background: none;
-  border: none;
-  color: inherit;
-  opacity: 0.6;
-  font-size: 0.85rem;
-  cursor: pointer;
-  font-family: inherit;
+/* o BotaoVoltar partilhado tem padding pensado para ficar sozinho, sobre o
+   conteúdo; aqui divide a linha com a estrela de favorito, por isso tira-se
+   esse padding para os dois ficarem alinhados como antes */
+.anotacao-editor__header .botao-voltar {
+  padding: 0;
 }
-
-.anotacao-editor__voltar:hover { opacity: 1; }
 
 .anotacao-editor__estrela {
   background: none;

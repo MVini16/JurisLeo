@@ -8,6 +8,9 @@
   font-family: 'Lato', sans-serif;
   padding: 4px 0 14px;
   display: block;
+  /* botões, por omissão do browser, centram o texto — sem isto, um
+     display:block sem largura própria (como este) fica sempre centrado */
+  text-align: left;
 }
 
 .botao-voltar:hover { opacity: 1; }

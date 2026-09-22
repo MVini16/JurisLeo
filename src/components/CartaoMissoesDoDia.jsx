@@ -1,5 +1,5 @@
 // cartão no início: três missões pequenas e fixas do dia — 25 minutos, 10 cartões, 1 sumário
-import { useSessoesEstudo } from '../hooks/useSessoesEstudo.js';
+import { useHistoricoEstudo } from '../hooks/useHistoricoEstudo.js';
 import { useFlashcards } from '../hooks/useFlashcards.js';
 import { useSumarios } from '../hooks/useSumarios.js';
 import { progressoMissoes } from '../services/missoesDoDia.js';
@@ -12,7 +12,9 @@ const MISSOES = [
 ];
 
 export default function CartaoMissoesDoDia() {
-  const { sessoes, loading: aCarregarSessoes } = useSessoesEstudo();
+  // só de hoje, mas sem o limite de 20 sessões de useSessoesEstudo (pensado para o
+  // histórico recente, não para garantir que o dia de hoje inteiro está coberto)
+  const { sessoes, loading: aCarregarSessoes } = useHistoricoEstudo(1);
   const { flashcards, loading: aCarregarCartoes } = useFlashcards();
   const { sumarios, loading: aCarregarSumarios } = useSumarios();
 

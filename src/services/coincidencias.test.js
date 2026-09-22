@@ -96,6 +96,15 @@ describe('detetarChoques', () => {
     ];
     expect(detetarChoques(itens)).toHaveLength(1);
   });
+
+  it('duas cópias do mesmo evento de vários dias (mesmo id) nunca chocam consigo próprias', () => {
+    const epocaNormalFalsaAqui = (data) => data >= new Date(2100, 0, 1) && data <= new Date(2100, 0, 31);
+    const itens = [
+      { id: 'multi', titulo: 'Exame de dois dias', tipo: 'exame', data: new Date(2100, 0, 10) },
+      { id: 'multi', titulo: 'Exame de dois dias', tipo: 'exame', data: new Date(2100, 0, 11) },
+    ];
+    expect(detetarChoques(itens, { epocaNormal: epocaNormalFalsaAqui })).toEqual([]);
+  });
 });
 
 describe('choquesPorDia', () => {

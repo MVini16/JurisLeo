@@ -10,12 +10,15 @@ function paraData(item) {
   return item?.data instanceof Date ? item.data : item?.data?.toDate?.();
 }
 
-// próximo evento do tipo 'frequencia', a partir de hoje (inclusive), o mais próximo primeiro
+// próximo evento do tipo 'frequencia', a partir de hoje (inclusive), o mais próximo primeiro.
+// compara por chave de dia, não pela hora exata — uma frequência de hoje sem hora marcada
+// (meia-noite) continua "próxima" o dia inteiro, tal como proximaProva em provas.js
 export function proximaFrequencia(eventos, hoje = new Date()) {
+  const hojeChave = chaveData(hoje);
   const futuras = eventos
     .filter((ev) => ev.tipo === 'frequencia')
     .map((ev) => ({ ...ev, data: paraData(ev) }))
-    .filter((ev) => ev.data && ev.data >= hoje)
+    .filter((ev) => ev.data && chaveData(ev.data) >= hojeChave)
     .sort((a, b) => a.data - b.data);
   return futuras[0] || null;
 }

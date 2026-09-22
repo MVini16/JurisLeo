@@ -52,6 +52,9 @@ export function detetarChoques(itens, { epocaNormal } = {}) {
     for (let j = i + 1; j < provas.length; j++) {
       const a = provas[i];
       const b = provas[j];
+      // duas cópias do mesmo evento de vários dias (useCalendario.expandirMultiDia dá-lhes
+      // o mesmo id, um por dia) nunca "chocam" consigo próprias
+      if (a.id && a.id === b.id) continue;
       const dias = Math.abs(diferencaDias(a.data, b.data));
       const toleranciaDiaConsecutivo = emEpocaNormal(a.data) && emEpocaNormal(b.data);
       const limite = toleranciaDiaConsecutivo ? 1 : 0;

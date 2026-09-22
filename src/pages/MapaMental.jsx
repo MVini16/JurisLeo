@@ -20,6 +20,7 @@ export default function MapaMental() {
   const { mapa, loading, novo, criar, guardar, apagar } = useMapaMental(id);
 
   if (!novo && loading) return <div className="mm-pagina"><Carregando texto="A carregar..." tipo="templo" /></div>;
+  if (!novo && !mapa) return <div className="mm-pagina"><p>Este mapa já não existe.</p></div>;
 
   return (
     <div className={`mm-pagina ${darkMode ? 'dark' : ''}`}>

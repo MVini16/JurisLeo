@@ -55,19 +55,25 @@ export default function Estudo() {
   const totalRecente = sessoes.reduce((soma, s) => soma + (s.minutos || 0), 0);
   const tarefasPendentes = tarefas.filter((t) => !t.concluida);
 
-  // guarda o ponto onde vai, enquanto a sessão decorre, para poder oferecer "continuar" se ela sair
+  // guarda o ponto onde vai, enquanto a sessão decorre, para poder oferecer "continuar" se ela sair.
+  // guarda também se estava a correr ou em pausa: uma pausa longa (ex: fechou a app e só voltou
+  // duas horas depois) não pode contar essas duas horas como tempo activo de estudo
   useEffect(() => {
     if (!iniciado) return;
-    const snapshot = { cadeiraId, tarefaId, inicioMs: Date.now() - segundos * 1000, pausasFeitas };
+    const snapshot = { cadeiraId, tarefaId, inicioMs: Date.now() - segundos * 1000, segundos, pausasFeitas, aCorrer };
     try { localStorage.setItem(CHAVE_SESSAO_A_MEIO, JSON.stringify(snapshot)); } catch { /* sem localStorage, só não oferece continuar */ }
-  }, [iniciado, segundos, cadeiraId, tarefaId, pausasFeitas]);
+  }, [iniciado, aCorrer, segundos, cadeiraId, tarefaId, pausasFeitas]);
 
   function continuarSessaoAMeio() {
     if (!sessaoAMeio) return;
     setCadeiraId(sessaoAMeio.cadeiraId);
     setTarefaId(sessaoAMeio.tarefaId);
-    const passados = Math.max(0, Math.round((Date.now() - sessaoAMeio.inicioMs) / 1000));
-    iniciar({ retomarDe: { inicio: new Date(sessaoAMeio.inicioMs), segundos: passados, pausasFeitas: sessaoAMeio.pausasFeitas } });
+    // só soma o tempo entretanto passado se a sessão estava mesmo a correr quando saiu;
+    // se estava em pausa, o tempo activo é exactamente o que já lá estava, sem mais nada
+    const passados = sessaoAMeio.aCorrer
+      ? Math.max(0, Math.round((Date.now() - sessaoAMeio.inicioMs) / 1000))
+      : sessaoAMeio.segundos ?? 0;
+    iniciar({ retomarDe: { inicio: new Date(Date.now() - passados * 1000), segundos: passados, pausasFeitas: sessaoAMeio.pausasFeitas } });
     setSessaoAMeio(null);
   }
 

@@ -16,12 +16,13 @@ export default function TopicosCorrecao() {
   const { item, loading, novo, criar, guardar, apagar } = useTopicosCorrecao(id);
 
   if (!novo && loading) return <div className="tc-pagina"><Carregando texto="A carregar..." tipo="templo" /></div>;
+  if (!novo && !item) return <div className="tc-pagina"><p className="tc-sub">Esta comparação já não existe.</p></div>;
 
   return (
     <div className={`tc-pagina ${darkMode ? 'dark' : ''}`}>
       <BotaoVoltar destino="/topicos-correcao" texto="‹ Tópicos de Correção" />
       {novo ? (
-        <FormularioNovo criar={criar} onCriado={(novoId) => navigate(`/topicos-correcao/${novoId}`)} />
+        <FormularioNovo criar={criar} onCriado={(novoId) => navigate(`/topicos-correcao/${novoId}`, { replace: true })} />
       ) : (
         <Comparacao item={item} guardar={guardar} apagar={apagar} onApagado={() => navigate('/topicos-correcao')} />
       )}

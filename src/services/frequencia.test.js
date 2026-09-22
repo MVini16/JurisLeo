@@ -27,6 +27,12 @@ describe('proximaFrequencia', () => {
     const eventos = [{ id: 'a', tipo: 'frequencia', data: new Date(2026, 10, 5, 14, 0) }];
     expect(proximaFrequencia(eventos, hoje)?.id).toBe('a');
   });
+
+  it('uma frequência de hoje sem hora (meia-noite) continua a contar à tarde', () => {
+    const tardeDeHoje = new Date(2026, 10, 5, 15, 0);
+    const eventos = [{ id: 'a', tipo: 'frequencia', data: new Date(2026, 10, 5, 0, 0) }];
+    expect(proximaFrequencia(eventos, tardeDeHoje)?.id).toBe('a');
+  });
 });
 
 describe('diasRestantes', () => {

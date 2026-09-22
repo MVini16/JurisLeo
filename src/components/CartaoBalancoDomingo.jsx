@@ -1,7 +1,7 @@
 // cartão no início, só ao domingo: horas, cartões, sumários, o que ficou por fazer, e uma pergunta —
 // uma vez por semana, dispensa-se com um clique até à próxima
 import { useState } from 'react';
-import { useSessoesEstudo } from '../hooks/useSessoesEstudo.js';
+import { useHistoricoEstudo } from '../hooks/useHistoricoEstudo.js';
 import { useFlashcards } from '../hooks/useFlashcards.js';
 import { useSumarios } from '../hooks/useSumarios.js';
 import { useTarefas } from '../hooks/useTarefas.js';
@@ -16,7 +16,9 @@ function lerSemanaDispensada() {
 }
 
 export default function CartaoBalancoDomingo() {
-  const { sessoes, loading: aCarregarSessoes } = useSessoesEstudo();
+  // 8 dias chegam para cobrir a semana corrente inteira, sem o limite de 20 sessões
+  // de useSessoesEstudo (que existe para o histórico recente, não para um total semanal)
+  const { sessoes, loading: aCarregarSessoes } = useHistoricoEstudo(8);
   const { flashcards, loading: aCarregarCartoes } = useFlashcards();
   const { sumarios, loading: aCarregarSumarios } = useSumarios();
   const { tarefas, loading: aCarregarTarefas } = useTarefas();

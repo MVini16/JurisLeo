@@ -1,7 +1,7 @@
 // hook dos flashcards — cria, lê, regista respostas (repetição espaçada) e apaga
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { calcularProximaRevisaoPorConfianca } from '../services/repeticaoEspacada.js';
 
@@ -53,6 +53,7 @@ export function useFlashcards() {
       nivel: novoNivel,
       proximaRevisao,
       ultimaConfianca: confianca,
+      ultimaRevisaoEm: serverTimestamp(),
       acertos: (flashcard.acertos || 0) + (acertou ? 1 : 0),
       erros: (flashcard.erros || 0) + (acertou ? 0 : 1),
     });

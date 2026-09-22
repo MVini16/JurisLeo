@@ -22,11 +22,12 @@ export function useSessoesEstudo() {
     return () => unsub();
   }, []);
 
-  async function registarSessao({ cadeiraId, inicio, fim, minutos, pausasFeitas }) {
+  async function registarSessao({ cadeiraId, tarefaId, inicio, fim, minutos, pausasFeitas }) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
     await addDoc(collection(db, 'users', userId, 'sessoesEstudo'), {
       cadeiraId: cadeiraId || null,
+      tarefaId: tarefaId || null,
       inicio: Timestamp.fromDate(inicio),
       fim: Timestamp.fromDate(fim),
       minutos,

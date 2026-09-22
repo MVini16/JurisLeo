@@ -8,7 +8,7 @@ import { logout } from '../services/auth.js';
 import { useTheme } from '../context/useTheme.js';
 import PerfilEstudo from '../components/PerfilEstudo.jsx';
 import PerfilBemEstar from '../components/PerfilBemEstar.jsx';
-import { O_QUE_O_VINI_VE, O_QUE_O_VINI_VE_BEM_ESTAR } from '../data/consola.js';
+import { O_QUE_O_VINI_VE, O_QUE_O_VINI_VE_BEM_ESTAR, O_QUE_O_VINI_VE_SEQUENCIA_A_DOIS } from '../data/consola.js';
 import { useModulos } from '../hooks/useModulos.js';
 import './Perfil.css';
 
@@ -69,7 +69,7 @@ export default function Perfil() {
         <h2 className="perfil-seccao__titulo">O que o Vini vê</h2>
         <p className="perfil-manutencao-texto">O Vini tem uma consola para te ajudar. Isto é tudo o que lá aparece:</p>
         <ul className="perfil-vini-lista">
-          {[...O_QUE_O_VINI_VE, ...(ativos.bemEstar ? O_QUE_O_VINI_VE_BEM_ESTAR : [])].map((t) => <li key={t}>{t}</li>)}
+          {[...O_QUE_O_VINI_VE, ...(ativos.bemEstar ? O_QUE_O_VINI_VE_BEM_ESTAR : []), ...(ativos.sequenciaADois ? O_QUE_O_VINI_VE_SEQUENCIA_A_DOIS : [])].map((t) => <li key={t}>{t}</li>)}
         </ul>
       </section>
 

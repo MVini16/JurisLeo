@@ -39,6 +39,10 @@ export function useDadosDela(ativo) {
       const [cadeiras, tarefas, sessoes, anotacoes, casos, flashcards, eventos, listaRegistos] = listas;
       const registosDiarios = Object.fromEntries(listaRegistos.map(({ id, ...resto }) => [id, resto]));
 
+      // só para saber se ela ligou "sequência a dois" — decide se mostramos o "estudou hoje"
+      const configSnap = await getDoc(doc(db, ...base, 'configuracoes', 'dados'));
+      const sequenciaADoisLigada = configSnap.data()?.modulos?.sequenciaADois === true;
+
       const faltas = {};
       const avaliacoes = {};
       await Promise.all(cadeiras.map(async (c) => {
@@ -50,7 +54,7 @@ export function useDadosDela(ativo) {
         avaliacoes[c.id] = a.data() || {};
       }));
 
-      setEstado({ dados: { cadeiras, faltas, avaliacoes, tarefas, sessoes, anotacoes, casos, flashcards, eventos, registosDiarios }, loading: false, erro: '', lidoEm: new Date() });
+      setEstado({ dados: { cadeiras, faltas, avaliacoes, tarefas, sessoes, anotacoes, casos, flashcards, eventos, registosDiarios, sequenciaADoisLigada }, loading: false, erro: '', lidoEm: new Date() });
     } catch (e) {
       setEstado((prev) => ({ ...prev, loading: false, erro: e?.code === 'permission-denied' ? 'permissao' : 'falhou' }));
     }

@@ -14,6 +14,8 @@ import { useModulos } from '../hooks/useModulos.js'
 import { MODULOS } from '../data/modulos.js'
 import Esqueleto from '../components/animacoes/Esqueleto.jsx'
 import CartaoBemEstar from '../components/CartaoBemEstar.jsx'
+import CartaoHorasPorRegistar from '../components/CartaoHorasPorRegistar.jsx'
+import CartaoMissoesDoDia from '../components/CartaoMissoesDoDia.jsx'
 import { useBemEstar } from '../hooks/useBemEstar.js'
 import { estaEmBaixo, valoresDoDia } from '../services/bemEstar.js'
 import { chaveData } from '../data/feriados.js'
@@ -91,6 +93,8 @@ function Dashboard() {
   const ferramentasLigadas = MODULOS.filter((m) => m.categoria === 'ferramentas' && ativos[m.id]);
   const cartoes = {
     bemEstar: <CartaoBemEstar />,
+    horasPorRegistar: <CartaoHorasPorRegistar />,
+    missoesDoDia: <CartaoMissoesDoDia />,
     ferramentas: (
       <div className="card anim-entrada" style={{ '--delay': '0.5s' }}>
         <div className="card-header">

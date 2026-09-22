@@ -53,7 +53,7 @@ export function resumirDados({ cadeiras = [], faltas = {}, avaliacoes = {}, tare
     cadeiras: porCadeira,
     media: resultados.length ? resumoDoAno(resultados) : null,
     tarefas: { pendentes: pendentes.length, atrasadas: atrasadas.length, titulosAtrasadas: atrasadas.slice(0, 3).map((t) => t.titulo) },
-    estudo: { minutosSemana: minutosDaSemana(porDia, hoje), sequencia: sequenciaAtual(porDia, hoje).dias, sessoes: sessoes.length },
+    estudo: { minutosSemana: minutosDaSemana(porDia, hoje), sequencia: sequenciaAtual(porDia, hoje).dias, sessoes: sessoes.length, hoje: (porDia[hojeChave] || 0) > 0 },
     producao: {
       anotacoes: anotacoes.length,
       palavras: anotacoes.reduce((soma, a) => soma + contarPalavras(a.conteudo), 0),

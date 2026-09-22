@@ -1,0 +1,26 @@
+.missoes-lista { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+
+.missoes-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(120, 120, 120, 0.08);
+  font-size: 0.85rem;
+}
+
+.missoes-item.cumprida {
+  background: rgba(46, 125, 50, 0.12);
+  opacity: 0.85;
+}
+
+.missoes-item__check {
+  flex: 0 0 auto;
+  width: 22px;
+  text-align: center;
+}
+
+.missoes-item.cumprida .missoes-item__check { color: #2e7d32; font-weight: 800; }
+
+.missoes-item.cumprida .missoes-item__label { text-decoration: line-through; }

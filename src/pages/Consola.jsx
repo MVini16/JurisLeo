@@ -228,6 +228,9 @@ function Conteudo({ onBloquear }) {
 
           <Cartao titulo="Estudo">
             <p>Esta semana: <b>{textoDuracao(resumo.estudo.minutosSemana)}</b>. Dias seguidos: <b>{resumo.estudo.sequencia}</b>. Sessões registadas: {resumo.estudo.sessoes}.</p>
+            {dados?.sequenciaADoisLigada && (
+              <p className="co-nota">{resumo.estudo.hoje ? '✓ Já estudou hoje.' : 'Ainda não estudou hoje.'} Ela ligou a "sequência a dois" — é a única coisa nova que este toggle mostra.</p>
+            )}
           </Cartao>
 
           <Cartao titulo="O que ela produziu (só números)">

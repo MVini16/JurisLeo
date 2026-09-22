@@ -13,6 +13,11 @@ export const O_QUE_O_VINI_VE_BEM_ESTAR = [
   'Os dias que apagares aparecem como "apagado", sem conteúdo em lado nenhum. Vês o mesmo gráfico que ele vê, no teu Perfil.',
 ];
 
+// só aparece no Perfil dela quando ela liga a "sequência a dois"
+export const O_QUE_O_VINI_VE_SEQUENCIA_A_DOIS = [
+  'Se já estudaste hoje ou não — só isso, sem minutos nem detalhe do que fizeste (isso já aparece sempre na secção Estudo).',
+];
+
 export const O_QUE_O_VINI_VE = [
   'O estado de cada cadeira (avaliação e faltas), com a mesma explicação que tu vês.',
   'A tua média e a próxima frequência.',

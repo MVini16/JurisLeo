@@ -68,6 +68,12 @@ describe('resumirDados', () => {
     expect(r.estudo.minutosSemana).toBe(135);
     expect(r.estudo.sequencia).toBe(3);
     expect(r.estudo.sessoes).toBe(3);
+    expect(r.estudo.hoje).toBe(true);
+  });
+
+  it('estudo.hoje fica false sem nenhuma sessão no dia', () => {
+    const semHoje = resumirDados({ ...dados, sessoes: [sessao(22, 30), sessao(21, 45)] }, HOJE);
+    expect(semHoje.estudo.hoje).toBe(false);
   });
 
   it('só conta números da produção, nunca o texto', () => {

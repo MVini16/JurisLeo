@@ -200,3 +200,54 @@
   font-size: 0.72rem;
   opacity: 0.5;
 }
+
+.estudo-sessao__tarefa {
+  font-size: 0.72rem;
+  opacity: 0.65;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+}
+
+.estudo-sessao-meio {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(201, 168, 76, 0.12);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  margin-bottom: 14px;
+  font-size: 0.85rem;
+}
+
+.estudo-sessao-meio__acoes { display: flex; gap: 8px; flex: 0 0 auto; }
+
+.estudo-tarefa {
+  display: block;
+  margin: 0 0 16px;
+}
+
+.estudo-tarefa span {
+  display: block;
+  font-size: 0.75rem;
+  opacity: 0.65;
+  margin-bottom: 4px;
+}
+
+.estudo-tarefa__select {
+  width: 100%;
+  min-height: var(--toque-min);
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(120, 120, 120, 0.3);
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.88rem;
+}
+
+.estudo-tarefa__select:disabled { opacity: 0.6; }

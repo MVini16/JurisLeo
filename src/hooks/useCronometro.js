@@ -15,8 +15,15 @@ export function useCronometro() {
     return () => clearInterval(intervalRef.current);
   }, [aCorrer]);
 
-  const iniciar = useCallback(() => {
-    if (!inicioRef.current) inicioRef.current = new Date();
+  // opcoes.retomarDe: { inicio, segundos, pausasFeitas } — para continuar uma sessão que ficou a meio
+  const iniciar = useCallback((opcoes) => {
+    if (opcoes?.retomarDe) {
+      inicioRef.current = opcoes.retomarDe.inicio;
+      setSegundos(opcoes.retomarDe.segundos);
+      setPausasFeitas(opcoes.retomarDe.pausasFeitas);
+    } else if (!inicioRef.current) {
+      inicioRef.current = new Date();
+    }
     setACorrer(true);
   }, []);
 

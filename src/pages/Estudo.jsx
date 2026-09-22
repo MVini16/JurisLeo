@@ -1,5 +1,6 @@
 // cronómetro de sessões de estudo
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useCronometro } from '../hooks/useCronometro.js';
 import { useSessoesEstudo } from '../hooks/useSessoesEstudo.js';
@@ -38,10 +39,12 @@ function formatarDataHora(timestamp) {
 
 export default function Estudo() {
   const { darkMode } = useTheme();
+  const location = useLocation();
   const { segundos, aCorrer, pausasFeitas, iniciar, pausar, retomar, terminar } = useCronometro();
   const { sessoes, loading, registarSessao } = useSessoesEstudo();
   const { tarefas } = useTarefas();
-  const [cadeiraId, setCadeiraId] = useState(null);
+  // vindo do plano de estudo da semana: /estudo com { cadeiraId } no state da navegação
+  const [cadeiraId, setCadeiraId] = useState(location.state?.cadeiraId || null);
   const [tarefaId, setTarefaId] = useState(null);
   const [ultimoResumo, setUltimoResumo] = useState(null);
   // o que ficou a meio antes deste ecrã montar — não o que está a decorrer agora

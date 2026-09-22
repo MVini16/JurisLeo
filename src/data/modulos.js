@@ -35,6 +35,7 @@ export const MODULOS = [
   { id: 'ferrPares', categoria: 'ferramentas', grupo: 'Estudar', rota: '/pares', nome: 'Jogo de pares', descricao: 'Liga a pergunta à resposta, contra o relógio.', defeito: true },
   { id: 'ferrFrequencia', categoria: 'ferramentas', grupo: 'Estudar', rota: '/frequencia', nome: 'Modo Frequência', descricao: 'Só a prova que vem aí e a matéria por rever.', defeito: true },
   { id: 'ferrPrazos', categoria: 'ferramentas', grupo: 'Estudar', rota: '/prazos', nome: 'Calculadora de prazos', descricao: 'Dias úteis e seguidos, com feriados.', defeito: true },
+  { id: 'ferrPlanoEstudo', categoria: 'ferramentas', grupo: 'Estudar', rota: '/plano-estudo', nome: 'Plano de estudo', descricao: 'Uma cadeira por dia, a partir das tuas próximas provas.', defeito: true },
   { id: 'ferrCasos', categoria: 'ferramentas', grupo: 'Direito', rota: '/casos', nome: 'Casos práticos', descricao: 'Factos, questão, enquadramento e conclusão.', defeito: true },
   { id: 'ferrModoExame', categoria: 'ferramentas', grupo: 'Direito', rota: '/modo-exame', nome: 'Modo Exame', descricao: '90 minutos, um caso do arquivo, sem consultar nada.', defeito: true },
   { id: 'ferrTopicosCorrecao', categoria: 'ferramentas', grupo: 'Direito', rota: '/topicos-correcao', nome: 'Tópicos de Correção', descricao: 'Compara a tua resposta com a correção: o que reclamar e o que rever.', defeito: true },

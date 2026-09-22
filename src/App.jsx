@@ -38,6 +38,7 @@ import TopicosCorrecaoLista from './pages/TopicosCorrecaoLista'
 import TopicosCorrecao from './pages/TopicosCorrecao'
 import MapasMentaisLista from './pages/MapasMentaisLista'
 import MapaMental from './pages/MapaMental'
+import PlanoEstudo from './pages/PlanoEstudo'
 // componente de navegação — vai envolver todas as páginas principais
 import NavBar from './components/NavBar'
 import Carregando from './components/animacoes/Carregando.jsx'
@@ -94,6 +95,7 @@ function App() {
         <Route path="/topicos-correcao/:id" element={<NavBar><TopicosCorrecao /></NavBar>} />
         <Route path="/mapas-mentais" element={<NavBar><MapasMentaisLista /></NavBar>} />
         <Route path="/mapas-mentais/:id" element={<NavBar><MapaMental /></NavBar>} />
+        <Route path="/plano-estudo" element={<NavBar><PlanoEstudo /></NavBar>} />
         <Route path="/definicoes" element={<NavBar><Definicoes /></NavBar>} />
       </Routes>
     </BrowserRouter>

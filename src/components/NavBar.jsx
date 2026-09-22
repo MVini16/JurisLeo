@@ -89,6 +89,7 @@ const itensMais = [
   { label: 'Registar Falta', icon: '❌', cor: '#EC4899', acao: 'navegar', destino: '/faltas' },
   { label: 'Lançar Nota', icon: '📊', cor: '#EA580C', acao: 'navegar', destino: '/notas' },
   { label: 'Estudar', icon: '⏱️', cor: '#0F766E', acao: 'navegar', destino: '/estudo' },
+  { label: 'Modo Frequência', icon: '🎯', cor: '#7B1E2B', acao: 'navegar', destino: '/frequencia' },
 ]
 
 // navBar envolve o conteúdo das páginas principais

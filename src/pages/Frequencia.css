@@ -1,0 +1,137 @@
+/* modo frequência — ecrã cheio, sem navbar, o mais calmo possível */
+
+.frequencia-pagina {
+  min-height: 100vh;
+  padding: 20px 24px 60px;
+  max-width: 560px;
+  margin: 0 auto;
+  font-family: 'Lato', sans-serif;
+  color: var(--text-light);
+  transition: color 0.4s ease;
+}
+
+.frequencia-pagina.dark { color: var(--text-dark); }
+
+.frequencia-vazio-estado {
+  padding: 60px 0;
+  text-align: center;
+}
+
+.frequencia-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  margin: 0 0 12px;
+}
+
+.frequencia-vazio {
+  opacity: 0.6;
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+.frequencia-conteudo {
+  padding-top: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.frequencia-cadeira {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--cor);
+  margin: 0 0 20px;
+}
+
+.frequencia-dias {
+  font-family: 'Playfair Display', serif;
+  font-size: 5rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0;
+  background: linear-gradient(135deg, var(--cor), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.frequencia-dias-label {
+  font-size: 0.85rem;
+  opacity: 0.6;
+  margin: 4px 0 2px;
+}
+
+.frequencia-data {
+  font-size: 0.8rem;
+  opacity: 0.45;
+  margin: 0 0 40px;
+}
+
+.frequencia-checklist {
+  width: 100%;
+  text-align: left;
+}
+
+.frequencia-checklist__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.frequencia-checklist__titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.frequencia-checklist__progresso {
+  font-size: 0.78rem;
+  opacity: 0.5;
+  flex-shrink: 0;
+  padding-left: 12px;
+}
+
+.frequencia-ponto {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 4px;
+  border: none;
+  border-bottom: 1px solid rgba(120, 120, 120, 0.12);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+}
+
+.frequencia-ponto__check {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(120, 120, 120, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  margin-top: 1px;
+}
+
+.frequencia-ponto.revisto .frequencia-ponto__check {
+  background: var(--cor);
+  border-color: var(--cor);
+  color: #fff;
+}
+
+.frequencia-ponto.revisto .frequencia-ponto__texto {
+  opacity: 0.45;
+  text-decoration: line-through;
+}

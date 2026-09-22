@@ -25,6 +25,7 @@ import Ajuda from './pages/Ajuda'
 import Tarefas from './pages/Tarefas'
 import Calendario from './pages/Calendario'
 import Perfil from './pages/Perfil'
+import Frequencia from './pages/Frequencia'
 // componente de navegação — vai envolver todas as páginas principais
 import NavBar from './components/NavBar'
 
@@ -36,6 +37,8 @@ function App() {
         <Route path="/" element={<SplashScreen />} />
         <Route path="/login" element={<Login />} />
         <Route path="/onboarding" element={<Onboarding />} />
+        {/* modo frequência: ecrã cheio, distração zero, também sem navbar */}
+        <Route path="/frequencia" element={<Frequencia />} />
 
         {/* páginas principais — com navbar */}
         <Route path="/dashboard" element={<NavBar><Dashboard /></NavBar>} />

@@ -72,6 +72,35 @@ html:not(.dark) body {
   --tinta: #3a2a1c;
 }
 
+/* avisos de mau tempo do ipma e caixas do cartão do tempo — o texto escuro sobre fundo claro passa os 4.5:1 */
+:root {
+  --aviso-amarelo-fundo: #F6E7B8;
+  --aviso-amarelo-borda: #E3CB7F;
+  --aviso-amarelo-texto: #4A3700;
+  --aviso-laranja-fundo: #F6D5B8;
+  --aviso-laranja-borda: #E5A874;
+  --aviso-laranja-texto: #5C2A00;
+  --aviso-vermelho-fundo: #F3C9C4;
+  --aviso-vermelho-borda: #D9887F;
+  --aviso-vermelho-texto: #5E1510;
+  --texto-suave: #6b5a4e;
+  --caixa-suave: var(--pergaminho);
+}
+
+html.dark {
+  --aviso-amarelo-fundo: #3A3016;
+  --aviso-amarelo-borda: #6B5A26;
+  --aviso-amarelo-texto: #F3DFA2;
+  --aviso-laranja-fundo: #3D2716;
+  --aviso-laranja-borda: #7A4A26;
+  --aviso-laranja-texto: #F5C9A0;
+  --aviso-vermelho-fundo: #3D1A1A;
+  --aviso-vermelho-borda: #7A3030;
+  --aviso-vermelho-texto: #F2B8B0;
+  --texto-suave: #BFAFA3;
+  --caixa-suave: rgba(201, 168, 76, 0.08);
+}
+
 /* quem pede menos movimento não leva animações */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

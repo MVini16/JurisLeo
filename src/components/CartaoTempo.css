@@ -1,0 +1,89 @@
+/* cartão do tempo (ipma) — cores só por variáveis do index.css */
+.card-tempo { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 14px; }
+.card-tempo .card-header { margin-bottom: 0; }
+
+.tempo-atualizado { font-size: 0.75rem; color: var(--texto-suave); }
+
+/* hoje em grande */
+.tempo-hoje { display: flex; align-items: center; gap: 14px; color: var(--gold-escuro); }
+.tempo-hoje--antigo { opacity: 0.7; }
+.tempo-hoje__texto { display: flex; flex-direction: column; gap: 2px; color: var(--text-light); }
+.tempo-hoje__dia { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--texto-suave); }
+.tempo-hoje__graus { font-size: 2rem; font-weight: 700; line-height: 1; }
+.tempo-hoje__min { font-size: 1.05rem; font-weight: 400; color: var(--texto-suave); }
+.tempo-hoje__descricao { font-size: 0.9rem; }
+
+/* os dias seguintes numa fila */
+.tempo-semana {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light);
+}
+.tempo-semana__dia { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.82rem; color: var(--gold-escuro); }
+.tempo-semana__dia > span { color: var(--text-light); }
+.tempo-semana__nome { font-weight: 700; }
+.tempo-semana__dia .tempo-semana__min { color: var(--texto-suave); }
+
+.tempo-fonte, .tempo-vazio { font-size: 0.75rem; color: var(--texto-suave); }
+.tempo-vazio { font-size: 0.9rem; }
+
+/* esqueleto enquanto carrega pela primeira vez */
+.tempo-esqueleto { height: 72px; border-radius: 12px; background: var(--caixa-suave); animation: tempoPulsar 1.4s ease-in-out infinite; }
+@keyframes tempoPulsar { 50% { opacity: 0.5; } }
+
+/* erro com explicação (a caixa da opção a) */
+.tempo-erro { display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 12px; background: var(--caixa-suave); }
+.tempo-erro__titulo { font-size: 0.95rem; }
+.tempo-erro__texto, .tempo-erro__explicacao { font-size: 0.9rem; line-height: 1.45; }
+.tempo-erro__botao {
+  align-self: flex-start;
+  min-height: var(--toque-min);
+  padding: 0 16px;
+  border-radius: 22px;
+  border: 1.5px solid var(--burgundy);
+  background: transparent;
+  color: var(--burgundy);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tempo-erro__botao:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* aviso de mau tempo, em cartão próprio (a opção c) */
+.tempo-aviso {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--aviso-texto);
+}
+/* mais específico que o .dashboard.dark .card, senão o tema escuro apagava a cor do aviso */
+.dashboard .card.tempo-aviso,
+.dashboard.dark .card.tempo-aviso {
+  background: var(--aviso-fundo);
+  border-color: var(--aviso-borda);
+}
+.tempo-aviso--yellow { --aviso-fundo: var(--aviso-amarelo-fundo); --aviso-borda: var(--aviso-amarelo-borda); --aviso-texto: var(--aviso-amarelo-texto); }
+.tempo-aviso--orange { --aviso-fundo: var(--aviso-laranja-fundo); --aviso-borda: var(--aviso-laranja-borda); --aviso-texto: var(--aviso-laranja-texto); }
+.tempo-aviso--red { --aviso-fundo: var(--aviso-vermelho-fundo); --aviso-borda: var(--aviso-vermelho-borda); --aviso-texto: var(--aviso-vermelho-texto); }
+.tempo-aviso__icone {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1.5px solid var(--aviso-borda);
+}
+.tempo-aviso__corpo { display: flex; flex-direction: column; gap: 2px; font-size: 0.9rem; line-height: 1.35; }
+.tempo-aviso__fim { font-size: 0.82rem; opacity: 0.85; }
+
+/* tema escuro: o texto principal acompanha o resto do dashboard */
+html.dark .tempo-hoje__texto, html.dark .tempo-semana__dia > span { color: var(--text-dark); }
+html.dark .tempo-hoje, html.dark .tempo-semana__dia { color: var(--gold); }
+html.dark .tempo-erro__botao { border-color: var(--gold); color: var(--gold); }
+html.dark .tempo-semana { border-top-color: var(--border-dark); }

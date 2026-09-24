@@ -4,14 +4,16 @@ import { useState, useEffect } from 'react';
 import { pedirPrevisao, pedirAvisos, avisosAtivos } from '../services/apis/ipma.js';
 
 export function useTempo() {
-  const [estado, setEstado] = useState({
+  // inicializador em função: corre uma só vez, por isso o Date.now() aqui é permitido
+  const [estado, setEstado] = useState(() => ({
     previsao: null,
     avisos: [],
     guardadoEm: null,
     erro: null,
     tentarDepois: null,
     aCarregar: true,
-  });
+    agora: Date.now(),
+  }));
 
   useEffect(() => {
     // evita mexer no estado depois de a página fechar, se o pedido acabar tarde
@@ -29,6 +31,8 @@ export function useTempo() {
         erro: previsao.erro,
         tentarDepois: previsao.tentarDepois,
         aCarregar: false,
+        // o momento desta atualização, para o cartão não chamar Date.now() no render
+        agora: Date.now(),
       });
     }
 

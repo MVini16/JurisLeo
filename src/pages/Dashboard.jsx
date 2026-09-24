@@ -17,6 +17,7 @@ import CartaoBemEstar from '../components/CartaoBemEstar.jsx'
 import CartaoHorasPorRegistar from '../components/CartaoHorasPorRegistar.jsx'
 import CartaoMissoesDoDia from '../components/CartaoMissoesDoDia.jsx'
 import CartaoBalancoDomingo from '../components/CartaoBalancoDomingo.jsx'
+import CartaoTempo from '../components/CartaoTempo.jsx'
 import { useBemEstar } from '../hooks/useBemEstar.js'
 import { estaEmBaixo, valoresDoDia } from '../services/bemEstar.js'
 import { chaveData } from '../data/feriados.js'
@@ -93,6 +94,7 @@ function Dashboard() {
   // cada cartão do ecrã de início; a ordem e o que aparece vêm das escolhas dela
   const ferramentasLigadas = MODULOS.filter((m) => m.categoria === 'ferramentas' && ativos[m.id]);
   const cartoes = {
+    tempo: <CartaoTempo />,
     bemEstar: <CartaoBemEstar />,
     horasPorRegistar: <CartaoHorasPorRegistar />,
     missoesDoDia: <CartaoMissoesDoDia />,

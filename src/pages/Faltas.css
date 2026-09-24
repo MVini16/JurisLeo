@@ -1,5 +1,5 @@
 .faltas-pagina {
-  min-height: 100vh;
+  min-height: 100vh; min-height: 100dvh;
   padding: 24px 20px 110px;
   max-width: 720px;
   margin: 0 auto;

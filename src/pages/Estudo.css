@@ -1,5 +1,5 @@
 .estudo-pagina {
-  min-height: 100vh;
+  min-height: 100vh; min-height: 100dvh;
   padding: 24px 20px 100px;
   max-width: 520px;
   margin: 0 auto;

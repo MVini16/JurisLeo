@@ -171,7 +171,7 @@
 .cal-diaria {
   display: flex;
   gap: 24px;
-  height: calc(100vh - 200px);
+  height: calc(100vh - 200px); height: calc(100dvh - 200px);
   animation: fadeInUp 0.4s ease;
 }
 
@@ -348,7 +348,7 @@
 .cal-semanal {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 200px);
+  height: calc(100vh - 200px); height: calc(100dvh - 200px);
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(184, 150, 62, 0.1);
   border-radius: 20px;
@@ -431,7 +431,7 @@
    ------------------------------------------------------------ */
 .cal-mensal-wrapper {
   display: flex; gap: 20px;
-  height: calc(100vh - 200px);
+  height: calc(100vh - 200px); height: calc(100dvh - 200px);
   animation: fadeInUp 0.4s ease;
 }
 
@@ -539,7 +539,7 @@
    vista lista
    ------------------------------------------------------------ */
 .cal-lista {
-  height: calc(100vh - 200px); overflow-y: auto;
+  height: calc(100vh - 200px); height: calc(100dvh - 200px); overflow-y: auto;
   display: flex; flex-direction: column; gap: 24px;
   padding-right: 8px;
   scrollbar-width: thin; scrollbar-color: rgba(184, 150, 62, 0.3) transparent;
@@ -822,7 +822,7 @@
   .cal-semanal-mobile {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 220px);
+    height: calc(100vh - 220px); height: calc(100dvh - 220px);
     border-radius: 16px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.02);

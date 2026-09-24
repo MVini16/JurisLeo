@@ -10,7 +10,7 @@
 
 html.dark .co-pagina, html.dark .co-pin { --acento: var(--gold); color: var(--text-dark); }
 
-.co-pin { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 14px; text-align: center; }
+.co-pin { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 14px; text-align: center; }
 .co-pin h1 { font-size: 1.6rem; }
 .co-pin p { font-size: 0.9rem; line-height: 1.5; opacity: 0.85; max-width: 340px; }
 

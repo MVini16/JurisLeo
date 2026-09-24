@@ -1,6 +1,7 @@
 .botao-ajuda {
   position: fixed;
-  bottom: 90px;
+  /* acima da tab bar, que no iphone sobe com a barra de baixo do sistema */
+  bottom: calc(90px + var(--zona-segura-baixo));
   left: 16px;
   z-index: 40;
   width: 36px;

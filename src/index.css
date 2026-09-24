@@ -21,7 +21,7 @@ body {
   background-color: var(--bg-light);
   color: var(--text-light);
   font-family: 'Georgia', serif;
-  min-height: 100vh;
+  min-height: 100vh; min-height: 100dvh;
 }
 
 /* antes de o react montar, segue o sistema operativo como palpite inicial */
@@ -47,7 +47,7 @@ html:not(.dark) body {
 
 #root {
   width: 100%;
-  min-height: 100vh;
+  min-height: 100vh; min-height: 100dvh;
 }
 
 /* cores semânticas e das famílias de eventos — partilhadas pelas páginas novas */
@@ -62,6 +62,8 @@ html:not(.dark) body {
   --familia-profissional: #6b5b95;
   --feriado: #b3423a;
   --toque-min: 44px;
+  /* altura da barra de baixo do iphone (0 nos ecrãs sem ela) — precisa de viewport-fit=cover no index.html */
+  --zona-segura-baixo: env(safe-area-inset-bottom, 0px);
   /* ouro em vários tons e papel, para as animações de abertura e de carregamento */
   --gold-claro: #F3DFA2;
   --gold-escuro: #8a6f2a;

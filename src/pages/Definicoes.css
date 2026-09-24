@@ -1,7 +1,7 @@
 /* definições — lista de interruptores por secção */
 .def-pagina {
   --acento: var(--burgundy);
-  min-height: 100vh;
+  min-height: 100vh; min-height: 100dvh;
   max-width: 520px;
   margin: 0 auto;
   padding: 24px 16px 110px;

@@ -28,6 +28,12 @@ export const ERROS_API = {
     explicacao:
       'O serviço respondeu, mas de uma forma que a app não conseguiu ler. Normalmente é um erro passageiro do lado deles. Se continuar a acontecer, conta ao Vini, que ele vê o que mudou.',
   },
+  textoLongo: {
+    titulo: 'Texto muito comprido',
+    texto: 'É texto a mais para rever de uma vez. Experimenta rever por partes.',
+    explicacao:
+      'O serviço de correção é gratuito e só aceita um certo tamanho de texto de cada vez. Se copiares uma parte para uma anotação à parte, ou se revires secção a secção, funciona sem problema.',
+  },
 };
 
 // devolve { titulo, texto, explicacao } prontos a mostrar; um erro desconhecido cai no "serviço em baixo"

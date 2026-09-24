@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import {
-  limparTermo, arrumarExtratoWikcionario, arrumarWikcionario, arrumarWikipedia, pedirSignificado, pedirResumo,
+  limparTermo, termoDoCampo, arrumarExtratoWikcionario, arrumarWikcionario, arrumarWikipedia, pedirSignificado, pedirResumo,
 } from './wikimedia.js';
 
 // extrato em texto no formato do livro de estilo do wikcionário (língua nível 1, classe nível 2)
@@ -70,10 +70,23 @@ describe('arrumarExtratoWikcionario', () => {
   });
 });
 
+describe('linha da palavra', () => {
+  it('a linha com a palavra em sílabas não conta como definição', () => {
+    const r = arrumarExtratoWikcionario('= Português =\n== Substantivo ==\npres.cri.ção f.\nextinção de um direito pelo tempo', 'prescrição');
+    expect(r.classes[0].definicoes).toEqual(['extinção de um direito pelo tempo']);
+  });
+
+  it('sem título não tira nada', () => {
+    const r = arrumarExtratoWikcionario('= Português =\n== Substantivo ==\nlei f.\nregra');
+    expect(r.classes[0].definicoes).toEqual(['lei f.', 'regra']);
+  });
+});
+
 describe('arrumarWikcionario', () => {
-  it('página com significados', () => {
+  it('página com significados, sem a linha da própria palavra', () => {
     const r = arrumarWikcionario({ query: { pages: [{ title: 'lei', extract: EXTRATO_LEI }] } });
     expect(r.titulo).toBe('lei');
+    expect(r.classes[0].definicoes[0]).toBe('regra de direito ditada pela autoridade estatal e tornada obrigatória');
     expect(r.url).toBe('https://pt.wiktionary.org/wiki/lei');
   });
 
@@ -139,5 +152,24 @@ describe('pedirSignificado e pedirResumo', () => {
     const d = deps({ title: 'Boa-fé objetiva', extract: '…' });
     await pedirResumo('boa-fé objetiva', { deps: d, cache: { storage: criarStorage() } });
     expect(d.fetch.mock.calls[0][0]).toBe('https://pt.wikipedia.org/api/rest_v1/page/summary/Boa-f%C3%A9_objetiva');
+  });
+});
+
+describe('termoDoCampo', () => {
+  const texto = 'A prescrição extingue o direito de boa-fé.';
+
+  it('com seleção usa o bocado selecionado, limpo', () => {
+    expect(termoDoCampo(texto, 2, 13)).toBe('prescrição');
+    expect(termoDoCampo(texto, 1, 13)).toBe('prescrição');
+  });
+
+  it('sem seleção apanha a palavra onde está o cursor, com hífen', () => {
+    expect(termoDoCampo(texto, 5)).toBe('prescrição');
+    expect(termoDoCampo(texto, 37)).toBe('boa-fé');
+    expect(termoDoCampo(texto, texto.length)).toBe('');
+  });
+
+  it('cursor no fim de uma palavra ainda a apanha', () => {
+    expect(termoDoCampo('lei ', 3)).toBe('lei');
   });
 });

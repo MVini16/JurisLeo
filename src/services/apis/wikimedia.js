@@ -21,7 +21,15 @@ function lerCabecalho(linha) {
 // extrato em texto do wikcionário → { lingua, classes: [{ classe, definicoes }] } ou null se não houver significados
 // não depende dos níveis dos cabeçalhos: língua é um nome de LINGUAS_WIKCIONARIO, classe é qualquer
 // outro cabeçalho dentro dela que não esteja em SECCOES_IGNORADAS
-export function arrumarExtratoWikcionario(extrato) {
+// a primeira linha de cada classe no wikcionário é a própria palavra em sílabas e o género
+// ("pres.cri.ção f."): não é uma definição, por isso sai
+function eLinhaDaPalavra(linha, titulo) {
+  if (!titulo) return false;
+  const semSilabas = linha.replace(/[.·]/g, '').toLowerCase();
+  return semSilabas.startsWith(titulo.toLowerCase());
+}
+
+export function arrumarExtratoWikcionario(extrato, titulo = '') {
   const porLingua = {};
   let lingua = null;
   let classe = null;
@@ -43,7 +51,7 @@ export function arrumarExtratoWikcionario(extrato) {
       continue;
     }
     const texto = linha.replace(/^[#*:\s]+/, '').trim();
-    if (classe && texto) classe.definicoes.push(texto);
+    if (classe && texto && !eLinhaDaPalavra(texto, titulo)) classe.definicoes.push(texto);
   }
   for (const nome of LINGUAS_WIKCIONARIO) {
     const classes = (porLingua[nome] ?? [])
@@ -60,7 +68,7 @@ export function arrumarWikcionario(json) {
   const pagina = json?.query?.pages?.[0];
   if (!pagina || typeof pagina.title !== 'string') return null;
   if (pagina.missing || pagina.invalid) return { naoEncontrado: true };
-  const conteudo = arrumarExtratoWikcionario(pagina.extract);
+  const conteudo = arrumarExtratoWikcionario(pagina.extract, pagina.title);
   if (!conteudo) return { naoEncontrado: true };
   return { titulo: pagina.title, ...conteudo, url: URL_PAGINA_WIKCIONARIO(pagina.title) };
 }
@@ -103,4 +111,19 @@ export function pedirResumo(termo, { deps, cache } = {}) {
   const titulo = limpo.charAt(0).toUpperCase() + limpo.slice(1);
   return comCache(`wikipedia-${titulo.toLowerCase()}`, VALIDADE_WIKIPEDIA_MS,
     () => pedirArrumado(URL_WIKIPEDIA(titulo), arrumarWikipedia, deps), cache);
+}
+
+// ─── que palavra procurar ────────────────────────────────────────────────────
+
+// com seleção: o bocado selecionado (até 60 caracteres); sem seleção: a palavra onde está o cursor
+// (letras, números, hífen e apóstrofo contam como parte da palavra: "boa-fé", "d'água")
+export function termoDoCampo(texto, inicio, fim = inicio) {
+  const t = String(texto ?? '');
+  if (fim > inicio) return limparTermo(t.slice(inicio, fim)).slice(0, 60);
+  const parteDaPalavra = (c) => /[\p{L}\p{N}'’-]/u.test(c ?? '');
+  let a = inicio;
+  let b = inicio;
+  while (a > 0 && parteDaPalavra(t[a - 1])) a -= 1;
+  while (b < t.length && parteDaPalavra(t[b])) b += 1;
+  return limparTermo(t.slice(a, b));
 }

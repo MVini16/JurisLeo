@@ -1,0 +1,64 @@
+/* folha do significado — reaproveita a folha e os botões da revisão (RevisaoTexto.css) */
+.signif-pesquisa { display: flex; gap: 8px; }
+.signif-pesquisa input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--toque-min);
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-light);
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  /* 16px: abaixo disto o iphone faz zoom ao escrever */
+  font-size: 1rem;
+}
+.signif-pesquisa input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+.signif-aviso {
+  font-size: 0.82rem;
+  line-height: 1.4;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--aviso-amarelo-fundo);
+  color: var(--aviso-amarelo-texto);
+}
+
+.signif-abas { display: flex; gap: 8px; }
+.signif-aba {
+  flex: 1;
+  min-height: var(--toque-min);
+  border-radius: 22px;
+  border: 1.5px solid var(--burgundy);
+  background: transparent;
+  color: var(--burgundy);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.signif-aba.ativa { background: var(--burgundy); color: var(--bg-light); }
+.signif-aba:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.signif-caixa { display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 12px; background: var(--caixa-suave); font-size: 0.95rem; line-height: 1.5; }
+.signif-caixa a { font-size: 0.85rem; color: var(--burgundy); }
+.signif-lingua, .signif-classe__nome {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+.signif-classe { display: flex; flex-direction: column; gap: 4px; }
+.signif-classe__lista { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+.signif-titulo { font-size: 1rem; }
+.signif-descricao { font-size: 0.85rem; color: var(--texto-suave); }
+
+/* botões "rever texto" e "significado" lado a lado por baixo de cada campo */
+.campo-ferramentas { display: flex; flex-wrap: wrap; gap: 8px; }
+.campo-ferramentas .revisao-botao--rever { margin: 4px 0; }
+
+html.dark .signif-pesquisa input { border-color: var(--border-dark); }
+html.dark .signif-aba { border-color: var(--gold); color: var(--gold); }
+html.dark .signif-aba.ativa { background: var(--gold); color: var(--bg-dark); }
+html.dark .signif-caixa a { color: var(--gold); }

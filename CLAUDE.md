@@ -84,6 +84,7 @@ Config: `vite.config.js`, `eslint.config.js`, `firebase.json`, `firestore.rules`
 
 - Paleta: burgundy `#6B0F1A` + gold `#C9A84C`, sobre fundo claro `#FAF8F5` / escuro `#1A1014` — tudo via CSS custom properties em `src/index.css`.
 - Tipografia: Georgia (serif) — tom mais formal/académico, coerente com o tema de Direito.
+  - Exceção aprovada pelo Vini (24-09-2026): dentro do caderno digital (`EditorCaderno`), a Leonor pode escolher uma letra manuscrita (Caveat, Google Fonts) ou moderna (Lato) para cada página. O resto da app continua em Georgia.
 - Tema claro/escuro: segue `prefers-color-scheme` por omissão, mas a Leonor pode escolher no onboarding/perfil; a escolha fica em `localStorage` (`jurisleo-theme`) e sincronizada no Firestore (`configuracoes/dados.tema`), com o `useRef` anti-ciclo descrito acima.
 - Viewport fixo sem zoom (`maximum-scale=1, user-scalable=no`) — a app assume-se mobile-first; testar sempre em ecrã de telemóvel antes de dar uma alteração visual como concluída.
 

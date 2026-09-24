@@ -35,6 +35,8 @@ async function tentar(url, opcoes, { fetch, timeoutMs, agora }) {
       return { fim: true, erro: 'limite', tentarDepois: lerRetryAfter(resposta.headers?.get?.('Retry-After'), agora()) };
     }
     if (resposta.status >= 500) return { repetir: true };
+    // 404: o que se procurou não existe (ex. uma palavra sem página) — não é culpa do serviço
+    if (resposta.status === 404) return { fim: true, erro: 'naoEncontrado' };
     // outros 4xx: o pedido está mal feito, repetir não muda nada
     if (!resposta.ok) return { fim: true, erro: 'respostaInvalida' };
     try {

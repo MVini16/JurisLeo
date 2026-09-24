@@ -115,8 +115,15 @@ describe('pedir', () => {
     expect(r.erro).toBe('respostaInvalida');
   });
 
-  it('404 é resposta inválida, sem repetir', async () => {
+  it('404 é "não encontrado", sem repetir', async () => {
     const fetch = vi.fn(async () => resposta(404));
+    const r = await pedir('https://x', {}, deps(fetch));
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(r.erro).toBe('naoEncontrado');
+  });
+
+  it('outro 4xx é resposta inválida, sem repetir', async () => {
+    const fetch = vi.fn(async () => resposta(400));
     const r = await pedir('https://x', {}, deps(fetch));
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(r.erro).toBe('respostaInvalida');

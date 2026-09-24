@@ -28,6 +28,12 @@ export const ERROS_API = {
     explicacao:
       'O serviço respondeu, mas de uma forma que a app não conseguiu ler. Normalmente é um erro passageiro do lado deles. Se continuar a acontecer, conta ao Vini, que ele vê o que mudou.',
   },
+  naoEncontrado: {
+    titulo: 'Não encontrei nada',
+    texto: 'O serviço não tem nada com este nome. Se foi uma palavra, experimenta outra forma (no singular, por exemplo).',
+    explicacao:
+      'O serviço respondeu, mas não tem nada guardado com esse nome. Nos dicionários e enciclopédias abertos, escritos por voluntários, nem todas as palavras estão lá, sobretudo as mais técnicas do Direito. Para essas, o manual da cadeira continua a ser a melhor fonte.',
+  },
   textoLongo: {
     titulo: 'Texto muito comprido',
     texto: 'É texto a mais para rever de uma vez. Experimenta rever por partes.',

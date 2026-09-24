@@ -1,5 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { arrumarPrevisao, arrumarAvisos, avisosAtivos, pedirPrevisao, pedirAvisos } from './ipma.js';
+import {
+  arrumarPrevisao, arrumarAvisos, avisosAtivos, pedirPrevisao, pedirAvisos,
+  separarDias, iconeTempo, textoAtualizado,
+} from './ipma.js';
 
 // exemplo no formato do ipma: números como texto, id do tempo como número
 const PREVISAO = {
@@ -101,5 +104,60 @@ describe('pedirPrevisao e pedirAvisos', () => {
   it('avisos vêm arrumados só para lisboa', async () => {
     const r = await pedirAvisos(undefined, { deps: depsCom(AVISOS), cache: { storage: criarStorage() } });
     expect(r.dados.map((a) => a.nivel)).toEqual(['yellow', 'orange', 'yellow']);
+  });
+});
+
+describe('separarDias', () => {
+  const dias = ['2026-09-23', '2026-09-24', '2026-09-25', '2026-09-26', '2026-09-27', '2026-09-28', '2026-09-29']
+    .map((data) => ({ data }));
+
+  it('hoje é o principal e seguem-se até 4 dias; ontem desaparece', () => {
+    const r = separarDias(dias, new Date(2026, 8, 24, 15, 0));
+    expect(r.principal.data).toBe('2026-09-24');
+    expect(r.eHoje).toBe(true);
+    expect(r.seguintes.map((d) => d.data)).toEqual(['2026-09-25', '2026-09-26', '2026-09-27', '2026-09-28']);
+  });
+
+  it('previsão guardada sem hoje: o principal é o primeiro dia que vem', () => {
+    const r = separarDias([{ data: '2026-09-25' }], new Date(2026, 8, 24));
+    expect(r.principal.data).toBe('2026-09-25');
+    expect(r.eHoje).toBe(false);
+  });
+
+  it('sem previsão, ou só dias passados, não há principal', () => {
+    expect(separarDias(null).principal).toBeNull();
+    expect(separarDias([{ data: '2020-01-01' }], new Date(2026, 8, 24)).principal).toBeNull();
+  });
+});
+
+describe('iconeTempo', () => {
+  it('agrupa os tipos do ipma', () => {
+    expect(iconeTempo(1)).toBe('sol');
+    expect(iconeTempo(3)).toBe('solNuvem');
+    expect(iconeTempo(9)).toBe('chuva');
+    expect(iconeTempo(20)).toBe('trovoada');
+    expect(iconeTempo(26)).toBe('nevoeiro');
+    expect(iconeTempo(27)).toBe('nuvem');
+    expect(iconeTempo(null)).toBe('nuvem');
+  });
+});
+
+describe('textoAtualizado', () => {
+  const t = new Date(2026, 8, 24, 10, 31).getTime();
+  const MIN = 60000;
+
+  it('menos de uma hora mostra a hora', () => {
+    expect(textoAtualizado(t, t + 20 * MIN)).toBe('às 10:31');
+  });
+
+  it('depois mostra há quanto tempo', () => {
+    expect(textoAtualizado(t, t + 60 * MIN)).toBe('há 1 hora');
+    expect(textoAtualizado(t, t + 3 * 60 * MIN)).toBe('há 3 horas');
+    expect(textoAtualizado(t, t + 24 * 60 * MIN)).toBe('há 1 dia');
+    expect(textoAtualizado(t, t + 50 * 60 * MIN)).toBe('há 2 dias');
+  });
+
+  it('sem data não diz nada', () => {
+    expect(textoAtualizado(null)).toBe('');
   });
 });

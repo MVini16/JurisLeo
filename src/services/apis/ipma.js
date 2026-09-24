@@ -5,6 +5,7 @@ import {
   VALIDADE_PREVISAO_MS, VALIDADE_AVISOS_MS, NIVEIS_AVISO, TIPOS_TEMPO,
 } from '../../data/ipma.js';
 import { pedir } from './cliente.js';
+import { chaveData } from '../../data/feriados.js';
 import { comCache } from './cache.js';
 
 // o ipma pode mandar números como texto ("27.3") e usa -99 para "sem dados"
@@ -74,4 +75,42 @@ export function pedirPrevisao(idLocal = ID_LOCAL_LISBOA, { deps, cache } = {}) {
 export function pedirAvisos(area = AREA_AVISO_LISBOA, { deps, cache } = {}) {
   return comCache(`ipma-avisos-${area}`, VALIDADE_AVISOS_MS,
     () => pedirArrumado(URL_AVISOS, (json) => arrumarAvisos(json, area), deps), cache);
+}
+
+// ─── para o cartão do dashboard ──────────────────────────────────────────────
+
+// o dia principal é hoje (ou o primeiro que vier, se a previsão guardada já não tiver hoje) e até 4 seguintes
+export function separarDias(previsao, hoje = new Date()) {
+  const chave = chaveData(hoje);
+  const futuros = (previsao ?? []).filter((d) => d.data >= chave);
+  const [principal = null, ...resto] = futuros;
+  return { principal, eHoje: principal?.data === chave, seguintes: resto.slice(0, 4) };
+}
+
+// os 27 tipos do ipma agrupados em 6 ícones; sem tipo conhecido fica a nuvem
+const GRUPOS_ICONE = {
+  sol: [1],
+  solNuvem: [2, 3, 5],
+  chuva: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 21],
+  trovoada: [19, 20, 23],
+  nevoeiro: [16, 17, 26],
+};
+
+export function iconeTempo(tipo) {
+  const grupo = Object.entries(GRUPOS_ICONE).find(([, tipos]) => tipos.includes(tipo));
+  return grupo ? grupo[0] : 'nuvem';
+}
+
+// "às 10:31" se tem menos de uma hora; depois "há 3 horas" ou "há 2 dias" (para a versão guardada)
+export function textoAtualizado(guardadoEm, agora = Date.now()) {
+  if (typeof guardadoEm !== 'number') return '';
+  const minutos = Math.floor((agora - guardadoEm) / 60000);
+  if (minutos < 60) {
+    const d = new Date(guardadoEm);
+    return `às ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  }
+  const horas = Math.floor(minutos / 60);
+  if (horas < 24) return horas === 1 ? 'há 1 hora' : `há ${horas} horas`;
+  const dias = Math.floor(horas / 24);
+  return dias === 1 ? 'há 1 dia' : `há ${dias} dias`;
 }

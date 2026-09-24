@@ -10,6 +10,7 @@ import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import EstadoVazio from '../components/EstadoVazio.jsx';
 import Carregando from '../components/animacoes/Carregando.jsx';
 import './ModoExame.css';
+import TextareaRevista from '../components/TextareaRevista.jsx';
 
 export default function ModoExame() {
   const navigate = useNavigate();
@@ -129,11 +130,11 @@ function Cronometro({ casoId, onSair }) {
         </div>
       ) : (
         <>
-          <textarea
+          <TextareaRevista
             className="me-resposta"
             rows={12}
             value={resposta}
-            onChange={(e) => setResposta(e.target.value)}
+            onValor={setResposta}
             placeholder="Cola ou escreve aqui a tua resposta..."
           />
           <button className="me-btn-terminar" onClick={guardarResposta} disabled={guardando || !resposta.trim()}>

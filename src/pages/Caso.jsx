@@ -10,6 +10,7 @@ import { cadeirasS1 } from '../data/dadosLeonor.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Caso.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
+import TextareaRevista from '../components/TextareaRevista.jsx';
 
 const ESTADOS = [
   { id: 'porResolver', label: 'Por resolver' },
@@ -113,16 +114,18 @@ function Formulario({ caso, novo, criar, guardar, apagar, onVoltar, aparecesEm =
       </label>
 
       {CAMPOS_ESTRUTURA.map((campo) => (
-        <label key={campo.chave} className="caso-editor__campo">
-          <span className="caso-editor__label">{campo.label}</span>
-          <textarea
+        // div e não label: o botão "rever texto" não pode ficar dentro de um label
+        <div key={campo.chave} className="caso-editor__campo">
+          <span className="caso-editor__label" id={`caso-${campo.chave}`}>{campo.label}</span>
+          <TextareaRevista
             className="caso-editor__textarea"
+            aria-labelledby={`caso-${campo.chave}`}
             rows={3}
             value={estrutura[campo.chave] || ''}
-            onChange={(e) => setEstrutura((prev) => ({ ...prev, [campo.chave]: e.target.value }))}
+            onValor={(valor) => setEstrutura((prev) => ({ ...prev, [campo.chave]: valor }))}
             placeholder={campo.placeholder}
           />
-        </label>
+        </div>
       ))}
 
       <div className="caso-editor__campo">
@@ -158,10 +161,10 @@ function Formulario({ caso, novo, criar, guardar, apagar, onVoltar, aparecesEm =
         </div>
       </div>
 
-      <label className="caso-editor__campo">
-        <span className="caso-editor__label">Nota / feedback do professor</span>
-        <textarea className="caso-editor__textarea" rows={2} value={notaDoProfessor} onChange={(e) => setNotaDoProfessor(e.target.value)} placeholder="O que o professor disse na correção..." />
-      </label>
+      <div className="caso-editor__campo">
+        <span className="caso-editor__label" id="caso-nota-professor">Nota / feedback do professor</span>
+        <TextareaRevista className="caso-editor__textarea" aria-labelledby="caso-nota-professor" rows={2} value={notaDoProfessor} onValor={setNotaDoProfessor} placeholder="O que o professor disse na correção..." />
+      </div>
 
       {aparecesEm.length > 0 && (
         <div className="caso-editor__campo">

@@ -10,6 +10,7 @@ import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Flashcards.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
+import TextareaRevista from '../components/TextareaRevista.jsx';
 
 export default function Flashcards() {
   const { darkMode } = useTheme();
@@ -115,13 +116,13 @@ function FormNovoFlashcard({ onGuardar }) {
       </div>
       {comLacunas ? (
         <>
-          <textarea className="flashcards-form-novo__textarea" placeholder="Escreve a frase e põe entre {{ }} o que queres esconder" rows={3} value={frente} onChange={(e) => setFrente(e.target.value)} autoFocus />
+          <TextareaRevista className="flashcards-form-novo__textarea" placeholder="Escreve a frase e põe entre {{ }} o que queres esconder" rows={3} value={frente} onValor={setFrente} autoFocus />
           <p className="flashcards-lacunas-previa">{lacunas ? `Vais ver: ${lacunas.frente}` : 'Exemplo: O contrato é um {{negócio jurídico}} bilateral.'}</p>
         </>
       ) : (
         <>
-          <textarea className="flashcards-form-novo__textarea" placeholder="Frente — a pergunta" rows={2} value={frente} onChange={(e) => setFrente(e.target.value)} autoFocus />
-          <textarea className="flashcards-form-novo__textarea" placeholder="Trás — a resposta" rows={2} value={tras} onChange={(e) => setTras(e.target.value)} />
+          <TextareaRevista className="flashcards-form-novo__textarea" placeholder="Frente — a pergunta" rows={2} value={frente} onValor={setFrente} autoFocus />
+          <TextareaRevista className="flashcards-form-novo__textarea" placeholder="Trás — a resposta" rows={2} value={tras} onValor={setTras} />
         </>
       )}
       <button className="flashcards-form-novo__guardar" onClick={guardar} disabled={aGuardar || !podeGuardar}>

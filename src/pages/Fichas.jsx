@@ -13,6 +13,7 @@ import EstadoVazio from '../components/EstadoVazio.jsx';
 import Carregando from '../components/animacoes/Carregando.jsx';
 import Toast from '../components/Toast.jsx';
 import './Ferramentas.css';
+import TextareaRevista from '../components/TextareaRevista.jsx';
 
 function valorLegivel(campo, valor) {
   if (!valor) return '';
@@ -26,7 +27,7 @@ function Campo({ campo, valor, erro, onMudar }) {
   return (
     <div className="fx-campo">
       <label htmlFor={id}>{campo.rotulo}{campo.obrigatorio ? ' *' : ''}</label>
-      {campo.tipo === 'longo' && <textarea id={id} rows={3} value={valor} placeholder={campo.dica} onChange={(e) => onMudar(e.target.value)} />}
+      {campo.tipo === 'longo' && <TextareaRevista id={id} rows={3} value={valor} placeholder={campo.dica} onValor={onMudar} />}
       {campo.tipo === 'texto' && <input id={id} type="text" value={valor} placeholder={campo.dica} onChange={(e) => onMudar(e.target.value)} />}
       {campo.tipo === 'data' && <input id={id} type="date" value={valor} onChange={(e) => onMudar(e.target.value)} />}
       {campo.tipo === 'escolha' && (

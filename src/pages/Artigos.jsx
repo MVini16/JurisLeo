@@ -9,6 +9,7 @@ import { ondeAparece } from '../services/backlinks.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Artigos.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
+import TextareaRevista from '../components/TextareaRevista.jsx';
 
 const CODIGOS = ['CC', 'CPA', 'CRP', 'CT', 'outro'];
 const CORES_CODIGO = { CC: '#7B1E2B', CPA: '#1F3A5F', CRP: '#2E6F5E', CT: '#C9843E', outro: '#5C8374' };
@@ -112,7 +113,7 @@ function FormNovoArtigo({ onGuardar }) {
         <input className="artigos-form-novo__numero" placeholder="Nº artigo" value={numero} onChange={(e) => setNumero(e.target.value)} autoFocus />
         <input className="artigos-form-novo__epigrafe" placeholder="Epígrafe (ex: Boa fé)" value={epigrafe} onChange={(e) => setEpigrafe(e.target.value)} />
       </div>
-      <textarea className="artigos-form-novo__textarea" placeholder="A tua nota sobre este artigo..." rows={2} value={notaPessoal} onChange={(e) => setNotaPessoal(e.target.value)} />
+      <TextareaRevista className="artigos-form-novo__textarea" placeholder="A tua nota sobre este artigo..." rows={2} value={notaPessoal} onValor={setNotaPessoal} />
       <div className="artigos-form-novo__linha">
         <div className="artigos-form-novo__dificuldade">
           {[1, 2, 3].map((d) => (
@@ -151,7 +152,7 @@ function ArtigoCard({ artigo, onAtualizar, onApagar, aparecesEm = [], onIrPara }
       {artigo.epigrafe && <h3 className="artigo-card__epigrafe">{artigo.epigrafe}</h3>}
       {aEditar ? (
         <>
-          <textarea className="artigo-card__textarea" rows={3} value={notaPessoal} onChange={(e) => setNotaPessoal(e.target.value)} />
+          <TextareaRevista className="artigo-card__textarea" rows={3} value={notaPessoal} onValor={setNotaPessoal} />
           <div className="artigo-card__acoes-edicao">
             <button className="artigo-card__btn-guardar" onClick={guardarEdicao}>Guardar</button>
             <button className="artigo-card__btn-cancelar" onClick={() => { setNotaPessoal(artigo.notaPessoal || ''); setAEditar(false); }}>Cancelar</button>

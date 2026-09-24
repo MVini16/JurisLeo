@@ -6,6 +6,7 @@ import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Glossario.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
+import TextareaRevista from '../components/TextareaRevista.jsx';
 
 export default function Glossario() {
   const { darkMode } = useTheme();
@@ -83,7 +84,7 @@ function FormNovoTermo({ onGuardar }) {
   return (
     <div className="glossario-form-novo">
       <input className="glossario-form-novo__input" placeholder="Termo (ex: prescrição)" value={termo} onChange={(e) => setTermo(e.target.value)} autoFocus />
-      <textarea className="glossario-form-novo__textarea" placeholder="Significado, em palavras tuas..." rows={2} value={significado} onChange={(e) => setSignificado(e.target.value)} />
+      <TextareaRevista className="glossario-form-novo__textarea" placeholder="Significado, em palavras tuas..." rows={2} value={significado} onValor={setSignificado} />
       <div className="glossario-form-novo__linha">
         <div className="glossario-form-novo__cadeiras">
           {cadeirasS1.map((c) => (
@@ -122,7 +123,7 @@ function TermoCard({ termo, onAtualizar, onApagar }) {
       <h3 className="termo-card__termo">{termo.termo}</h3>
       {aEditar ? (
         <>
-          <textarea className="termo-card__textarea" rows={3} value={significado} onChange={(e) => setSignificado(e.target.value)} />
+          <TextareaRevista className="termo-card__textarea" rows={3} value={significado} onValor={setSignificado} />
           <div className="termo-card__acoes-edicao">
             <button className="termo-card__btn-guardar" onClick={guardarEdicao}>Guardar</button>
             <button className="termo-card__btn-cancelar" onClick={() => { setSignificado(termo.significado); setAEditar(false); }}>Cancelar</button>

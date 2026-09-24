@@ -10,6 +10,7 @@ import { cadeirasS1 } from '../data/dadosLeonor.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Anotacao.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
+import TextareaRevista from '../components/TextareaRevista.jsx';
 
 export default function Anotacao() {
   const { id } = useParams();
@@ -123,11 +124,11 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
         <button className={`anotacao-editor__tipo-btn ${tipo === 'pratica' ? 'ativo' : ''}`} onClick={() => setTipo('pratica')} style={{ '--cor': cadeira?.cor }}>Prática</button>
       </div>
 
-      <textarea
+      <TextareaRevista
         className="anotacao-editor__conteudo"
         placeholder="Escreve aqui o que deu na aula..."
         value={conteudo}
-        onChange={(e) => setConteudo(e.target.value)}
+        onValor={setConteudo}
         rows={14}
       />
 

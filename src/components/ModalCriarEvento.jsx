@@ -10,6 +10,7 @@ import { tarefasEmCadeia, pedeLembretes } from '../services/lembretesProva.js';
 import { naEpocaNormal } from '../data/calendarioEscolar.js';
 import { detetarChoques, explicarChoque } from '../services/coincidencias.js';
 import './ModalCriarEvento.css';
+import TextareaRevista from './TextareaRevista.jsx';
 
 // cores por cadeira
 const CORES_CADEIRA = coresCadeiras;
@@ -377,11 +378,11 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
           {/* notas */}
           <div className="mce-campo mce-campo--7">
             <label className="mce-label">Notas</label>
-            <textarea
+            <TextareaRevista
               className="mce-input mce-textarea"
               placeholder="Alguma nota adicional..."
               value={form.notas}
-              onChange={(e) => atualizar('notas', e.target.value)}
+              onValor={(valor) => atualizar('notas', valor)}
             />
           </div>
 

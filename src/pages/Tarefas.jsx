@@ -9,6 +9,7 @@ import { coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Tarefas.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
 import MarteloJuiz from '../components/animacoes/MarteloJuiz.jsx';
+import TextareaRevista from '../components/TextareaRevista.jsx';
 
 // cores e nomes por cadeira
 const CORES_CADEIRA = coresCadeiras;
@@ -486,11 +487,11 @@ function ModalTarefa({ tarefaExistente, onFechar }) {
         {/* notas */}
         <div className="modal-campo anim-modal" style={{ '--i': 5 }}>
           <label className="modal-label">Notas</label>
-          <textarea
+          <TextareaRevista
             className="modal-textarea"
             placeholder="Notas opcionais..."
             value={notas}
-            onChange={e => setNotas(e.target.value)}
+            onValor={setNotas}
             rows={3}
           />
         </div>

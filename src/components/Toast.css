@@ -3,7 +3,8 @@
   left: 50%;
   bottom: calc(96px + env(safe-area-inset-bottom));
   transform: translateX(-50%);
-  z-index: 400;
+  /* acima dos modais (até 1000) e da folha de revisão (1100) */
+  z-index: 1200;
   display: flex;
   align-items: center;
   gap: 12px;

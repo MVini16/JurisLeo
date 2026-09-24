@@ -1,0 +1,20 @@
+/* erro de um serviço de fora, com botão explicar — usado no tempo e na revisão de texto */
+.erro-api { display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 12px; background: var(--caixa-suave); }
+.erro-api__titulo { font-size: 0.95rem; }
+.erro-api__texto, .erro-api__explicacao { font-size: 0.9rem; line-height: 1.45; }
+.erro-api__botao {
+  align-self: flex-start;
+  min-height: var(--toque-min);
+  padding: 0 16px;
+  border-radius: 22px;
+  border: 1.5px solid var(--burgundy);
+  background: transparent;
+  color: var(--burgundy);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.erro-api__botao:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+html.dark .erro-api__botao { border-color: var(--gold); color: var(--gold); }

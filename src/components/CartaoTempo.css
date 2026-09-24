@@ -33,25 +33,6 @@
 .tempo-esqueleto { height: 72px; border-radius: 12px; background: var(--caixa-suave); animation: tempoPulsar 1.4s ease-in-out infinite; }
 @keyframes tempoPulsar { 50% { opacity: 0.5; } }
 
-/* erro com explicação (a caixa da opção a) */
-.tempo-erro { display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 12px; background: var(--caixa-suave); }
-.tempo-erro__titulo { font-size: 0.95rem; }
-.tempo-erro__texto, .tempo-erro__explicacao { font-size: 0.9rem; line-height: 1.45; }
-.tempo-erro__botao {
-  align-self: flex-start;
-  min-height: var(--toque-min);
-  padding: 0 16px;
-  border-radius: 22px;
-  border: 1.5px solid var(--burgundy);
-  background: transparent;
-  color: var(--burgundy);
-  font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-.tempo-erro__botao:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-
 /* aviso de mau tempo, em cartão próprio (a opção c) */
 .tempo-aviso {
   grid-column: 1 / -1;
@@ -85,5 +66,4 @@
 /* tema escuro: o texto principal acompanha o resto do dashboard */
 html.dark .tempo-hoje__texto, html.dark .tempo-semana__dia > span { color: var(--text-dark); }
 html.dark .tempo-hoje, html.dark .tempo-semana__dia { color: var(--gold); }
-html.dark .tempo-erro__botao { border-color: var(--gold); color: var(--gold); }
 html.dark .tempo-semana { border-top-color: var(--border-dark); }

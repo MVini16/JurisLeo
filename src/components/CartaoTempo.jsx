@@ -1,10 +1,9 @@
 // tempo em lisboa (ipma) no dashboard: avisos de mau tempo, hoje em grande e os dias seguintes
 // se um pedido falha, mostra o que tinha guardado com o erro por cima e um botão "explicar"
-import { useState } from 'react';
 import { useTempo } from '../hooks/useTempo.js';
 import { separarDias, iconeTempo, textoAtualizado } from '../services/apis/ipma.js';
-import { mensagemDeErro } from '../data/errosApi.js';
 import { FONTE_IPMA, NOMES_NIVEL } from '../data/ipma.js';
+import CaixaErroApi from './CaixaErroApi.jsx';
 import './CartaoTempo.css';
 
 const DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
@@ -70,21 +69,6 @@ function CartaoAviso({ aviso, agora }) {
   );
 }
 
-function CaixaErro({ erro, tentarDepois }) {
-  const [aberta, setAberta] = useState(false);
-  const mensagem = mensagemDeErro(erro, tentarDepois);
-  return (
-    <div className="tempo-erro">
-      <strong className="tempo-erro__titulo">{mensagem.titulo}</strong>
-      <span className="tempo-erro__texto">{mensagem.texto}</span>
-      <button type="button" className="tempo-erro__botao" onClick={() => setAberta((a) => !a)} aria-expanded={aberta}>
-        {aberta ? 'Fechar' : 'Explicar'}
-      </button>
-      {aberta && <p className="tempo-erro__explicacao">{mensagem.explicacao}</p>}
-    </div>
-  );
-}
-
 export default function CartaoTempo() {
   const { previsao, avisos, guardadoEm, erro, tentarDepois, aCarregar, agora } = useTempo();
 
@@ -113,7 +97,7 @@ export default function CartaoTempo() {
           {atualizado && <span className="tempo-atualizado">{atualizado}</span>}
         </div>
 
-        {erro && <CaixaErro erro={erro} tentarDepois={tentarDepois} />}
+        {erro && <CaixaErroApi erro={erro} tentarDepois={tentarDepois} />}
 
         {principal && (
           <div className={`tempo-hoje ${erro ? 'tempo-hoje--antigo' : ''}`}>

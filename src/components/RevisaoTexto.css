@@ -1,0 +1,135 @@
+/* revisão de texto (languagetool): botão, folha de baixo e aviso — cores só por variáveis do index.css */
+
+/* botões da revisão, com 44px de toque */
+.revisao-botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--toque-min);
+  padding: 0 16px;
+  border-radius: 22px;
+  border: 1.5px solid var(--burgundy);
+  background: transparent;
+  color: var(--burgundy);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.revisao-botao--cheio { background: var(--burgundy); color: var(--bg-light); }
+.revisao-botao--texto { border-color: transparent; padding: 0 6px; }
+.revisao-botao--rever { align-self: flex-start; margin: 4px 0; }
+.revisao-botao:disabled { opacity: 0.5; cursor: default; }
+.revisao-botao:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* fundo escurecido por trás da folha e do aviso */
+.revisao-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(26, 16, 20, 0.45);
+  animation: revisaoFundo 0.2s ease;
+}
+.revisao-fundo--folha { align-items: flex-end; padding: 0; }
+@keyframes revisaoFundo { from { opacity: 0; } }
+
+/* aviso de privacidade */
+.revisao-aviso {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px;
+  border-radius: 18px;
+  background: var(--bg-light);
+  color: var(--text-light);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+.revisao-aviso__titulo { font-size: 1.1rem; color: var(--burgundy); }
+.revisao-aviso__texto { font-size: 0.95rem; line-height: 1.5; margin-bottom: 4px; }
+
+/* folha de baixo */
+.revisao-folha {
+  width: 100%;
+  max-width: 640px;
+  max-height: 80dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px 20px calc(24px + var(--zona-segura-baixo));
+  border-radius: 22px 22px 0 0;
+  background: var(--bg-light);
+  color: var(--text-light);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.18);
+  animation: revisaoSobe 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes revisaoSobe { from { transform: translateY(100%); } }
+.revisao-folha__pega { align-self: center; width: 40px; height: 5px; border-radius: 3px; background: var(--border-light); }
+.revisao-folha__topo { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.revisao-folha__titulo { font-size: 1.05rem; color: var(--burgundy); }
+.revisao-folha__nota, .revisao-folha__vazio { font-size: 0.9rem; color: var(--texto-suave); }
+.revisao-folha__mudou {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--aviso-amarelo-fundo);
+  color: var(--aviso-amarelo-texto);
+  font-size: 0.9rem;
+}
+.revisao-folha__esqueleto { height: 120px; border-radius: 12px; background: var(--caixa-suave); animation: revisaoPulsar 1.4s ease-in-out infinite; }
+@keyframes revisaoPulsar { 50% { opacity: 0.5; } }
+
+/* cada erro */
+.revisao-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.revisao-item { display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 12px; background: var(--caixa-suave); }
+.revisao-item__tipo {
+  align-self: flex-start;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid var(--border-light);
+  color: var(--texto-suave);
+}
+.revisao-item__tipo--ortografia { border-color: var(--burgundy); color: var(--burgundy); }
+.revisao-item__tipo--gramatica { border-color: var(--info); color: var(--info); }
+.revisao-item__contexto { font-size: 0.95rem; line-height: 1.5; word-break: break-word; }
+.revisao-item__errado {
+  padding: 0 2px;
+  border-radius: 4px;
+  background: var(--aviso-vermelho-fundo);
+  color: var(--aviso-vermelho-texto);
+  text-decoration: underline;
+  text-decoration-color: var(--burgundy);
+  /* os espaços a mais têm de se ver */
+  white-space: pre-wrap;
+}
+.revisao-item__mensagem { font-size: 0.88rem; }
+.revisao-item__acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+.revisao-item__acoes--secundarias { gap: 4px; margin-top: -4px; }
+
+.revisao-credito { align-self: center; font-size: 0.78rem; color: var(--texto-suave); }
+
+/* tema escuro */
+html.dark .revisao-aviso, html.dark .revisao-folha { background: var(--bg-dark); color: var(--text-dark); }
+html.dark .revisao-botao { border-color: var(--gold); color: var(--gold); }
+html.dark .revisao-botao--cheio { background: var(--gold); color: var(--bg-dark); }
+html.dark .revisao-botao--texto { border-color: transparent; }
+html.dark .revisao-aviso__titulo, html.dark .revisao-folha__titulo { color: var(--gold); }
+html.dark .revisao-folha__pega { background: var(--border-dark); }
+html.dark .revisao-item__tipo { border-color: var(--border-dark); }
+html.dark .revisao-item__tipo--ortografia { border-color: var(--gold); color: var(--gold); }
+html.dark .revisao-item__tipo--gramatica { border-color: var(--gold-claro); color: var(--gold-claro); }

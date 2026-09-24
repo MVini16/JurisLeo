@@ -85,6 +85,13 @@ html:not(.dark) body {
   --aviso-vermelho-texto: #5E1510;
   --texto-suave: #6b5a4e;
   --caixa-suave: var(--pergaminho);
+  /* marcadores do caderno digital (destaque do texto) — guardados assim no documento, mudam com o tema */
+  --destaque-amarelo: #F6E7B8;
+  --destaque-verde: #CFEBD9;
+  --destaque-azul: #C9DEF5;
+  --destaque-rosa: #F3D1DC;
+  /* linhas e quadrícula do papel */
+  --papel-linha: #D9E3F0;
 }
 
 html.dark {
@@ -99,6 +106,11 @@ html.dark {
   --aviso-vermelho-texto: #F2B8B0;
   --texto-suave: #BFAFA3;
   --caixa-suave: rgba(201, 168, 76, 0.08);
+  --destaque-amarelo: #5A4A12;
+  --destaque-verde: #1F4A33;
+  --destaque-azul: #1D3A5C;
+  --destaque-rosa: #5A2436;
+  --papel-linha: rgba(201, 168, 76, 0.16);
 }
 
 /* quem pede menos movimento não leva animações */

@@ -1,0 +1,132 @@
+/* letra manuscrita do caderno (só aqui dentro; a app continua em georgia) */
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap');
+
+/* editor do caderno digital — cores só por variáveis do index.css */
+.caderno-editor { display: flex; flex-direction: column; gap: 10px; }
+
+/* barra curta, presa ao topo enquanto ela desce na página */
+.caderno-barra {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0;
+  background: var(--bg-light);
+}
+.caderno-barra__espaco { flex: 1; }
+
+.caderno-btn {
+  min-width: var(--toque-min);
+  height: var(--toque-min);
+  padding: 0 10px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-light);
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.caderno-btn.ativo { background: var(--burgundy); border-color: var(--burgundy); color: var(--bg-light); }
+.caderno-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.caderno-btn--aa { font-family: 'Caveat', cursive; font-size: 1.4rem; }
+.caderno-btn--mais { font-size: 1.35rem; }
+.caderno-btn__marcador { background: var(--destaque-amarelo); padding: 0 5px; border-radius: 3px; }
+
+/* a página: letra e tamanho vêm do estilo da anotação (variáveis postas no style) */
+.caderno-pagina {
+  --linha: calc(var(--tamanho, 17px) * 1.7);
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+  background-color: var(--papel-fundo);
+  color: var(--text-light);
+}
+.caderno-pagina .ProseMirror {
+  min-height: 55dvh;
+  padding: 14px 16px 24px;
+  font-family: var(--letra);
+  font-size: var(--tamanho);
+  line-height: var(--linha);
+  outline: none;
+  word-break: break-word;
+}
+.caderno-pagina .ProseMirror:focus-visible { box-shadow: inset 0 0 0 2px var(--gold); border-radius: 6px; }
+
+/* papel: linhas à altura de cada linha de texto, ou quadrícula */
+.caderno-papel--linhas { background-image: linear-gradient(transparent calc(100% - 1px), var(--papel-linha) 1px); background-size: 100% var(--linha, 29px); background-position: 0 14px; }
+.caderno-papel--quadriculado {
+  background-image: linear-gradient(var(--papel-linha) 1px, transparent 1px), linear-gradient(90deg, var(--papel-linha) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* o que está dentro da página */
+.caderno-pagina .ProseMirror p { margin: 0; }
+.caderno-pagina .ProseMirror h1, .caderno-pagina .ProseMirror h2, .caderno-pagina .ProseMirror h3 { margin: 0; color: var(--burgundy); line-height: var(--linha); }
+.caderno-pagina .ProseMirror h1 { font-size: 1.5em; }
+.caderno-pagina .ProseMirror h2 { font-size: 1.25em; }
+.caderno-pagina .ProseMirror h3 { font-size: 1.1em; }
+.caderno-pagina .ProseMirror ul, .caderno-pagina .ProseMirror ol { margin: 0; padding-left: 1.4em; }
+.caderno-pagina .ProseMirror blockquote { margin: 0; padding-left: 12px; border-left: 3px solid var(--gold); font-style: italic; }
+.caderno-pagina .ProseMirror hr { border: none; border-top: 2px solid var(--border-light); margin: calc(var(--linha) / 2 - 1px) 0; }
+.caderno-pagina .ProseMirror mark { color: inherit; border-radius: 3px; padding: 0 2px; }
+.caderno-pagina .ProseMirror a { color: var(--burgundy); }
+.caderno-pagina .ProseMirror ul[data-type='taskList'] { list-style: none; padding-left: 0; }
+.caderno-pagina .ProseMirror ul[data-type='taskList'] li { display: flex; gap: 8px; align-items: flex-start; }
+.caderno-pagina .ProseMirror ul[data-type='taskList'] li > label { flex-shrink: 0; margin-top: calc((var(--linha) - 20px) / 2); }
+.caderno-pagina .ProseMirror ul[data-type='taskList'] li > label input { width: 20px; height: 20px; accent-color: var(--burgundy); }
+.caderno-pagina .ProseMirror ul[data-type='taskList'] li[data-checked='true'] > div { text-decoration: line-through; opacity: 0.6; }
+.caderno-pagina .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--texto-suave);
+  pointer-events: none;
+}
+
+.caderno-rodape { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.caderno-contador { font-size: 0.8rem; color: var(--texto-suave); }
+
+/* painéis */
+.caderno-painel__rotulo { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--texto-suave); }
+.caderno-grelha { display: grid; gap: 8px; }
+.caderno-grelha--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.caderno-grelha--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.caderno-grelha--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.caderno-opcao {
+  min-height: 52px;
+  padding: 8px 6px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-light);
+  background: transparent;
+  color: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.caderno-opcao.ativo { border: 2px solid var(--burgundy); }
+.caderno-opcao--papel { min-height: 64px; display: flex; align-items: flex-end; justify-content: center; font-family: inherit; font-size: 0.85rem; --linha: 10px; background-position: 0 0; }
+.caderno-opcao--papel.caderno-papel--quadriculado { background-size: 10px 10px; }
+.caderno-cores { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.caderno-cor {
+  width: var(--toque-min);
+  height: var(--toque-min);
+  border-radius: 50%;
+  border: 2px solid var(--border-light);
+  background: var(--cor);
+  cursor: pointer;
+}
+.caderno-cor--marcador { border-radius: 10px; }
+.caderno-cor:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.caderno-editor input[type='range'] { width: 100%; accent-color: var(--burgundy); min-height: var(--toque-min); }
+
+/* tema escuro */
+html.dark .caderno-barra { background: var(--bg-dark); }
+html.dark .caderno-btn { border-color: var(--border-dark); }
+html.dark .caderno-btn.ativo { background: var(--gold); border-color: var(--gold); color: var(--bg-dark); }
+html.dark .caderno-pagina { border-color: var(--border-dark); color: var(--text-dark); }
+html.dark .caderno-pagina .ProseMirror h1, html.dark .caderno-pagina .ProseMirror h2, html.dark .caderno-pagina .ProseMirror h3 { color: var(--gold); }
+html.dark .caderno-pagina .ProseMirror a { color: var(--gold); }
+html.dark .caderno-opcao { border-color: var(--border-dark); }
+html.dark .caderno-opcao.ativo { border-color: var(--gold); }
+html.dark .caderno-cor { border-color: var(--border-dark); }

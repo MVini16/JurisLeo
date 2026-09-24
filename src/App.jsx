@@ -12,6 +12,8 @@ import Cadeira from './pages/Cadeira'
 import Notas from './pages/Notas'
 import Faltas from './pages/Faltas'
 import Anotacoes from './pages/Anotacoes'
+import Cadernos from './pages/Cadernos'
+import Caderno from './pages/Caderno'
 import Anotacao from './pages/Anotacao'
 import Casos from './pages/Casos'
 import Caso from './pages/Caso'
@@ -71,7 +73,9 @@ function App() {
         <Route path="/cadeiras/:id" element={<NavBar><Cadeira /></NavBar>} />
         <Route path="/notas" element={<NavBar><Notas /></NavBar>} />
         <Route path="/faltas" element={<NavBar><Faltas /></NavBar>} />
-        <Route path="/anotacoes" element={<NavBar><Anotacoes /></NavBar>} />
+        <Route path="/anotacoes" element={<NavBar><Cadernos /></NavBar>} />
+        <Route path="/anotacoes/todas" element={<NavBar><Anotacoes /></NavBar>} />
+        <Route path="/anotacoes/caderno/:cadeiraId" element={<NavBar><Caderno /></NavBar>} />
         <Route path="/anotacoes/:id" element={<NavBar><Anotacao /></NavBar>} />
         <Route path="/casos" element={<NavBar><Casos /></NavBar>} />
         <Route path="/casos/:id" element={<NavBar><Caso /></NavBar>} />

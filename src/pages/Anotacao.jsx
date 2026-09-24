@@ -1,5 +1,6 @@
-// editor de uma anotação — criar ou editar
-import { useState } from 'react';
+// uma página do caderno digital — criar ou editar
+// o editor com formatação carrega à parte (lazy), para o resto da app não ficar mais pesado
+import { useState, lazy, Suspense } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useAnotacao } from '../hooks/useAnotacao.js';
@@ -10,7 +11,11 @@ import { cadeirasS1 } from '../data/dadosLeonor.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Anotacao.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
-import TextareaRevista from '../components/TextareaRevista.jsx';
+import { useDivisorias } from '../hooks/useDivisorias.js';
+import { divisoriaDaAnotacao, paginasDaDivisoria, ordemNova } from '../services/cadernos.js';
+import { docInicial, normalizarEstilo } from '../services/editorTexto.js';
+
+const EditorCaderno = lazy(() => import('../components/EditorCaderno.jsx'));
 
 export default function Anotacao() {
   const { id } = useParams();
@@ -33,10 +38,12 @@ export default function Anotacao() {
         anotacao={anotacao}
         nova={nova}
         cadeiraInicial={location.state?.cadeiraId}
+        divisoriaInicial={location.state?.divisoria}
+        anotacoes={anotacoes}
         criar={criar}
         guardar={guardar}
         apagar={apagar}
-        onVoltar={() => navigate('/anotacoes')}
+        onVoltar={(cadeiraId) => navigate(cadeiraId ? `/anotacoes/caderno/${cadeiraId}` : '/anotacoes')}
         aparecesEm={aparecesEm}
         onIrPara={(item) => navigate(item.tipo === 'anotacoes' ? `/anotacoes/${item.id}` : `/casos/${item.id}`)}
       />
@@ -44,11 +51,17 @@ export default function Anotacao() {
   );
 }
 
-function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, onVoltar, aparecesEm = [], onIrPara }) {
+function Formulario({ anotacao, nova, cadeiraInicial, divisoriaInicial, anotacoes = [], criar, guardar, apagar, onVoltar, aparecesEm = [], onIrPara }) {
   const [titulo, setTitulo] = useState(anotacao?.titulo || '');
   const [cadeiraId, setCadeiraId] = useState(anotacao?.cadeiraId || cadeiraInicial || cadeirasS1[0].id);
-  const [tipo, setTipo] = useState(anotacao?.tipo || 'teorica');
+  const [divisoria, setDivisoria] = useState(anotacao ? divisoriaDaAnotacao(anotacao) : (divisoriaInicial || 'teoricas'));
   const [conteudo, setConteudo] = useState(anotacao?.conteudo || '');
+  // o documento formatado; null enquanto ela não mexer (numa anotação antiga fica só o texto)
+  const [conteudoRico, setConteudoRico] = useState(anotacao?.conteudoRico ?? null);
+  const [estilo, setEstilo] = useState(() => normalizarEstilo(anotacao?.estilo));
+  // só no início: depois quem manda no documento é o editor
+  const [docDeArranque] = useState(() => docInicial(anotacao?.conteudoRico, anotacao?.conteudo));
+  const { daCadeira } = useDivisorias();
   const [tagsTexto, setTagsTexto] = useState((anotacao?.tags || []).join(', '));
   const [favorita, setFavorita] = useState(anotacao?.favorita || false);
   const [rascunho, setRascunho] = useState(anotacao?.rascunho ?? true);
@@ -56,14 +69,21 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
   const [guardado, setGuardado] = useState(false);
   const [confirmarApagar, setConfirmarApagar] = useState(false);
 
-  const cadeira = cadeirasS1.find((c) => c.id === cadeiraId);
+  const divisorias = daCadeira(cadeiraId);
+  // uma divisória que não existe nesta cadeira (mudou de cadeira, ou foi apagada) conta como teóricas
+  const divisoriaValida = divisorias.some((d) => d.id === divisoria) ? divisoria : 'teoricas';
 
   function dadosAtuais() {
     return {
       titulo: titulo.trim(),
       cadeiraId,
-      tipo,
+      divisoria: divisoriaValida,
+      // o tipo continua a existir para as partes da app que ainda o leem
+      tipo: divisoriaValida === 'praticas' ? 'pratica' : (anotacao?.tipo && divisoriaValida !== 'teoricas' ? anotacao.tipo : 'teorica'),
       conteudo,
+      // json limpo: o firestore não aceita valores undefined
+      ...(conteudoRico ? { conteudoRico: JSON.parse(JSON.stringify(conteudoRico)) } : {}),
+      estilo,
       tags: tagsTexto.split(',').map((t) => t.trim()).filter(Boolean),
       favorita,
       rascunho,
@@ -74,9 +94,11 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
     if (!titulo.trim()) return;
     setGuardando(true);
     if (nova) {
-      const novoId = await criar(dadosAtuais());
+      // página nova vai para o fim da divisória
+      const ordem = ordemNova(paginasDaDivisoria(anotacoes, cadeiraId, divisoriaValida, divisorias));
+      const novoId = await criar({ ...dadosAtuais(), ordem });
       setGuardando(false);
-      if (novoId) onVoltar();
+      if (novoId) onVoltar(cadeiraId);
     } else {
       await guardar(dadosAtuais());
       setGuardando(false);
@@ -87,13 +109,13 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
 
   async function handleApagar() {
     await apagar();
-    onVoltar();
+    onVoltar(cadeiraId);
   }
 
   return (
     <>
       <div className="anotacao-editor__header">
-        <BotaoVoltar destino="/anotacoes" texto="‹ Anotações" />
+        <BotaoVoltar destino={`/anotacoes/caderno/${cadeiraId}`} texto="‹ Caderno" />
         <button className={`anotacao-editor__estrela ${favorita ? 'ativa' : ''}`} onClick={() => setFavorita((f) => !f)}>
           {favorita ? '★' : '☆'}
         </button>
@@ -119,18 +141,29 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
         ))}
       </div>
 
-      <div className="anotacao-editor__tipos">
-        <button className={`anotacao-editor__tipo-btn ${tipo === 'teorica' ? 'ativo' : ''}`} onClick={() => setTipo('teorica')} style={{ '--cor': cadeira?.cor }}>Teórica</button>
-        <button className={`anotacao-editor__tipo-btn ${tipo === 'pratica' ? 'ativo' : ''}`} onClick={() => setTipo('pratica')} style={{ '--cor': cadeira?.cor }}>Prática</button>
+      <div className="anotacao-editor__tipos" role="group" aria-label="Divisória">
+        {divisorias.map((d) => (
+          <button
+            key={d.id}
+            className={`anotacao-editor__tipo-btn ${divisoriaValida === d.id ? 'ativo' : ''}`}
+            onClick={() => setDivisoria(d.id)}
+            style={{ '--cor': d.cor }}
+            aria-pressed={divisoriaValida === d.id}
+          >
+            {d.nome}
+          </button>
+        ))}
       </div>
 
-      <TextareaRevista
-        className="anotacao-editor__conteudo"
-        placeholder="Escreve aqui o que deu na aula..."
-        value={conteudo}
-        onValor={setConteudo}
-        rows={14}
-      />
+      <Suspense fallback={<Carregando texto="A abrir o caderno..." tipo="templo" />}>
+        <EditorCaderno
+          docInicial={docDeArranque}
+          textoInicial={anotacao?.conteudo || ''}
+          estilo={estilo}
+          onEstilo={setEstilo}
+          onMudar={({ json, texto }) => { setConteudoRico(json); setConteudo(texto); }}
+        />
+      </Suspense>
 
       <input
         className="anotacao-editor__tags"

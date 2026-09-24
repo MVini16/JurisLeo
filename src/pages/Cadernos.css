@@ -1,0 +1,192 @@
+/* estante dos cadernos e interior de um caderno — cores por variáveis do index.css; a cor de cada
+   cadeira vem de dadosLeonor.js pela variável --cor, como no resto da app */
+.cadernos-pagina {
+  min-height: 100vh; min-height: 100dvh;
+  padding: 24px 20px 100px;
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-family: 'Lato', sans-serif;
+  color: var(--text-light);
+}
+.cadernos-pagina.dark { color: var(--text-dark); }
+
+.cadernos-titulo { font-family: 'Playfair Display', Georgia, serif; font-size: 1.7rem; color: var(--burgundy); }
+.cadernos-pagina.dark .cadernos-titulo { color: var(--gold); }
+.cadernos-sub { font-size: 0.9rem; color: var(--texto-suave); }
+
+/* prateleira com lombadas */
+.cadernos-prateleira {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 0 6px;
+  border-bottom: 10px solid var(--gold-escuro);
+  border-radius: 0 0 4px 4px;
+  overflow-x: auto;
+}
+.cadernos-lombada {
+  flex: 0 0 58px;
+  height: var(--altura);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border: none;
+  border-radius: 6px 6px 3px 3px;
+  background: var(--cor);
+  color: var(--bg-light);
+  box-shadow: inset -6px 0 0 rgba(0, 0, 0, 0.15);
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.cadernos-lombada:hover, .cadernos-lombada:focus-visible { transform: translateY(-6px); }
+.cadernos-lombada:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.cadernos-lombada__nome { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 0.95rem; font-weight: 700; letter-spacing: 0.04em; }
+.cadernos-lombada__paginas { font-size: 0.8rem; }
+
+.cadernos-continuar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border-light);
+  background: var(--papel-fundo);
+  color: inherit;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+}
+.cadernos-continuar__rotulo { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--texto-suave); }
+.cadernos-continuar__titulo { font-size: 1.05rem; }
+.cadernos-continuar__detalhe { font-size: 0.85rem; color: var(--texto-suave); }
+
+.cadernos-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.cadernos-link, .caderno-botao {
+  min-height: var(--toque-min);
+  padding: 0 16px;
+  border-radius: 22px;
+  border: 1.5px solid var(--burgundy);
+  background: transparent;
+  color: var(--burgundy);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.caderno-botao--cheio { background: var(--burgundy); color: var(--bg-light); }
+.caderno-botao--texto { border-color: transparent; align-self: flex-start; padding: 0 4px; }
+.caderno-botao:disabled { opacity: 0.5; }
+
+/* interior */
+.caderno-capa {
+  padding: 16px 18px;
+  border-radius: 6px 14px 14px 6px;
+  background: var(--cor);
+  color: var(--bg-light);
+  box-shadow: inset 8px 0 0 rgba(0, 0, 0, 0.18);
+  font-size: 1.1rem;
+}
+
+.caderno-separadores { display: flex; gap: 6px; overflow-x: auto; margin-bottom: -16px; padding-top: 4px; scrollbar-width: none; }
+.caderno-separador {
+  flex-shrink: 0;
+  min-height: var(--toque-min);
+  padding: 0 16px;
+  border-radius: 12px 12px 0 0;
+  border: 1.5px solid var(--cor, var(--burgundy));
+  border-bottom: none;
+  background: transparent;
+  color: var(--cor, var(--burgundy));
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.caderno-separador.ativo { background: var(--cor); color: var(--bg-light); }
+.caderno-separador--novo { --cor: var(--texto-suave); font-size: 1.2rem; }
+.caderno-separador:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+
+.caderno-folha {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 16px 16px;
+  border-radius: 0 12px 12px 12px;
+  border: 1.5px solid var(--cor);
+  background: var(--papel-fundo);
+}
+.caderno-vazio { padding: 14px 0; font-size: 0.9rem; color: var(--texto-suave); }
+.caderno-paginas { list-style: none; margin: 0; padding: 0; }
+.caderno-pagina-item { display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--border-light); }
+.caderno-pagina-item__abrir {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--toque-min);
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+}
+.caderno-pagina-item__numero { color: var(--cor); font-weight: 700; }
+.caderno-pagina-item__titulo { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.caderno-pagina-item__data { font-size: 0.78rem; color: var(--texto-suave); flex-shrink: 0; }
+.caderno-pagina-item__mover { display: flex; }
+.caderno-pagina-item__mover button {
+  width: 36px;
+  height: var(--toque-min);
+  border: none;
+  background: transparent;
+  color: var(--texto-suave);
+  font-size: 1rem;
+  cursor: pointer;
+}
+.caderno-pagina-item__mover button:disabled { opacity: 0.25; cursor: default; }
+
+.caderno-nova-pagina {
+  min-height: var(--toque-min);
+  border: none;
+  background: transparent;
+  color: var(--burgundy);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.caderno-nova-divisoria { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 0; }
+.caderno-nova-divisoria input {
+  flex: 1 1 100%;
+  min-height: var(--toque-min);
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-light);
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1rem;
+}
+.caderno-apagar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 0.9rem; }
+
+/* tema escuro */
+.cadernos-pagina.dark .cadernos-link, .cadernos-pagina.dark .caderno-botao { border-color: var(--gold); color: var(--gold); }
+.cadernos-pagina.dark .caderno-botao--cheio { background: var(--gold); color: var(--bg-dark); }
+.cadernos-pagina.dark .caderno-botao--texto { border-color: transparent; }
+.cadernos-pagina.dark .cadernos-continuar, .cadernos-pagina.dark .caderno-pagina-item { border-color: var(--border-dark); }
+.cadernos-pagina.dark .caderno-nova-pagina { color: var(--gold); }
+.cadernos-pagina.dark .caderno-nova-divisoria input { border-color: var(--border-dark); }
+/* no escuro, a cor da divisória fica só na borda: o texto passa a claro para se ler */
+.cadernos-pagina.dark .caderno-separador:not(.ativo) { color: var(--text-dark); }
+.cadernos-pagina.dark .caderno-pagina-item__numero { color: var(--gold); }

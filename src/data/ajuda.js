@@ -91,21 +91,39 @@ export const ajudaPorRota = {
     ],
   },
   '/anotacoes': {
-    titulo: 'Anotações',
-    texto: 'As tuas notas de cada aula, para não teres de decorar tudo.',
+    titulo: 'Cadernos',
+    texto: 'Um caderno por cadeira, com as tuas notas de cada aula.',
     pontos: [
-      '"+ Nova" cria uma anotação, já a perguntar a cadeira e o tipo de aula.',
+      'Toca numa lombada para abrir o caderno dessa cadeira.',
+      '"Continuar onde ficaste" abre a última página em que mexeste.',
+      '"Ver todas numa lista" mostra todas as anotações, com filtros por cadeira.',
+    ],
+  },
+  '/anotacoes/todas': {
+    titulo: 'Todas as anotações',
+    texto: 'As páginas de todos os cadernos numa só lista.',
+    pontos: [
       'Os filtros por cadeira e a pesquisa ajudam a encontrar depois.',
       'A estrela marca uma anotação como favorita.',
     ],
   },
-  '/anotacoes/:id': {
-    titulo: 'Esta anotação',
-    texto: 'Escreve à vontade, marca como favorita, e assinala se ainda é rascunho.',
+  '/anotacoes/caderno/:id': {
+    titulo: 'Este caderno',
+    texto: 'As divisórias estão nos separadores de cima; cada uma tem as suas páginas.',
     pontos: [
-      'As tags (separadas por vírgula) ajudam a encontrar isto mais tarde na pesquisa.',
-      '"Guardar" grava as alterações.',
-      '"Apagar" remove de vez, sempre com confirmação antes.',
+      'O "+" nos separadores cria uma divisória nova (por exemplo, um capítulo).',
+      'As setas ↑ ↓ mudam a ordem das páginas.',
+      'Apagar uma divisória tua não apaga páginas: passam para as Teóricas.',
+    ],
+  },
+  '/anotacoes/:id': {
+    titulo: 'Esta página',
+    texto: 'Escreve à vontade, com formatação, e escolhe a letra e o papel.',
+    pontos: [
+      '"Aa" muda a letra (há uma manuscrita), o tamanho, a cor do texto e o papel.',
+      'O "+" tem o resto: títulos, listas de tarefas, citações, marcadores de várias cores e alinhamento.',
+      '"Rever texto" e "Significado" funcionam aqui também.',
+      '"Guardar" grava as alterações; "Apagar" pede sempre confirmação antes.',
     ],
   },
   '/casos': {
@@ -185,7 +203,8 @@ export const ajudaPorRota = {
 export function resolverAjuda(pathname) {
   if (ajudaPorRota[pathname]) return { chave: pathname, ...ajudaPorRota[pathname] };
 
-  const prefixosDinamicos = ['/cadeiras/', '/anotacoes/', '/casos/'];
+  // o mais comprido primeiro: /anotacoes/caderno/ antes de /anotacoes/
+  const prefixosDinamicos = ['/cadeiras/', '/anotacoes/caderno/', '/anotacoes/', '/casos/'];
   for (const prefixo of prefixosDinamicos) {
     if (pathname.startsWith(prefixo)) {
       const chave = `${prefixo}:id`;

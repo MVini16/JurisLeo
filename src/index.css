@@ -92,6 +92,7 @@ html:not(.dark) body {
   --destaque-rosa: #F3D1DC;
   /* linhas e quadrícula do papel */
   --papel-linha: #D9E3F0;
+  --papel-fundo: #FFFFFF;
 }
 
 html.dark {
@@ -111,6 +112,7 @@ html.dark {
   --destaque-azul: #1D3A5C;
   --destaque-rosa: #5A2436;
   --papel-linha: rgba(201, 168, 76, 0.16);
+  --papel-fundo: #231519;
 }
 
 /* quem pede menos movimento não leva animações */

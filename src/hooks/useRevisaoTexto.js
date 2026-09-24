@@ -1,9 +1,11 @@
 // estado da revisão de texto (languagetool) de um campo: rever, trocar, ignorar e desfazer
 // o texto continua a ser dono do formulário: este hook recebe-o e devolve-o por setTexto
+// campo (opcional): num editor com formatação, substituir(inicio, fim, troca) e desfazer() mudam só o
+// trecho certo, em vez de reescrever o texto todo (o que apagava a formatação)
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { reverTexto, aplicarSugestao, errosAindaValidos, filtrarConhecidas } from '../services/apis/languagetool.js';
 
-export function useRevisaoTexto(texto, setTexto, conhecidas = []) {
+export function useRevisaoTexto(texto, setTexto, conhecidas = [], campo = null) {
   // estado: 'parado' | 'aRever' | 'pronto' | 'erro'
   const [revisao, setRevisao] = useState({ estado: 'parado', erros: [], erro: null, tentarDepois: null });
   // o que havia antes da última troca, para o "desfazer"
@@ -39,10 +41,12 @@ export function useRevisaoTexto(texto, setTexto, conhecidas = []) {
 
   const trocar = useCallback((erro, troca) => {
     setAntesDaTroca({ texto, erros: revisao.erros });
+    // aplicarSugestao continua a acertar as posições dos erros seguintes, nos dois casos
     const r = aplicarSugestao(texto, revisao.erros, erro, troca);
-    setTexto(r.texto);
+    if (campo?.substituir) campo.substituir(erro.inicio, erro.inicio + erro.tamanho, troca);
+    else setTexto(r.texto);
     setRevisao((atual) => ({ ...atual, erros: r.erros }));
-  }, [texto, revisao.erros, setTexto]);
+  }, [texto, revisao.erros, setTexto, campo]);
 
   const ignorar = useCallback((erro) => {
     setRevisao((atual) => ({ ...atual, erros: atual.erros.filter((e) => e.id !== erro.id) }));
@@ -50,10 +54,11 @@ export function useRevisaoTexto(texto, setTexto, conhecidas = []) {
 
   const desfazer = useCallback(() => {
     if (!antesDaTroca) return;
-    setTexto(antesDaTroca.texto);
+    if (campo?.desfazer) campo.desfazer();
+    else setTexto(antesDaTroca.texto);
     setRevisao((atual) => ({ ...atual, erros: antesDaTroca.erros }));
     setAntesDaTroca(null);
-  }, [antesDaTroca, setTexto]);
+  }, [antesDaTroca, setTexto, campo]);
 
   const limparDesfazer = useCallback(() => setAntesDaTroca(null), []);
 

@@ -44,7 +44,7 @@ function Wikipedia({ resultado }) {
   );
 }
 
-export default function Significado({ texto, campoRef }) {
+export default function Significado({ texto, campo }) {
   const [aberta, setAberta] = useState(false);
   const [aba, setAba] = useState('dicionario');
   const [pesquisa, setPesquisa] = useState('');
@@ -56,8 +56,8 @@ export default function Significado({ texto, campoRef }) {
   }, [aberta]);
 
   function abrir() {
-    const campo = campoRef?.current;
-    const palavra = campo ? termoDoCampo(texto, campo.selectionStart ?? 0, campo.selectionEnd ?? 0) : '';
+    const sel = campo?.selecao();
+    const palavra = sel ? termoDoCampo(texto, sel.inicio, sel.fim) : '';
     setPesquisa(palavra);
     setAba('dicionario');
     setAberta(true);

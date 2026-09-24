@@ -1,5 +1,7 @@
 // botão "rever texto" para qualquer campo onde ela escreve, com a folha de baixo dos erros (languagetool)
-// uso: <RevisaoTexto texto={x} setTexto={setX} campoRef={refDaTextarea} />
+// uso: <RevisaoTexto texto={x} setTexto={setX} campo={adaptador} />
+// o adaptador do campo (textarea ou editor) tem: selecao() → { inicio, fim }, selecionar(inicio, fim),
+// e, no editor com formatação, substituir(inicio, fim, texto) e desfazer()
 // só envia o texto quando ela carrega no botão; na primeira vez mostra o aviso de privacidade
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useRevisaoTexto } from '../hooks/useRevisaoTexto.js';
@@ -68,7 +70,7 @@ function ItemErro({ texto, erro, onTrocar, onIgnorar, onCerta, onVer }) {
   );
 }
 
-export default function RevisaoTexto({ texto, setTexto, campoRef }) {
+export default function RevisaoTexto({ texto, setTexto, campo }) {
   // os listeners das palavras conhecidas só abrem depois do primeiro toque no botão
   const [ativo, setAtivo] = useState(false);
   const [aviso, setAviso] = useState(false);
@@ -77,7 +79,7 @@ export default function RevisaoTexto({ texto, setTexto, campoRef }) {
   const botaoFechar = useRef(null);
 
   const { conhecidas, adicionar } = usePalavrasConhecidas(ativo);
-  const revisao = useRevisaoTexto(texto, setTexto, conhecidas);
+  const revisao = useRevisaoTexto(texto, setTexto, conhecidas, campo);
   const { rever } = revisao;
 
   // o foco vai para a folha quando abre (leitor de ecrã e teclado)
@@ -93,10 +95,8 @@ export default function RevisaoTexto({ texto, setTexto, campoRef }) {
 
   function aoCarregar() {
     // se ela tiver um bocado selecionado, revê só esse bocado
-    const campo = campoRef?.current;
-    const sel = campo && campo.selectionEnd > campo.selectionStart
-      ? { inicio: campo.selectionStart, fim: campo.selectionEnd }
-      : null;
+    const atual = campo?.selecao();
+    const sel = atual && atual.fim > atual.inicio ? atual : null;
     setSelecao(sel);
     if (!avisoJaAceite()) {
       setAviso(true);
@@ -114,13 +114,8 @@ export default function RevisaoTexto({ texto, setTexto, campoRef }) {
   // fecha a folha e seleciona a palavra no campo, para ela ver o contexto todo
   function verNoTexto(erro) {
     setAberta(false);
-    const campo = campoRef?.current;
     if (!campo) return;
-    requestAnimationFrame(() => {
-      campo.focus();
-      campo.setSelectionRange(erro.inicio, erro.inicio + erro.tamanho);
-      campo.scrollIntoView({ block: 'center', behavior: 'smooth' });
-    });
+    requestAnimationFrame(() => campo.selecionar(erro.inicio, erro.inicio + erro.tamanho));
   }
 
   const aRever = revisao.estado === 'aRever';

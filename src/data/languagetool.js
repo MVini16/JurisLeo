@@ -24,3 +24,15 @@ export const AVISO_PRIVACIDADE = {
   aceitar: 'Percebi, rever',
   recusar: 'Agora não',
 };
+
+// tipo de cada erro, a partir do rule.issueType do languagetool — etiquetas para o painel
+export const ROTULOS_TIPO = {
+  ortografia: 'Ortografia',
+  gramatica: 'Gramática',
+  pontuacao: 'Pontuação e espaços',
+  estilo: 'Estilo',
+  outro: 'Outro',
+};
+
+// guardadas em configuracoes/dados.palavrasConhecidas: valem em qualquer aparelho em que ela entre
+export const CAMPO_PALAVRAS_CONHECIDAS = 'palavrasConhecidas';

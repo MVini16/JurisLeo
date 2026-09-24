@@ -1,12 +1,15 @@
 import { describe, it, expect, vi } from 'vitest';
-import { partirEmBlocos, arrumarErros, aplicarSugestao, contextoDoErro, reverTexto } from './languagetool.js';
+import {
+  partirEmBlocos, arrumarErros, aplicarSugestao, contextoDoErro, reverTexto,
+  tipoDeErro, errosAindaValidos, normalizarPalavra, palavrasDosTermos, filtrarConhecidas,
+} from './languagetool.js';
 import { criarLimitadorPorMinuto } from './limitador.js';
 
 // resposta no formato do languagetool
 const RESPOSTA = {
   matches: [
-    { message: 'Possível erro ortográfico.', offset: 2, length: 9, replacements: [{ value: 'contrato' }, { value: 'contratos' }, { value: 'contratou' }, { value: 'contrata' }], rule: { id: 'HUNSPELL_RULE' } },
-    { message: 'Espaço duplo.', offset: 11, length: 2, replacements: [{ value: ' ' }], rule: { id: 'WHITESPACE_RULE' } },
+    { message: 'Possível erro ortográfico.', offset: 2, length: 9, replacements: [{ value: 'contrato' }, { value: 'contratos' }, { value: 'contratou' }, { value: 'contrata' }], rule: { id: 'HUNSPELL_RULE', issueType: 'misspelling' } },
+    { message: 'Espaço duplo.', offset: 11, length: 2, replacements: [{ value: ' ' }], rule: { id: 'WHITESPACE_RULE', issueType: 'whitespace' } },
     { message: 'sem tamanho', offset: 0, length: 0, replacements: [] },
   ],
 };
@@ -38,7 +41,7 @@ describe('arrumarErros', () => {
   it('converte, soma o início do bloco, limita as sugestões e ignora erros sem tamanho', () => {
     const erros = arrumarErros(RESPOSTA, 100);
     expect(erros).toHaveLength(2);
-    expect(erros[0]).toEqual({ id: '102-HUNSPELL_RULE', inicio: 102, tamanho: 9, mensagem: 'Possível erro ortográfico.', sugestoes: ['contrato', 'contratos', 'contratou'] });
+    expect(erros[0]).toEqual({ id: '102-HUNSPELL_RULE', inicio: 102, tamanho: 9, mensagem: 'Possível erro ortográfico.', tipo: 'ortografia', sugestoes: ['contrato', 'contratos', 'contratou'] });
   });
 
   it('formato estranho dá null', () => {
@@ -121,5 +124,72 @@ describe('reverTexto', () => {
   it('erro do serviço passa para cima', async () => {
     const r = await reverTexto('olá', { deps: deps({}, 503), limitador: criarLimitadorPorMinuto(20) });
     expect(r).toMatchObject({ ok: false, erro: 'servicoEmBaixo' });
+  });
+});
+
+describe('tipoDeErro', () => {
+  it('traduz o issueType, usa a categoria TYPOS e cai em outro', () => {
+    expect(tipoDeErro({ issueType: 'grammar' })).toBe('gramatica');
+    expect(tipoDeErro({ issueType: 'style' })).toBe('estilo');
+    expect(tipoDeErro({ category: { id: 'TYPOS' } })).toBe('ortografia');
+    expect(tipoDeErro({ issueType: 'coisa-nova' })).toBe('outro');
+    expect(tipoDeErro(undefined)).toBe('outro');
+  });
+});
+
+describe('reverTexto guarda o texto errado e aceita uma seleção', () => {
+  it('cada erro guarda o que estava escrito', async () => {
+    const r = await reverTexto('O contracto  é nulo', { deps: deps(RESPOSTA), limitador: criarLimitadorPorMinuto(20) });
+    expect(r.erros.map((e) => e.errado)).toEqual(['contracto', '  ']);
+  });
+
+  it('só a seleção vai no pedido, e as posições voltam no texto inteiro', async () => {
+    const texto = 'Início certo. O contracto  é nulo';
+    const selecao = { inicio: 14, fim: texto.length };
+    const d = deps(RESPOSTA);
+    const r = await reverTexto(texto, { selecao, deps: d, limitador: criarLimitadorPorMinuto(20) });
+    expect(new URLSearchParams(d.fetch.mock.calls[0][1].body).get('text')).toBe('O contracto  é nulo');
+    expect(r.erros[0].inicio).toBe(16);
+    expect(r.erros[0].errado).toBe('contracto');
+  });
+
+  it('seleção vazia revê tudo', async () => {
+    const d = deps({ matches: [] });
+    await reverTexto('abc', { selecao: { inicio: 1, fim: 1 }, deps: d, limitador: criarLimitadorPorMinuto(20) });
+    expect(new URLSearchParams(d.fetch.mock.calls[0][1].body).get('text')).toBe('abc');
+  });
+});
+
+describe('errosAindaValidos', () => {
+  const erro = { id: 'a', inicio: 2, tamanho: 9, errado: 'contracto' };
+
+  it('mantém o erro se o texto ainda está lá', () => {
+    expect(errosAindaValidos('O contracto é nulo', [erro])).toHaveLength(1);
+  });
+
+  it('tira o erro se ela escreveu por cima ou antes dele', () => {
+    expect(errosAindaValidos('O contrato é nulo', [erro])).toHaveLength(0);
+    expect(errosAindaValidos('Sim. O contracto é nulo', [erro])).toHaveLength(0);
+  });
+});
+
+describe('palavras conhecidas', () => {
+  it('normaliza maiúsculas e pontuação à volta', () => {
+    expect(normalizarPalavra('«Pacta,')).toBe('pacta');
+    expect(normalizarPalavra('  ')).toBe('');
+  });
+
+  it('parte os termos do glossário em palavras', () => {
+    expect(palavrasDosTermos(['Pacta sunt servanda', 'ex vi legis'])).toEqual(['pacta', 'sunt', 'servanda', 'ex', 'vi', 'legis']);
+  });
+
+  it('tira os erros em palavras conhecidas, mas nunca os de espaços', () => {
+    const erros = [
+      { id: 'a', errado: 'Servanda' },
+      { id: 'b', errado: 'contracto' },
+      { id: 'c', errado: '  ' },
+    ];
+    expect(filtrarConhecidas(erros, ['servanda']).map((e) => e.id)).toEqual(['b', 'c']);
+    expect(filtrarConhecidas(erros, [])).toBe(erros);
   });
 });

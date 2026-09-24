@@ -31,6 +31,24 @@ export function partirEmBlocos(texto, maximo = CARACTERES_POR_BLOCO) {
   return blocos;
 }
 
+// issueType do languagetool → um dos nossos tipos (ver ROTULOS_TIPO em data/languagetool.js)
+const TIPOS_ISSUE = {
+  misspelling: 'ortografia',
+  grammar: 'gramatica',
+  typographical: 'pontuacao',
+  whitespace: 'pontuacao',
+  style: 'estilo',
+  register: 'estilo',
+  'locale-violation': 'estilo',
+};
+
+export function tipoDeErro(regra) {
+  if (TIPOS_ISSUE[regra?.issueType]) return TIPOS_ISSUE[regra.issueType];
+  // algumas regras não trazem issueType mas vêm na categoria dos erros de escrita
+  if (regra?.category?.id === 'TYPOS') return 'ortografia';
+  return 'outro';
+}
+
 // resposta do languagetool → [{ id, inicio, tamanho, mensagem, sugestoes }] com posições no texto inteiro; null se não for o formato esperado
 export function arrumarErros(json, inicioBloco = 0) {
   if (!json || !Array.isArray(json.matches)) return null;
@@ -43,6 +61,7 @@ export function arrumarErros(json, inicioBloco = 0) {
         inicio,
         tamanho: m.length,
         mensagem: m.message ?? '',
+        tipo: tipoDeErro(m.rule),
         sugestoes: (m.replacements ?? [])
           .map((r) => r?.value)
           .filter((v) => typeof v === 'string')
@@ -75,9 +94,13 @@ export function contextoDoErro(texto, erro, margem = 30) {
   };
 }
 
-// revê o texto todo: { ok, erros, erro, tentarDepois }; para no primeiro bloco que falhar
-export async function reverTexto(texto, { deps = {}, limitador = limitadorLanguageTool } = {}) {
-  const limpo = String(texto ?? '');
+// revê o texto todo, ou só a seleção { inicio, fim }: { ok, erros, erro, tentarDepois }
+// as posições vêm sempre no texto inteiro, e cada erro guarda o texto que estava errado (errado),
+// para se saber mais tarde se o texto mudou por baixo dele
+export async function reverTexto(texto, { selecao = null, deps = {}, limitador = limitadorLanguageTool } = {}) {
+  const inteiro = String(texto ?? '');
+  const base = selecao && selecao.fim > selecao.inicio ? selecao.inicio : 0;
+  const limpo = selecao && selecao.fim > selecao.inicio ? inteiro.slice(selecao.inicio, selecao.fim) : inteiro;
   if (!limpo.trim()) return { ok: true, erros: [], erro: null, tentarDepois: null };
   if (limpo.length > CARACTERES_POR_REVISAO) return { ok: false, erros: [], erro: 'textoLongo', tentarDepois: null };
 
@@ -93,9 +116,41 @@ export async function reverTexto(texto, { deps = {}, limitador = limitadorLangua
       body: new URLSearchParams({ text: bloco.texto, language: LINGUA }).toString(),
     }, deps);
     if (!resposta.ok) return { ok: false, erros: [], erro: resposta.erro, tentarDepois: resposta.tentarDepois };
-    const doBloco = arrumarErros(resposta.dados, bloco.inicio);
+    const doBloco = arrumarErros(resposta.dados, base + bloco.inicio);
     if (doBloco === null) return { ok: false, erros: [], erro: 'respostaInvalida', tentarDepois: null };
-    erros.push(...doBloco);
+    erros.push(...doBloco.map((e) => ({ ...e, errado: inteiro.slice(e.inicio, e.inicio + e.tamanho) })));
   }
   return { ok: true, erros, erro: null, tentarDepois: null };
+}
+
+// ─── depois de rever ─────────────────────────────────────────────────────────
+
+// se ela escreveu depois de rever, um erro cujo texto já não está no mesmo sítio sai da lista:
+// assim nunca se troca uma palavra que já não é a que estava errada
+export function errosAindaValidos(texto, erros) {
+  return erros.filter((e) => texto.slice(e.inicio, e.inicio + e.tamanho) === e.errado);
+}
+
+// minúsculas, sem pontuação à volta; "Pacta," e "pacta" são a mesma palavra
+export function normalizarPalavra(palavra) {
+  return String(palavra ?? '')
+    .normalize('NFC')
+    .toLowerCase()
+    .replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '');
+}
+
+// as palavras soltas dos termos do glossário ("pacta sunt servanda" → pacta, sunt, servanda)
+export function palavrasDosTermos(termos) {
+  return (termos ?? []).flatMap((t) => String(t ?? '').split(/\s+/)).map(normalizarPalavra).filter(Boolean);
+}
+
+// tira os erros em palavras que ela já disse que estão certas (ou que estão no glossário);
+// erros de espaços e pontuação ficam sempre, porque não têm palavra
+export function filtrarConhecidas(erros, conhecidas) {
+  const conjunto = new Set((conhecidas ?? []).map(normalizarPalavra).filter(Boolean));
+  if (conjunto.size === 0) return erros;
+  return erros.filter((e) => {
+    const palavra = normalizarPalavra(e.errado);
+    return !palavra || !conjunto.has(palavra);
+  });
 }

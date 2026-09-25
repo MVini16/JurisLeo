@@ -789,3 +789,15 @@
 
 }
 .tarefa-card { position: relative; }
+
+/* sair sem guardar — tocar fora já não fecha depois de ela mexer no formulário */
+.modal-btn-cancelar {
+  min-height: var(--toque-min);
+  border: 0;
+  background: none;
+  color: inherit;
+  opacity: 0.7;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+}

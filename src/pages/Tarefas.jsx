@@ -353,6 +353,7 @@ function SecaoConcluidas({ concluidas, onConcluir, onApagar, onEditar }) {
 // modal de criar / editar tarefa
 // ------------------------------------------------------------------
 function ModalTarefa({ tarefaExistente, onFechar }) {
+  const [mexeu, setMexeu] = useState(false);
   const isEditar = !!tarefaExistente;
 
   const [titulo, setTitulo] = useState(tarefaExistente?.titulo || '');
@@ -402,9 +403,10 @@ function ModalTarefa({ tarefaExistente, onFechar }) {
     }
   }
 
+  // depois de mexer no formulário, tocar fora já não fecha (e não deita fora o que escreveu)
   return (
-    <div className="modal-overlay" onClick={onFechar}>
-      <div className="modal-tarefa" onClick={e => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={() => { if (!mexeu) onFechar(); }}>
+      <div className="modal-tarefa" onClick={e => e.stopPropagation()} onChangeCapture={() => setMexeu(true)} onClickCapture={(e) => { if (e.target.closest('button')) setMexeu(true); }}>
 
         {/* handle para mobile */}
         <div className="modal-tarefa__handle" />
@@ -506,6 +508,7 @@ function ModalTarefa({ tarefaExistente, onFechar }) {
         >
           {sucesso ? '✓ Guardado!' : guardando ? 'A guardar...' : isEditar ? 'Guardar Alterações' : 'Criar Tarefa'}
         </button>
+        <button type="button" className="modal-btn-cancelar" onClick={onFechar}>Cancelar</button>
 
       </div>
     </div>

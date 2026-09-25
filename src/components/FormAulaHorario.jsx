@@ -12,6 +12,8 @@ const DIAS = [
 ];
 
 export default function FormAulaHorario({ aula, inicial, aulas, onGuardar, onApagar, onFechar }) {
+  // depois de mexer no formulário, tocar fora já não fecha (e não deita fora o que escreveu)
+  const [mexeu, setMexeu] = useState(false);
   const [cadeira, setCadeira] = useState(aula?.cadeira || inicial?.cadeira || cadeirasS1[0].id);
   const [tipoAula, setTipoAula] = useState(aula?.tipoAula || (aula?.contaFalta ? 'pratica' : aula ? 'teorica' : 'pratica'));
   const [dia, setDia] = useState(aula?.diaSemana || inicial?.diaSemana || 1);
@@ -59,8 +61,8 @@ export default function FormAulaHorario({ aula, inicial, aulas, onGuardar, onApa
   }
 
   return (
-    <div className="form-aula-overlay" onClick={onFechar}>
-      <div className="form-aula" role="dialog" aria-modal="true" aria-label={aula ? 'Editar aula' : 'Nova aula'} onClick={(e) => e.stopPropagation()}>
+    <div className="form-aula-overlay" onClick={() => { if (!mexeu) onFechar(); }}>
+      <div className="form-aula" role="dialog" aria-modal="true" aria-label={aula ? 'Editar aula' : 'Nova aula'} onClick={(e) => e.stopPropagation()} onChangeCapture={() => setMexeu(true)} onClickCapture={(e) => { if (e.target.closest('button') && !/Cancelar/.test(e.target.textContent)) setMexeu(true); }}>
         <div className="form-aula__handle" />
         <h2 className="form-aula__titulo">{aula ? 'Editar aula' : 'Nova aula'}</h2>
 

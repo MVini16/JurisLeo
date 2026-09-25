@@ -36,6 +36,8 @@ function formatarData(data) {
 }
 
 export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistente, tipoInicial, tituloInicial, eventos }) {
+  // depois de mexer no formulário, tocar fora já não fecha (e não deita fora o que escreveu)
+  const [mexeu, setMexeu] = useState(false);
   const aEditar = !!eventoExistente;
 
   // estado do formulário — se receber um evento existente, começa preenchido com os dados dele
@@ -193,10 +195,12 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
   }
 
   return (
-    <div className={`mce-overlay ${visivel ? 'visivel' : ''}`} onClick={fechar}>
+    <div className={`mce-overlay ${visivel ? 'visivel' : ''}`} onClick={() => { if (!mexeu) fechar(); }}>
       <div
         className={`mce-modal ${visivel ? 'visivel' : ''}`}
         onClick={(e) => e.stopPropagation()}
+        onChangeCapture={() => setMexeu(true)}
+        onClickCapture={(e) => { if (e.target.closest('button') && !e.target.closest('.mce-fechar')) setMexeu(true); }}
       >
 
         {/* animação de sucesso — aparece por cima de tudo */}

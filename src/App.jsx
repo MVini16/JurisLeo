@@ -1,6 +1,6 @@
 import './App.css'
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 // as páginas de entrada carregam logo; as outras só quando ela lá vai (React.lazy),
 // para o primeiro arranque não descarregar a app inteira — e o ficheiro principal
 // ficar bem abaixo do limite de 2 MB do modo offline
@@ -104,6 +104,8 @@ function App() {
         <Route path="/mapas-mentais/:id" element={<NavBar><Suspense fallback={<Carregando texto="A abrir..." tipo="templo" />}><MapaMental /></Suspense></NavBar>} />
         <Route path="/plano-estudo" element={<NavBar><Suspense fallback={<Carregando texto="A abrir..." tipo="templo" />}><PlanoEstudo /></Suspense></NavBar>} />
         <Route path="/definicoes" element={<NavBar><Suspense fallback={<Carregando texto="A abrir..." tipo="templo" />}><Definicoes /></Suspense></NavBar>} />
+        {/* um endereço que não existe volta ao início em vez de mostrar uma página em branco */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
       </Suspense>
     </BrowserRouter>

@@ -101,3 +101,18 @@ html.dark .me-resposta { border-color: var(--border-dark); }
 
 .me-guardado { text-align: center; }
 .me-guardado p { font-size: 0.95rem; margin-bottom: 16px; }
+
+/* confirmar antes de terminar: um toque sem querer não acaba o exame */
+.me-confirmar { display: grid; gap: 8px; text-align: center; }
+.me-confirmar span { font-size: 0.9rem; opacity: 0.8; }
+.me-btn-continuar {
+  width: 100%;
+  min-height: var(--toque-min);
+  border: 0;
+  border-radius: 14px;
+  background: var(--acento);
+  color: var(--texto-sobre-escuro);
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}

@@ -12,10 +12,27 @@ import Carregando from '../components/animacoes/Carregando.jsx';
 import './ModoExame.css';
 import TextareaRevista from '../components/TextareaRevista.jsx';
 
+// o exame a decorrer fica guardado neste aparelho: se ela sair a meio (outra app,
+// um toque num separador), ao voltar o relógio continua de onde estava
+const CHAVE_EXAME = 'jurisleo-modo-exame';
+function lerExame() {
+  try { return JSON.parse(localStorage.getItem(CHAVE_EXAME)) || null; } catch { return null; }
+}
+function guardarExame(dados) {
+  try {
+    if (dados) localStorage.setItem(CHAVE_EXAME, JSON.stringify({ inicio: Date.now(), ...dados }));
+    else localStorage.removeItem(CHAVE_EXAME);
+  } catch { /* sem armazenamento: o relógio só vive em memória */ }
+}
+
 export default function ModoExame() {
   const navigate = useNavigate();
   const { casos, loading } = useCasos();
-  const [casoId, setCasoId] = useState(null);
+  const [casoId, setCasoIdEstado] = useState(() => lerExame()?.casoId ?? null);
+  const setCasoId = (id) => {
+    guardarExame(id ? { casoId: id } : null);
+    setCasoIdEstado(id);
+  };
 
   if (loading) return <Carregando texto="A carregar..." tipo="templo" />;
 
@@ -57,7 +74,8 @@ export default function ModoExame() {
 function Cronometro({ casoId, onSair }) {
   const { caso, loading, guardar } = useCaso(casoId);
   const [fase, setFase] = useState('a_decorrer'); // 'a_decorrer' | 'terminado'
-  const inicioRef = useRef(null);
+  const inicioRef = useRef(lerExame()?.casoId === casoId ? lerExame().inicio : null);
+  const [confirmarFim, setConfirmarFim] = useState(false);
   const [restam, setRestam] = useState(DURACAO_SEGUNDOS);
   const [resposta, setResposta] = useState('');
   const [guardando, setGuardando] = useState(false);
@@ -82,8 +100,9 @@ function Cronometro({ casoId, onSair }) {
   const cor = coresCadeiras[caso.cadeiraId] || '#b8963e';
   const segundosUsados = DURACAO_SEGUNDOS - restam;
 
-  async function terminarAgora() {
+  function terminarAgora() {
     setFase('terminado');
+    setConfirmarFim(false);
   }
 
   async function guardarResposta() {
@@ -113,7 +132,15 @@ function Cronometro({ casoId, onSair }) {
           <p className="me-enunciado__texto">{caso.enunciado}</p>
         </div>
 
-        <button className="me-btn-terminar" onClick={terminarAgora}>Terminar agora</button>
+        {confirmarFim ? (
+          <div className="me-confirmar" role="group" aria-label="Terminar o exame?">
+            <span>Terminar já? O relógio para.</span>
+            <button className="me-btn-terminar" onClick={terminarAgora}>Sim, terminar</button>
+            <button className="me-btn-continuar" onClick={() => setConfirmarFim(false)}>Continuar</button>
+          </div>
+        ) : (
+          <button className="me-btn-terminar" onClick={() => setConfirmarFim(true)}>Terminar agora</button>
+        )}
       </div>
     );
   }

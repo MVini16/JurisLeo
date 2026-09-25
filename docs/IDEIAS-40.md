@@ -95,6 +95,10 @@ Regras que se mantêm: sem IA paga, sem texto da lei (só referências e notas d
 | U9 | Carregamento honesto | Esqueleto logo; ao fim de uns segundos explica e dá "tentar outra vez". [HIG Loading](https://developer.apple.com/design/human-interface-guidelines/loading) | P |
 | U10 | Toque longo com ações rápidas | Editar, duplicar, partilhar; as mesmas ações também visíveis. [HIG Context menus](https://developer.apple.com/design/human-interface-guidelines/context-menus) | M |
 
+## Feito a 25-09-2026
+
+#1 responder por escrito (palavras marcadas) · #2 dois sentidos (interruptor ao criar) · #35 Calendário do iPhone (.ics, no Calendário) · #7 passagem final (automática) · U6 ecrã sempre aceso · parte de U9 (erros de leitura já não deixam "A carregar" eterno).
+
 ## Top 10 para começar
 
 1. **#1 Responder por escrito** — só mexe nos flashcards, ótimo para artigos e requisitos.

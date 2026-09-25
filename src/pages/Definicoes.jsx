@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { doc, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { db } from '../services/firebase.js';
-import { limparCadeirasAntigas, seedCadeiras } from '../services/initFirestore.js';
+import { limparCadeirasAntigas, repararCadeiras } from '../services/initFirestore.js';
 import { exportarDadosComoFicheiro } from '../services/exportar.js';
 import { useTheme } from '../context/useTheme.js';
 import { useModulos } from '../hooks/useModulos.js';
@@ -38,6 +38,7 @@ export default function Definicoes() {
   const [aExportar, setAExportar] = useState(false);
   const [aRepor, setARepor] = useState(false);
   const [reposto, setReposto] = useState(false);
+  const [erroRepor, setErroRepor] = useState(false);
   const [ecraReposto, setEcraReposto] = useState(false);
 
   const modulo = (id) => MODULOS.find((m) => m.id === id);
@@ -73,15 +74,21 @@ export default function Definicoes() {
     navigate('/dashboard');
   }
 
-  // repara contas de teste criadas antes da correção do seed para o 2.º ano
+  // repara contas criadas antes da correção do seed para o 2.º ano — nunca apaga notas nem faltas
   async function reporCadeiras() {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
     setARepor(true);
-    await limparCadeirasAntigas(userId);
-    await seedCadeiras(userId);
-    setARepor(false);
-    setReposto(true);
+    setErroRepor(false);
+    try {
+      await limparCadeirasAntigas(userId);
+      await repararCadeiras(userId);
+      setReposto(true);
+    } catch {
+      setErroRepor(true);
+    } finally {
+      setARepor(false);
+    }
   }
 
   return (
@@ -225,8 +232,9 @@ export default function Definicoes() {
 
       <section className="def-seccao">
         <h2 className="def-seccao__titulo">Manutenção</h2>
-        <p className="def-seccao__ajuda">Se esta conta ainda tem as cadeiras antigas do 1.º ano, repõe as 5 cadeiras reais do 2.º ano.</p>
+        <p className="def-seccao__ajuda">Se esta conta ainda tem as cadeiras antigas do 1.º ano, repõe as 5 cadeiras reais do 2.º ano. As tuas notas e faltas ficam como estão.</p>
         <button type="button" className="def-btn" onClick={reporCadeiras} disabled={aRepor}>{aRepor ? 'A repor...' : reposto ? '✓ Cadeiras repostas' : 'Repor cadeiras do 2.º ano'}</button>
+        {erroRepor && <p className="def-seccao__ajuda" role="alert">Não deu para repor agora. Confirma que tens internet e tenta outra vez.</p>}
       </section>
     </div>
   );

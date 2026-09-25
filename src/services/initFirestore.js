@@ -1,5 +1,5 @@
 // importa as ferramentas necessárias do firestore
-import { doc, setDoc, deleteDoc } from "firebase/firestore";
+import { doc, setDoc, deleteDoc, getDoc } from "firebase/firestore";
 // importa a ligação à base de dados
 import { db } from "./firebase.js";
 // importa as cadeiras reais do 2.º ano, s1
@@ -9,7 +9,8 @@ import { cadeirasS1, dadosLeonor } from "../data/dadosLeonor.js";
 // só aqui para a limparCadeirasAntigas conseguir apagá-las de contas de teste
 const IDS_CADEIRAS_1_ANO = ["tgdc2", "ied2", "dc2", "hdp", "hip"];
 
-// cria (ou substitui) as 5 cadeiras reais do semestre e as suas sub-colecções
+// cria as 5 cadeiras reais do semestre e as suas sub-colecções — só no registo:
+// substitui tudo (notas e faltas incluídas), por isso nunca chamar numa conta em uso
 export async function seedCadeiras(userId) {
   const userRef = doc(db, "users", userId);
 
@@ -44,6 +45,37 @@ export async function seedCadeiras(userId) {
       exameRecurso: null,
       melhoriaOral: null,
     });
+  }
+}
+
+// repara as cadeiras sem apagar nada: atualiza a info fixa (e mantém os pesos dela)
+// e só cria os documentos de faltas e avaliação que ainda não existem
+export async function repararCadeiras(userId) {
+  const userRef = doc(db, "users", userId);
+
+  for (const cadeira of cadeirasS1) {
+    const cadeiraRef = doc(userRef, "cadeiras", cadeira.id);
+
+    await setDoc(cadeiraRef, {
+      nome: cadeira.nome,
+      abrev: cadeira.abrev,
+      cor: cadeira.cor,
+      regente: cadeira.regente,
+      metodo: cadeira.metodo,
+      optativa: cadeira.optativa,
+      aulasPraticasPrevistas: cadeira.aulasPraticasPrevistas,
+      aulasTeoricasPrevistas: cadeira.aulasTeoricasPrevistas,
+    }, { merge: true });
+
+    const faltasRef = doc(cadeiraRef, "faltas", "dados");
+    if (!(await getDoc(faltasRef)).exists()) {
+      await setDoc(faltasRef, { aulasPraticasLecionadas: 0, faltasInjustificadas: 0, faltasJustificadas: 0 });
+    }
+
+    const avaliacaoRef = doc(cadeiraRef, "avaliacao", "dados");
+    if (!(await getDoc(avaliacaoRef)).exists()) {
+      await setDoc(avaliacaoRef, { provaEscrita: null, outrosElementos: null, exameEscrito: null, exameOral: null, exameRecurso: null, melhoriaOral: null });
+    }
   }
 }
 

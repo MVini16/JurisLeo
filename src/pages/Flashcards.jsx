@@ -6,6 +6,7 @@ import { useFlashcards } from '../hooks/useFlashcards.js';
 import { estaPronto, ordenarPorPrioridade, CONFIANCAS } from '../services/repeticaoEspacada.js';
 import { lerEmVozAlta, vozDisponivel, pararVoz } from '../services/voz.js';
 import { converterLacunas } from '../services/lacunas.js';
+import { compararResposta, confiancaSugerida } from '../services/respostaEscrita.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Flashcards.css';
@@ -169,6 +170,8 @@ function SessaoRevisao({ fila: filaAoVivo, onResponder, onFechar }) {
   useEcraAceso(true);
   const [indice, setIndice] = useState(0);
   const [virado, setVirado] = useState(false);
+  // o que ela escreveu antes de virar (opcional): ao virar, compara com a resposta
+  const [escrita, setEscrita] = useState('');
   const atual = fila[indice];
 
   // lista vazia fecha logo; ao sair, a leitura em voz alta para
@@ -186,10 +189,14 @@ function SessaoRevisao({ fila: filaAoVivo, onResponder, onFechar }) {
     } else {
       setIndice((i) => i + 1);
       setVirado(false);
+      setEscrita('');
     }
   }
 
   if (!atual) return null;
+
+  const comparacao = virado && escrita.trim() ? compararResposta(escrita, atual.tras) : null;
+  const sugerida = comparacao ? confiancaSugerida(comparacao.percentagem) : null;
 
   return (
     <div className="revisao-overlay no-print">
@@ -206,12 +213,41 @@ function SessaoRevisao({ fila: filaAoVivo, onResponder, onFechar }) {
         </div>
       </div>
 
+      {!virado && (
+        <div className="revisao-escrita">
+          <textarea
+            className="revisao-escrita__campo"
+            value={escrita}
+            onChange={(e) => setEscrita(e.target.value)}
+            placeholder="Escreve a tua resposta antes de virar (opcional)"
+            aria-label="A tua resposta"
+            rows={3}
+          />
+          <button type="button" className="revisao-escrita__virar" onClick={() => setVirado(true)}>{escrita.trim() ? 'Comparar com a resposta' : 'Ver a resposta'}</button>
+        </div>
+      )}
+
+      {comparacao && (
+        <div className="revisao-comparacao" aria-label="A tua resposta comparada com a do cartão">
+          <p className="revisao-comparacao__palavras">
+            {comparacao.palavras.map((p, i) => <span key={i} className={`revisao-palavra revisao-palavra--${p.estado}`}>{p.texto}</span>)}
+          </p>
+          {comparacao.percentagem !== null && (
+            <div className="revisao-comparacao__medidor">
+              <span><i style={{ width: `${comparacao.percentagem}%` }} /></span>
+              <b>{comparacao.percentagem}%</b>
+            </div>
+          )}
+          <p className="revisao-comparacao__legenda">A verde o que escreveste; sublinhado o que faltou. {sugerida ? `Sugestão: ${sugerida} · ${CONFIANCAS[sugerida - 1].nome}.` : ''} Quem decide és tu.</p>
+        </div>
+      )}
+
       {virado && (
         <div className="revisao-confianca" role="group" aria-label="Como te correu?">
           <p className="revisao-confianca__titulo">Como te correu?</p>
           <div className="revisao-confianca__botoes">
             {CONFIANCAS.map((c) => (
-              <button key={c.valor} type="button" className={`revisao-confianca__btn confianca-${c.valor}`} onClick={() => responder(c.valor)}>
+              <button key={c.valor} type="button" className={`revisao-confianca__btn confianca-${c.valor} ${sugerida === c.valor ? 'sugerida' : ''}`} onClick={() => responder(c.valor)}>
                 <b>{c.valor}</b>
                 <span>{c.nome}</span>
               </button>

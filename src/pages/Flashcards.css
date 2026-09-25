@@ -431,3 +431,41 @@
 .flashcards-modo__btn { flex: 1; min-height: var(--toque-min); border-radius: 12px; border: 1.5px solid var(--border-dark); background: none; color: inherit; font-family: inherit; font-size: 0.82rem; cursor: pointer; }
 .flashcards-modo__btn.ativo { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 14%, transparent); font-weight: 600; }
 .flashcards-lacunas-previa { font-size: 0.78rem; opacity: 0.8; line-height: 1.4; }
+
+/* responder por escrito (opcional): o campo antes de virar e a comparação depois */
+.revisao-escrita { width: 100%; max-width: 420px; display: grid; gap: 10px; }
+.revisao-escrita__campo {
+  width: 100%;
+  min-height: 84px;
+  padding: 12px;
+  border: 1px solid var(--traco-sobre-escuro);
+  border-radius: 14px;
+  background: var(--traco-sobre-escuro);
+  color: var(--texto-sobre-escuro);
+  font: 16px var(--fonte-sistema);
+  resize: vertical;
+}
+.revisao-escrita__campo::placeholder { color: var(--texto-sobre-escuro-2); }
+.revisao-escrita__virar {
+  min-height: var(--toque-min);
+  border: 0;
+  border-radius: 99px;
+  background: var(--gold);
+  color: var(--tinta);
+  font: 700 15px var(--fonte-sistema);
+  cursor: pointer;
+  transition: transform 0.35s var(--mola);
+}
+.revisao-escrita__virar:active { transform: scale(0.95); transition-duration: 0.08s; }
+.revisao-comparacao { width: 100%; max-width: 420px; color: var(--texto-sobre-escuro); }
+.revisao-comparacao__palavras { line-height: 2; font-size: 15px; margin: 0; }
+.revisao-palavra { padding: 1px 4px; border-radius: 5px; margin-right: 2px; }
+.revisao-palavra--certa { background: color-mix(in srgb, var(--sucesso) 35%, transparent); }
+.revisao-palavra--falta { background: color-mix(in srgb, var(--perigo) 30%, transparent); text-decoration: underline wavy var(--perigo); text-underline-offset: 3px; }
+.revisao-palavra--neutra { opacity: 0.7; }
+.revisao-comparacao__medidor { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 14px; }
+.revisao-comparacao__medidor span { flex: 1; height: 6px; border-radius: 99px; background: var(--traco-sobre-escuro); overflow: hidden; }
+.revisao-comparacao__medidor i { display: block; height: 100%; border-radius: 99px; background: var(--sucesso); animation: revisao-encher 0.6s var(--mola) both; transform-origin: left; }
+@keyframes revisao-encher { from { transform: scaleX(0); } }
+.revisao-comparacao__legenda { margin: 6px 0 0; font-size: 12px; color: var(--texto-sobre-escuro-2); }
+.revisao-confianca__btn.sugerida { box-shadow: 0 0 0 2px var(--gold); }

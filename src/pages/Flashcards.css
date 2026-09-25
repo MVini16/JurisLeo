@@ -469,3 +469,34 @@
 @keyframes revisao-encher { from { transform: scaleX(0); } }
 .revisao-comparacao__legenda { margin: 6px 0 0; font-size: 12px; color: var(--texto-sobre-escuro-2); }
 .revisao-confianca__btn.sugerida { box-shadow: 0 0 0 2px var(--gold); }
+
+/* interruptor "também ao contrário" no formulário de cartão novo */
+.flashcards-sentidos { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: var(--toque-min); font-size: 0.9rem; cursor: pointer; }
+.flashcards-sentidos small { display: block; font-size: 0.75rem; opacity: 0.75; margin-top: 2px; }
+.flashcards-sentidos input {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  position: relative;
+  width: 50px;
+  height: 30px;
+  border-radius: 99px;
+  background: var(--separador);
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.flashcards-sentidos input::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--superficie);
+  box-shadow: 0 1px 3px var(--veu);
+  transition: transform 0.25s var(--mola);
+}
+.flashcards-sentidos input:checked { background: var(--sucesso); }
+.flashcards-sentidos input:checked::after { transform: translateX(20px); }
+.flashcards-sentidos input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }

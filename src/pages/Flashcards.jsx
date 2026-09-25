@@ -93,6 +93,8 @@ function FormNovoFlashcard({ onGuardar }) {
   const [cadeiraId, setCadeiraId] = useState(cadeirasS1[0].id);
   const [aGuardar, setAGuardar] = useState(false);
   const [comLacunas, setComLacunas] = useState(false);
+  // também ao contrário: cria um segundo cartão (resposta → pergunta), com agendamento próprio
+  const [doisSentidos, setDoisSentidos] = useState(false);
 
   // com lacunas: uma frase só, com {{ }} à volta do que se quer esconder
   const lacunas = comLacunas ? converterLacunas(frente) : null;
@@ -101,8 +103,16 @@ function FormNovoFlashcard({ onGuardar }) {
   async function guardar() {
     if (!podeGuardar) return;
     setAGuardar(true);
-    if (lacunas) await onGuardar({ frente: lacunas.frente, tras: lacunas.tras, cadeiraId, lacunas: true });
-    else await onGuardar({ frente: frente.trim(), tras: tras.trim(), cadeiraId });
+    if (lacunas) {
+      await onGuardar({ frente: lacunas.frente, tras: lacunas.tras, cadeiraId, lacunas: true });
+    } else if (doisSentidos) {
+      // os dois ficam ligados pelo mesmo par, para se saber que são o mesmo conteúdo
+      const par = `par_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+      await onGuardar({ frente: frente.trim(), tras: tras.trim(), cadeiraId, par });
+      await onGuardar({ frente: tras.trim(), tras: frente.trim(), cadeiraId, par, inverso: true });
+    } else {
+      await onGuardar({ frente: frente.trim(), tras: tras.trim(), cadeiraId });
+    }
     setAGuardar(false);
   }
 
@@ -126,10 +136,17 @@ function FormNovoFlashcard({ onGuardar }) {
         <>
           <TextareaRevista className="flashcards-form-novo__textarea" placeholder="Frente — a pergunta" rows={2} value={frente} onValor={setFrente} autoFocus />
           <TextareaRevista className="flashcards-form-novo__textarea" placeholder="Trás — a resposta" rows={2} value={tras} onValor={setTras} />
+          <label className="flashcards-sentidos">
+            <span>
+              Também ao contrário
+              <small>cria um segundo cartão: da resposta para a pergunta. Bom para brocardos e latim.</small>
+            </span>
+            <input type="checkbox" role="switch" checked={doisSentidos} onChange={(e) => setDoisSentidos(e.target.checked)} />
+          </label>
         </>
       )}
       <button className="flashcards-form-novo__guardar" onClick={guardar} disabled={aGuardar || !podeGuardar}>
-        {aGuardar ? 'A guardar...' : 'Guardar'}
+        {aGuardar ? 'A guardar...' : !comLacunas && doisSentidos ? 'Guardar 2 cartões' : 'Guardar'}
       </button>
     </div>
   );

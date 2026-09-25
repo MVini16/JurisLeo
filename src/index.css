@@ -136,6 +136,11 @@ html.dark {
   --tempo-ceu-a: #3d6d9e;
   --tempo-ceu-b: #6e9fcc;
   --botao-apagar: rgba(120, 110, 105, 0.92);
+  /* fundo das folhas e modais de tarefas e calendário: claro no tema claro, o bordô quase preto de sempre no escuro */
+  --fundo-folha: var(--superficie);
+  /* vermelho e amarelo para texto: escuros no tema claro, claros no escuro, para se lerem nos dois */
+  --perigo-texto: #b3423a;
+  --aviso-texto: #9a5f1f;
   --raio-widget: 22px;
   --raio-m: 14px;
   --raio-s: 10px;
@@ -156,6 +161,9 @@ html.dark {
   --sombra-widget: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
   --sombra-forte: 0 12px 30px rgba(0, 0, 0, 0.45);
   --destaque-texto: var(--gold);
+  --fundo-folha: #1a0d10;
+  --perigo-texto: #ef9a9a;
+  --aviso-texto: #ffe082;
 }
 
 /* quem pede menos movimento não leva animações */

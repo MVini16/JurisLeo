@@ -38,7 +38,7 @@
   margin: 0;
   min-width: 320px;
   text-align: center;
-  background: linear-gradient(135deg, #c9a84c, #fff8e7);
+  background: linear-gradient(135deg, #c9a84c, var(--texto));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -94,13 +94,13 @@
   .cal-btn-hoje:hover {
   background: #b8963e;
   border-color: #b8963e;
-  color: #fff;
+  color: var(--texto-sobre-escuro);
 }
 }
 
 .cal-vistas {
   display: flex;
-  background: rgba(255, 255, 255, 0.05);
+  background: color-mix(in srgb, var(--texto) 5%, transparent);
   border: 1px solid rgba(184, 150, 62, 0.15);
   border-radius: 24px;
   padding: 4px;
@@ -112,7 +112,7 @@
   border-radius: 20px;
   border: none;
   background: none;
-  color: rgba(255, 255, 255, 0.45);
+  color: color-mix(in srgb, var(--texto) 45%, transparent);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -122,12 +122,12 @@
 }
 
 @media (hover: hover) {
-  .cal-vista-btn:hover { color: rgba(255, 255, 255, 0.8); }
+  .cal-vista-btn:hover { color: color-mix(in srgb, var(--texto) 80%, transparent); }
 }
 
 .cal-vista-btn.ativo {
   background: linear-gradient(135deg, #6b2737, #b8963e);
-  color: #fff;
+  color: var(--texto-sobre-escuro);
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(107, 39, 55, 0.4);
 }
@@ -137,7 +137,7 @@
   border-radius: 20px;
   border: none;
   background: linear-gradient(135deg, #6b2737, #b8963e);
-  color: #fff;
+  color: var(--texto-sobre-escuro);
   font-size: 13px;
   cursor: pointer;
   font-family: inherit;
@@ -190,7 +190,7 @@
 .cal-diaria__sidebar {
   width: 220px;
   min-width: 220px;
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--texto) 4%, transparent);
   border: 1px solid rgba(184, 150, 62, 0.15);
   border-radius: 20px;
   padding: 24px 18px;
@@ -214,7 +214,7 @@
 .cal-diaria__sidebar-dia {
   font-size: 80px;
   font-weight: 900;
-  background: linear-gradient(135deg, #c9a84c, #fff3c4);
+  background: linear-gradient(135deg, #c9a84c, var(--texto));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -225,7 +225,7 @@
 
 .cal-diaria__sidebar-mes {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
+  color: color-mix(in srgb, var(--texto) 50%, transparent);
   text-transform: uppercase;
   letter-spacing: 3px;
   margin-top: 6px;
@@ -235,14 +235,14 @@
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.35);
+  color: color-mix(in srgb, var(--texto) 35%, transparent);
   margin: 0 0 14px 0;
   font-family: 'Montserrat', sans-serif;
 }
 
 .cal-diaria__sidebar-vazio {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.4);
+  color: color-mix(in srgb, var(--texto) 40%, transparent);
   margin: 0;
   font-style: italic;
 }
@@ -258,19 +258,19 @@
   padding: 9px 12px;
   margin-bottom: 8px;
   border-radius: 0 10px 10px 0;
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--texto) 4%, transparent);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 @media (hover: hover) {
-  .cal-diaria__sidebar-item:hover { transform: translateX(5px); background: rgba(255, 255, 255, 0.08); }
+  .cal-diaria__sidebar-item:hover { transform: translateX(5px); background: color-mix(in srgb, var(--texto) 8%, transparent); }
 }
 
 .cal-diaria__sidebar-item-hora {
   display: block;
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.4);
+  color: color-mix(in srgb, var(--texto) 40%, transparent);
   margin-bottom: 3px;
   font-family: 'Montserrat', sans-serif;
 }
@@ -278,7 +278,7 @@
 .cal-diaria__sidebar-item-nome {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  color: color-mix(in srgb, var(--texto) 85%, transparent);
 }
 
 .cal-diaria__timeline {
@@ -286,7 +286,7 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.02);
+  background: color-mix(in srgb, var(--texto) 2%, transparent);
   border: 1px solid rgba(184, 150, 62, 0.1);
   border-radius: 20px;
   padding: 8px 0;
@@ -299,18 +299,18 @@
   align-items: flex-start;
   gap: 16px;
   min-height: 70px;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid color-mix(in srgb, var(--texto) 4%, transparent);
   padding: 10px 20px;
   transition: background 0.2s ease;
 }
 
 @media (hover: hover) {
-  .cal-diaria__hora:hover { background: rgba(255, 255, 255, 0.02); }
+  .cal-diaria__hora:hover { background: color-mix(in srgb, var(--texto) 2%, transparent); }
 }
 
 .cal-diaria__hora-label {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.25);
+  color: color-mix(in srgb, var(--texto) 25%, transparent);
   min-width: 44px;
   padding-top: 4px;
   font-family: 'Montserrat', sans-serif;
@@ -330,7 +330,7 @@
   padding: 12px 16px;
   border-radius: 12px;
   cursor: pointer;
-  color: #fff;
+  color: var(--texto);
   transition: all 0.25s ease;
   position: relative;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -363,7 +363,7 @@
   display: flex;
   flex-direction: column;
   height: calc(100vh - 200px); height: calc(100dvh - 200px);
-  background: rgba(255, 255, 255, 0.02);
+  background: color-mix(in srgb, var(--texto) 2%, transparent);
   border: 1px solid rgba(184, 150, 62, 0.1);
   border-radius: 20px;
   overflow: hidden;
@@ -374,16 +374,16 @@
   display: grid;
   grid-template-columns: 60px repeat(7, 1fr);
   border-bottom: 1px solid rgba(184, 150, 62, 0.15);
-  background: rgba(255, 255, 255, 0.03);
+  background: color-mix(in srgb, var(--texto) 3%, transparent);
 }
 
-.cal-semanal__header-vazio { border-right: 1px solid rgba(255, 255, 255, 0.05); }
+.cal-semanal__header-vazio { border-right: 1px solid color-mix(in srgb, var(--texto) 5%, transparent); }
 
 .cal-semanal__header-dia {
   display: flex; flex-direction: column; align-items: center;
   padding: 14px 0; cursor: pointer;
   transition: background 0.2s ease;
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid color-mix(in srgb, var(--texto) 5%, transparent);
 }
 
 @media (hover: hover) {
@@ -392,16 +392,16 @@
 
 .cal-semanal__header-dia.hoje .cal-semanal__header-dia-num {
   background: linear-gradient(135deg, #6b2737, #b8963e);
-  color: #fff; width: 30px; height: 30px; border-radius: 50%;
+  color: var(--texto-sobre-escuro); width: 30px; height: 30px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
 }
 
 .cal-semanal__header-dia-nome {
   font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
-  color: rgba(255, 255, 255, 0.4); margin-bottom: 6px; font-family: 'Montserrat', sans-serif;
+  color: color-mix(in srgb, var(--texto) 40%, transparent); margin-bottom: 6px; font-family: 'Montserrat', sans-serif;
 }
 
-.cal-semanal__header-dia-num { font-size: 16px; font-weight: 700; color: rgba(255, 255, 255, 0.8); }
+.cal-semanal__header-dia-num { font-size: 16px; font-weight: 700; color: color-mix(in srgb, var(--texto) 80%, transparent); }
 
 .cal-semanal__body {
   flex: 1; overflow-y: auto;
@@ -413,29 +413,29 @@
   display: grid;
   grid-template-columns: 60px repeat(7, 1fr);
   min-height: 60px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid color-mix(in srgb, var(--texto) 4%, transparent);
 }
 
 .cal-semanal__hora-label {
-  font-size: 10px; color: rgba(255, 255, 255, 0.25);
-  padding: 8px 10px; border-right: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 10px; color: color-mix(in srgb, var(--texto) 25%, transparent);
+  padding: 8px 10px; border-right: 1px solid color-mix(in srgb, var(--texto) 5%, transparent);
   font-family: 'Montserrat', sans-serif;
 }
 
 .cal-semanal__cel {
-  padding: 4px; border-right: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 4px; border-right: 1px solid color-mix(in srgb, var(--texto) 4%, transparent);
   display: flex; flex-direction: column; gap: 3px;
   transition: background 0.2s ease;
 }
 
 .cal-semanal__cel.hoje { background: rgba(184, 150, 62, 0.05); }
 @media (hover: hover) {
-  .cal-semanal__cel:hover { background: rgba(255, 255, 255, 0.03); }
+  .cal-semanal__cel:hover { background: color-mix(in srgb, var(--texto) 3%, transparent); }
 }
 
 .cal-semanal__evento {
   padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600;
-  color: #fff; cursor: pointer; white-space: nowrap; overflow: hidden;
+  color: var(--texto); cursor: pointer; white-space: nowrap; overflow: hidden;
   text-overflow: ellipsis; transition: all 0.2s ease;
 }
 
@@ -457,21 +457,21 @@
 
 .cal-mensal {
   flex: 1; display: flex; flex-direction: column;
-  background: rgba(255, 255, 255, 0.02);
+  background: color-mix(in srgb, var(--texto) 2%, transparent);
   border: 1px solid rgba(184, 150, 62, 0.1);
   border-radius: 20px; overflow: hidden;
 }
 
 .cal-mensal__cabecalho {
   display: grid; grid-template-columns: repeat(7, 1fr);
-  background: rgba(255, 255, 255, 0.03);
+  background: color-mix(in srgb, var(--texto) 3%, transparent);
   border-bottom: 1px solid rgba(184, 150, 62, 0.15);
 }
 
 .cal-mensal__cabecalho-dia {
   text-align: center; padding: 14px 0; font-size: 10px;
   text-transform: uppercase; letter-spacing: 1.5px;
-  color: rgba(255, 255, 255, 0.35); font-family: 'Montserrat', sans-serif;
+  color: color-mix(in srgb, var(--texto) 35%, transparent); font-family: 'Montserrat', sans-serif;
 }
 
 .cal-mensal__grid {
@@ -482,8 +482,8 @@
 }
 
 .cal-mensal__dia {
-  border-right: 1px solid rgba(255, 255, 255, 0.04);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-right: 1px solid color-mix(in srgb, var(--texto) 4%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--texto) 4%, transparent);
   padding: 8px; cursor: pointer;
   transition: background 0.2s ease;
   display: flex; flex-direction: column; gap: 4px; overflow: hidden;
@@ -496,7 +496,7 @@
 
 .cal-mensal__dia.hoje .cal-mensal__dia-num {
   background: linear-gradient(135deg, #6b2737, #b8963e);
-  color: #fff; width: 26px; height: 26px; border-radius: 50%;
+  color: var(--texto-sobre-escuro); width: 26px; height: 26px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-weight: 700; box-shadow: 0 4px 12px rgba(107, 39, 55, 0.4);
 }
@@ -504,7 +504,7 @@
 .cal-mensal__dia.selecionado { background: rgba(184, 150, 62, 0.1); border-color: rgba(184, 150, 62, 0.3); }
 
 .cal-mensal__dia-num {
-  font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, 0.7);
+  font-size: 13px; font-weight: 600; color: color-mix(in srgb, var(--texto) 70%, transparent);
   line-height: 26px; width: 26px; text-align: center;
 }
 
@@ -512,7 +512,7 @@
 
 .cal-mensal__dia-barra {
   display: flex; align-items: center; gap: 4px; padding: 2px 6px;
-  border-radius: 4px; font-size: 10px; font-weight: 600; color: #fff;
+  border-radius: 4px; font-size: 10px; font-weight: 600; color: var(--texto);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
@@ -527,7 +527,7 @@
    ------------------------------------------------------------ */
 .cal-painel {
   width: 280px; min-width: 280px;
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--texto) 4%, transparent);
   border: 1px solid rgba(184, 150, 62, 0.2);
   border-radius: 20px; padding: 20px;
   display: flex; flex-direction: column; gap: 20px;
@@ -542,24 +542,24 @@
 }
 
 .cal-painel__header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 16px; border-bottom: 1px solid rgba(184, 150, 62, 0.15); }
-.cal-painel__dia-semana { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255, 255, 255, 0.4); margin: 0 0 4px 0; font-family: 'Montserrat', sans-serif; }
+.cal-painel__dia-semana { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: color-mix(in srgb, var(--texto) 40%, transparent); margin: 0 0 4px 0; font-family: 'Montserrat', sans-serif; }
 .cal-painel__data { font-size: 18px; font-weight: 700; color: #c9a84c; margin: 0; }
 .cal-painel__acoes { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
-.cal-painel__fechar { background: none; border: none; color: rgba(255, 255, 255, 0.4); cursor: pointer; font-size: 16px; padding: 4px; transition: color 0.2s ease; }
+.cal-painel__fechar { background: none; border: none; color: color-mix(in srgb, var(--texto) 40%, transparent); cursor: pointer; font-size: 16px; padding: 4px; transition: color 0.2s ease; }
 @media (hover: hover) {
-  .cal-painel__fechar:hover { color: rgba(255, 255, 255, 0.8); }
+  .cal-painel__fechar:hover { color: color-mix(in srgb, var(--texto) 80%, transparent); }
 }
 .cal-painel__eventos { display: flex; flex-direction: column; gap: 10px; }
-.cal-painel__evento { border-left: 3px solid; padding: 12px 14px; border-radius: 0 12px 12px 0; background: rgba(255, 255, 255, 0.04); cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; gap: 4px; }
+.cal-painel__evento { border-left: 3px solid; padding: 12px 14px; border-radius: 0 12px 12px 0; background: color-mix(in srgb, var(--texto) 4%, transparent); cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; gap: 4px; }
 @media (hover: hover) {
-  .cal-painel__evento:hover { transform: translateX(5px); background: rgba(255, 255, 255, 0.08); }
+  .cal-painel__evento:hover { transform: translateX(5px); background: color-mix(in srgb, var(--texto) 8%, transparent); }
 }
 .cal-painel__evento-topo { display: flex; align-items: center; gap: 8px; }
 .cal-painel__evento-icone { font-size: 16px; }
-.cal-painel__evento-titulo { font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.9); flex: 1; }
-.cal-painel__evento-importante { background: #e53935; color: #fff; font-size: 10px; font-weight: 900; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.cal-painel__evento-hora { font-size: 11px; color: rgba(255, 255, 255, 0.4); font-family: 'Montserrat', sans-serif; }
-.cal-painel__evento-notas { font-size: 11px; color: rgba(255, 255, 255, 0.35); font-style: italic; }
+.cal-painel__evento-titulo { font-size: 13px; font-weight: 700; color: color-mix(in srgb, var(--texto) 90%, transparent); flex: 1; }
+.cal-painel__evento-importante { background: #e53935; color: var(--texto-sobre-escuro); font-size: 10px; font-weight: 900; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.cal-painel__evento-hora { font-size: 11px; color: color-mix(in srgb, var(--texto) 40%, transparent); font-family: 'Montserrat', sans-serif; }
+.cal-painel__evento-notas { font-size: 11px; color: color-mix(in srgb, var(--texto) 35%, transparent); font-style: italic; }
 
 /* ------------------------------------------------------------
    vista lista
@@ -574,26 +574,26 @@
 
 .cal-lista__grupo { display: flex; gap: 20px; }
 .cal-lista__grupo-header { display: flex; flex-direction: column; align-items: center; min-width: 60px; padding-top: 4px; }
-.cal-lista__grupo-dia { font-size: 36px; font-weight: 900; background: linear-gradient(135deg, #c9a84c, #fff3c4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
-.cal-lista__grupo-semana { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255, 255, 255, 0.35); margin: 4px 0 0 0; font-family: 'Montserrat', sans-serif; }
-.cal-lista__grupo-mes { font-size: 10px; color: rgba(255, 255, 255, 0.25); margin: 0; font-family: 'Montserrat', sans-serif; }
+.cal-lista__grupo-dia { font-size: 36px; font-weight: 900; background: linear-gradient(135deg, #c9a84c, var(--texto)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
+.cal-lista__grupo-semana { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: color-mix(in srgb, var(--texto) 35%, transparent); margin: 4px 0 0 0; font-family: 'Montserrat', sans-serif; }
+.cal-lista__grupo-mes { font-size: 10px; color: color-mix(in srgb, var(--texto) 25%, transparent); margin: 0; font-family: 'Montserrat', sans-serif; }
 .cal-lista__grupo-eventos { flex: 1; display: flex; flex-direction: column; gap: 8px; }
 
 .cal-lista__evento {
   display: flex; align-items: center; gap: 14px; padding: 14px 18px;
   border-left: 3px solid; border-radius: 0 14px 14px 0;
-  background: rgba(255, 255, 255, 0.04); cursor: pointer;
+  background: color-mix(in srgb, var(--texto) 4%, transparent); cursor: pointer;
   transition: all 0.25s ease; position: relative;
 }
 @media (hover: hover) {
-  .cal-lista__evento:hover { transform: translateX(6px); background: rgba(255, 255, 255, 0.08); }
+  .cal-lista__evento:hover { transform: translateX(6px); background: color-mix(in srgb, var(--texto) 8%, transparent); }
 }
 .cal-lista__evento-icone { font-size: 22px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
 .cal-lista__evento-info { display: flex; flex-direction: column; gap: 3px; flex: 1; }
-.cal-lista__evento-titulo { font-size: 15px; font-weight: 700; color: rgba(255, 255, 255, 0.9); }
-.cal-lista__evento-hora { font-size: 12px; color: rgba(255, 255, 255, 0.4); font-family: 'Montserrat', sans-serif; }
-.cal-lista__evento-notas { font-size: 12px; color: rgba(255, 255, 255, 0.3); font-style: italic; margin-top: 2px; }
-.cal-lista__evento-badge { background: #e53935; color: #fff; font-size: 10px; font-weight: 900; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.cal-lista__evento-titulo { font-size: 15px; font-weight: 700; color: color-mix(in srgb, var(--texto) 90%, transparent); }
+.cal-lista__evento-hora { font-size: 12px; color: color-mix(in srgb, var(--texto) 40%, transparent); font-family: 'Montserrat', sans-serif; }
+.cal-lista__evento-notas { font-size: 12px; color: color-mix(in srgb, var(--texto) 30%, transparent); font-style: italic; margin-top: 2px; }
+.cal-lista__evento-badge { background: #e53935; color: var(--texto-sobre-escuro); font-size: 10px; font-weight: 900; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
 /* ------------------------------------------------------------
    modal de detalhes
@@ -609,7 +609,7 @@
 
 .cal-modal {
   width: 420px; max-width: 90vw;
-  background: #1a0d10;
+  background: var(--fundo-folha);
   border: 1px solid rgba(184, 150, 62, 0.25);
   border-radius: 20px; overflow: hidden;
   animation: scaleIn 0.25s ease;
@@ -620,52 +620,52 @@
 
 .cal-modal__topo { height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
 .cal-modal__icone { font-size: 32px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)); }
-.cal-modal__fechar { background: rgba(255,255,255,0.2); border: none; color: #fff; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: background 0.2s ease; }
+.cal-modal__fechar { background: color-mix(in srgb, var(--texto) 20%, transparent); border: none; color: var(--texto); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: background 0.2s ease; }
 @media (hover: hover) {
-  .cal-modal__fechar:hover { background: rgba(255,255,255,0.35); }
+  .cal-modal__fechar:hover { background: color-mix(in srgb, var(--texto) 35%, transparent); }
 }
 .cal-modal__corpo { padding: 24px; display: flex; flex-direction: column; gap: 14px; }
-.cal-modal__titulo { font-size: 20px; font-weight: 700; color: rgba(255, 255, 255, 0.95); margin: 0 0 8px 0; }
-.cal-modal__linha { display: flex; align-items: center; gap: 12px; font-size: 13px; color: rgba(255, 255, 255, 0.7); }
-.cal-modal__label { min-width: 100px; color: rgba(255, 255, 255, 0.35); font-size: 12px; font-family: 'Montserrat', sans-serif; }
+.cal-modal__titulo { font-size: 20px; font-weight: 700; color: color-mix(in srgb, var(--texto) 95%, transparent); margin: 0 0 8px 0; }
+.cal-modal__linha { display: flex; align-items: center; gap: 12px; font-size: 13px; color: color-mix(in srgb, var(--texto) 70%, transparent); }
+.cal-modal__label { min-width: 100px; color: color-mix(in srgb, var(--texto) 35%, transparent); font-size: 12px; font-family: 'Montserrat', sans-serif; }
 .cal-modal__importancia { padding: 3px 10px; border-radius: 10px; font-size: 12px; font-weight: 600; }
-.cal-modal__importancia.alta { background: rgba(229, 57, 53, 0.2); color: #ef9a9a; }
-.cal-modal__importancia.media { background: rgba(251, 192, 45, 0.2); color: #ffe082; }
+.cal-modal__importancia.alta { background: rgba(229, 57, 53, 0.2); color: var(--perigo-texto); }
+.cal-modal__importancia.media { background: rgba(251, 192, 45, 0.2); color: var(--aviso-texto); }
 .cal-modal__importancia.baixa { background: rgba(76, 175, 80, 0.2); color: #a5d6a7; }
-.cal-modal__notas { display: flex; flex-direction: column; gap: 6px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); }
-.cal-modal__notas p { font-size: 13px; color: rgba(255, 255, 255, 0.5); margin: 0; line-height: 1.6; font-style: italic; }
+.cal-modal__notas { display: flex; flex-direction: column; gap: 6px; padding-top: 8px; border-top: 1px solid color-mix(in srgb, var(--texto) 8%, transparent); }
+.cal-modal__notas p { font-size: 13px; color: color-mix(in srgb, var(--texto) 50%, transparent); margin: 0; line-height: 1.6; font-style: italic; }
 
 /* ------------------------------------------------------------
    estados gerais
    ------------------------------------------------------------ */
-.cal-loading { display: flex; align-items: center; justify-content: center; height: 200px; color: rgba(255, 255, 255, 0.4); font-size: 15px; font-style: italic; }
-.cal-placeholder { color: rgba(255, 255, 255, 0.3); font-size: 15px; text-align: center; margin-top: 80px; font-style: italic; }
+.cal-loading { display: flex; align-items: center; justify-content: center; height: 200px; color: color-mix(in srgb, var(--texto) 40%, transparent); font-size: 15px; font-style: italic; }
+.cal-placeholder { color: color-mix(in srgb, var(--texto) 30%, transparent); font-size: 15px; text-align: center; margin-top: 80px; font-style: italic; }
 
 /* ------------------------------------------------------------
    botões do modal
    ------------------------------------------------------------ */
-.cal-modal__acoes { display: flex; gap: 10px; margin-top: 8px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.cal-modal__acoes { display: flex; gap: 10px; margin-top: 8px; padding-top: 16px; border-top: 1px solid color-mix(in srgb, var(--texto) 8%, transparent); }
 
 .cal-modal__btn-editar { flex: 1; padding: 11px 0; border-radius: 12px; border: 1px solid rgba(184, 150, 62, 0.4); background: rgba(184, 150, 62, 0.08); color: #c9a84c; font-size: 13px; font-weight: 600; font-family: 'Playfair Display', Georgia, serif; cursor: pointer; transition: all 0.2s ease; }
 @media (hover: hover) {
   .cal-modal__btn-editar:hover { background: rgba(184, 150, 62, 0.2); border-color: #c9a84c; transform: translateY(-2px); }
 }
 
-.cal-modal__btn-apagar { flex: 1; padding: 11px 0; border-radius: 12px; border: 1px solid rgba(229, 57, 53, 0.3); background: rgba(229, 57, 53, 0.08); color: #ef9a9a; font-size: 13px; font-weight: 600; font-family: 'Playfair Display', Georgia, serif; cursor: pointer; transition: all 0.2s ease; }
+.cal-modal__btn-apagar { flex: 1; padding: 11px 0; border-radius: 12px; border: 1px solid rgba(229, 57, 53, 0.3); background: rgba(229, 57, 53, 0.08); color: var(--perigo-texto); font-size: 13px; font-weight: 600; font-family: 'Playfair Display', Georgia, serif; cursor: pointer; transition: all 0.2s ease; }
 @media (hover: hover) {
   .cal-modal__btn-apagar:hover { background: rgba(229, 57, 53, 0.2); border-color: rgba(229, 57, 53, 0.6); transform: translateY(-2px); }
 }
 
 .cal-modal__confirmar { width: 100%; display: flex; flex-direction: column; gap: 12px; }
-.cal-modal__confirmar p { font-size: 13px; color: rgba(255, 255, 255, 0.6); margin: 0; text-align: center; }
+.cal-modal__confirmar p { font-size: 13px; color: color-mix(in srgb, var(--texto) 60%, transparent); margin: 0; text-align: center; }
 .cal-modal__confirmar-btns { display: flex; gap: 10px; }
 
-.cal-modal__btn-cancelar { flex: 1; padding: 11px 0; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05); color: rgba(255, 255, 255, 0.5); font-size: 13px; font-weight: 600; font-family: 'Playfair Display', Georgia, serif; cursor: pointer; transition: all 0.2s ease; }
+.cal-modal__btn-cancelar { flex: 1; padding: 11px 0; border-radius: 12px; border: 1px solid color-mix(in srgb, var(--texto) 10%, transparent); background: color-mix(in srgb, var(--texto) 5%, transparent); color: color-mix(in srgb, var(--texto) 50%, transparent); font-size: 13px; font-weight: 600; font-family: 'Playfair Display', Georgia, serif; cursor: pointer; transition: all 0.2s ease; }
 @media (hover: hover) {
-  .cal-modal__btn-cancelar:hover { background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.8); }
+  .cal-modal__btn-cancelar:hover { background: color-mix(in srgb, var(--texto) 10%, transparent); color: color-mix(in srgb, var(--texto) 80%, transparent); }
 }
 
-.cal-modal__btn-confirmar { flex: 1; padding: 11px 0; border-radius: 12px; border: none; background: linear-gradient(135deg, #c0392b, #e74c3c); color: #fff; font-size: 13px; font-weight: 700; font-family: 'Playfair Display', Georgia, serif; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(231, 76, 60, 0.35); }
+.cal-modal__btn-confirmar { flex: 1; padding: 11px 0; border-radius: 12px; border: none; background: linear-gradient(135deg, #c0392b, #e74c3c); color: var(--texto-sobre-escuro); font-size: 13px; font-weight: 700; font-family: 'Playfair Display', Georgia, serif; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(231, 76, 60, 0.35); }
 @media (hover: hover) {
   .cal-modal__btn-confirmar:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(231, 76, 60, 0.5); }
 }
@@ -697,7 +697,7 @@
     flex-direction: column;
     gap: 0;
     padding: 16px 16px 0;
-    background: rgba(255, 255, 255, 0.02);
+    background: color-mix(in srgb, var(--texto) 2%, transparent);
     border-bottom: 1px solid rgba(184, 150, 62, 0.15);
     flex-shrink: 0;
   }
@@ -715,7 +715,7 @@
     font-weight: 700;
     margin: 0;
     text-align: center;
-    background: linear-gradient(135deg, #c9a84c, #fff8e7);
+    background: linear-gradient(135deg, #c9a84c, var(--texto));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -771,8 +771,8 @@
     padding: 8px 20px;
     border-radius: 16px;
     border: 1px solid rgba(184, 150, 62, 0.1);
-    background: rgba(255, 255, 255, 0.03);
-    color: rgba(255, 255, 255, 0.4);
+    background: color-mix(in srgb, var(--texto) 3%, transparent);
+    color: color-mix(in srgb, var(--texto) 40%, transparent);
     cursor: pointer;
     font-family: 'Playfair Display', Georgia, serif;
     transition: all 0.25s ease;
@@ -781,7 +781,7 @@
 
   .cal-tab-mobile.ativo {
     background: linear-gradient(135deg, #6b2737, #b8963e);
-    color: #fff; border-color: transparent;
+    color: var(--texto-sobre-escuro); border-color: transparent;
     box-shadow: 0 4px 16px rgba(107, 39, 55, 0.4);
     transform: translateY(-1px);
   }
@@ -808,7 +808,7 @@
 
   .cal-diaria__toggle-mobile {
     display: flex;
-    background: rgba(255, 255, 255, 0.04);
+    background: color-mix(in srgb, var(--texto) 4%, transparent);
     border: 1px solid rgba(184, 150, 62, 0.15);
     border-radius: 14px;
     padding: 4px; gap: 4px;
@@ -817,7 +817,7 @@
   .cal-diaria__toggle-btn {
     flex: 1; padding: 10px 0;
     border-radius: 10px; border: none; background: none;
-    color: rgba(255, 255, 255, 0.4);
+    color: color-mix(in srgb, var(--texto) 40%, transparent);
     font-size: 13px; font-weight: 600; cursor: pointer;
     font-family: 'Playfair Display', Georgia, serif;
     transition: all 0.25s ease;
@@ -825,7 +825,7 @@
 
   .cal-diaria__toggle-btn.ativo {
     background: linear-gradient(135deg, #6b2737, #b8963e);
-    color: #fff;
+    color: var(--texto-sobre-escuro);
     box-shadow: 0 4px 12px rgba(107, 39, 55, 0.35);
   }
 
@@ -863,7 +863,7 @@
     height: calc(100vh - 220px); height: calc(100dvh - 220px);
     border-radius: 16px;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.02);
+    background: color-mix(in srgb, var(--texto) 2%, transparent);
     border: 1px solid rgba(184, 150, 62, 0.1);
     animation: fadeInUp 0.3s ease;
   }
@@ -872,7 +872,7 @@
   .cal-semanal-mobile__header {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    background: rgba(255, 255, 255, 0.03);
+    background: color-mix(in srgb, var(--texto) 3%, transparent);
     border-bottom: 1px solid rgba(184, 150, 62, 0.15);
     flex-shrink: 0;
   }
@@ -900,7 +900,7 @@
   /* dia selecionado/ativo */
   .cal-semanal-mobile__dia-btn.ativo .cal-semanal-mobile__dia-num {
     background: linear-gradient(135deg, #6b2737, #b8963e);
-    color: #fff;
+    color: var(--texto-sobre-escuro);
     width: 28px; height: 28px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-weight: 700;
@@ -909,13 +909,13 @@
 
   .cal-semanal-mobile__dia-nome {
     font-size: 9px; text-transform: uppercase; letter-spacing: 1px;
-    color: rgba(255, 255, 255, 0.35);
+    color: color-mix(in srgb, var(--texto) 35%, transparent);
     font-family: 'Montserrat', sans-serif;
   }
 
   .cal-semanal-mobile__dia-num {
     font-size: 13px; font-weight: 700;
-    color: rgba(255, 255, 255, 0.75);
+    color: color-mix(in srgb, var(--texto) 75%, transparent);
     width: 28px; height: 28px;
     display: flex; align-items: center; justify-content: center;
   }
@@ -960,12 +960,12 @@
   .cal-semanal-mobile__hora {
     display: flex; align-items: flex-start; gap: 12px;
     min-height: 60px;
-    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    border-top: 1px solid color-mix(in srgb, var(--texto) 4%, transparent);
     padding: 8px 14px;
   }
 
   .cal-semanal-mobile__hora-label {
-    font-size: 10px; color: rgba(255, 255, 255, 0.25);
+    font-size: 10px; color: color-mix(in srgb, var(--texto) 25%, transparent);
     min-width: 38px; padding-top: 4px;
     font-family: 'Montserrat', sans-serif;
     flex-shrink: 0;
@@ -978,7 +978,7 @@
   .cal-semanal-mobile__evento {
     display: flex; align-items: center; gap: 10px;
     padding: 10px 12px; border-radius: 10px;
-    cursor: pointer; color: #fff;
+    cursor: pointer; color: var(--texto);
     box-shadow: 0 3px 10px rgba(0,0,0,0.2);
     transition: all 0.2s ease;
     /* animação de entrada */
@@ -1026,7 +1026,7 @@
     position: fixed; bottom: 90px; right: 20px;
     width: 56px; height: 56px; border-radius: 50%; border: none;
     background: linear-gradient(135deg, #6b0f1a, #c9a84c);
-    color: #fff;
+    color: var(--texto-sobre-escuro);
     box-shadow: 0 6px 24px rgba(107, 15, 26, 0.5), 0 2px 8px rgba(0,0,0,0.3);
     cursor: pointer; z-index: 200;
     animation: fabEntrada 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
@@ -1060,7 +1060,7 @@
 
   .cal-bottom-sheet {
     width: 100%;
-    background: #1a0d10;
+    background: var(--fundo-folha);
     border-top: 1px solid rgba(184, 150, 62, 0.25);
     border-radius: 24px 24px 0 0;
     padding: 0 20px 40px;
@@ -1078,7 +1078,7 @@
 
   .cal-bottom-sheet__handle {
     width: 40px; height: 4px; border-radius: 2px;
-    background: rgba(255, 255, 255, 0.2);
+    background: color-mix(in srgb, var(--texto) 20%, transparent);
     margin: 14px auto 20px;
   }
 
@@ -1089,7 +1089,7 @@
     margin-bottom: 16px;
   }
 
-  .cal-bottom-sheet__dia-semana { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255, 255, 255, 0.4); margin: 0 0 4px 0; font-family: 'Montserrat', sans-serif; }
+  .cal-bottom-sheet__dia-semana { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: color-mix(in srgb, var(--texto) 40%, transparent); margin: 0 0 4px 0; font-family: 'Montserrat', sans-serif; }
   .cal-bottom-sheet__data { font-size: 20px; font-weight: 700; color: #c9a84c; margin: 0; }
 
   .cal-bottom-sheet__eventos { display: flex; flex-direction: column; gap: 10px; }
@@ -1097,7 +1097,7 @@
   .cal-bottom-sheet__evento {
     border-left: 3px solid; padding: 12px 14px;
     border-radius: 0 12px 12px 0;
-    background: rgba(255, 255, 255, 0.04); cursor: pointer;
+    background: color-mix(in srgb, var(--texto) 4%, transparent); cursor: pointer;
     display: flex; flex-direction: column; gap: 4px;
     transition: all 0.2s ease;
     animation: eventoEntrada 0.3s ease both;
@@ -1111,10 +1111,10 @@
 
   @keyframes eventoEntrada { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-  .cal-bottom-sheet__evento:active { background: rgba(255, 255, 255, 0.08); transform: scale(0.98); }
+  .cal-bottom-sheet__evento:active { background: color-mix(in srgb, var(--texto) 8%, transparent); transform: scale(0.98); }
 
   .cal-bottom-sheet__evento-topo { display: flex; align-items: center; gap: 8px; }
-  .cal-bottom-sheet__evento-titulo { font-size: 14px; font-weight: 700; color: rgba(255, 255, 255, 0.9); flex: 1; }
+  .cal-bottom-sheet__evento-titulo { font-size: 14px; font-weight: 700; color: color-mix(in srgb, var(--texto) 90%, transparent); flex: 1; }
 
   /* modal de detalhes — vira bottom sheet no mobile */
   .cal-modal-overlay { align-items: flex-end; }

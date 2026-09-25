@@ -52,7 +52,7 @@
   font-size: 28px;
   font-weight: 900;
   margin: 0;
-  background: linear-gradient(135deg, #c9a84c, #fff8e7);
+  background: linear-gradient(135deg, #c9a84c, var(--texto));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -61,7 +61,7 @@
 
 .tarefas-contador {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.35);
+  color: color-mix(in srgb, var(--texto) 35%, transparent);
   font-family: 'Montserrat', sans-serif;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -72,7 +72,7 @@
   border-radius: 20px;
   border: none;
   background: linear-gradient(135deg, #6b2737, #b8963e);
-  color: #fff;
+  color: var(--texto-sobre-escuro);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -102,9 +102,9 @@
 .filtro-btn {
   padding: 6px 14px;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.45);
+  border: 1px solid color-mix(in srgb, var(--texto) 8%, transparent);
+  background: color-mix(in srgb, var(--texto) 4%, transparent);
+  color: color-mix(in srgb, var(--texto) 45%, transparent);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -115,8 +115,8 @@
 
 @media (hover: hover) {
   .filtro-btn:hover {
-  color: rgba(255, 255, 255, 0.8);
-  border-color: rgba(255, 255, 255, 0.15);
+  color: color-mix(in srgb, var(--texto) 80%, transparent);
+  border-color: color-mix(in srgb, var(--texto) 15%, transparent);
 }
 }
 
@@ -124,7 +124,7 @@
   background: var(--cor, linear-gradient(135deg, #6b2737, #b8963e));
   background-color: var(--cor, #b8963e);
   border-color: transparent;
-  color: #fff;
+  color: var(--texto-sobre-escuro);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
@@ -133,7 +133,7 @@
    ------------------------------------------------------------ */
 .tarefas-agrupamento {
   display: flex;
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--texto) 4%, transparent);
   border: 1px solid rgba(184, 150, 62, 0.12);
   border-radius: 14px;
   padding: 4px;
@@ -147,7 +147,7 @@
   border-radius: 10px;
   border: none;
   background: none;
-  color: rgba(255, 255, 255, 0.4);
+  color: color-mix(in srgb, var(--texto) 40%, transparent);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -158,7 +158,7 @@
 
 .agrup-btn.ativo {
   background: linear-gradient(135deg, #6b2737, #b8963e);
-  color: #fff;
+  color: var(--texto-sobre-escuro);
   box-shadow: 0 4px 12px rgba(107, 39, 55, 0.35);
 }
 
@@ -173,7 +173,7 @@
 }
 
 .tarefas-loading {
-  color: rgba(255, 255, 255, 0.3);
+  color: color-mix(in srgb, var(--texto) 30%, transparent);
   font-style: italic;
   font-size: 14px;
   text-align: center;
@@ -186,7 +186,7 @@
   align-items: center;
   gap: 10px;
   margin-top: 60px;
-  color: rgba(255, 255, 255, 0.3);
+  color: color-mix(in srgb, var(--texto) 30%, transparent);
 }
 
 .tarefas-vazio__icon {
@@ -234,20 +234,20 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.45);
+  color: color-mix(in srgb, var(--texto) 45%, transparent);
   font-family: 'Montserrat', sans-serif;
   flex: 1;
 }
 
 .tarefas-grupo__nome.atrasado {
-  color: #ef9a9a;
+  color: var(--perigo-texto);
 }
 
 .tarefas-grupo__count {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.25);
+  color: color-mix(in srgb, var(--texto) 25%, transparent);
   font-family: 'Montserrat', sans-serif;
-  background: rgba(255, 255, 255, 0.05);
+  background: color-mix(in srgb, var(--texto) 5%, transparent);
   padding: 2px 8px;
   border-radius: 10px;
 }
@@ -266,8 +266,8 @@
   align-items: flex-start;
   gap: 14px;
   padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--texto) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--texto) 6%, transparent);
   border-radius: 16px;
   transition: all 0.25s ease;
   position: relative;
@@ -277,7 +277,7 @@
 
 @media (hover: hover) {
   .tarefa-card:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: color-mix(in srgb, var(--texto) 7%, transparent);
   border-color: rgba(184, 150, 62, 0.2);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
@@ -343,7 +343,7 @@
 
 .check-tick {
   font-size: 12px;
-  color: #fff;
+  color: var(--texto);
   font-weight: 900;
 }
 
@@ -366,7 +366,7 @@
 .tarefa-card__titulo {
   font-size: 14px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
+  color: color-mix(in srgb, var(--texto) 90%, transparent);
   flex: 1;
   min-width: 0;
 }
@@ -393,24 +393,24 @@
 
 .tarefa-card__tipo {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.35);
+  color: color-mix(in srgb, var(--texto) 35%, transparent);
   font-family: 'Montserrat', sans-serif;
 }
 
 .tarefa-card__prazo {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
+  color: color-mix(in srgb, var(--texto) 40%, transparent);
   font-family: 'Montserrat', sans-serif;
 }
 
 .tarefa-card__prazo.atrasado {
-  color: #ef9a9a;
+  color: var(--perigo-texto);
   font-weight: 600;
 }
 
 .tarefa-card__notas {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.3);
+  color: color-mix(in srgb, var(--texto) 30%, transparent);
   font-style: italic;
   margin: 0;
   line-height: 1.5;
@@ -455,14 +455,14 @@
 .tarefa-card__btn-sim {
   font-size: 10px; font-weight: 700;
   padding: 3px 8px; border-radius: 6px; border: none;
-  background: rgba(229, 57, 53, 0.8); color: #fff; cursor: pointer;
+  background: rgba(229, 57, 53, 0.8); color: var(--texto); cursor: pointer;
   transition: background 0.2s ease;
 }
 
 .tarefa-card__btn-nao {
   font-size: 10px; font-weight: 700;
   padding: 3px 8px; border-radius: 6px; border: none;
-  background: rgba(255, 255, 255, 0.08); color: rgba(255,255,255,0.6); cursor: pointer;
+  background: color-mix(in srgb, var(--texto) 8%, transparent); color: color-mix(in srgb, var(--texto) 60%, transparent); cursor: pointer;
   transition: background 0.2s ease;
 }
 
@@ -479,20 +479,20 @@
   justify-content: space-between;
   width: 100%;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--texto) 3%, transparent);
+  border: 1px solid color-mix(in srgb, var(--texto) 6%, transparent);
   border-radius: 12px;
   cursor: pointer;
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.4);
+  color: color-mix(in srgb, var(--texto) 40%, transparent);
   transition: all 0.2s ease;
 }
 
 @media (hover: hover) {
   .tarefas-concluidas__toggle:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.65);
+  background: color-mix(in srgb, var(--texto) 6%, transparent);
+  color: color-mix(in srgb, var(--texto) 65%, transparent);
 }
 }
 
@@ -535,7 +535,7 @@
   width: 480px;
   max-width: 92vw;
   max-height: 88vh;
-  background: #1a0d10;
+  background: var(--fundo-folha);
   border: 1px solid rgba(184, 150, 62, 0.25);
   border-radius: 24px;
   padding: 28px;
@@ -561,7 +561,7 @@
   font-size: 20px;
   font-weight: 700;
   margin: 0;
-  background: linear-gradient(135deg, #c9a84c, #fff8e7);
+  background: linear-gradient(135deg, #c9a84c, var(--texto));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -580,7 +580,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.35);
+  color: color-mix(in srgb, var(--texto) 35%, transparent);
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -588,8 +588,8 @@
   padding: 12px 16px;
   border-radius: 12px;
   border: 1px solid rgba(184, 150, 62, 0.15);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.85);
+  background: color-mix(in srgb, var(--texto) 4%, transparent);
+  color: color-mix(in srgb, var(--texto) 85%, transparent);
   font-size: 14px;
   font-family: 'Playfair Display', Georgia, serif;
   outline: none;
@@ -598,7 +598,7 @@
 
 .modal-input:focus {
   border-color: rgba(184, 150, 62, 0.4);
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--texto) 6%, transparent);
 }
 
 .modal-input--data {
@@ -609,8 +609,8 @@
   padding: 12px 16px;
   border-radius: 12px;
   border: 1px solid rgba(184, 150, 62, 0.15);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.85);
+  background: color-mix(in srgb, var(--texto) 4%, transparent);
+  color: color-mix(in srgb, var(--texto) 85%, transparent);
   font-size: 13px;
   font-family: 'Playfair Display', Georgia, serif;
   outline: none;
@@ -633,9 +633,9 @@
 .modal-opcao-cadeira {
   padding: 7px 14px;
   border-radius: 20px;
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.5);
+  border: 1.5px solid color-mix(in srgb, var(--texto) 8%, transparent);
+  background: color-mix(in srgb, var(--texto) 4%, transparent);
+  color: color-mix(in srgb, var(--texto) 50%, transparent);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -646,16 +646,16 @@
 .modal-opcao-cadeira.ativo {
   background: var(--cor);
   border-color: var(--cor);
-  color: #fff;
+  color: var(--texto);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .modal-opcao-tipo {
   padding: 7px 12px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.5);
+  border: 1px solid color-mix(in srgb, var(--texto) 8%, transparent);
+  background: color-mix(in srgb, var(--texto) 4%, transparent);
+  color: color-mix(in srgb, var(--texto) 50%, transparent);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -673,9 +673,9 @@
   flex: 1;
   padding: 9px 0;
   border-radius: 10px;
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.5);
+  border: 1.5px solid color-mix(in srgb, var(--texto) 8%, transparent);
+  background: color-mix(in srgb, var(--texto) 4%, transparent);
+  color: color-mix(in srgb, var(--texto) 50%, transparent);
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -697,7 +697,7 @@
   border-radius: 14px;
   border: none;
   background: linear-gradient(135deg, #6b2737, #b8963e);
-  color: #fff;
+  color: var(--texto-sobre-escuro);
   font-size: 14px;
   font-weight: 700;
   font-family: 'Playfair Display', Georgia, serif;
@@ -796,7 +796,7 @@
     display: block;
     width: 40px; height: 4px;
     border-radius: 2px;
-    background: rgba(255, 255, 255, 0.2);
+    background: color-mix(in srgb, var(--texto) 20%, transparent);
     margin: 14px auto 8px;
     flex-shrink: 0;
   }

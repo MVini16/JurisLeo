@@ -73,9 +73,23 @@ function LeituraCard({ leitura, onAtualizar, onApagar }) {
   const cor = coresCadeiras[leitura.cadeiraId] || '#b8963e';
   const percentagem = leitura.totalPaginas ? Math.min(100, Math.round((leitura.paginaAtual / leitura.totalPaginas) * 100)) : 0;
 
-  function atualizarPagina(valor) {
-    const n = Math.max(0, Math.min(leitura.totalPaginas || 0, Number(valor) || 0));
-    onAtualizar({ paginaAtual: n });
+  // a página escreve-se aqui e só grava ao sair do campo (antes gravava a cada tecla);
+  // sem total de páginas não há limite (antes ficava presa a 0)
+  const [paginaTexto, setPaginaTexto] = useState(String(leitura.paginaAtual || 0));
+  const [totalTexto, setTotalTexto] = useState(leitura.totalPaginas ? String(leitura.totalPaginas) : '');
+
+  function gravarPagina() {
+    const total = leitura.totalPaginas || 0;
+    const n = Math.max(0, Number(paginaTexto) || 0);
+    const final = total > 0 ? Math.min(total, n) : n;
+    setPaginaTexto(String(final));
+    if (final !== (leitura.paginaAtual || 0)) onAtualizar({ paginaAtual: final });
+  }
+
+  function gravarTotal() {
+    const total = Math.max(0, Number(totalTexto) || 0);
+    setTotalTexto(total ? String(total) : '');
+    if (total !== (leitura.totalPaginas || 0)) onAtualizar({ totalPaginas: total });
   }
 
   function adicionarCapitulo() {
@@ -111,10 +125,26 @@ function LeituraCard({ leitura, onAtualizar, onApagar }) {
         <input
           className="leitura-card__pagina-input"
           type="number"
-          value={leitura.paginaAtual || 0}
-          onChange={(e) => atualizarPagina(e.target.value)}
+          inputMode="numeric"
+          aria-label="Página onde vais"
+          value={paginaTexto}
+          onChange={(e) => setPaginaTexto(e.target.value)}
+          onBlur={gravarPagina}
+          onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
         />
-        <span>de {leitura.totalPaginas || '?'} páginas</span>
+        <span>de</span>
+        <input
+          className="leitura-card__pagina-input"
+          type="number"
+          inputMode="numeric"
+          aria-label="Total de páginas"
+          placeholder="?"
+          value={totalTexto}
+          onChange={(e) => setTotalTexto(e.target.value)}
+          onBlur={gravarTotal}
+          onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+        />
+        <span>páginas</span>
       </div>
 
       {leitura.capitulos?.length > 0 && (

@@ -3,11 +3,13 @@
 // corridos antes (secção 6 do regulamento), por isso a checklist do modo
 // frequência segue o mesmo corte
 import { chaveData } from '../data/feriados.js';
+import { paraData } from './datas.js';
 
 const DIAS_CORTE_MATERIA = 6;
 
-function paraData(item) {
-  return item?.data instanceof Date ? item.data : item?.data?.toDate?.();
+// a data de um evento (Date ou Timestamp)
+function dataDoEvento(item) {
+  return paraData(item?.data);
 }
 
 // próximo evento do tipo 'frequencia', a partir de hoje (inclusive), o mais próximo primeiro.
@@ -17,7 +19,7 @@ export function proximaFrequencia(eventos, hoje = new Date()) {
   const hojeChave = chaveData(hoje);
   const futuras = eventos
     .filter((ev) => ev.tipo === 'frequencia')
-    .map((ev) => ({ ...ev, data: paraData(ev) }))
+    .map((ev) => ({ ...ev, data: dataDoEvento(ev) }))
     .filter((ev) => ev.data && chaveData(ev.data) >= hojeChave)
     .sort((a, b) => a.data - b.data);
   return futuras[0] || null;

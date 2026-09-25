@@ -1,12 +1,6 @@
 // a próxima prova (frequência ou exame) e a checklist da matéria — funções puras, sem firebase nem react
 import { chaveData } from '../data/feriados.js';
-import { diasEntre } from './datas.js';
-
-export function paraData(valor) {
-  if (!valor) return null;
-  if (valor instanceof Date) return valor;
-  return valor.toDate?.() ?? null;
-}
+import { diasEntre, paraData } from './datas.js';
 
 // a próxima frequência ou exame que ainda não passou (hoje conta)
 export function proximaProva(eventos, hoje = new Date()) {
@@ -51,3 +45,6 @@ export function textoDosDias(dias) {
   if (dias === 1) return 'É amanhã.';
   return `Faltam ${dias} dias.`;
 }
+
+// continua a sair daqui para quem já o importava
+export { paraData };

@@ -1,6 +1,7 @@
 // balanço de domingo: horas, cartões, sumários e o que ficou por fazer, na semana corrente —
 // função pura, sem firebase nem react. semana começa à segunda-feira, como no resto da app.
 import { chaveData } from '../data/feriados.js';
+import { paraData } from './datas.js';
 
 const PERGUNTAS = [
   'O que correu melhor esta semana?',
@@ -9,10 +10,6 @@ const PERGUNTAS = [
   'Houve algum dia em que quase desististe? O que te fez continuar?',
   'O que farias diferente, se a semana recomeçasse hoje?',
 ];
-
-function paraData(valor) {
-  return valor?.toDate?.() ?? (valor instanceof Date ? valor : null);
-}
 
 export function segundaDaSemana(data) {
   const d = new Date(data);

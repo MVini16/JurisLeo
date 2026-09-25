@@ -1,12 +1,7 @@
 // gera as ocorrências datadas de uma aula semanal — função pura, partilhada por
 // calendário, horário e dashboard, para todos verem as mesmas aulas e os mesmos ids
 import { chaveData, ehFeriado } from '../data/feriados.js';
-
-function paraData(valor) {
-  if (!valor) return null;
-  if (valor instanceof Date) return valor;
-  return valor.toDate?.() ?? null;
-}
+import { paraData } from './datas.js';
 
 // as aulas que contam falta são as práticas
 export function tipoDaAula(aula) {

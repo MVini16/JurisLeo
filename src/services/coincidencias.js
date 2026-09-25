@@ -1,4 +1,5 @@
 // detetor de coincidências e outros choques de provas — função pura, sem firebase nem react
+import { paraData } from './datas.js';
 // regra (art. 39.º do regulamento, verificado contra o texto oficial em 22-09-2026): na época
 // normal há coincidência se houver "prova de exame" no mesmo dia OU em dia consecutivo com
 // outra prova de exame de qualquer época; nas outras épocas só conta o mesmo dia. o artigo só
@@ -24,8 +25,9 @@ function ehProva(item) {
   return TIPOS_PROVA.includes(item.tipo);
 }
 
-function paraData(item) {
-  return item.data instanceof Date ? item.data : item.data?.toDate?.();
+// a data de um evento (Date ou Timestamp)
+function dataDoEvento(item) {
+  return paraData(item?.data);
 }
 
 // diferença em dias de calendário entre duas datas (ignora a hora)
@@ -42,7 +44,7 @@ function diferencaDias(a, b) {
 export function detetarChoques(itens, { epocaNormal } = {}) {
   const provas = itens
     .filter(ehProva)
-    .map((item) => ({ ...item, data: paraData(item) }))
+    .map((item) => ({ ...item, data: dataDoEvento(item) }))
     .filter((item) => item.data);
 
   const emEpocaNormal = typeof epocaNormal === 'function' ? epocaNormal : () => false;

@@ -1,16 +1,9 @@
 // estatísticas das sessões de estudo — funções puras, sem firebase nem react
 // alimentam o perfil: sequência de dias, mapa de calor e horas por cadeira
 import { chaveData } from '../data/feriados.js';
-import { dataDeChave } from './datas.js';
+import { dataDeChave, paraData } from './datas.js';
 
 const NIVEIS_MINUTOS = [1, 30, 60, 120];
-
-// aceita Date ou Timestamp do firestore
-function paraData(valor) {
-  if (!valor) return null;
-  if (valor instanceof Date) return valor;
-  return valor.toDate?.() ?? null;
-}
 
 // { 'aaaa-mm-dd': minutos } com o dia em hora local
 export function minutosPorDia(sessoes) {

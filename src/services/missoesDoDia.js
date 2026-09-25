@@ -2,12 +2,9 @@
 // função pura, sem firebase nem react.
 import { sessoesDeHoje } from './horasPorRegistar.js';
 import { chaveData } from '../data/feriados.js';
+import { paraData } from './datas.js';
 
 export const ALVOS = { minutos: 25, flashcards: 10, sumario: 1 };
-
-function paraData(valor) {
-  return valor?.toDate?.() ?? (valor instanceof Date ? valor : null);
-}
 
 // quantos flashcards foram revistos hoje (têm ultimaRevisaoEm com a data de hoje)
 export function flashcardsRevistosHoje(flashcards, agora = new Date()) {

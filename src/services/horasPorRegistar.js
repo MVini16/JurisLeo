@@ -1,10 +1,7 @@
 // sugere registar uma sessão de estudo ao fim do dia, se ainda não houver nenhuma — nunca obriga.
 // função pura, sem firebase nem react.
 import { chaveData } from '../data/feriados.js';
-
-function paraData(valor) {
-  return valor?.toDate?.() ?? (valor instanceof Date ? valor : null);
-}
+import { paraData } from './datas.js';
 
 // as sessões cujo início caiu no mesmo dia de "agora"
 export function sessoesDeHoje(sessoes, agora = new Date()) {

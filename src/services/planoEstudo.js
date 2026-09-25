@@ -1,12 +1,13 @@
 // plano de estudo da semana: a partir das próximas provas, propõe uma cadeira por dia até
 // domingo — mais provas próximas, mais vezes aparecem. função pura, sem firebase nem react.
 import { chaveData } from '../data/feriados.js';
-import { diasEntre } from './datas.js';
+import { diasEntre, paraData } from './datas.js';
 
 const DIAS_SEMANA = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
 
-function paraData(item) {
-  return item.data instanceof Date ? item.data : item.data?.toDate?.();
+// a data de um evento (Date ou Timestamp)
+function dataDoEvento(item) {
+  return paraData(item?.data);
 }
 
 // os dias que faltam desta semana, de hoje (inclusive) até domingo
@@ -31,7 +32,7 @@ export function provasPorUrgencia(eventos, hoje = new Date()) {
   for (const ev of eventos) {
     if (ev.tipo !== 'frequencia' && ev.tipo !== 'exame') continue;
     if (ev.estado === 'cancelado' || !ev.cadeira) continue;
-    const data = paraData(ev);
+    const data = dataDoEvento(ev);
     // hoje conta, tal como em proximaProva (provas.js) — mesma convenção em toda a app
     if (!data || chaveData(data) < hojeChave) continue;
     const atual = porCadeira[ev.cadeira];

@@ -115,6 +115,49 @@ html.dark {
   --papel-fundo: #231519;
 }
 
+/* ecrã de início estilo ios — superfícies e texto semânticos, que mudam sozinhos com o tema */
+:root {
+  --superficie: #FFFFFF;
+  --superficie-2: #F3EEE7;
+  --texto: #2C1810;
+  --texto-2: #6b5a4e;
+  --texto-3: #9c8b7f;
+  --separador: #E8DDD0;
+  --vidro: rgba(250, 248, 245, 0.8);
+  --veu: rgba(20, 10, 12, 0.35);
+  --sombra-widget: 0 1px 2px rgba(44, 24, 16, 0.06), 0 8px 24px rgba(44, 24, 16, 0.07);
+  --sombra-forte: 0 12px 30px rgba(107, 15, 26, 0.3);
+  --destaque-texto: var(--burgundy);
+  --bordo-escuro: #2a060b;
+  --bordo-vivo: #8a1524;
+  --texto-sobre-escuro: #F5EFE6;
+  --texto-sobre-escuro-2: rgba(245, 239, 230, 0.7);
+  --traco-sobre-escuro: rgba(255, 255, 255, 0.16);
+  --tempo-ceu-a: #3d6d9e;
+  --tempo-ceu-b: #6e9fcc;
+  --botao-apagar: rgba(120, 110, 105, 0.92);
+  --raio-widget: 22px;
+  --raio-m: 14px;
+  --raio-s: 10px;
+  --zona-segura-topo: env(safe-area-inset-top, 0px);
+  --fonte-sistema: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+  --mola: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html.dark {
+  --superficie: #25181D;
+  --superficie-2: #2F2026;
+  --texto: #F5EFE6;
+  --texto-2: #BFAFA3;
+  --texto-3: #8d7c72;
+  --separador: #3A2830;
+  --vidro: rgba(26, 16, 20, 0.8);
+  --veu: rgba(0, 0, 0, 0.5);
+  --sombra-widget: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+  --sombra-forte: 0 12px 30px rgba(0, 0, 0, 0.45);
+  --destaque-texto: var(--gold);
+}
+
 /* quem pede menos movimento não leva animações */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

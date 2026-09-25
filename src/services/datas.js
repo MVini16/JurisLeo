@@ -9,6 +9,13 @@ export function dataDeChave(chave) {
   return new Date(a, m - 1, d, 12, 0, 0);
 }
 
+// aceita Date ou Timestamp do firestore (ou nada) e devolve Date ou null
+export function paraData(valor) {
+  if (!valor) return null;
+  if (valor instanceof Date) return valor;
+  return valor.toDate?.() ?? null;
+}
+
 function inicioDoDia(d) {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }

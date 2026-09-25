@@ -103,6 +103,7 @@ export function useDashboard() {
 
   return {
     nome,
+    eventos: todosEventos,
     aulasHoje,
     proximaFrequencia,
     diasParaFrequencia,

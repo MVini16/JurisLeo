@@ -47,3 +47,11 @@ export const ECRA_INICIAL = {
     { id: 'ferramentas', tamanho: 'largo' },
   ],
 };
+
+// ícone de cada ferramenta no widget "ferramentas" (os ids vêm de data/modulos.js)
+export const ICONES_FERRAMENTAS = {
+  ferrFlashcards: '🗂️', ferrEstudo: '⏱️', ferrLeituras: '📚', ferrPerguntas: '🙋', ferrChecklists: '☑️', ferrPares: '🧩',
+  ferrFrequencia: '🎯', ferrPrazos: '📆', ferrPlanoEstudo: '🗺️', ferrCasos: '⚖️', ferrModoExame: '📝', ferrTopicosCorrecao: '🔍',
+  ferrJurisprudencia: '🏛️', ferrArtigos: '📜', ferrGlossario: '🔤', ferrErros: '🩹', ferrPesquisa: '🔎', ferrMapasMentais: '🕸️',
+  ferrPortfolio: '💼', ferrEstagio: '👩‍⚖️', ferrContactos: '📇', ferrRespirar: '🫧',
+};

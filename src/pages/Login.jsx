@@ -27,7 +27,9 @@ function Login() {
   const [erro, setErro] = useState('')
 
   // submete o formulário
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e?.preventDefault()
+    if (carregando) return
     setErro('')
     setCarregando(true)
 
@@ -108,12 +110,14 @@ function Login() {
         {/* toggle login/registo */}
         <div className="login-toggle">
           <button
+            type="button"
             className={`toggle-btn ${!modoRegisto ? 'toggle-ativo' : ''}`}
             onClick={() => { setModoRegisto(false); setErro('') }}
           >
             Entrar
           </button>
           <button
+            type="button"
             className={`toggle-btn ${modoRegisto ? 'toggle-ativo' : ''}`}
             onClick={() => { setModoRegisto(true); setErro('') }}
           >
@@ -121,11 +125,17 @@ function Login() {
           </button>
         </div>
 
-        {/* campos */}
+        {/* campos — num form, para a tecla "ir" do iphone entrar e as palavras-passe do icloud preencherem */}
+        <form className="login-form" onSubmit={handleSubmit}>
         <div className="login-campos">
           <input
             className="login-input"
             type="email"
+            name="email"
+            autoComplete="email"
+            autoCapitalize="none"
+            inputMode="email"
+            aria-label="Email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -133,6 +143,9 @@ function Login() {
           <input
             className="login-input"
             type="password"
+            name="password"
+            autoComplete={modoRegisto ? 'new-password' : 'current-password'}
+            aria-label="Palavra-passe"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -144,12 +157,13 @@ function Login() {
 
         {/* botão principal */}
         <button
+          type="submit"
           className="login-botao"
-          onClick={handleSubmit}
           disabled={carregando}
         >
           {carregando ? 'A processar...' : modoRegisto ? 'Criar conta' : 'Entrar'}
         </button>
+        </form>
 
       </div>
     </div>

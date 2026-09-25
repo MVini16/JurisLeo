@@ -174,3 +174,5 @@
     font-size: 1.6rem;
   }
 }
+/* o form não muda o layout: os campos e o botão continuam filhos diretos do cartão */
+.login-form { display: contents; }

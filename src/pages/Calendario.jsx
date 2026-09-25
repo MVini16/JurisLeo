@@ -389,6 +389,9 @@ function VistaSemanal({ data, eventosDoDia, onDiaClick, onEventoClick, onDataCha
       const largura = scrollRef.current.offsetWidth;
       scrollRef.current.scrollLeft = indice * largura;
     }
+  // só a data manda aqui: dias e mesmoDia derivam dela e são puros, e isMobile é lido
+  // uma vez por render (não muda sem remontar). pô-los na lista recolocava o scroll a meio do gesto
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   // ── desktop: grelha 7 colunas ──

@@ -32,7 +32,8 @@ export default function CartaoBemEstar() {
 
   async function aoGuardar(dados) {
     await guardar(hojeChave, janela, dados);
-    const alerta = alertaPersistencia({ ...registos, [hojeChave]: { [janela]: dados } }, agora);
+    // junta à outra janela de hoje (manhã ou noite) em vez de a apagar no cálculo do alerta
+    const alerta = alertaPersistencia({ ...registos, [hojeChave]: { ...registos[hojeChave], [janela]: dados } }, agora);
     setResposta({ emBaixo: estaEmBaixo(dados), alerta });
     setAPreencher(false);
     if (!estaEmBaixo(dados)) setTimeout(() => setResposta(null), 6000);

@@ -49,9 +49,12 @@ export function resumirDados({ cadeiras = [], faltas = {}, avaliacoes = {}, tare
 
   const porDia = minutosPorDia(sessoes);
 
+  // só há média quando já há pelo menos uma cadeira aprovada com nota
+  const ano = resultados.length ? resumoDoAno(resultados) : null;
+
   return {
     cadeiras: porCadeira,
-    media: resultados.length ? resumoDoAno(resultados) : null,
+    media: ano?.media != null ? ano : null,
     tarefas: { pendentes: pendentes.length, atrasadas: atrasadas.length, titulosAtrasadas: atrasadas.slice(0, 3).map((t) => t.titulo) },
     estudo: { minutosSemana: minutosDaSemana(porDia, hoje), sequencia: sequenciaAtual(porDia, hoje).dias, sessoes: sessoes.length, hoje: (porDia[hojeChave] || 0) > 0 },
     producao: {

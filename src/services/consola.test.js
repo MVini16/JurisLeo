@@ -60,6 +60,11 @@ describe('resumirDados', () => {
   };
   const r = resumirDados(dados, HOJE);
 
+  it('sem cadeiras aprovadas não há média (a consola não pode rebentar em setembro)', () => {
+    const semNotas = resumirDados({ cadeiras: [cadeira], avaliacoes: { 'administrativo-1': {} } }, HOJE);
+    expect(semNotas.media).toBeNull();
+  });
+
   it('conta as tarefas pendentes e as atrasadas', () => {
     expect(r.tarefas).toMatchObject({ pendentes: 3, atrasadas: 1, titulosAtrasadas: ['Trabalho'] });
   });

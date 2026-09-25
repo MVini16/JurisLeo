@@ -214,7 +214,7 @@ function Conteudo({ onBloquear }) {
           </Cartao>
 
           <Cartao titulo="Média">
-            {resumo.media ? (
+            {resumo.media?.media != null ? (
               <p>{resumo.media.aprovadas} de {resumo.media.total} cadeiras aprovadas. Média atual: <b>{resumo.media.media.toFixed(2)}</b>{resumo.media.escala ? ` (${resumo.media.escala})` : ''}. O bónus de 0,6 só conta se fechar o ano todo.</p>
             ) : (
               <p>Ainda não há cadeiras aprovadas.</p>

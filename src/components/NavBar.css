@@ -12,6 +12,8 @@
   overflow-x: hidden;
   /* espaço para a tab bar no mobile, mais a barra de baixo do iphone */
   padding-bottom: calc(80px + var(--zona-segura-baixo));
+  /* na app instalada (barra de estado translúcida) o topo não fica debaixo da dynamic island */
+  padding-top: var(--zona-segura-topo);
 }
 
 /* ─── sidebar — desktop ────────────────────────────────────────────────────── */

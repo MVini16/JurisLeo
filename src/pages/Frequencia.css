@@ -3,7 +3,7 @@
   --acento: var(--cor-cadeira, var(--burgundy));
   max-width: 480px;
   margin: 0 auto;
-  padding: 24px 16px 110px;
+  padding: calc(24px + var(--zona-segura-topo)) 16px 110px;
   text-align: center;
   font-family: 'Georgia', serif;
 }

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
 import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { semEsperar } from '../services/escritas.js';
 
 export function useNotas() {
   const [cadeiras, setCadeiras] = useState([]);
@@ -35,13 +36,13 @@ export function useNotas() {
   async function guardarNota(cadeiraId, patch) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) throw new Error('sem sessão');
-    await setDoc(doc(db, 'users', userId, 'cadeiras', cadeiraId, 'avaliacao', 'dados'), patch, { merge: true });
+    semEsperar(setDoc(doc(db, 'users', userId, 'cadeiras', cadeiraId, 'avaliacao', 'dados'), patch, { merge: true }));
   }
 
   async function guardarPesos(cadeiraId, pesos) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) throw new Error('sem sessão');
-    await setDoc(doc(db, 'users', userId, 'cadeiras', cadeiraId), { pesos }, { merge: true });
+    semEsperar(setDoc(doc(db, 'users', userId, 'cadeiras', cadeiraId), { pesos }, { merge: true }));
   }
 
   return { cadeiras, avaliacoes, loading, guardarNota, guardarPesos };

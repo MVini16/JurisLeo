@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { semEsperar } from '../services/escritas.js';
 
 export function useDicaPrimeiraVez(chave) {
   // null enquanto não sabemos ainda — só decide mostrar depois de saber ao certo
@@ -24,7 +25,7 @@ export function useDicaPrimeiraVez(chave) {
   async function marcarVista() {
     const userId = getAuth().currentUser?.uid;
     if (!userId || !chave) return;
-    await setDoc(doc(db, 'users', userId, 'perfil', 'dados'), { dicasVistas: { [chave]: true } }, { merge: true });
+    semEsperar(setDoc(doc(db, 'users', userId, 'perfil', 'dados'), { dicasVistas: { [chave]: true } }, { merge: true }));
   }
 
   return { vista, marcarVista };

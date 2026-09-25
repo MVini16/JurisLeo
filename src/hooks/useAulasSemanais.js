@@ -1,10 +1,11 @@
 // horário semanal guardado no firestore (aulasSemanais), em tempo real, com adicionar, mover e apagar
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { collection, onSnapshot, addDoc, setDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
+import { collection, onSnapshot, setDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { calendarioS1 } from '../data/dadosLeonor.js';
 import { carregarHorarioInicial } from '../services/initCalendario.js';
+import { semEsperar, criarSemEsperar } from '../services/escritas.js';
 
 export function useAulasSemanais() {
   const [aulas, setAulas] = useState([]);
@@ -34,17 +35,17 @@ export function useAulasSemanais() {
       dataFim: Timestamp.fromDate(new Date(calendarioS1.fimAulas + 'T00:00:00')),
       contaFalta: dados.tipoAula === 'pratica',
     };
-    await addDoc(collection(db, 'users', uid(), 'aulasSemanais'), completa);
+    criarSemEsperar(collection(db, 'users', uid(), 'aulasSemanais'), completa);
   }
 
   async function atualizar(id, dados) {
     const patch = { ...dados };
     if (dados.tipoAula) patch.contaFalta = dados.tipoAula === 'pratica';
-    await setDoc(doc(db, 'users', uid(), 'aulasSemanais', id), patch, { merge: true });
+    semEsperar(setDoc(doc(db, 'users', uid(), 'aulasSemanais', id), patch, { merge: true }));
   }
 
   async function apagar(id) {
-    await deleteDoc(doc(db, 'users', uid(), 'aulasSemanais', id));
+    semEsperar(deleteDoc(doc(db, 'users', uid(), 'aulasSemanais', id)));
   }
 
   return { aulas, loading, adicionar, atualizar, apagar, carregarHorarioInicial: () => carregarHorarioInicial(uid()) };

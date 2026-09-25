@@ -1,7 +1,7 @@
 // modal para criar ou editar um evento no calendário
 import { useState, useEffect, useMemo } from 'react';
 import { db } from '../services/firebase.js';
-import { collection, addDoc, updateDoc, doc, Timestamp, serverTimestamp } from 'firebase/firestore';
+import { collection, updateDoc, doc, Timestamp, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { cadeirasS1, coresCadeiras } from '../data/dadosLeonor.js';
 import { FAMILIAS, familiaDoEvento } from '../data/familias.js';
@@ -11,6 +11,7 @@ import { naEpocaNormal } from '../data/calendarioEscolar.js';
 import { detetarChoques, explicarChoque } from '../services/coincidencias.js';
 import './ModalCriarEvento.css';
 import TextareaRevista from './TextareaRevista.jsx';
+import { semEsperar, criarSemEsperar } from '../services/escritas.js';
 
 // cores por cadeira
 const CORES_CADEIRA = coresCadeiras;
@@ -165,13 +166,13 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
       };
 
       if (aEditar) {
-        await updateDoc(doc(db, 'users', userId, 'eventos', eventoExistente.id), dados);
+        semEsperar(updateDoc(doc(db, 'users', userId, 'eventos', eventoExistente.id), dados));
       } else {
-        await addDoc(collection(db, 'users', userId, 'eventos'), dados);
+        criarSemEsperar(collection(db, 'users', userId, 'eventos'), dados);
         // prazos em cadeia: as tarefas de estudo
         if (form.lembretes) {
           for (const t of lembretes) {
-            await addDoc(collection(db, 'users', userId, 'tarefas'), { ...t, criadoEm: serverTimestamp(), atualizadoEm: serverTimestamp() });
+            criarSemEsperar(collection(db, 'users', userId, 'tarefas'), { ...t, criadoEm: serverTimestamp(), atualizadoEm: serverTimestamp() });
           }
         }
       }

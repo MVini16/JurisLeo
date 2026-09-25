@@ -4,6 +4,7 @@ import { db } from '../services/firebase.js';
 import { collection, doc, onSnapshot, query, where, documentId, setDoc, serverTimestamp, deleteField } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { chaveData } from '../data/feriados.js';
+import { semEsperar } from '../services/escritas.js';
 
 const DIAS_DE_HISTORICO = 100;
 
@@ -42,28 +43,28 @@ export function useBemEstar() {
   const guardar = useCallback(async (chave, janela, dados) => {
     const userId = getAuth().currentUser?.uid;
     if (!userId) throw new Error('sem sessão');
-    await setDoc(doc(db, 'users', userId, 'registosDiarios', chave), {
+    semEsperar(setDoc(doc(db, 'users', userId, 'registosDiarios', chave), {
       apagado: false,
       [janela]: { ...dados, preenchidoEm: serverTimestamp() },
-    }, { merge: true });
+    }, { merge: true }));
   }, []);
 
   // apagar: o dia fica marcado como apagado, sem o conteúdo em lado nenhum (spec 25.11)
   const apagar = useCallback(async (chave) => {
     const userId = getAuth().currentUser?.uid;
     if (!userId) throw new Error('sem sessão');
-    await setDoc(doc(db, 'users', userId, 'registosDiarios', chave), {
+    semEsperar(setDoc(doc(db, 'users', userId, 'registosDiarios', chave), {
       apagado: true,
       apagadoEm: serverTimestamp(),
       manha: deleteField(),
       noite: deleteField(),
-    }, { merge: true });
+    }, { merge: true }));
   }, []);
 
   const alternarCampo = useCallback(async (id) => {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await setDoc(doc(db, 'users', userId, 'configuracoes', 'dados'), { bemEstarCampos: { [id]: !camposGuardados[id] } }, { merge: true });
+    semEsperar(setDoc(doc(db, 'users', userId, 'configuracoes', 'dados'), { bemEstarCampos: { [id]: !camposGuardados[id] } }, { merge: true }));
   }, [camposGuardados]);
 
   return { registos, camposAtivos, loading, guardar, apagar, alternarCampo };

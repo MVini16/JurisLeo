@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { semEsperar } from '../services/escritas.js';
 
 export function useRevisaoFrequencia(cadeiraId) {
   const [marcados, setMarcados] = useState([]);
@@ -27,7 +28,7 @@ export function useRevisaoFrequencia(cadeiraId) {
       ? marcados.filter((c) => c !== chave)
       : [...marcados, chave];
     setMarcados(novosMarcados); // otimista — a app sente-se instantânea
-    await setDoc(doc(db, 'users', userId, 'cadeiras', cadeiraId, 'revisaoFrequencia', 'dados'), { marcados: novosMarcados });
+    semEsperar(setDoc(doc(db, 'users', userId, 'cadeiras', cadeiraId, 'revisaoFrequencia', 'dados'), { marcados: novosMarcados }));
   }
 
   return { marcados, alternar };

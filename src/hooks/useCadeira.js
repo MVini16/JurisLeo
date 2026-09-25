@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { semEsperar } from '../services/escritas.js';
 
 export function useCadeira(cadeiraId) {
   const [cadeira, setCadeira] = useState(null);
@@ -37,14 +38,14 @@ export function useCadeira(cadeiraId) {
     const auth = getAuth();
     const userId = auth.currentUser?.uid;
     if (!userId) return;
-    await setDoc(doc(db, 'users', userId, 'cadeiras', cadeiraId, 'faltas', 'dados'), patch, { merge: true });
+    semEsperar(setDoc(doc(db, 'users', userId, 'cadeiras', cadeiraId, 'faltas', 'dados'), patch, { merge: true }));
   }
 
   async function guardarAvaliacao(patch) {
     const auth = getAuth();
     const userId = auth.currentUser?.uid;
     if (!userId) return;
-    await setDoc(doc(db, 'users', userId, 'cadeiras', cadeiraId, 'avaliacao', 'dados'), patch, { merge: true });
+    semEsperar(setDoc(doc(db, 'users', userId, 'cadeiras', cadeiraId, 'avaliacao', 'dados'), patch, { merge: true }));
   }
 
   return { cadeira, faltasDados, avaliacaoDados, loading, guardarFaltas, guardarAvaliacao };

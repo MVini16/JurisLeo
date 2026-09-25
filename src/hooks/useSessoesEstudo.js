@@ -1,8 +1,9 @@
 // hook que regista e lista sessões de estudo
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { collection, addDoc, onSnapshot, query, orderBy, limit, Timestamp } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, limit, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { criarSemEsperar } from '../services/escritas.js';
 
 export function useSessoesEstudo() {
   const [sessoes, setSessoes] = useState([]);
@@ -25,7 +26,7 @@ export function useSessoesEstudo() {
   async function registarSessao({ cadeiraId, tarefaId, inicio, fim, minutos, pausasFeitas }) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await addDoc(collection(db, 'users', userId, 'sessoesEstudo'), {
+    criarSemEsperar(collection(db, 'users', userId, 'sessoesEstudo'), {
       cadeiraId: cadeiraId || null,
       tarefaId: tarefaId || null,
       inicio: Timestamp.fromDate(inicio),

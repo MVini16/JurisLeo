@@ -2,8 +2,9 @@
 // mesmo padrão de useCasos/useCaso: um hook para a lista, outro para um item
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { collection, onSnapshot, query, orderBy, doc, addDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { semEsperar, criarSemEsperar } from '../services/escritas.js';
 
 export function useTopicosCorrecaoLista() {
   const [itens, setItens] = useState([]);
@@ -42,7 +43,7 @@ export function useTopicosCorrecao(id) {
   async function criar(dados) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return null;
-    const ref = await addDoc(collection(db, 'users', userId, 'topicosCorrecao'), {
+    const ref = criarSemEsperar(collection(db, 'users', userId, 'topicosCorrecao'), {
       ...dados,
       criadoEm: serverTimestamp(),
       atualizadoEm: serverTimestamp(),
@@ -53,13 +54,13 @@ export function useTopicosCorrecao(id) {
   async function guardar(dados) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await updateDoc(doc(db, 'users', userId, 'topicosCorrecao', id), { ...dados, atualizadoEm: serverTimestamp() });
+    semEsperar(updateDoc(doc(db, 'users', userId, 'topicosCorrecao', id), { ...dados, atualizadoEm: serverTimestamp() }));
   }
 
   async function apagar() {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await deleteDoc(doc(db, 'users', userId, 'topicosCorrecao', id));
+    semEsperar(deleteDoc(doc(db, 'users', userId, 'topicosCorrecao', id)));
   }
 
   return { item, loading: novo ? false : loading, novo, criar, guardar, apagar };

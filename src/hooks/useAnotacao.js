@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
 import { doc, onSnapshot, setDoc, updateDoc, deleteDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { semEsperar } from '../services/escritas.js';
 
 export function useAnotacao(id) {
   const nova = id === 'nova';
@@ -49,7 +50,7 @@ export function useAnotacao(id) {
   async function apagar() {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await deleteDoc(doc(db, 'users', userId, 'anotacoes', id));
+    semEsperar(deleteDoc(doc(db, 'users', userId, 'anotacoes', id)));
   }
 
   return { anotacao, loading: nova ? false : loading, nova, criar, guardar, apagar };

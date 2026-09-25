@@ -1,9 +1,10 @@
 // hook dos flashcards — cria, lê, regista respostas (repetição espaçada) e apaga
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, onSnapshot, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { calcularProximaRevisaoPorConfianca } from '../services/repeticaoEspacada.js';
+import { semEsperar, criarSemEsperar } from '../services/escritas.js';
 
 export function useFlashcards() {
   const [flashcards, setFlashcards] = useState([]);
@@ -26,7 +27,7 @@ export function useFlashcards() {
   async function adicionar(dados) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await addDoc(collection(db, 'users', userId, 'flashcards'), {
+    criarSemEsperar(collection(db, 'users', userId, 'flashcards'), {
       nivel: 0,
       facilidade: 1,
       acertos: 0,
@@ -39,7 +40,7 @@ export function useFlashcards() {
   async function apagar(id) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await deleteDoc(doc(db, 'users', userId, 'flashcards', id));
+    semEsperar(deleteDoc(doc(db, 'users', userId, 'flashcards', id)));
   }
 
   // regista uma resposta de revisão e actualiza o nível + próxima revisão
@@ -50,7 +51,7 @@ export function useFlashcards() {
     const confianca = typeof resposta === 'number' ? resposta : (resposta ? 4 : 2);
     const acertou = confianca >= 3;
     const { novoNivel, novaFacilidade, proximaRevisao } = calcularProximaRevisaoPorConfianca(flashcard.nivel ?? 0, confianca, flashcard.facilidade ?? 1);
-    await updateDoc(doc(db, 'users', userId, 'flashcards', flashcard.id), {
+    semEsperar(updateDoc(doc(db, 'users', userId, 'flashcards', flashcard.id), {
       nivel: novoNivel,
       facilidade: novaFacilidade,
       proximaRevisao,
@@ -58,7 +59,7 @@ export function useFlashcards() {
       ultimaRevisaoEm: serverTimestamp(),
       acertos: (flashcard.acertos || 0) + (acertou ? 1 : 0),
       erros: (flashcard.erros || 0) + (acertou ? 0 : 1),
-    });
+    }));
   }
 
   return { flashcards, loading, adicionar, apagar, registarResposta };

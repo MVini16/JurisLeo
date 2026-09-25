@@ -2,6 +2,8 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { db } from '../services/firebase.js';
 import { getAuth } from 'firebase/auth';
+import { doc, deleteDoc } from 'firebase/firestore';
+import { semEsperar } from '../services/escritas.js';
 import { useCalendario } from '../hooks/useCalendario.js';
 import ModalCriarEvento from '../components/ModalCriarEvento.jsx';
 import BotoesEstadoAula from '../components/BotoesEstadoAula.jsx';
@@ -699,15 +701,12 @@ function ModalEvento({ evento, onMarcar, onFechar, onEditar, onApagar, ICONES_TI
   const data = evento.data instanceof Date ? evento.data : evento.data?.toDate?.();
   const cor = corDoEvento(evento);
 
-  async function apagarEvento() {
+  function apagarEvento() {
+    const userId = getAuth().currentUser?.uid;
+    if (!userId) return;
     setApagando(true);
-    try {
-      const auth = getAuth();
-      const userId = auth.currentUser?.uid;
-      const { doc, deleteDoc } = await import('firebase/firestore');
-      await deleteDoc(doc(db, 'users', userId, 'eventos', evento.id));
-      onApagar();
-    } catch { setApagando(false); }
+    semEsperar(deleteDoc(doc(db, 'users', userId, 'eventos', evento.id)));
+    onApagar();
   }
 
   return (

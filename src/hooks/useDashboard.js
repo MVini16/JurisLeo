@@ -6,6 +6,7 @@ import { getAuth } from 'firebase/auth';
 import { gerarOcorrencias, comEstados } from '../services/ocorrencias.js';
 import { proximaFrequencia as calcularProximaFrequencia, diasRestantes } from '../services/frequencia.js';
 import { useEstadosAula } from './useEstadosAula.js';
+import { semEsperar } from '../services/escritas.js';
 
 export function useDashboard() {
   const { estados, marcar } = useEstadosAula();
@@ -97,7 +98,7 @@ export function useDashboard() {
   async function definirTutorialFeito(valor) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await setDoc(doc(db, 'users', userId, 'perfil', 'dados'), { tutorialFeito: valor }, { merge: true });
+    semEsperar(setDoc(doc(db, 'users', userId, 'perfil', 'dados'), { tutorialFeito: valor }, { merge: true }));
   }
 
   return {

@@ -1,7 +1,7 @@
 // página de tarefas da jurisleo
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { collection, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { useLocation } from 'react-router-dom';
 import { useTarefas } from '../hooks/useTarefas.js';
@@ -10,6 +10,7 @@ import './Tarefas.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
 import MarteloJuiz from '../components/animacoes/MarteloJuiz.jsx';
 import TextareaRevista from '../components/TextareaRevista.jsx';
+import { semEsperar, criarSemEsperar } from '../services/escritas.js';
 
 // cores e nomes por cadeira
 const CORES_CADEIRA = coresCadeiras;
@@ -110,14 +111,14 @@ export default function Tarefas() {
     const userId = auth.currentUser?.uid;
     if (!userId) return;
     const ref = doc(db, 'users', userId, 'tarefas', tarefa.id);
-    await updateDoc(ref, { concluida: !tarefa.concluida });
+    semEsperar(updateDoc(ref, { concluida: !tarefa.concluida }));
   }
 
   async function apagarTarefa(tarefaId) {
     const auth = getAuth();
     const userId = auth.currentUser?.uid;
     if (!userId) return;
-    await deleteDoc(doc(db, 'users', userId, 'tarefas', tarefaId));
+    semEsperar(deleteDoc(doc(db, 'users', userId, 'tarefas', tarefaId)));
   }
 
   return (
@@ -384,10 +385,10 @@ function ModalTarefa({ tarefaExistente, onFechar }) {
     try {
       if (isEditar) {
         // atualiza tarefa existente
-        await updateDoc(doc(db, 'users', userId, 'tarefas', tarefaExistente.id), dados);
+        semEsperar(updateDoc(doc(db, 'users', userId, 'tarefas', tarefaExistente.id), dados));
       } else {
         // cria nova tarefa
-        await addDoc(collection(db, 'users', userId, 'tarefas'), {
+        criarSemEsperar(collection(db, 'users', userId, 'tarefas'), {
           ...dados,
           criadoEm: serverTimestamp(),
         });

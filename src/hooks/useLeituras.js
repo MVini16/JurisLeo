@@ -1,8 +1,9 @@
 // hook do progresso de leitura dos manuais
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { semEsperar, criarSemEsperar } from '../services/escritas.js';
 
 export function useLeituras() {
   const [leituras, setLeituras] = useState([]);
@@ -25,19 +26,19 @@ export function useLeituras() {
   async function adicionar(dados) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await addDoc(collection(db, 'users', userId, 'leituras'), { capitulos: [], paginaAtual: 0, ...dados });
+    criarSemEsperar(collection(db, 'users', userId, 'leituras'), { capitulos: [], paginaAtual: 0, ...dados });
   }
 
   async function atualizar(id, dados) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await updateDoc(doc(db, 'users', userId, 'leituras', id), dados);
+    semEsperar(updateDoc(doc(db, 'users', userId, 'leituras', id), dados));
   }
 
   async function apagar(id) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await deleteDoc(doc(db, 'users', userId, 'leituras', id));
+    semEsperar(deleteDoc(doc(db, 'users', userId, 'leituras', id)));
   }
 
   return { leituras, loading, adicionar, atualizar, apagar };

@@ -1,8 +1,9 @@
 // lista e um mapa mental individual — users/{uid}/mapasMentais, mesmo padrão de useCasos/useCaso
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { collection, onSnapshot, query, orderBy, doc, addDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { semEsperar, criarSemEsperar } from '../services/escritas.js';
 
 export function useMapasMentaisLista() {
   const [mapas, setMapas] = useState([]);
@@ -41,7 +42,7 @@ export function useMapaMental(id) {
   async function criar(dados) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return null;
-    const ref = await addDoc(collection(db, 'users', userId, 'mapasMentais'), {
+    const ref = criarSemEsperar(collection(db, 'users', userId, 'mapasMentais'), {
       nos: [],
       ligacoes: [],
       ...dados,
@@ -54,13 +55,13 @@ export function useMapaMental(id) {
   async function guardar(dados) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await updateDoc(doc(db, 'users', userId, 'mapasMentais', id), { ...dados, atualizadoEm: serverTimestamp() });
+    semEsperar(updateDoc(doc(db, 'users', userId, 'mapasMentais', id), { ...dados, atualizadoEm: serverTimestamp() }));
   }
 
   async function apagar() {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await deleteDoc(doc(db, 'users', userId, 'mapasMentais', id));
+    semEsperar(deleteDoc(doc(db, 'users', userId, 'mapasMentais', id)));
   }
 
   return { mapa, loading: novo ? false : loading, novo, criar, guardar, apagar };

@@ -1,8 +1,9 @@
 // hook para um caso prático individual — cria, lê, actualiza e apaga
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { doc, onSnapshot, addDoc, updateDoc, deleteDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { doc, onSnapshot, updateDoc, deleteDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { semEsperar, criarSemEsperar } from '../services/escritas.js';
 
 export function useCaso(id) {
   const novo = id === 'novo';
@@ -25,7 +26,7 @@ export function useCaso(id) {
   async function criar(dados) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return null;
-    const ref = await addDoc(collection(db, 'users', userId, 'casos'), {
+    const ref = criarSemEsperar(collection(db, 'users', userId, 'casos'), {
       ...dados,
       criadoEm: serverTimestamp(),
       atualizadoEm: serverTimestamp(),
@@ -36,16 +37,16 @@ export function useCaso(id) {
   async function guardar(dados) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await updateDoc(doc(db, 'users', userId, 'casos', id), {
+    semEsperar(updateDoc(doc(db, 'users', userId, 'casos', id), {
       ...dados,
       atualizadoEm: serverTimestamp(),
-    });
+    }));
   }
 
   async function apagar() {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await deleteDoc(doc(db, 'users', userId, 'casos', id));
+    semEsperar(deleteDoc(doc(db, 'users', userId, 'casos', id)));
   }
 
   return { caso, loading: novo ? false : loading, novo, criar, guardar, apagar };

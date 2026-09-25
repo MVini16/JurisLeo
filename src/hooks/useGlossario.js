@@ -1,8 +1,9 @@
 // hook do glossário de termos jurídicos
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { collection, onSnapshot, query, orderBy, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { semEsperar, criarSemEsperar } from '../services/escritas.js';
 
 export function useGlossario() {
   const [termos, setTermos] = useState([]);
@@ -25,19 +26,19 @@ export function useGlossario() {
   async function adicionar(dados) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await addDoc(collection(db, 'users', userId, 'glossario'), { dominado: false, ...dados });
+    criarSemEsperar(collection(db, 'users', userId, 'glossario'), { dominado: false, ...dados });
   }
 
   async function atualizar(id, dados) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await updateDoc(doc(db, 'users', userId, 'glossario', id), dados);
+    semEsperar(updateDoc(doc(db, 'users', userId, 'glossario', id), dados));
   }
 
   async function apagar(id) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await deleteDoc(doc(db, 'users', userId, 'glossario', id));
+    semEsperar(deleteDoc(doc(db, 'users', userId, 'glossario', id)));
   }
 
   return { termos, loading, adicionar, atualizar, apagar };

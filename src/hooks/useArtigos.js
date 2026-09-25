@@ -1,8 +1,9 @@
 // hook dos artigos de código guardados como referência pessoal
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { semEsperar, criarSemEsperar } from '../services/escritas.js';
 
 export function useArtigos() {
   const [artigos, setArtigos] = useState([]);
@@ -25,19 +26,19 @@ export function useArtigos() {
   async function adicionar(dados) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await addDoc(collection(db, 'users', userId, 'artigos'), dados);
+    criarSemEsperar(collection(db, 'users', userId, 'artigos'), dados);
   }
 
   async function atualizar(id, dados) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await updateDoc(doc(db, 'users', userId, 'artigos', id), dados);
+    semEsperar(updateDoc(doc(db, 'users', userId, 'artigos', id), dados));
   }
 
   async function apagar(id) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await deleteDoc(doc(db, 'users', userId, 'artigos', id));
+    semEsperar(deleteDoc(doc(db, 'users', userId, 'artigos', id)));
   }
 
   return { artigos, loading, adicionar, atualizar, apagar };

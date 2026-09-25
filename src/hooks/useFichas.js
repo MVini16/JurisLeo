@@ -1,9 +1,10 @@
 // fichas de um tipo (jurisprudência, erros, contactos...) — users/{uid}/fichas, com o campo tipo
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { db } from '../services/firebase.js';
-import { collection, onSnapshot, query, where, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, onSnapshot, query, where, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { ordenarFichas, limparFicha } from '../services/fichas.js';
+import { semEsperar, criarSemEsperar } from '../services/escritas.js';
 
 export function useFichas(tipoId) {
   const [fichas, setFichas] = useState([]);
@@ -26,7 +27,7 @@ export function useFichas(tipoId) {
   const adicionar = useCallback(async (dados) => {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await addDoc(collection(db, 'users', userId, 'fichas'), {
+    criarSemEsperar(collection(db, 'users', userId, 'fichas'), {
       ...limparFicha(tipoId, dados),
       tipo: tipoId,
       criadaEm: serverTimestamp(),
@@ -37,13 +38,13 @@ export function useFichas(tipoId) {
   const atualizar = useCallback(async (id, dados) => {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await updateDoc(doc(db, 'users', userId, 'fichas', id), { ...limparFicha(tipoId, dados), atualizadaEm: serverTimestamp() });
+    semEsperar(updateDoc(doc(db, 'users', userId, 'fichas', id), { ...limparFicha(tipoId, dados), atualizadaEm: serverTimestamp() }));
   }, [tipoId]);
 
   const apagar = useCallback(async (id) => {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await deleteDoc(doc(db, 'users', userId, 'fichas', id));
+    semEsperar(deleteDoc(doc(db, 'users', userId, 'fichas', id)));
   }, []);
 
   return { fichas: ordenadas, loading, adicionar, atualizar, apagar };

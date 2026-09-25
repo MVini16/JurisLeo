@@ -5,6 +5,7 @@ import { db } from '../services/firebase.js';
 import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { proximaProva } from '../services/provas.js';
+import { semEsperar } from '../services/escritas.js';
 
 export function useFrequencia() {
   const [eventos, setEventos] = useState([]);
@@ -39,7 +40,7 @@ export function useFrequencia() {
   const guardarTopicos = useCallback(async (novos) => {
     const userId = getAuth().currentUser?.uid;
     if (!userId || !provaId) return;
-    await setDoc(doc(db, 'users', userId, 'frequencias', provaId), { topicos: novos }, { merge: true });
+    semEsperar(setDoc(doc(db, 'users', userId, 'frequencias', provaId), { topicos: novos }, { merge: true }));
   }, [provaId]);
 
   return { prova, topicos, loading, guardarTopicos };

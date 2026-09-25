@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
 import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { semEsperar } from '../services/escritas.js';
 
 export function usePlanoEstudo() {
   const [eventos, setEventos] = useState([]);
@@ -31,7 +32,7 @@ export function usePlanoEstudo() {
   async function guardarEscolha(chaveDoDia, escolha) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return;
-    await setDoc(doc(db, 'users', userId, 'planoEstudo', 'dados'), { [chaveDoDia]: escolha }, { merge: true });
+    semEsperar(setDoc(doc(db, 'users', userId, 'planoEstudo', 'dados'), { [chaveDoDia]: escolha }, { merge: true }));
   }
 
   return { eventos, escolhas, loading, guardarEscolha };

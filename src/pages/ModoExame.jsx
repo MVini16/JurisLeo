@@ -11,6 +11,7 @@ import EstadoVazio from '../components/EstadoVazio.jsx';
 import Carregando from '../components/animacoes/Carregando.jsx';
 import './ModoExame.css';
 import TextareaRevista from '../components/TextareaRevista.jsx';
+import { useEcraAceso } from '../hooks/useEcraAceso.js';
 
 // o exame a decorrer fica guardado neste aparelho: se ela sair a meio (outra app,
 // um toque num separador), ao voltar o relógio continua de onde estava
@@ -74,6 +75,7 @@ export default function ModoExame() {
 function Cronometro({ casoId, onSair }) {
   const { caso, loading, guardar } = useCaso(casoId);
   const [fase, setFase] = useState('a_decorrer'); // 'a_decorrer' | 'terminado'
+  useEcraAceso(fase === 'a_decorrer');
   const inicioRef = useRef(lerExame()?.casoId === casoId ? lerExame().inicio : null);
   const [confirmarFim, setConfirmarFim] = useState(false);
   const [restam, setRestam] = useState(DURACAO_SEGUNDOS);

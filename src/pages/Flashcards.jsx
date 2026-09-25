@@ -11,6 +11,7 @@ import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js
 import './Flashcards.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
 import TextareaRevista from '../components/TextareaRevista.jsx';
+import { useEcraAceso } from '../hooks/useEcraAceso.js';
 
 export default function Flashcards() {
   const { darkMode } = useTheme();
@@ -165,6 +166,7 @@ function SessaoRevisao({ fila: filaAoVivo, onResponder, onFechar }) {
   // a lista fica fixa ao abrir: cada resposta adia o cartão e tirava-o da lista
   // ao vivo, e o índice seguinte saltava um cartão (com 10 prontos via 5)
   const [fila] = useState(filaAoVivo);
+  useEcraAceso(true);
   const [indice, setIndice] = useState(0);
   const [virado, setVirado] = useState(false);
   const atual = fila[indice];

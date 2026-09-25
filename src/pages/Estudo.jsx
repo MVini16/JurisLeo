@@ -10,6 +10,7 @@ import MensagemCarinhosa from '../components/MensagemCarinhosa.jsx';
 import { cadeirasS1, coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js';
 import './Estudo.css';
 import Carregando from '../components/animacoes/Carregando.jsx';
+import { useEcraAceso } from '../hooks/useEcraAceso.js';
 
 const MINUTOS_SESSAO_LONGA = 25;
 // preferência deste aparelho: uma sessão por terminar, para oferecer continuar depois de sair
@@ -41,6 +42,8 @@ export default function Estudo() {
   const { darkMode } = useTheme();
   const location = useLocation();
   const { segundos, aCorrer, pausasFeitas, iniciar, pausar, retomar, terminar } = useCronometro();
+  // o ecrã não apaga enquanto o cronómetro corre
+  useEcraAceso(aCorrer);
   const { sessoes, loading, registarSessao } = useSessoesEstudo();
   const { tarefas } = useTarefas();
   // vindo do plano de estudo da semana: /estudo com { cadeiraId } no state da navegação

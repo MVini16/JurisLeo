@@ -3,9 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { faseDaRespiracao, DURACAO_CICLO } from '../services/respiracao.js';
 import './Respirar.css';
+import { useEcraAceso } from '../hooks/useEcraAceso.js';
 
 export default function Respirar() {
   const [aCorrer, setACorrer] = useState(false);
+  useEcraAceso(aCorrer);
   const [segundos, setSegundos] = useState(0);
   const [ciclosFeitos, setCiclosFeitos] = useState(0);
   const inicio = useRef(0);

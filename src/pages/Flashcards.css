@@ -500,3 +500,49 @@
 .flashcards-sentidos input:checked { background: var(--sucesso); }
 .flashcards-sentidos input:checked::after { transform: translateX(20px); }
 .flashcards-sentidos input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* passagem final: aviso nos 3 dias antes de uma prova */
+.passagem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1.5px solid color-mix(in srgb, var(--cor) 55%, transparent);
+  background: color-mix(in srgb, var(--cor) 12%, transparent);
+}
+.passagem__anel { position: relative; width: 86px; height: 86px; flex-shrink: 0; }
+.passagem__anel svg { transform: rotate(-90deg); }
+.passagem__fundo { fill: none; stroke: color-mix(in srgb, var(--cor) 18%, transparent); stroke-width: 8; }
+.passagem__cheio { fill: none; stroke: var(--gold); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.passagem__anel span { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; line-height: 1; }
+.passagem__anel b { font-family: Georgia, serif; font-size: 24px; }
+.passagem__anel small { font-size: 10px; opacity: 0.75; margin-top: 2px; }
+.passagem__texto { min-width: 0; }
+.passagem__texto p { margin: 6px 0 0; font-size: 0.88rem; line-height: 1.4; }
+.passagem__selo {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--gold) 25%, transparent);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.passagem__botao {
+  margin-top: 10px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 99px;
+  background: var(--burgundy);
+  color: var(--texto-sobre-escuro);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.35s var(--mola);
+}
+.passagem__botao:active { transform: scale(0.95); transition-duration: 0.08s; }

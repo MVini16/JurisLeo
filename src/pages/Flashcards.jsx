@@ -3,10 +3,13 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useFlashcards } from '../hooks/useFlashcards.js';
-import { estaPronto, ordenarPorPrioridade, CONFIANCAS } from '../services/repeticaoEspacada.js';
+import { ordenarPorPrioridade, CONFIANCAS } from '../services/repeticaoEspacada.js';
 import { lerEmVozAlta, vozDisponivel, pararVoz } from '../services/voz.js';
 import { converterLacunas } from '../services/lacunas.js';
 import { compararResposta, confiancaSugerida } from '../services/respostaEscrita.js';
+import { passagensFinais, prontosComPassagem } from '../services/passagemFinal.js';
+import { useEventos } from '../hooks/useEventos.js';
+import { dataNatural } from '../services/datas.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Flashcards.css';
@@ -25,7 +28,11 @@ export default function Flashcards() {
   const [formAberto, setFormAberto] = useState(false);
   const [emRevisao, setEmRevisao] = useState(ehBaralhoFrequencia);
 
-  const prontos = flashcards.filter((f) => estaPronto(f));
+  // nos 3 dias antes de uma prova, os cartões dessa cadeira por ver juntam-se aos prontos
+  const { eventos } = useEventos();
+  const passagens = passagensFinais(flashcards, eventos);
+  const prontos = prontosComPassagem(flashcards, eventos);
+  const idsProntos = new Set(prontos.map((f) => f.id));
   const filtrados = flashcards.filter((f) => filtroCadeira === 'todas' || f.cadeiraId === filtroCadeira);
   const filaRevisao = ehBaralhoFrequencia
     ? filtrados
@@ -41,6 +48,8 @@ export default function Flashcards() {
         </div>
         <button className="flashcards-btn-novo" onClick={() => setFormAberto((f) => !f)}>{formAberto ? 'Fechar' : '+ Novo'}</button>
       </header>
+
+      {!ehBaralhoFrequencia && passagens.map((p) => <AvisoPassagem key={p.prova.id || p.cadeiraId} passagem={p} onRever={() => { setFiltroCadeira(p.cadeiraId); setEmRevisao(true); }} />)}
 
       {ehBaralhoFrequencia ? (
         <p className="flashcards-baralho-nota">🎯 Baralho até à frequência: todos os cartões desta cadeira, prontos ou não.</p>
@@ -71,7 +80,7 @@ export default function Flashcards() {
 
       <div className="flashcards-lista">
         {filtrados.map((f) => (
-          <FlashcardMini key={f.id} flashcard={f} onApagar={() => apagar(f.id)} />
+          <FlashcardMini key={f.id} flashcard={f} pronto={idsProntos.has(f.id)} onApagar={() => apagar(f.id)} />
         ))}
       </div>
 
@@ -152,10 +161,39 @@ function FormNovoFlashcard({ onGuardar }) {
   );
 }
 
-function FlashcardMini({ flashcard, onApagar }) {
+// aviso da passagem final: quantos cartões da cadeira faltam ver antes da prova, e os de hoje
+function AvisoPassagem({ passagem, onRever }) {
+  const r = 36;
+  const c = 2 * Math.PI * r;
+  const fracao = passagem.total ? passagem.vistos / passagem.total : 1;
+  const cadeira = cadeirasS1.find((x) => x.id === passagem.cadeiraId);
+  const quando = passagem.diasAte === 0 ? 'hoje' : dataNatural(passagem.data);
+  return (
+    <section className="passagem" style={{ '--cor': cadeira?.cor || 'var(--gold)' }} aria-label="Passagem final">
+      <div className="passagem__anel">
+        <svg width="86" height="86" viewBox="0 0 86 86" aria-hidden="true">
+          <circle cx="43" cy="43" r={r} className="passagem__fundo" />
+          <circle cx="43" cy="43" r={r} className="passagem__cheio" strokeDasharray={c} strokeDashoffset={c * (1 - fracao)} />
+        </svg>
+        <span><b>{passagem.porVer}</b><small>faltam</small></span>
+      </div>
+      <div className="passagem__texto">
+        <span className="passagem__selo">passagem final</span>
+        <p>
+          {passagem.prova.titulo || 'Prova'} de <b>{cadeira?.abrev || passagem.cadeiraId}</b> {quando === 'hoje' ? 'é hoje' : quando === 'amanhã' ? 'é amanhã' : `é ${quando}`}.
+          {passagem.porVer === 0 ? ' Já viste todos os cartões desta cadeira. 🎉' : ' Até lá, cada cartão aparece pelo menos uma vez.'}
+        </p>
+        {passagem.hoje.length > 0 && (
+          <button type="button" className="passagem__botao" onClick={onRever}>▶ Rever os {passagem.hoje.length} de hoje</button>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function FlashcardMini({ flashcard, pronto, onApagar }) {
   const [confirmarApagar, setConfirmarApagar] = useState(false);
   const cor = coresCadeiras[flashcard.cadeiraId] || '#b8963e';
-  const pronto = estaPronto(flashcard);
 
   return (
     <div className="flashcard-mini" style={{ '--cor': cor }}>

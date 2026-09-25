@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import { contagemFrequencias, resumoDaSemana, dominioPorCadeira, dominioMedio, anotacaoDeHaUmMes } from '../../services/widgets.js';
 import { minutosPorDia, sequenciaAtual, textoDuracao } from '../../services/estatisticasEstudo.js';
-import { estaPronto } from '../../services/repeticaoEspacada.js';
+import { prontosComPassagem } from '../../services/passagemFinal.js';
 import { dataCurta } from '../../services/datas.js';
 import { calendarioS1, getCadeira, nomeCurtoCadeira } from '../../data/dadosLeonor.js';
 import { useFlashcards } from '../../hooks/useFlashcards.js';
@@ -103,9 +103,10 @@ export function WidgetOQueJaFiz({ tamanho, contexto }) {
   );
 }
 
-export function WidgetFlashcards() {
+// conta também os cartões da passagem final (nos 3 dias antes de uma prova)
+export function WidgetFlashcards({ contexto }) {
   const { flashcards } = useFlashcards();
-  const prontos = flashcards.filter((f) => estaPronto(f)).length;
+  const prontos = prontosComPassagem(flashcards, contexto.eventos, contexto.agora).length;
   return (
     <Link to="/flashcards" className="ew">
       <span className="ew-rotulo">Flashcards</span>

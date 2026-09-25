@@ -6,6 +6,7 @@ import { doc, deleteDoc } from 'firebase/firestore';
 import { semEsperar } from '../services/escritas.js';
 import { useCalendario } from '../hooks/useCalendario.js';
 import ModalCriarEvento from '../components/ModalCriarEvento.jsx';
+import ExportarCalendario from '../components/ExportarCalendario.jsx';
 import BotoesEstadoAula from '../components/BotoesEstadoAula.jsx';
 import { ICONE_ESTADO_AULA } from '../data/estadosAula.js';
 import { nomeCurtoCadeira } from '../data/dadosLeonor.js';
@@ -60,6 +61,8 @@ export default function Calendario() {
   const { eventos: todosOsEventos, loading, marcar } = useCalendario();
   // filtro por família: todas ligadas por defeito
   const [familiasAtivas, setFamiliasAtivas] = useState(FAMILIAS.map((f) => f.id));
+  // folha "levar para o calendário do iphone"
+  const [aExportar, setAExportar] = useState(false);
   const eventos = useMemo(
     () => todosOsEventos.filter((ev) => familiasAtivas.includes(familiaDoEvento(ev))),
     [todosOsEventos, familiasAtivas]
@@ -177,6 +180,7 @@ export default function Calendario() {
               </button>
             ))}
           </div>
+          <button className="cal-btn-exportar" onClick={() => setAExportar(true)} aria-label="Levar para o Calendário do iPhone" title="Levar para o Calendário do iPhone">⇪</button>
           <button className="cal-btn-add" onClick={() => setModalAberto(true)}>+ Evento</button>
         </div>
       </div>
@@ -188,6 +192,7 @@ export default function Calendario() {
           <h2 className="cal-header-mobile__titulo">{tituloHeader()}</h2>
           <button className="cal-btn-nav-mobile" onClick={() => navegar(1)} aria-label="Seguinte">›</button>
           <button className="cal-btn-hoje-mobile" onClick={irParaHoje}>Hoje</button>
+          <button className="cal-btn-exportar" onClick={() => setAExportar(true)} aria-label="Levar para o Calendário do iPhone">⇪</button>
         </div>
         <div className="cal-tabs-mobile">
           {[
@@ -273,6 +278,7 @@ export default function Calendario() {
 
       {modalAberto && <ModalCriarEvento onFechar={() => setModalAberto(false)} dataInicial={dataSelecionada} eventos={todosOsEventos} />}
       {eventoDetalhe && <ModalEvento evento={eventoDetalhe} onMarcar={marcar} onFechar={() => setEventoDetalhe(null)} onEditar={(ev) => { setEventoDetalhe(null); setEventoEditar(ev); }} onApagar={() => setEventoDetalhe(null)} ICONES_TIPO={ICONES_TIPO} MESES={MESES} DIAS_SEMANA={DIAS_SEMANA} />}
+      {aExportar && <ExportarCalendario eventos={todosOsEventos} onFechar={() => setAExportar(false)} />}
       {eventoEditar && <ModalCriarEvento onFechar={() => setEventoEditar(null)} dataInicial={dataSelecionada} eventoExistente={eventoEditar} eventos={todosOsEventos} />}
 
     </div>

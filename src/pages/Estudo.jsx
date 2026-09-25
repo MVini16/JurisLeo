@@ -144,7 +144,7 @@ export default function Estudo() {
 
       <div className="estudo-acoes">
         {!iniciado && (
-          <button className="estudo-btn-principal" style={{ '--cor': cor }} onClick={iniciar}>▶ Iniciar</button>
+          <button className="estudo-btn-principal" style={{ '--cor': cor }} onClick={() => iniciar()}>▶ Iniciar</button>
         )}
         {iniciado && aCorrer && (
           <>

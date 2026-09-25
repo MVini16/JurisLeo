@@ -151,7 +151,7 @@ function LeituraCard({ leitura, onAtualizar, onApagar }) {
         <div className="leitura-card__capitulos">
           {leitura.capitulos.map((cap, i) => (
             <div key={i} className={`leitura-capitulo ${cap.lido ? 'lido' : ''}`}>
-              <button className="leitura-capitulo__check" onClick={() => toggleCapitulo(i)}>{cap.lido ? '✓' : ''}</button>
+              <button className="leitura-capitulo__check" onClick={() => toggleCapitulo(i)} aria-label={`${cap.lido ? 'Desmarcar' : 'Marcar como lido'}: ${cap.titulo}`} aria-pressed={!!cap.lido}>{cap.lido ? '✓' : ''}</button>
               <span className="leitura-capitulo__titulo">{cap.titulo}</span>
               <button className="leitura-capitulo__remover" onClick={() => removerCapitulo(i)}>✕</button>
             </div>

@@ -177,3 +177,21 @@ html[data-animacoes="off"] *::after {
   transition-duration: 0.01ms !important;
   transition-delay: 0s !important;
 }
+
+/* zona de toque de 44px nos botões pequenos, sem mudar o aspeto: um ::after invisível
+   à volta do botão recebe o toque (no iphone, menos de 44px falha muitas vezes) */
+.cal-btn-nav, .cal-btn-nav-mobile, .cal-painel__fechar, .cal-modal__fechar, .mce-fechar,
+.tarefa-card__check, .tarefa-card__btn-editar, .tarefa-card__btn-apagar,
+.mm-no__apagar, .anotacao-editor__estrela, .leitura-capitulo__check, .artigos-dot-btn {
+  position: relative;
+}
+.revisao-fechar::after,
+.cal-btn-nav::after, .cal-btn-nav-mobile::after, .cal-painel__fechar::after, .cal-modal__fechar::after, .mce-fechar::after,
+.tarefa-card__check::after, .tarefa-card__btn-editar::after, .tarefa-card__btn-apagar::after,
+.mm-no__apagar::after, .anotacao-editor__estrela::after, .leitura-capitulo__check::after {
+  content: '';
+  position: absolute;
+  inset: -10px;
+}
+/* os pontos da dificuldade estão lado a lado: a zona cresce só para cima e para baixo */
+.artigos-dot-btn::after { content: ''; position: absolute; inset: -14px -2px; }

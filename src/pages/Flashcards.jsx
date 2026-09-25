@@ -1,10 +1,10 @@
 // flashcards com repetição espaçada
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useFlashcards } from '../hooks/useFlashcards.js';
 import { estaPronto, ordenarPorPrioridade, CONFIANCAS } from '../services/repeticaoEspacada.js';
-import { lerEmVozAlta, vozDisponivel } from '../services/voz.js';
+import { lerEmVozAlta, vozDisponivel, pararVoz } from '../services/voz.js';
 import { converterLacunas } from '../services/lacunas.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
@@ -73,7 +73,8 @@ export default function Flashcards() {
         ))}
       </div>
 
-      {emRevisao && (
+      {/* só depois de os cartões chegarem: a sessão fixa a lista no momento em que abre */}
+      {emRevisao && !loading && (
         <SessaoRevisao
           fila={filaRevisao}
           onResponder={registarResposta}
@@ -160,13 +161,24 @@ function FlashcardMini({ flashcard, onApagar }) {
   );
 }
 
-function SessaoRevisao({ fila, onResponder, onFechar }) {
+function SessaoRevisao({ fila: filaAoVivo, onResponder, onFechar }) {
+  // a lista fica fixa ao abrir: cada resposta adia o cartão e tirava-o da lista
+  // ao vivo, e o índice seguinte saltava um cartão (com 10 prontos via 5)
+  const [fila] = useState(filaAoVivo);
   const [indice, setIndice] = useState(0);
   const [virado, setVirado] = useState(false);
   const atual = fila[indice];
 
-  async function responder(confianca) {
-    await onResponder(atual, confianca);
+  // lista vazia fecha logo; ao sair, a leitura em voz alta para
+  useEffect(() => {
+    if (fila.length === 0) onFechar();
+  }, [fila, onFechar]);
+  useEffect(() => () => pararVoz(), []);
+
+  function responder(confianca) {
+    // não espera pelo servidor: sem rede a revisão continua e a resposta sobe depois
+    Promise.resolve(onResponder(atual, confianca)).catch(() => {});
+    pararVoz();
     if (indice + 1 >= fila.length) {
       onFechar();
     } else {

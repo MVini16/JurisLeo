@@ -188,3 +188,6 @@ html.dark .def-opcao { border-color: var(--border-dark); }
 
 .def-subgrupo { margin-top: 14px; }
 .def-subgrupo__titulo { display: block; font-size: 0.82rem; margin-bottom: 2px; opacity: 0.85; }
+
+/* botões lado a lado do ecrã de início */
+.def-linha-botoes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }

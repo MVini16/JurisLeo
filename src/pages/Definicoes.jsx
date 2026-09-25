@@ -9,19 +9,16 @@ import { exportarDadosComoFicheiro } from '../services/exportar.js';
 import { useTheme } from '../context/useTheme.js';
 import { useModulos } from '../hooks/useModulos.js';
 import { MODULOS, CATEGORIAS_MODULOS, GRUPOS_FERRAMENTAS } from '../data/modulos.js';
+import { WIDGETS } from '../data/widgets.js';
+import { useEcra } from '../hooks/useEcra.js';
+
+// os cartões antigos que passaram a widgets já não se ligam aqui
+const MODULOS_QUE_SAO_WIDGETS = new Set(WIDGETS.map((w) => w.deModulo).filter(Boolean));
 import { lerPreferencias, guardarPreferencia, aplicarPreferencias, OPCOES_ABERTURA, OPCOES_FRASES } from '../services/preferencias.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { useBemEstar } from '../hooks/useBemEstar.js';
 import { CAMPOS_OPCIONAIS, GRUPOS_OPCIONAIS } from '../data/bemEstar.js';
 import './Definicoes.css';
-
-function Seta({ para }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <polyline points={para === 'cima' ? '6 15 12 9 18 15' : '6 9 12 15 18 9'} />
-    </svg>
-  );
-}
 
 function Interruptor({ ligado, onMudar, rotulo }) {
   return (
@@ -32,7 +29,15 @@ function Interruptor({ ligado, onMudar, rotulo }) {
 export default function Definicoes() {
   const navigate = useNavigate();
   const { darkMode, toggleTheme } = useTheme();
-  const { ativos, ordem, alternar, mover, repor } = useModulos();
+  const { ativos, alternar, repor } = useModulos();
+  const { repor: reporEcraInicio } = useEcra();
+  const [widgetsRepostos, setWidgetsRepostos] = useState(false);
+
+  function reporWidgets() {
+    reporEcraInicio();
+    setWidgetsRepostos(true);
+    setTimeout(() => setWidgetsRepostos(false), 2500);
+  }
   const { camposAtivos, alternarCampo } = useBemEstar();
   const [prefs, setPrefs] = useState(() => lerPreferencias());
   const [aExportar, setAExportar] = useState(false);
@@ -40,8 +45,6 @@ export default function Definicoes() {
   const [reposto, setReposto] = useState(false);
   const [erroRepor, setErroRepor] = useState(false);
   const [ecraReposto, setEcraReposto] = useState(false);
-
-  const modulo = (id) => MODULOS.find((m) => m.id === id);
 
   function escolher(chave, valor) {
     const novas = guardarPreferencia(chave, valor);
@@ -99,26 +102,15 @@ export default function Definicoes() {
         <p className="def-sub">Tu decides o que vês e como a app se comporta.</p>
       </header>
 
-      {/* o teu ecrã */}
+      {/* o teu ecrã: os widgets arrumam-se no próprio ecrã de início; aqui ficam só as opções que não são widgets */}
       <section className="def-seccao">
         <h2 className="def-seccao__titulo">{CATEGORIAS_MODULOS[0].nome}</h2>
-        <p className="def-seccao__ajuda">Escolhe o que aparece e muda a ordem com as setas.</p>
-        {ordem.map((id, i) => {
-          const m = modulo(id);
-          return (
-            <div key={id} className="def-linha">
-              <div className="def-setas">
-                <button type="button" aria-label={`Subir ${m.nome}`} disabled={i === 0} onClick={() => mover(id, -1)}><Seta para="cima" /></button>
-                <button type="button" aria-label={`Descer ${m.nome}`} disabled={i === ordem.length - 1} onClick={() => mover(id, 1)}><Seta para="baixo" /></button>
-              </div>
-              <div className="def-texto"><b>{m.nome}</b><span>{m.descricao}</span></div>
-              {m.fixo
-                ? <span className="def-fixo">sempre visível</span>
-                : <Interruptor ligado={ativos[id]} rotulo={m.nome} onMudar={() => alternar(id)} />}
-            </div>
-          );
-        })}
-        {MODULOS.filter((m) => m.categoria === 'inicio' && !ordem.includes(m.id)).map((m) => (
+        <p className="def-seccao__ajuda">Os widgets escolhem-se e arrumam-se no próprio ecrã: carrega sem largar num widget, ou toca em “Editar ecrã” no fim da página.</p>
+        <div className="def-linha-botoes">
+          <button type="button" className="def-btn" onClick={() => navigate('/dashboard')}>Editar o ecrã de início</button>
+          <button type="button" className="def-btn" onClick={reporWidgets}>{widgetsRepostos ? '✓ Ecrã inicial reposto' : 'Repor o ecrã inicial'}</button>
+        </div>
+        {MODULOS.filter((m) => m.categoria === 'inicio' && !MODULOS_QUE_SAO_WIDGETS.has(m.id)).map((m) => (
           <div key={m.id} className="def-linha">
             <div className="def-texto"><b>{m.nome}</b><span>{m.descricao}</span></div>
             {m.fixo ? <span className="def-fixo">sempre visível</span> : <Interruptor ligado={ativos[m.id]} rotulo={m.nome} onMudar={() => alternar(m.id)} />}

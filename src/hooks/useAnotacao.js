@@ -1,7 +1,7 @@
 // hook para uma anotação individual — cria, lê, actualiza e apaga
 import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
-import { doc, onSnapshot, addDoc, updateDoc, deleteDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc, updateDoc, deleteDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 export function useAnotacao(id) {
@@ -22,24 +22,28 @@ export function useAnotacao(id) {
     return () => unsub();
   }, [id, nova]);
 
-  async function criar(dados) {
+  // o id nasce no telemóvel e a escrita não espera pelo servidor: sem rede fica
+  // na cache local e sobe quando a ligação voltar (esperar deixava tudo preso)
+  function criar(dados) {
     const userId = getAuth().currentUser?.uid;
     if (!userId) return null;
-    const ref = await addDoc(collection(db, 'users', userId, 'anotacoes'), {
+    const ref = doc(collection(db, 'users', userId, 'anotacoes'));
+    setDoc(ref, {
       ...dados,
       criadoEm: serverTimestamp(),
       atualizadoEm: serverTimestamp(),
-    });
+    }).catch(() => {});
     return ref.id;
   }
 
-  async function guardar(dados) {
+  // idAlvo serve para a página nova, que já foi criada mas ainda está no url /nova
+  function guardar(dados, idAlvo = id) {
     const userId = getAuth().currentUser?.uid;
-    if (!userId) return;
-    await updateDoc(doc(db, 'users', userId, 'anotacoes', id), {
+    if (!userId || idAlvo === 'nova') return;
+    updateDoc(doc(db, 'users', userId, 'anotacoes', idAlvo), {
       ...dados,
       atualizadoEm: serverTimestamp(),
-    });
+    }).catch(() => {});
   }
 
   async function apagar() {

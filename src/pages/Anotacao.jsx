@@ -1,6 +1,6 @@
 // uma página do caderno digital — criar ou editar
 // o editor com formatação carrega à parte (lazy), para o resto da app não ficar mais pesado
-import { useState, lazy, Suspense } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, lazy, Suspense } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useAnotacao } from '../hooks/useAnotacao.js';
@@ -65,8 +65,8 @@ function Formulario({ anotacao, nova, cadeiraInicial, divisoriaInicial, anotacoe
   const [tagsTexto, setTagsTexto] = useState((anotacao?.tags || []).join(', '));
   const [favorita, setFavorita] = useState(anotacao?.favorita || false);
   const [rascunho, setRascunho] = useState(anotacao?.rascunho ?? true);
-  const [guardando, setGuardando] = useState(false);
-  const [guardado, setGuardado] = useState(false);
+  // 'guardado' | 'porGuardar' — o caderno grava sozinho, isto só mostra o estado
+  const [estadoGravacao, setEstadoGravacao] = useState('guardado');
   const [confirmarApagar, setConfirmarApagar] = useState(false);
 
   const divisorias = daCadeira(cadeiraId);
@@ -90,24 +90,63 @@ function Formulario({ anotacao, nova, cadeiraInicial, divisoriaInicial, anotacoe
     };
   }
 
-  async function handleGuardar() {
-    if (!titulo.trim()) return;
-    setGuardando(true);
-    if (nova) {
+  // gravação automática: o id da página (null numa nova ainda por criar),
+  // se há alterações por gravar, e se já foi apagada (para não a recriar ao sair)
+  const idRef = useRef(nova ? null : anotacao?.id);
+  const sujoRef = useRef(false);
+  const apagadaRef = useRef(false);
+
+  function gravar() {
+    if (!sujoRef.current || apagadaRef.current) return;
+    const dados = dadosAtuais();
+    // numa página nova, só cria quando há alguma coisa escrita
+    if (!idRef.current && !dados.titulo && !dados.conteudo.trim()) return;
+    if (!dados.titulo) dados.titulo = 'Sem título';
+    sujoRef.current = false;
+    if (idRef.current) {
+      guardar(dados, idRef.current);
+    } else {
       // página nova vai para o fim da divisória
       const ordem = ordemNova(paginasDaDivisoria(anotacoes, cadeiraId, divisoriaValida, divisorias));
-      const novoId = await criar({ ...dadosAtuais(), ordem });
-      setGuardando(false);
-      if (novoId) onVoltar(cadeiraId);
-    } else {
-      await guardar(dadosAtuais());
-      setGuardando(false);
-      setGuardado(true);
-      setTimeout(() => setGuardado(false), 1500);
+      idRef.current = criar({ ...dados, ordem });
     }
+    setEstadoGravacao('guardado');
+  }
+
+  // a versão mais recente de gravar, para os eventos de sair e o fim da página
+  const gravarRef = useRef(gravar);
+  useLayoutEffect(() => { gravarRef.current = gravar; });
+
+  // cada alteração marca como por gravar e grava 1,5 s depois de ela parar
+  const primeiraVez = useRef(true);
+  useEffect(() => {
+    if (primeiraVez.current) { primeiraVez.current = false; return; }
+    sujoRef.current = true;
+    setEstadoGravacao('porGuardar');
+    const t = setTimeout(() => gravarRef.current(), 1500);
+    return () => clearTimeout(t);
+  }, [titulo, cadeiraId, divisoriaValida, conteudo, conteudoRico, estilo, tagsTexto, favorita, rascunho]);
+
+  // grava logo ao sair: outra app, ecrã bloqueado, voltar atrás ou mudar de separador
+  useEffect(() => {
+    const aoEsconder = () => { if (document.visibilityState === 'hidden') gravarRef.current(); };
+    const aoSair = () => gravarRef.current();
+    document.addEventListener('visibilitychange', aoEsconder);
+    window.addEventListener('pagehide', aoSair);
+    return () => {
+      document.removeEventListener('visibilitychange', aoEsconder);
+      window.removeEventListener('pagehide', aoSair);
+      aoSair();
+    };
+  }, []);
+
+  function handleGuardar() {
+    gravar();
+    if (nova) onVoltar(cadeiraId);
   }
 
   async function handleApagar() {
+    apagadaRef.current = true;
     await apagar();
     onVoltar(cadeiraId);
   }
@@ -200,8 +239,8 @@ function Formulario({ anotacao, nova, cadeiraInicial, divisoriaInicial, anotacoe
             <button className="anotacao-editor__btn-apagar" onClick={() => setConfirmarApagar(true)}>Apagar</button>
           )
         )}
-        <button className="anotacao-editor__btn-guardar" onClick={handleGuardar} disabled={guardando || !titulo.trim()}>
-          {guardando ? 'A guardar...' : guardado ? '✓ Guardado' : nova ? 'Criar anotação' : 'Guardar'}
+        <button className="anotacao-editor__btn-guardar" onClick={handleGuardar}>
+          {nova ? 'Criar anotação' : estadoGravacao === 'guardado' ? '✓ Guardado' : 'Guardar'}
         </button>
       </div>
     </>

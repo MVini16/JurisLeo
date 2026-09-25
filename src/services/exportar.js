@@ -2,6 +2,7 @@
 // um backup simples, sem depender de nada além do que o firestore já guarda
 import { db } from './firebase.js';
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
+import { limparParaJson, COLECOES_BACKUP } from './exportarJson.js';
 
 async function pegarColecao(userId, nome) {
   const snap = await getDocs(collection(db, 'users', userId, nome));
@@ -18,54 +19,33 @@ async function pegarSubdocumentoDeCadeiras(userId, cadeiras, subnome) {
 }
 
 export async function recolherDadosParaExportar(userId) {
-  const [perfilSnap, configSnap, cadeiras] = await Promise.all([
+  const [perfilSnap, configSnap, planoSnap, cadeiras] = await Promise.all([
     getDoc(doc(db, 'users', userId, 'perfil', 'dados')),
     getDoc(doc(db, 'users', userId, 'configuracoes', 'dados')),
+    getDoc(doc(db, 'users', userId, 'planoEstudo', 'dados')),
     pegarColecao(userId, 'cadeiras'),
   ]);
 
-  const [faltasPorCadeira, avaliacaoPorCadeira, eventos, aulasSemanais, tarefas, anotacoes, casos, artigos, glossario, leituras, sessoesEstudo] = await Promise.all([
+  const [faltasPorCadeira, avaliacaoPorCadeira, revisaoPorCadeira, ...colecoes] = await Promise.all([
     pegarSubdocumentoDeCadeiras(userId, cadeiras, 'faltas'),
     pegarSubdocumentoDeCadeiras(userId, cadeiras, 'avaliacao'),
-    pegarColecao(userId, 'eventos'),
-    pegarColecao(userId, 'aulasSemanais'),
-    pegarColecao(userId, 'tarefas'),
-    pegarColecao(userId, 'anotacoes'),
-    pegarColecao(userId, 'casos'),
-    pegarColecao(userId, 'artigos'),
-    pegarColecao(userId, 'glossario'),
-    pegarColecao(userId, 'leituras'),
-    pegarColecao(userId, 'sessoesEstudo'),
+    pegarSubdocumentoDeCadeiras(userId, cadeiras, 'revisaoFrequencia'),
+    ...COLECOES_BACKUP.map((nome) => pegarColecao(userId, nome)),
   ]);
 
-  return {
+  return limparParaJson({
     exportadoEm: new Date().toISOString(),
     perfil: perfilSnap.data() || null,
     configuracoes: configSnap.data() || null,
-    cadeiras: cadeiras.map((c) => ({ ...c, faltas: faltasPorCadeira[c.id], avaliacao: avaliacaoPorCadeira[c.id] })),
-    eventos,
-    aulasSemanais,
-    tarefas,
-    anotacoes,
-    casos,
-    artigos,
-    glossario,
-    leituras,
-    sessoesEstudo,
-  };
-}
-
-// substitui timestamps do firestore por texto legível (iso), para o json ficar limpo
-function jsonReplacer(_chave, valor) {
-  if (valor && typeof valor === 'object' && typeof valor.toDate === 'function') {
-    return valor.toDate().toISOString();
-  }
-  return valor;
+    planoEstudo: planoSnap.data() || null,
+    cadeiras: cadeiras.map((c) => ({ ...c, faltas: faltasPorCadeira[c.id], avaliacao: avaliacaoPorCadeira[c.id], revisaoFrequencia: revisaoPorCadeira[c.id] })),
+    ...Object.fromEntries(COLECOES_BACKUP.map((nome, i) => [nome, colecoes[i]])),
+  });
 }
 
 export async function exportarDadosComoFicheiro(userId) {
   const dados = await recolherDadosParaExportar(userId);
-  const texto = JSON.stringify(dados, jsonReplacer, 2);
+  const texto = JSON.stringify(dados, null, 2);
   const blob = new Blob([texto], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
 

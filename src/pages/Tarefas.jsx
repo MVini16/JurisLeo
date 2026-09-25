@@ -215,6 +215,7 @@ export default function Tarefas() {
             concluidas={concluidas}
             onConcluir={concluirTarefa}
             onApagar={apagarTarefa}
+            onEditar={(tarefa) => { setTarefaEditar(tarefa); setModalAberto(true); }}
           />
         )}
 
@@ -321,7 +322,7 @@ function TarefaCard({ tarefa, delay, onConcluir, onEditar, onApagar }) {
 // ------------------------------------------------------------------
 // secção de tarefas concluídas (colapsável)
 // ------------------------------------------------------------------
-function SecaoConcluidas({ concluidas, onConcluir, onApagar }) {
+function SecaoConcluidas({ concluidas, onConcluir, onApagar, onEditar }) {
   const [aberto, setAberto] = useState(false);
 
   return (
@@ -338,7 +339,7 @@ function SecaoConcluidas({ concluidas, onConcluir, onApagar }) {
               tarefa={tarefa}
               delay={i * 0.03}
               onConcluir={() => onConcluir(tarefa)}
-              onEditar={() => {}}
+              onEditar={() => onEditar(tarefa)}
               onApagar={() => onApagar(tarefa.id)}
             />
           ))}

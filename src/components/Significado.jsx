@@ -39,7 +39,7 @@ function Wikipedia({ resultado }) {
       {dados.desambiguacao
         ? <p>Há vários artigos com este nome. Abre a página para escolheres o que procuras.</p>
         : <p className="signif-extrato">{dados.extrato}</p>}
-      {dados.url && <a href={dados.url} target="_blank" rel="noreferrer">Ler o artigo na Wikipédia</a>}
+      {/^https:\/\//.test(dados.url || '') && <a href={dados.url} target="_blank" rel="noreferrer">Ler o artigo na Wikipédia</a>}
     </div>
   );
 }

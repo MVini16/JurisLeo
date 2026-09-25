@@ -53,8 +53,7 @@ function Onboarding() {
       subturma: 'Subturma 7',
       objetivos: [],
       onboardingFeito: true,
-      criadoEm: new Date(),
-    })
+    }, { merge: true }) // merge: não apagar o anoLetivo nem o criadoEm que o registo já escreveu
 
     // guarda as configurações — o tema já vai sendo sincronizado pelo ThemeContext,
     // aqui só confirmamos o valor atual e as restantes preferências

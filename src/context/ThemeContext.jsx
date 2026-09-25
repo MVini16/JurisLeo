@@ -5,12 +5,17 @@ import { auth, db } from '../services/firebase.js'
 import { ThemeContext } from './useTheme.js'
 
 export function ThemeProvider({ children }) {
+  // sem escolha guardada, segue o tema do telemóvel
   const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem('jurisleo-theme') === 'dark'
+    const guardado = localStorage.getItem('jurisleo-theme')
+    if (guardado === 'dark' || guardado === 'light') return guardado === 'dark'
+    return !!window.matchMedia?.('(prefers-color-scheme: dark)').matches
   })
 
   // evita escrever no firestore o valor que acabou de vir de lá
   const aCarregarDoFirestore = useRef(false)
+  // o valor atual, para o listener do login saber se o do firestore é diferente
+  const darkAtual = useRef(darkMode)
 
   useEffect(() => {
     if (darkMode) {
@@ -19,6 +24,7 @@ export function ThemeProvider({ children }) {
       document.documentElement.classList.remove('dark')
     }
     localStorage.setItem('jurisleo-theme', darkMode ? 'dark' : 'light')
+    darkAtual.current = darkMode
 
     // sincroniza com o firestore, para o tema escolhido no onboarding
     // (ou noutro dispositivo) se manter ao entrar de novo na app
@@ -38,7 +44,9 @@ export function ThemeProvider({ children }) {
       try {
         const snap = await getDoc(doc(db, 'users', utilizador.uid, 'configuracoes', 'dados'))
         const tema = snap.data()?.tema
-        if (tema === 'dark' || tema === 'light') {
+        // só marca "veio do firestore" quando muda mesmo: se for igual, o react não
+        // redesenha, a marca ficava presa e a próxima escolha dela não era gravada
+        if ((tema === 'dark' || tema === 'light') && (tema === 'dark') !== darkAtual.current) {
           aCarregarDoFirestore.current = true
           setDarkMode(tema === 'dark')
         }

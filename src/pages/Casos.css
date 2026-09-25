@@ -155,9 +155,11 @@
 
 .casos-pagina.dark .caso-card { background: rgba(255, 255, 255, 0.04); }
 
-.caso-card:hover {
+@media (hover: hover) {
+  .caso-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
 }
 
 .caso-card__topo {

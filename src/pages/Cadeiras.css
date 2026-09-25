@@ -86,9 +86,11 @@
   background: rgba(255, 255, 255, 0.04);
 }
 
-.cartao-cadeira:hover {
+@media (hover: hover) {
+  .cartao-cadeira:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
 }
 
 .cartao-cadeira__barra {
@@ -231,12 +233,16 @@
 
 .cadeiras-pagina.dark .cadeiras-recurso { background: rgba(255, 255, 255, 0.05); }
 
-.cadeiras-recurso:hover {
+@media (hover: hover) {
+  .cadeiras-recurso:hover {
   transform: translateY(-2px);
   background: rgba(107, 15, 26, 0.08);
 }
+}
 
-.cadeiras-pagina.dark .cadeiras-recurso:hover { background: rgba(255, 255, 255, 0.09); }
+@media (hover: hover) {
+  .cadeiras-pagina.dark .cadeiras-recurso:hover { background: rgba(255, 255, 255, 0.09); }
+}
 
 .cadeiras-recurso__icon {
   font-size: 1.3rem;

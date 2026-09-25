@@ -314,7 +314,9 @@
   padding: 0;
 }
 
-.artigo-card__link:hover { opacity: 1; }
+@media (hover: hover) {
+  .artigo-card__link:hover { opacity: 1; }
+}
 
 .artigo-card__link--apagar { color: #d32f2f; }
 

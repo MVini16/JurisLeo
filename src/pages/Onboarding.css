@@ -143,9 +143,11 @@
   white-space: nowrap;
 }
 
-.ob-botao:hover:not(:disabled) {
+@media (hover: hover) {
+  .ob-botao:hover:not(:disabled) {
   background: #C9A84C;
   color: #1a0a0a;
+}
 }
 
 .ob-botao:disabled {
@@ -165,9 +167,11 @@
   transition: border-color 0.3s ease, color 0.3s ease;
 }
 
-.ob-botao-secundario:hover {
+@media (hover: hover) {
+  .ob-botao-secundario:hover {
   border-color: rgba(255, 255, 255, 0.4);
   color: rgba(255, 255, 255, 0.7);
+}
 }
 
 /* grupo de botões */

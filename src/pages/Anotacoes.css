@@ -127,9 +127,11 @@
 
 .anotacoes-pagina.dark .anotacao-card { background: rgba(255, 255, 255, 0.04); }
 
-.anotacao-card:hover {
+@media (hover: hover) {
+  .anotacao-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
 }
 
 .anotacao-card__topo {

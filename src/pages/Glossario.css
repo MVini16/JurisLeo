@@ -293,7 +293,9 @@
   padding: 0;
 }
 
-.termo-card__link:hover { opacity: 1; }
+@media (hover: hover) {
+  .termo-card__link:hover { opacity: 1; }
+}
 
 .termo-card__link--apagar { color: #d32f2f; }
 

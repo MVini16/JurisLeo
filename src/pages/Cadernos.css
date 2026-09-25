@@ -44,7 +44,10 @@
   cursor: pointer;
   transition: transform 0.2s ease;
 }
-.cadernos-lombada:hover, .cadernos-lombada:focus-visible { transform: translateY(-6px); }
+.cadernos-lombada:focus-visible { transform: translateY(-6px); }
+@media (hover: hover) {
+  .cadernos-lombada:hover { transform: translateY(-6px); }
+}
 .cadernos-lombada:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .cadernos-lombada__nome { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 0.95rem; font-weight: 700; letter-spacing: 0.04em; }
 .cadernos-lombada__paginas { font-size: 0.8rem; }

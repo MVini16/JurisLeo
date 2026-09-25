@@ -152,9 +152,11 @@
 }
 
 /* hover no botão */
-.login-botao:hover:not(:disabled) {
+@media (hover: hover) {
+  .login-botao:hover:not(:disabled) {
   background: #C9A84C;
   color: #1a0a0a;
+}
 }
 
 /* botão desativado durante carregamento */

@@ -82,9 +82,11 @@
   box-shadow: 0 4px 16px rgba(107, 39, 55, 0.35);
 }
 
-.tarefas-btn-add:hover {
+@media (hover: hover) {
+  .tarefas-btn-add:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(107, 39, 55, 0.5);
+}
 }
 
 /* ------------------------------------------------------------
@@ -111,9 +113,11 @@
   letter-spacing: 0.3px;
 }
 
-.filtro-btn:hover {
+@media (hover: hover) {
+  .filtro-btn:hover {
   color: rgba(255, 255, 255, 0.8);
   border-color: rgba(255, 255, 255, 0.15);
+}
 }
 
 .filtro-btn.ativo {
@@ -271,11 +275,13 @@
   animation: fadeInUp 0.35s ease calc(var(--delay, 0s)) both;
 }
 
-.tarefa-card:hover {
+@media (hover: hover) {
+  .tarefa-card:hover {
   background: rgba(255, 255, 255, 0.07);
   border-color: rgba(184, 150, 62, 0.2);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
 }
 
 /* barra colorida à esquerda */
@@ -319,9 +325,11 @@
   margin-top: 2px;
 }
 
-.tarefa-card__check:hover {
+@media (hover: hover) {
+  .tarefa-card__check:hover {
   background: rgba(184, 150, 62, 0.15);
   transform: scale(1.1);
+}
 }
 
 .tarefa-card__check.feito {
@@ -431,8 +439,12 @@
   line-height: 1;
 }
 
-.tarefa-card__btn-editar:hover { background: rgba(201, 168, 76, 0.15); }
-.tarefa-card__btn-apagar:hover { background: rgba(229, 57, 53, 0.15); }
+@media (hover: hover) {
+  .tarefa-card__btn-editar:hover { background: rgba(201, 168, 76, 0.15); }
+}
+@media (hover: hover) {
+  .tarefa-card__btn-apagar:hover { background: rgba(229, 57, 53, 0.15); }
+}
 
 .tarefa-card__confirmar {
   display: flex;
@@ -477,9 +489,11 @@
   transition: all 0.2s ease;
 }
 
-.tarefas-concluidas__toggle:hover {
+@media (hover: hover) {
+  .tarefas-concluidas__toggle:hover {
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.65);
+}
 }
 
 .toggle-seta {
@@ -694,9 +708,11 @@
   margin-top: 4px;
 }
 
-.modal-btn-guardar:hover:not(:disabled) {
+@media (hover: hover) {
+  .modal-btn-guardar:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(107, 39, 55, 0.5);
+}
 }
 
 .modal-btn-guardar:disabled {

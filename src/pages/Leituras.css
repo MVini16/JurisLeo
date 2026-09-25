@@ -257,7 +257,9 @@
   font-size: 0.7rem;
 }
 
-.leitura-capitulo__remover:hover { opacity: 1; }
+@media (hover: hover) {
+  .leitura-capitulo__remover:hover { opacity: 1; }
+}
 
 .leitura-card__add-input {
   width: 100%;
@@ -287,7 +289,9 @@
   padding: 0;
 }
 
-.leitura-card__link:hover { opacity: 1; }
+@media (hover: hover) {
+  .leitura-card__link:hover { opacity: 1; }
+}
 .leitura-card__link--apagar { color: #d32f2f; }
 
 .leitura-card__confirmar {

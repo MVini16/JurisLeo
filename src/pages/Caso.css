@@ -152,7 +152,9 @@
   flex-shrink: 0;
 }
 
-.caso-editor__duvida-chip button:hover { opacity: 1; }
+@media (hover: hover) {
+  .caso-editor__duvida-chip button:hover { opacity: 1; }
+}
 
 .caso-editor__duvida-add {
   display: flex;

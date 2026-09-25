@@ -89,12 +89,16 @@
 
 .pesquisa-pagina.dark .pesquisa-resultado { background: rgba(255, 255, 255, 0.04); }
 
-.pesquisa-resultado:hover {
+@media (hover: hover) {
+  .pesquisa-resultado:hover {
   transform: translateX(2px);
   background: rgba(107, 15, 26, 0.07);
 }
+}
 
-.pesquisa-pagina.dark .pesquisa-resultado:hover { background: rgba(255, 255, 255, 0.08); }
+@media (hover: hover) {
+  .pesquisa-pagina.dark .pesquisa-resultado:hover { background: rgba(255, 255, 255, 0.08); }
+}
 
 .pesquisa-resultado__etiqueta {
   font-size: 0.65rem;

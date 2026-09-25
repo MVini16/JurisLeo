@@ -97,7 +97,9 @@ html.dark .botao-ajuda__modal {
   cursor: pointer;
 }
 
-.botao-ajuda__fechar:hover { opacity: 0.8; }
+@media (hover: hover) {
+  .botao-ajuda__fechar:hover { opacity: 0.8; }
+}
 
 .botao-ajuda__titulo {
   font-family: 'Playfair Display', Georgia, serif;

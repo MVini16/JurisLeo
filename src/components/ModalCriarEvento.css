@@ -79,10 +79,12 @@
   transition: all 0.2s ease;
 }
 
-.mce-fechar:hover {
+@media (hover: hover) {
+  .mce-fechar:hover {
   background: rgba(255, 255, 255, 0.15);
   color: #fff;
   transform: rotate(90deg);
+}
 }
 
 /* ------------------------------------------------------------
@@ -206,9 +208,11 @@
   font-size: 20px;
 }
 
-.mce-tipo-btn:hover {
+@media (hover: hover) {
+  .mce-tipo-btn:hover {
   background: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.8);
+}
 }
 
 .mce-tipo-btn.ativo {
@@ -240,9 +244,11 @@
   transition: all 0.2s ease;
 }
 
-.mce-cadeira-btn:hover {
+@media (hover: hover) {
+  .mce-cadeira-btn:hover {
   color: #fff;
   transform: translateY(-2px);
+}
 }
 
 .mce-cadeira-btn.ativo {
@@ -272,8 +278,10 @@
   transition: all 0.2s ease;
 }
 
-.mce-imp-btn:hover {
+@media (hover: hover) {
+  .mce-imp-btn:hover {
   background: rgba(255, 255, 255, 0.08);
+}
 }
 
 .mce-imp-btn--baixa.ativo {
@@ -316,8 +324,10 @@
   transition: all 0.2s ease;
 }
 
-.mce-estado-btn:hover {
+@media (hover: hover) {
+  .mce-estado-btn:hover {
   background: rgba(255, 255, 255, 0.08);
+}
 }
 
 .mce-estado-btn.ativo {
@@ -422,9 +432,11 @@
   transition: all 0.2s ease;
 }
 
-.mce-btn-cancelar:hover {
+@media (hover: hover) {
+  .mce-btn-cancelar:hover {
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.8);
+}
 }
 
 .mce-btn-guardar {
@@ -446,9 +458,11 @@
   min-height: 46px;
 }
 
-.mce-btn-guardar:hover:not(:disabled) {
+@media (hover: hover) {
+  .mce-btn-guardar:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 10px 28px rgba(107, 39, 55, 0.55);
+}
 }
 
 .mce-btn-guardar:disabled {

@@ -13,4 +13,6 @@
   text-align: left;
 }
 
-.botao-voltar:hover { opacity: 1; }
+@media (hover: hover) {
+  .botao-voltar:hover { opacity: 1; }
+}

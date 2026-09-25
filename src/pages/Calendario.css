@@ -60,10 +60,12 @@
   transition: all 0.25s ease;
 }
 
-.cal-btn-nav:hover {
+@media (hover: hover) {
+  .cal-btn-nav:hover {
   background: rgba(184, 150, 62, 0.25);
   border-color: #c9a84c;
   transform: scale(1.1);
+}
 }
 
 .cal-header__controlos {
@@ -88,10 +90,12 @@
   transition: all 0.25s ease;
 }
 
-.cal-btn-hoje:hover {
+@media (hover: hover) {
+  .cal-btn-hoje:hover {
   background: #b8963e;
   border-color: #b8963e;
   color: #fff;
+}
 }
 
 .cal-vistas {
@@ -117,7 +121,9 @@
   transition: all 0.25s ease;
 }
 
-.cal-vista-btn:hover { color: rgba(255, 255, 255, 0.8); }
+@media (hover: hover) {
+  .cal-vista-btn:hover { color: rgba(255, 255, 255, 0.8); }
+}
 
 .cal-vista-btn.ativo {
   background: linear-gradient(135deg, #6b2737, #b8963e);
@@ -141,9 +147,11 @@
   box-shadow: 0 4px 16px rgba(107, 39, 55, 0.35);
 }
 
-.cal-btn-add:hover {
+@media (hover: hover) {
+  .cal-btn-add:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(107, 39, 55, 0.5);
+}
 }
 
 /* header mobile — escondido no desktop */
@@ -255,7 +263,9 @@
   transition: all 0.2s ease;
 }
 
-.cal-diaria__sidebar-item:hover { transform: translateX(5px); background: rgba(255, 255, 255, 0.08); }
+@media (hover: hover) {
+  .cal-diaria__sidebar-item:hover { transform: translateX(5px); background: rgba(255, 255, 255, 0.08); }
+}
 
 .cal-diaria__sidebar-item-hora {
   display: block;
@@ -294,7 +304,9 @@
   transition: background 0.2s ease;
 }
 
-.cal-diaria__hora:hover { background: rgba(255, 255, 255, 0.02); }
+@media (hover: hover) {
+  .cal-diaria__hora:hover { background: rgba(255, 255, 255, 0.02); }
+}
 
 .cal-diaria__hora-label {
   font-size: 11px;
@@ -324,7 +336,9 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.cal-diaria__evento:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3); }
+@media (hover: hover) {
+  .cal-diaria__evento:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3); }
+}
 
 .cal-diaria__evento-icone { font-size: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
 
@@ -372,7 +386,9 @@
   border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.cal-semanal__header-dia:hover { background: rgba(184, 150, 62, 0.08); }
+@media (hover: hover) {
+  .cal-semanal__header-dia:hover { background: rgba(184, 150, 62, 0.08); }
+}
 
 .cal-semanal__header-dia.hoje .cal-semanal__header-dia-num {
   background: linear-gradient(135deg, #6b2737, #b8963e);
@@ -413,7 +429,9 @@
 }
 
 .cal-semanal__cel.hoje { background: rgba(184, 150, 62, 0.05); }
-.cal-semanal__cel:hover { background: rgba(255, 255, 255, 0.03); }
+@media (hover: hover) {
+  .cal-semanal__cel:hover { background: rgba(255, 255, 255, 0.03); }
+}
 
 .cal-semanal__evento {
   padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600;
@@ -421,7 +439,9 @@
   text-overflow: ellipsis; transition: all 0.2s ease;
 }
 
-.cal-semanal__evento:hover { transform: scale(1.02); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+@media (hover: hover) {
+  .cal-semanal__evento:hover { transform: scale(1.02); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+}
 
 /* vista semanal mobile — escondida no desktop */
 .cal-semanal-mobile { display: none; }
@@ -469,7 +489,9 @@
   display: flex; flex-direction: column; gap: 4px; overflow: hidden;
 }
 
-.cal-mensal__dia:hover { background: rgba(184, 150, 62, 0.07); }
+@media (hover: hover) {
+  .cal-mensal__dia:hover { background: rgba(184, 150, 62, 0.07); }
+}
 .cal-mensal__dia.outro-mes { opacity: 0.3; }
 
 .cal-mensal__dia.hoje .cal-mensal__dia-num {
@@ -524,10 +546,14 @@
 .cal-painel__data { font-size: 18px; font-weight: 700; color: #c9a84c; margin: 0; }
 .cal-painel__acoes { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
 .cal-painel__fechar { background: none; border: none; color: rgba(255, 255, 255, 0.4); cursor: pointer; font-size: 16px; padding: 4px; transition: color 0.2s ease; }
-.cal-painel__fechar:hover { color: rgba(255, 255, 255, 0.8); }
+@media (hover: hover) {
+  .cal-painel__fechar:hover { color: rgba(255, 255, 255, 0.8); }
+}
 .cal-painel__eventos { display: flex; flex-direction: column; gap: 10px; }
 .cal-painel__evento { border-left: 3px solid; padding: 12px 14px; border-radius: 0 12px 12px 0; background: rgba(255, 255, 255, 0.04); cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; gap: 4px; }
-.cal-painel__evento:hover { transform: translateX(5px); background: rgba(255, 255, 255, 0.08); }
+@media (hover: hover) {
+  .cal-painel__evento:hover { transform: translateX(5px); background: rgba(255, 255, 255, 0.08); }
+}
 .cal-painel__evento-topo { display: flex; align-items: center; gap: 8px; }
 .cal-painel__evento-icone { font-size: 16px; }
 .cal-painel__evento-titulo { font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.9); flex: 1; }
@@ -559,7 +585,9 @@
   background: rgba(255, 255, 255, 0.04); cursor: pointer;
   transition: all 0.25s ease; position: relative;
 }
-.cal-lista__evento:hover { transform: translateX(6px); background: rgba(255, 255, 255, 0.08); }
+@media (hover: hover) {
+  .cal-lista__evento:hover { transform: translateX(6px); background: rgba(255, 255, 255, 0.08); }
+}
 .cal-lista__evento-icone { font-size: 22px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
 .cal-lista__evento-info { display: flex; flex-direction: column; gap: 3px; flex: 1; }
 .cal-lista__evento-titulo { font-size: 15px; font-weight: 700; color: rgba(255, 255, 255, 0.9); }
@@ -593,7 +621,9 @@
 .cal-modal__topo { height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
 .cal-modal__icone { font-size: 32px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)); }
 .cal-modal__fechar { background: rgba(255,255,255,0.2); border: none; color: #fff; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: background 0.2s ease; }
-.cal-modal__fechar:hover { background: rgba(255,255,255,0.35); }
+@media (hover: hover) {
+  .cal-modal__fechar:hover { background: rgba(255,255,255,0.35); }
+}
 .cal-modal__corpo { padding: 24px; display: flex; flex-direction: column; gap: 14px; }
 .cal-modal__titulo { font-size: 20px; font-weight: 700; color: rgba(255, 255, 255, 0.95); margin: 0 0 8px 0; }
 .cal-modal__linha { display: flex; align-items: center; gap: 12px; font-size: 13px; color: rgba(255, 255, 255, 0.7); }
@@ -617,20 +647,28 @@
 .cal-modal__acoes { display: flex; gap: 10px; margin-top: 8px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
 
 .cal-modal__btn-editar { flex: 1; padding: 11px 0; border-radius: 12px; border: 1px solid rgba(184, 150, 62, 0.4); background: rgba(184, 150, 62, 0.08); color: #c9a84c; font-size: 13px; font-weight: 600; font-family: 'Playfair Display', Georgia, serif; cursor: pointer; transition: all 0.2s ease; }
-.cal-modal__btn-editar:hover { background: rgba(184, 150, 62, 0.2); border-color: #c9a84c; transform: translateY(-2px); }
+@media (hover: hover) {
+  .cal-modal__btn-editar:hover { background: rgba(184, 150, 62, 0.2); border-color: #c9a84c; transform: translateY(-2px); }
+}
 
 .cal-modal__btn-apagar { flex: 1; padding: 11px 0; border-radius: 12px; border: 1px solid rgba(229, 57, 53, 0.3); background: rgba(229, 57, 53, 0.08); color: #ef9a9a; font-size: 13px; font-weight: 600; font-family: 'Playfair Display', Georgia, serif; cursor: pointer; transition: all 0.2s ease; }
-.cal-modal__btn-apagar:hover { background: rgba(229, 57, 53, 0.2); border-color: rgba(229, 57, 53, 0.6); transform: translateY(-2px); }
+@media (hover: hover) {
+  .cal-modal__btn-apagar:hover { background: rgba(229, 57, 53, 0.2); border-color: rgba(229, 57, 53, 0.6); transform: translateY(-2px); }
+}
 
 .cal-modal__confirmar { width: 100%; display: flex; flex-direction: column; gap: 12px; }
 .cal-modal__confirmar p { font-size: 13px; color: rgba(255, 255, 255, 0.6); margin: 0; text-align: center; }
 .cal-modal__confirmar-btns { display: flex; gap: 10px; }
 
 .cal-modal__btn-cancelar { flex: 1; padding: 11px 0; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05); color: rgba(255, 255, 255, 0.5); font-size: 13px; font-weight: 600; font-family: 'Playfair Display', Georgia, serif; cursor: pointer; transition: all 0.2s ease; }
-.cal-modal__btn-cancelar:hover { background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.8); }
+@media (hover: hover) {
+  .cal-modal__btn-cancelar:hover { background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.8); }
+}
 
 .cal-modal__btn-confirmar { flex: 1; padding: 11px 0; border-radius: 12px; border: none; background: linear-gradient(135deg, #c0392b, #e74c3c); color: #fff; font-size: 13px; font-weight: 700; font-family: 'Playfair Display', Georgia, serif; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(231, 76, 60, 0.35); }
-.cal-modal__btn-confirmar:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(231, 76, 60, 0.5); }
+@media (hover: hover) {
+  .cal-modal__btn-confirmar:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(231, 76, 60, 0.5); }
+}
 .cal-modal__btn-confirmar:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* fab — escondido no desktop */

@@ -88,8 +88,10 @@
   font-size: 0.9rem;
 }
 
-.sidebar-item:hover {
+@media (hover: hover) {
+  .sidebar-item:hover {
   background: rgba(107, 15, 26, 0.06);
+}
 }
 
 .sidebar-item.activo {
@@ -98,8 +100,10 @@
   font-weight: 700;
 }
 
-html.dark .sidebar-item:hover {
+@media (hover: hover) {
+  html.dark .sidebar-item:hover {
   background: rgba(201, 168, 76, 0.08);
+}
 }
 
 html.dark .sidebar-item.activo {
@@ -135,8 +139,10 @@ html.dark .sidebar-item.activo {
   margin-top: 8px;
 }
 
-.sidebar-mais:hover {
+@media (hover: hover) {
+  .sidebar-mais:hover {
   background: rgba(107, 15, 26, 0.06);
+}
 }
 
 /* ─── ícone + com rotação ao abrir ────────────────────────────────────────── */
@@ -216,9 +222,11 @@ html.dark .sidebar-item.activo {
   pointer-events: all;
 }
 
-.menu-mais-item:hover {
+@media (hover: hover) {
+  .menu-mais-item:hover {
   transform: translateY(-2px) scale(1.02);
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+}
 }
 
 .menu-mais-icon {
@@ -413,8 +421,10 @@ html.dark .tabbar-item.activo {
   z-index: 1;
 }
 
-.tabbar-mais:hover {
+@media (hover: hover) {
+  .tabbar-mais:hover {
   transform: scale(1.05);
+}
 }
 
 .tabbar-mais .mais-icone {

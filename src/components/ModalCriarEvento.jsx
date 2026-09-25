@@ -41,9 +41,11 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
   // estado do formulário — se receber um evento existente, começa preenchido com os dados dele
   const [form, setForm] = useState(() => {
     if (eventoExistente) {
-      const dataEv = eventoExistente.data instanceof Date
-        ? eventoExistente.data
-        : eventoExistente.data?.toDate?.();
+      // num evento de vários dias, a cópia de cada dia traz o início verdadeiro em dataOriginal
+      const inicioEv = eventoExistente.dataOriginal ?? eventoExistente.data;
+      const dataEv = inicioEv instanceof Date
+        ? inicioEv
+        : inicioEv?.toDate?.();
       const dataFimEv = eventoExistente.dataFim instanceof Date
         ? eventoExistente.dataFim
         : eventoExistente.dataFim?.toDate?.();

@@ -20,7 +20,8 @@ function expandirMultiDia(ev) {
   const dias = [];
   const cursor = new Date(inicio);
   while (chaveData(cursor) <= chaveData(fim)) {
-    dias.push({ ...ev, data: new Date(cursor), chave: `${ev.id}_${chaveData(cursor)}` });
+    // dataOriginal: o início verdadeiro, para editar a partir de qualquer dia não mudar o início
+    dias.push({ ...ev, data: new Date(cursor), dataOriginal: inicio, chave: `${ev.id}_${chaveData(cursor)}` });
     cursor.setDate(cursor.getDate() + 1);
   }
   return dias;

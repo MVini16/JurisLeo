@@ -65,7 +65,7 @@ export default function AcoesAula({ ocorrencia, onMarcar, onFechar }) {
 
 // três pontos no fim da aula, que ficam guardados por data
 function SumarioRapido({ ocorrencia }) {
-  const { sumario, guardar } = useSumario(ocorrencia);
+  const { sumario, guardar, carregado } = useSumario(ocorrencia);
   const [aberto, setAberto] = useState(false);
 
   return (
@@ -73,10 +73,11 @@ function SumarioRapido({ ocorrencia }) {
       <button className="sumario__toggle" onClick={() => setAberto(!aberto)} aria-expanded={aberto}>
         ✍️ {sumario?.bullets?.length ? `Sumário (${sumario.bullets.length})` : 'Escrever o sumário'}
       </button>
-      {aberto && (
+      {/* o formulário só abre depois de o sumário guardado chegar: antes, remontava
+          quando os dados chegavam e deitava fora o que ela já tinha escrito */}
+      {aberto && !carregado && <p className="sumario__lista">A carregar…</p>}
+      {aberto && carregado && (
         <FormSumario
-          // chave: remonta quando chegam os dados guardados
-          key={sumario ? 'com-dados' : 'sem-dados'}
           inicial={sumario?.bullets || []}
           onGuardar={async (b) => { await guardar(b); setAberto(false); }}
         />

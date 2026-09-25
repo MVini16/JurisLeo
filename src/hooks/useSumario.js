@@ -8,6 +8,8 @@ import { semEsperar } from '../services/escritas.js';
 
 export function useSumario(ocorrencia) {
   const [sumario, setSumario] = useState(null);
+  // o id da ocorrência cujo sumário já chegou (para o formulário só abrir com os dados certos)
+  const [carregadoPara, setCarregadoPara] = useState(null);
   const ocorrenciaId = ocorrencia?.ocorrenciaId;
 
   useEffect(() => {
@@ -15,7 +17,8 @@ export function useSumario(ocorrencia) {
     if (!userId || !ocorrenciaId) return;
     const unsub = onSnapshot(doc(db, 'users', userId, 'sumarios', ocorrenciaId), (snap) => {
       setSumario(snap.exists() ? snap.data() : null);
-    });
+      setCarregadoPara(ocorrenciaId);
+    }, () => setCarregadoPara(ocorrenciaId));
     return () => unsub();
   }, [ocorrenciaId]);
 
@@ -31,5 +34,5 @@ export function useSumario(ocorrencia) {
     }, { merge: true }));
   }
 
-  return { sumario, guardar };
+  return { sumario, guardar, carregado: carregadoPara === ocorrenciaId };
 }

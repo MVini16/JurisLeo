@@ -252,6 +252,8 @@ function NavBar({ children }) {
           <button
             className={`tabbar-mais ${menuAberto ? 'aberto' : ''}`}
             onClick={() => setMenuAberto(!menuAberto)}
+            aria-label={menuAberto ? 'Fechar atalhos' : 'Abrir atalhos'}
+            aria-expanded={menuAberto}
           >
             <span className="mais-icone">+</span>
           </button>

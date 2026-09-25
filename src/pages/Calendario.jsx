@@ -164,9 +164,9 @@ export default function Calendario() {
       {/* header desktop */}
       <div className="cal-header">
         <div className="cal-header__nav">
-          <button className="cal-btn-nav" onClick={() => navegar(-1)}>‹</button>
+          <button className="cal-btn-nav" onClick={() => navegar(-1)} aria-label="Anterior">‹</button>
           <h2 className="cal-header__titulo">{tituloHeader()}</h2>
-          <button className="cal-btn-nav" onClick={() => navegar(1)}>›</button>
+          <button className="cal-btn-nav" onClick={() => navegar(1)} aria-label="Seguinte">›</button>
         </div>
         <div className="cal-header__controlos">
           <button className="cal-btn-hoje" onClick={irParaHoje}>Hoje</button>
@@ -184,9 +184,9 @@ export default function Calendario() {
       {/* header mobile */}
       <div className="cal-header-mobile">
         <div className="cal-header-mobile__topo">
-          <button className="cal-btn-nav-mobile" onClick={() => navegar(-1)}>‹</button>
+          <button className="cal-btn-nav-mobile" onClick={() => navegar(-1)} aria-label="Anterior">‹</button>
           <h2 className="cal-header-mobile__titulo">{tituloHeader()}</h2>
-          <button className="cal-btn-nav-mobile" onClick={() => navegar(1)}>›</button>
+          <button className="cal-btn-nav-mobile" onClick={() => navegar(1)} aria-label="Seguinte">›</button>
           <button className="cal-btn-hoje-mobile" onClick={irParaHoje}>Hoje</button>
         </div>
         <div className="cal-tabs-mobile">
@@ -267,7 +267,7 @@ export default function Calendario() {
       )}
 
       {/* fab mobile */}
-      <button className="cal-fab" onClick={() => setModalAberto(true)}>
+      <button className="cal-fab" onClick={() => setModalAberto(true)} aria-label="Novo evento">
         <span className="cal-fab__icone">+</span>
       </button>
 
@@ -560,7 +560,7 @@ function PainelDia({ data, eventos, onIrParaDia, onFechar, onEventoClick, ICONES
         </div>
         <div className="cal-painel__acoes">
           <button className="cal-btn-hoje" onClick={() => onIrParaDia(data)}>Ver dia</button>
-          <button className="cal-painel__fechar" onClick={onFechar}>✕</button>
+          <button className="cal-painel__fechar" onClick={onFechar} aria-label="Fechar">✕</button>
         </div>
       </div>
       <div className="cal-painel__eventos">
@@ -714,7 +714,7 @@ function ModalEvento({ evento, onMarcar, onFechar, onEditar, onApagar, ICONES_TI
       <div className="cal-modal" onClick={(e) => e.stopPropagation()}>
         <div className="cal-modal__topo" style={{ backgroundColor: cor }}>
           <span className="cal-modal__icone">{ICONES_TIPO[evento.tipo] || '📌'}</span>
-          <button className="cal-modal__fechar" onClick={onFechar}>✕</button>
+          <button className="cal-modal__fechar" onClick={onFechar} aria-label="Fechar">✕</button>
         </div>
         <div className="cal-modal__corpo">
           <h3 className="cal-modal__titulo">{evento.titulo}</h3>

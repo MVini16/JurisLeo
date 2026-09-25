@@ -271,6 +271,7 @@ function TarefaCard({ tarefa, delay, onConcluir, onEditar, onApagar }) {
         className={`tarefa-card__check ${concluindo ? 'a-concluir' : ''} ${tarefa.concluida ? 'feito' : ''}`}
         onClick={handleConcluir}
         style={{ '--cor': cor }}
+        aria-label={tarefa.concluida ? `Marcar "${tarefa.titulo}" como por fazer` : `Concluir "${tarefa.titulo}"`}
       >
         {tarefa.concluida && <span className="check-tick">✓</span>}
       </button>
@@ -305,8 +306,8 @@ function TarefaCard({ tarefa, delay, onConcluir, onEditar, onApagar }) {
       <div className="tarefa-card__acoes">
         {!confirmApagar ? (
           <>
-            <button className="tarefa-card__btn-editar" onClick={onEditar}>✏️</button>
-            <button className="tarefa-card__btn-apagar" onClick={() => setConfirmApagar(true)}>🗑️</button>
+            <button className="tarefa-card__btn-editar" onClick={onEditar} aria-label={`Editar ${tarefa.titulo}`}>✏️</button>
+            <button className="tarefa-card__btn-apagar" onClick={() => setConfirmApagar(true)} aria-label={`Apagar ${tarefa.titulo}`}>🗑️</button>
           </>
         ) : (
           <div className="tarefa-card__confirmar">

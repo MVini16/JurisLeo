@@ -191,7 +191,7 @@ function Editor({ mapa, guardar, apagar, onApagado }) {
               onBlur={guardarTexto}
               onPointerDown={(e) => e.stopPropagation()}
             />
-            <button className="mm-no__apagar" onPointerDown={(e) => e.stopPropagation()} onClick={() => apagarNo(n.id)}>×</button>
+            <button className="mm-no__apagar" onPointerDown={(e) => e.stopPropagation()} onClick={() => apagarNo(n.id)} aria-label="Apagar esta caixa">×</button>
           </div>
         ))}
 

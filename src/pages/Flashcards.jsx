@@ -193,7 +193,7 @@ function SessaoRevisao({ fila: filaAoVivo, onResponder, onFechar }) {
 
   return (
     <div className="revisao-overlay no-print">
-      <button className="revisao-fechar" onClick={onFechar}>✕</button>
+      <button className="revisao-fechar" onClick={onFechar} aria-label="Fechar a revisão">✕</button>
       <span className="revisao-progresso">{indice + 1} / {fila.length}</span>
 
       <div className={`revisao-carta ${virado ? 'virada' : ''}`} onClick={() => setVirado((v) => !v)}>

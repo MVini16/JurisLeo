@@ -145,7 +145,7 @@ function Formulario({ caso, novo, criar, guardar, apagar, onVoltar, aparecesEm =
           {duvidas.map((d, i) => (
             <div key={i} className="caso-editor__duvida-chip">
               <span>{d}</span>
-              <button onClick={() => removerDuvida(i)}>✕</button>
+              <button onClick={() => removerDuvida(i)} aria-label={`Tirar a dúvida ${d}`}>✕</button>
             </div>
           ))}
         </div>
@@ -157,7 +157,7 @@ function Formulario({ caso, novo, criar, guardar, apagar, onVoltar, aparecesEm =
             onChange={(e) => setNovaDuvida(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); adicionarDuvida(); } }}
           />
-          <button className="caso-editor__duvida-btn" onClick={adicionarDuvida}>+</button>
+          <button className="caso-editor__duvida-btn" onClick={adicionarDuvida} aria-label="Juntar dúvida">+</button>
         </div>
       </div>
 

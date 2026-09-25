@@ -117,7 +117,7 @@ function FormNovoArtigo({ onGuardar }) {
       <div className="artigos-form-novo__linha">
         <div className="artigos-form-novo__dificuldade">
           {[1, 2, 3].map((d) => (
-            <button key={d} className={`artigos-dot-btn ${dificuldade >= d ? 'ativo' : ''}`} onClick={() => setDificuldade(d)}>●</button>
+            <button key={d} className={`artigos-dot-btn ${dificuldade >= d ? 'ativo' : ''}`} onClick={() => setDificuldade(d)} aria-label={`Dificuldade ${d} de 3`} aria-pressed={dificuldade >= d}>●</button>
           ))}
         </div>
         <button className="artigos-form-novo__guardar" onClick={guardar} disabled={aGuardar || !numero.trim()}>
@@ -145,7 +145,7 @@ function ArtigoCard({ artigo, onAtualizar, onApagar, aparecesEm = [], onIrPara }
         <span className="artigo-card__numero">Art. {artigo.numero} {artigo.codigo}</span>
         <div className="artigo-card__dificuldade">
           {[1, 2, 3].map((d) => (
-            <button key={d} className={`artigos-dot-btn ${artigo.dificuldade >= d ? 'ativo' : ''}`} onClick={() => onAtualizar({ dificuldade: d })}>●</button>
+            <button key={d} className={`artigos-dot-btn ${artigo.dificuldade >= d ? 'ativo' : ''}`} onClick={() => onAtualizar({ dificuldade: d })} aria-label={`Dificuldade ${d} de 3`} aria-pressed={artigo.dificuldade >= d}>●</button>
           ))}
         </div>
       </div>

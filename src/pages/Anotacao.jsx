@@ -155,7 +155,7 @@ function Formulario({ anotacao, nova, cadeiraInicial, divisoriaInicial, anotacoe
     <>
       <div className="anotacao-editor__header">
         <BotaoVoltar destino={`/anotacoes/caderno/${cadeiraId}`} texto="‹ Caderno" />
-        <button className={`anotacao-editor__estrela ${favorita ? 'ativa' : ''}`} onClick={() => setFavorita((f) => !f)}>
+        <button className={`anotacao-editor__estrela ${favorita ? 'ativa' : ''}`} onClick={() => setFavorita((f) => !f)} aria-label="Favorita" aria-pressed={favorita}>
           {favorita ? '★' : '☆'}
         </button>
       </div>

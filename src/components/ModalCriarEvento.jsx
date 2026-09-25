@@ -224,7 +224,7 @@ export default function ModalCriarEvento({ onFechar, dataInicial, eventoExistent
         {/* header do modal */}
         <div className="mce-header">
           <h3 className="mce-titulo">{aEditar ? 'Editar Evento' : 'Novo Evento'}</h3>
-          <button className="mce-fechar" onClick={fechar}>✕</button>
+          <button className="mce-fechar" onClick={fechar} aria-label="Fechar">✕</button>
         </div>
 
         {/* corpo do formulário */}

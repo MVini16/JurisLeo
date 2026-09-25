@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
 import { collection, onSnapshot, query, where, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useHistoricoEstudo(dias = 90) {
   const [sessoes, setSessoes] = useState([]);
@@ -21,7 +22,7 @@ export function useHistoricoEstudo(dias = 90) {
     const unsub = onSnapshot(ref, (snap) => {
       setSessoes(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     return () => unsub();
   }, [dias]);
 

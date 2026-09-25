@@ -4,6 +4,7 @@ import { db } from '../services/firebase.js';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { registarFaltaSolta, atualizarFalta, apagarFalta, corrigirLecionadas } from '../services/registoFaltas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useFaltasRegisto() {
   const [registos, setRegistos] = useState([]);
@@ -18,7 +19,7 @@ export function useFaltasRegisto() {
       lista.sort((a, b) => b.data.localeCompare(a.data));
       setRegistos(lista);
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     return () => unsub();
   }, []);
 

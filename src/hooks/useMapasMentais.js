@@ -4,6 +4,7 @@ import { db } from '../services/firebase.js';
 import { collection, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { semEsperar, criarSemEsperar } from '../services/escritas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useMapasMentaisLista() {
   const [mapas, setMapas] = useState([]);
@@ -16,7 +17,7 @@ export function useMapasMentaisLista() {
     const unsub = onSnapshot(ref, (snap) => {
       setMapas(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     return () => unsub();
   }, []);
 
@@ -35,7 +36,7 @@ export function useMapaMental(id) {
     const unsub = onSnapshot(doc(db, 'users', userId, 'mapasMentais', id), (snap) => {
       setMapa(snap.exists() ? { id: snap.id, ...snap.data() } : null);
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     return () => unsub();
   }, [id, novo]);
 

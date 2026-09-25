@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
 import { collection, doc, onSnapshot } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useFaltas() {
   const [cadeiras, setCadeiras] = useState([]);
@@ -15,7 +16,7 @@ export function useFaltas() {
     const unsub = onSnapshot(collection(db, 'users', userId, 'cadeiras'), (snap) => {
       setCadeiras(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     return () => unsub();
   }, []);
 

@@ -7,6 +7,7 @@ import { gerarOcorrencias, comEstados } from '../services/ocorrencias.js';
 import { proximaFrequencia as calcularProximaFrequencia, diasRestantes } from '../services/frequencia.js';
 import { useEstadosAula } from './useEstadosAula.js';
 import { semEsperar } from '../services/escritas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useDashboard() {
   const { estados, marcar } = useEstadosAula();
@@ -48,7 +49,7 @@ export function useDashboard() {
       const dados = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
       setAulasSemanais(dados);
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
 
     return () => {
       unsubPerfil();

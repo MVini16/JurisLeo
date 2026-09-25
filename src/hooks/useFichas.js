@@ -5,6 +5,7 @@ import { collection, onSnapshot, query, where, updateDoc, deleteDoc, doc, server
 import { getAuth } from 'firebase/auth';
 import { ordenarFichas, limparFicha } from '../services/fichas.js';
 import { semEsperar, criarSemEsperar } from '../services/escritas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useFichas(tipoId) {
   const [fichas, setFichas] = useState([]);
@@ -18,7 +19,7 @@ export function useFichas(tipoId) {
     const unsub = onSnapshot(ref, (snap) => {
       setFichas(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     return () => unsub();
   }, [tipoId]);
 

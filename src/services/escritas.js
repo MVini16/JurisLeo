@@ -15,3 +15,12 @@ export function criarSemEsperar(colecao, dados) {
   semEsperar(setDoc(ref, dados));
   return ref;
 }
+
+// callback de erro para um onSnapshot: sem ele, uma leitura recusada (sessão expirada,
+// regra do firestore) deixava a página em "a carregar" para sempre
+export function avisarErroEscuta(setLoading) {
+  return (erro) => {
+    console.error('leitura do firestore falhou', erro);
+    setLoading(false);
+  };
+}

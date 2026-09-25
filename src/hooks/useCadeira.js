@@ -4,6 +4,7 @@ import { db } from '../services/firebase.js';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { semEsperar } from '../services/escritas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useCadeira(cadeiraId) {
   const [cadeira, setCadeira] = useState(null);
@@ -23,7 +24,7 @@ export function useCadeira(cadeiraId) {
     const unsubCadeira = onSnapshot(cadeiraRef, (snap) => {
       setCadeira(snap.exists() ? { id: snap.id, ...snap.data() } : null);
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     const unsubFaltas = onSnapshot(faltasRef, (snap) => setFaltasDados(snap.data() || null));
     const unsubAvaliacao = onSnapshot(avaliacaoRef, (snap) => setAvaliacaoDados(snap.data() || null));
 

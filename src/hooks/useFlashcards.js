@@ -5,6 +5,7 @@ import { collection, onSnapshot, updateDoc, deleteDoc, doc, serverTimestamp } fr
 import { getAuth } from 'firebase/auth';
 import { calcularProximaRevisaoPorConfianca } from '../services/repeticaoEspacada.js';
 import { semEsperar, criarSemEsperar } from '../services/escritas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useFlashcards() {
   const [flashcards, setFlashcards] = useState([]);
@@ -19,7 +20,7 @@ export function useFlashcards() {
     const unsub = onSnapshot(ref, (snap) => {
       setFlashcards(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
 
     return () => unsub();
   }, []);

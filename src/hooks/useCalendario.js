@@ -7,6 +7,7 @@ import { getAuth } from 'firebase/auth';
 import { gerarOcorrencias, comEstados } from '../services/ocorrencias.js';
 import { useEstadosAula } from './useEstadosAula.js';
 import { chaveData } from '../data/feriados.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 // um evento com dataFim aparece em todos os dias entre data e dataFim, inclusive —
 // cada cópia guarda o mesmo id (para editar/apagar acertarem no documento certo)
@@ -59,7 +60,7 @@ export function useCalendario() {
       }));
       setAulasSemanais(dados);
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
 
     // quando o componente é desmontado, para de ouvir o firestore
     return () => {

@@ -4,6 +4,7 @@ import { db } from '../services/firebase.js';
 import { doc, onSnapshot, setDoc, updateDoc, deleteDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { semEsperar } from '../services/escritas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useAnotacao(id) {
   const nova = id === 'nova';
@@ -19,7 +20,7 @@ export function useAnotacao(id) {
     const unsub = onSnapshot(doc(db, 'users', userId, 'anotacoes', id), (snap) => {
       setAnotacao(snap.exists() ? { id: snap.id, ...snap.data() } : null);
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     return () => unsub();
   }, [id, nova]);
 

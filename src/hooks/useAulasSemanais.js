@@ -6,6 +6,7 @@ import { getAuth } from 'firebase/auth';
 import { calendarioS1 } from '../data/dadosLeonor.js';
 import { carregarHorarioInicial } from '../services/initCalendario.js';
 import { semEsperar, criarSemEsperar } from '../services/escritas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useAulasSemanais() {
   const [aulas, setAulas] = useState([]);
@@ -17,7 +18,7 @@ export function useAulasSemanais() {
     const unsub = onSnapshot(collection(db, 'users', userId, 'aulasSemanais'), (snap) => {
       setAulas(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     return () => unsub();
   }, []);
 

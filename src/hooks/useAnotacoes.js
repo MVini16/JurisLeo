@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useAnotacoes() {
   const [anotacoes, setAnotacoes] = useState([]);
@@ -18,7 +19,7 @@ export function useAnotacoes() {
       const dados = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
       setAnotacoes(dados);
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
 
     return () => unsub();
   }, []);

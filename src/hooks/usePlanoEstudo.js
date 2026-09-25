@@ -5,6 +5,7 @@ import { db } from '../services/firebase.js';
 import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { semEsperar } from '../services/escritas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function usePlanoEstudo() {
   const [eventos, setEventos] = useState([]);
@@ -18,7 +19,7 @@ export function usePlanoEstudo() {
     const unsubEventos = onSnapshot(collection(db, 'users', userId, 'eventos'), (snap) => {
       setEventos(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     const unsubEscolhas = onSnapshot(doc(db, 'users', userId, 'planoEstudo', 'dados'), (snap) => {
       setEscolhas(snap.data() || {});
     });

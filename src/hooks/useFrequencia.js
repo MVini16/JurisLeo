@@ -6,6 +6,7 @@ import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { proximaProva } from '../services/provas.js';
 import { semEsperar } from '../services/escritas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useFrequencia() {
   const [eventos, setEventos] = useState([]);
@@ -18,7 +19,7 @@ export function useFrequencia() {
     const unsub = onSnapshot(collection(db, 'users', userId, 'eventos'), (snap) => {
       setEventos(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     return () => unsub();
   }, []);
 

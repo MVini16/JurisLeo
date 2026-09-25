@@ -5,6 +5,7 @@ import { collection, doc, onSnapshot, query, where, documentId, setDoc, serverTi
 import { getAuth } from 'firebase/auth';
 import { chaveData } from '../data/feriados.js';
 import { semEsperar } from '../services/escritas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 const DIAS_DE_HISTORICO = 100;
 
@@ -25,7 +26,7 @@ export function useBemEstar() {
       snap.docs.forEach((d) => { mapa[d.id] = d.data(); });
       setRegistos(mapa);
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     return () => unsub();
   }, []);
 

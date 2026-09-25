@@ -4,6 +4,7 @@ import { db } from '../services/firebase.js';
 import { collection, onSnapshot, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { semEsperar, criarSemEsperar } from '../services/escritas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useArtigos() {
   const [artigos, setArtigos] = useState([]);
@@ -18,7 +19,7 @@ export function useArtigos() {
     const unsub = onSnapshot(ref, (snap) => {
       setArtigos(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
 
     return () => unsub();
   }, []);

@@ -5,6 +5,7 @@ import { db } from '../services/firebase.js';
 import { collection, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { semEsperar, criarSemEsperar } from '../services/escritas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useTopicosCorrecaoLista() {
   const [itens, setItens] = useState([]);
@@ -17,7 +18,7 @@ export function useTopicosCorrecaoLista() {
     const unsub = onSnapshot(ref, (snap) => {
       setItens(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     return () => unsub();
   }, []);
 
@@ -36,7 +37,7 @@ export function useTopicosCorrecao(id) {
     const unsub = onSnapshot(doc(db, 'users', userId, 'topicosCorrecao', id), (snap) => {
       setItem(snap.exists() ? { id: snap.id, ...snap.data() } : null);
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     return () => unsub();
   }, [id, novo]);
 

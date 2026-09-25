@@ -4,6 +4,7 @@ import { db } from '../services/firebase.js';
 import { doc, onSnapshot, updateDoc, deleteDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { semEsperar, criarSemEsperar } from '../services/escritas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useCaso(id) {
   const novo = id === 'novo';
@@ -19,7 +20,7 @@ export function useCaso(id) {
     const unsub = onSnapshot(doc(db, 'users', userId, 'casos', id), (snap) => {
       setCaso(snap.exists() ? { id: snap.id, ...snap.data() } : null);
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     return () => unsub();
   }, [id, novo]);
 

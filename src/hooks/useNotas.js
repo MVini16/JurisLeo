@@ -4,6 +4,7 @@ import { db } from '../services/firebase.js';
 import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { semEsperar } from '../services/escritas.js';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useNotas() {
   const [cadeiras, setCadeiras] = useState([]);
@@ -16,7 +17,7 @@ export function useNotas() {
     const unsub = onSnapshot(collection(db, 'users', userId, 'cadeiras'), (snap) => {
       setCadeiras(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
     return () => unsub();
   }, []);
 

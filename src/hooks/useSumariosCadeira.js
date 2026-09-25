@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../services/firebase.js';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { avisarErroEscuta } from '../services/escritas.js';
 
 export function useSumariosCadeira(cadeiraId) {
   const [sumarios, setSumarios] = useState([]);
@@ -17,7 +18,7 @@ export function useSumariosCadeira(cadeiraId) {
     const unsub = onSnapshot(ref, (snap) => {
       setSumarios(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
-    });
+    }, avisarErroEscuta(setLoading));
 
     return () => unsub();
   }, [cadeiraId]);

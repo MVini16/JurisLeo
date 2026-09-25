@@ -2,7 +2,7 @@
 // mantém sempre faltas/dados (a entrada do motor de faltas) coerente com o que está marcado
 import { db } from './firebase.js';
 import {
-  collection, doc, getDoc, getDocs, setDoc, deleteDoc, addDoc, query, where, serverTimestamp, Timestamp,
+  collection, doc, getDoc, getDocFromCache, getDocs, setDoc, deleteDoc, query, where, serverTimestamp, Timestamp,
 } from 'firebase/firestore';
 import { contarFaltas, prazoComprovativo } from './faltas.js';
 import { chaveData } from '../data/feriados.js';
@@ -10,21 +10,35 @@ import { chaveData } from '../data/feriados.js';
 const pastaDoUtilizador = (userId) => doc(db, 'users', userId);
 const colecao = (userId, nome) => collection(pastaDoUtilizador(userId), nome);
 
+// as escritas não esperam pelo servidor: o firestore aplica-as logo na cache local
+// (a recontagem a seguir já as vê) e sobe-as quando houver rede. esperar deixava a
+// marcação de uma falta a meio numa sala sem internet.
+const semEsperar = (promessa) => { promessa.catch(() => {}); };
+
+// sem rede, o getDoc dá erro em vez de ler a cache — aqui tenta a cache a seguir
+async function lerDoc(ref) {
+  try {
+    return await getDoc(ref);
+  } catch {
+    try { return await getDocFromCache(ref); } catch { return null; }
+  }
+}
+
 // recalcula lecionadas e faltas de uma cadeira a partir dos estados marcados e dos registos
 export async function sincronizarFaltas(userId, cadeiraId) {
   const [estadosSnap, registosSnap, faltasSnap] = await Promise.all([
     getDocs(query(colecao(userId, 'estadosAula'), where('cadeiraId', '==', cadeiraId))),
     getDocs(query(colecao(userId, 'faltasRegisto'), where('cadeiraId', '==', cadeiraId))),
-    getDoc(doc(pastaDoUtilizador(userId), 'cadeiras', cadeiraId, 'faltas', 'dados')),
+    lerDoc(doc(pastaDoUtilizador(userId), 'cadeiras', cadeiraId, 'faltas', 'dados')),
   ]);
 
   const contagem = contarFaltas({
     ocorrencias: estadosSnap.docs.map((d) => d.data()),
     registos: registosSnap.docs.map((d) => d.data()),
-    ajusteLecionadas: faltasSnap.data()?.ajusteLecionadas || 0,
+    ajusteLecionadas: faltasSnap?.data()?.ajusteLecionadas || 0,
   });
 
-  await setDoc(doc(pastaDoUtilizador(userId), 'cadeiras', cadeiraId, 'faltas', 'dados'), contagem, { merge: true });
+  semEsperar(setDoc(doc(pastaDoUtilizador(userId), 'cadeiras', cadeiraId, 'faltas', 'dados'), contagem, { merge: true }));
   return contagem;
 }
 
@@ -36,27 +50,27 @@ export async function marcarEstadoAula(userId, ocorrencia, estado) {
   const refRegisto = doc(colecao(userId, 'faltasRegisto'), `occ_${idEstado}`);
 
   if (estado === 'porMarcar') {
-    await deleteDoc(refEstado);
+    semEsperar(deleteDoc(refEstado));
   } else {
-    await setDoc(refEstado, {
+    semEsperar(setDoc(refEstado, {
       aulaId: ocorrencia.aulaId,
       cadeiraId: ocorrencia.cadeira,
       data: chaveData(ocorrencia.data),
       tipoAula: ocorrencia.tipoAula,
       estado,
       atualizadoEm: serverTimestamp(),
-    });
+    }));
   }
 
   // só as faltas às aulas práticas contam para o motor
   if (ocorrencia.tipoAula === 'pratica') {
     if (estado === 'faltei') {
-      const existente = await getDoc(refRegisto);
-      if (!existente.exists()) {
-        await setDoc(refRegisto, novoRegisto({ cadeiraId: ocorrencia.cadeira, data: ocorrencia.data, ocorrenciaId: idEstado }));
+      const existente = await lerDoc(refRegisto);
+      if (!existente?.exists()) {
+        semEsperar(setDoc(refRegisto, novoRegisto({ cadeiraId: ocorrencia.cadeira, data: ocorrencia.data, ocorrenciaId: idEstado })));
       }
     } else {
-      await deleteDoc(refRegisto);
+      semEsperar(deleteDoc(refRegisto));
     }
     await sincronizarFaltas(userId, ocorrencia.cadeira);
   }
@@ -77,7 +91,8 @@ function novoRegisto({ cadeiraId, data, ocorrenciaId = null }) {
 
 // falta registada à mão, sem aula marcada no calendário
 export async function registarFaltaSolta(userId, { cadeiraId, data }) {
-  const ref = await addDoc(colecao(userId, 'faltasRegisto'), novoRegisto({ cadeiraId, data }));
+  const ref = doc(colecao(userId, 'faltasRegisto'));
+  semEsperar(setDoc(ref, novoRegisto({ cadeiraId, data })));
   await sincronizarFaltas(userId, cadeiraId);
   return ref.id;
 }
@@ -94,15 +109,15 @@ export async function atualizarFalta(userId, registo, patch) {
     dados.comprovativoEntregue = false;
     dados.motivo = null;
   }
-  await setDoc(doc(colecao(userId, 'faltasRegisto'), registo.id), dados, { merge: true });
+  semEsperar(setDoc(doc(colecao(userId, 'faltasRegisto'), registo.id), dados, { merge: true }));
   await sincronizarFaltas(userId, registo.cadeiraId);
 }
 
 // apaga uma falta; se estava ligada a uma aula do calendário, essa aula volta a "por marcar"
 export async function apagarFalta(userId, registo) {
-  await deleteDoc(doc(colecao(userId, 'faltasRegisto'), registo.id));
+  semEsperar(deleteDoc(doc(colecao(userId, 'faltasRegisto'), registo.id)));
   if (registo.ocorrenciaId) {
-    await deleteDoc(doc(colecao(userId, 'estadosAula'), registo.ocorrenciaId));
+    semEsperar(deleteDoc(doc(colecao(userId, 'estadosAula'), registo.ocorrenciaId)));
   }
   await sincronizarFaltas(userId, registo.cadeiraId);
 }
@@ -119,10 +134,10 @@ export async function corrigirLecionadas(userId, cadeiraId, valorReal) {
     ajusteLecionadas: 0,
   }).aulasPraticasLecionadas;
 
-  await setDoc(
+  semEsperar(setDoc(
     doc(pastaDoUtilizador(userId), 'cadeiras', cadeiraId, 'faltas', 'dados'),
     { ajusteLecionadas: valorReal - base },
     { merge: true }
-  );
+  ));
   await sincronizarFaltas(userId, cadeiraId);
 }

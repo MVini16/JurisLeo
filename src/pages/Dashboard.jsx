@@ -4,6 +4,7 @@ import './Dashboard.css'
 import { useTheme } from '../context/useTheme.js'
 import { useDashboard } from '../hooks/useDashboard.js'
 import { useTarefas } from '../hooks/useTarefas.js'
+import { useAvisosFaltas } from '../hooks/useAvisosFaltas.js'
 import { coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js'
 import Tutorial from '../components/Tutorial.jsx'
 import { useFrase } from '../hooks/useFrase.js'
@@ -47,6 +48,7 @@ function Dashboard() {
   const frase = useFrase(getContextoFrase());
 
   const { tarefas } = useTarefas();
+  const avisosFaltas = useAvisosFaltas();
   const tarefasPendentes = tarefas
     .filter((t) => !t.concluida)
     .sort((a, b) => {
@@ -199,6 +201,25 @@ function Dashboard() {
               </ul>
             )}
           </div>
+
+          {/* card faltas — só aparece se alguma cadeira estiver em amarelo ou vermelho */}
+          {avisosFaltas.length > 0 && (
+            <div className="card card-aulas anim-entrada" style={{ '--delay': '0.35s' }}>
+              <div className="card-header">
+                <span className="card-icon">📋</span>
+                <span className="card-titulo">Atenção às faltas</span>
+                <span className="card-badge">{avisosFaltas.length}</span>
+              </div>
+              <ul className="lista-aulas">
+                {avisosFaltas.map(({ cadeira, estado }) => (
+                  <li key={cadeira.id} className="aula-item">
+                    <span className="aula-dot" style={{ background: cadeira.cor || '#b8963e' }} />
+                    <span className="aula-cadeira">{cadeira.abrev || cadeira.nome}: {estado.explicacao}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* card tarefas — pendentes reais, mais próximas do prazo primeiro */}
           <div className="card card-tarefas anim-entrada" style={{ '--delay': '0.4s' }}>

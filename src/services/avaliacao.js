@@ -164,37 +164,51 @@ function avaliarMetodoB({ exameEscrito, exameOral }) {
   };
 }
 
-// calcula o que ela precisa no próximo momento de avaliação para atingir notaDesejada
+// calcula o que ela precisa no exame escrito para ficar com notaDesejada
 // devolve null se não houver dados suficientes para simular
+// fonte: art. 17.º n.º 2, art. 18.º n.º 1 (método a) e art. 21.º (método b)
 export function simularNotaNecessaria({ metodo, notaAC = null, exameEscrito = null, notaDesejada }) {
+  if (exameEscrito != null || notaDesejada == null) return null; // já não há nada para simular
+
   if (metodo === 'B') {
-    if (exameEscrito != null) return null; // já não há nada para simular
-    const necessaria = Math.min(20, Math.max(0, notaDesejada));
+    // art. 21.º: só com 12 ou mais no escrito fica aprovada logo, sem oral; a nota final é a do exame
     if (notaDesejada > 20) {
       return { momento: 'exame escrito', notaNecessaria: 20, texto: 'Não é possível tirar mais do que 20.', impossivel: true, maximoPossivel: 20 };
     }
-    return { momento: 'exame escrito', notaNecessaria: necessaria, texto: `Precisas de ${necessaria} no escrito para ficares com ${notaDesejada}.`, impossivel: false };
+    const necessaria = Math.max(12, notaDesejada);
+    return {
+      momento: 'exame escrito',
+      notaNecessaria: necessaria,
+      texto: notaDesejada < 12
+        ? 'Em Método B, para passares logo sem oral precisas de pelo menos 12 no escrito.'
+        : `Precisas de ${necessaria} no escrito para ficares com ${notaDesejada}.`,
+      impossivel: false,
+    };
   }
 
-  // método a, ainda na fase de avaliação contínua → exame escrito
-  if (notaAC != null && exameEscrito == null) {
-    const necessariaRaw = 2 * notaDesejada - notaAC;
-    const maximoPossivel = arredondar((notaAC + 20) / 2);
+  // método a só tem exame escrito com 10 ou 11 na contínua (art. 17.º n.º 2)
+  if (notaAC == null || (notaAC !== 10 && notaAC !== 11)) return null;
 
-    if (necessariaRaw > 20) {
-      return {
-        momento: 'exame escrito',
-        notaNecessaria: 20,
-        texto: `Com ${notaAC} na contínua, nem com 20 no escrito chegas aos ${notaDesejada}.\nO máximo possível é ${maximoPossivel}. Se quiseres os ${notaDesejada}, o caminho é a melhoria de nota.`,
-        impossivel: true,
-        maximoPossivel,
-      };
-    }
-    const necessaria = Math.max(0, necessariaRaw);
-    return { momento: 'exame escrito', notaNecessaria: necessaria, texto: `Precisas de ${necessaria} no escrito para ficares com ${notaDesejada}.`, impossivel: false };
+  // art. 18.º n.º 1: a nota final é a média com a contínua, arredondada — logo basta média >= desejada - 0,5.
+  // e para passar pela média o escrito tem de ser positivo (al. a), por isso nunca menos de 10
+  const maximoPossivel = arredondar((notaAC + 20) / 2);
+  const necessaria = Math.max(10, 2 * notaDesejada - 1 - notaAC);
+
+  if (necessaria > 20) {
+    return {
+      momento: 'exame escrito',
+      notaNecessaria: 20,
+      texto: `Com ${notaAC} na contínua, nem com 20 no escrito chegas aos ${notaDesejada}.\nO máximo possível é ${maximoPossivel}. Se quiseres mais, o caminho é a melhoria de nota.`,
+      impossivel: true,
+      maximoPossivel,
+    };
   }
-
-  return null;
+  return {
+    momento: 'exame escrito',
+    notaNecessaria: necessaria,
+    texto: `Com ${notaAC} na contínua, precisas de ${necessaria} no escrito para ficares com ${notaDesejada}.`,
+    impossivel: false,
+  };
 }
 
 // média anual — soma aritmética das cadeiras aprovadas, sem arredondamento

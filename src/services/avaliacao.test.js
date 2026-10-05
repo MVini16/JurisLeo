@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { avaliarCadeira, arredondar, escalaQualitativa, calcularMediaAnual } from './avaliacao.js';
+import { avaliarCadeira, arredondar, escalaQualitativa, calcularMediaAnual, simularNotaNecessaria } from './avaliacao.js';
 
 describe('arredondar', () => {
   it('arredonda 0,5 sempre para cima', () => {
@@ -78,5 +78,55 @@ describe('calcularMediaAnual', () => {
   });
   it('acrescenta 0,6 quando conclui tudo no ano', () => {
     expect(calcularMediaAnual([12, 14, 16], true)).toBeCloseTo(14.6, 5);
+  });
+});
+
+
+// simulador — fonte: art. 17.º n.º 2, art. 18.º n.º 1 (método a) e art. 21.º (método b)
+describe('simularNotaNecessaria', () => {
+  it('método a, AC 11, quer 12: média arredondada de 11,5 chega, logo 12 no escrito', () => {
+    const r = simularNotaNecessaria({ metodo: 'A', notaAC: 11, notaDesejada: 12 });
+    expect(r.notaNecessaria).toBe(12);
+    expect(r.impossivel).toBe(false);
+  });
+
+  it('método a, AC 10, quer 15: precisa de 19 no escrito', () => {
+    expect(simularNotaNecessaria({ metodo: 'A', notaAC: 10, notaDesejada: 15 }).notaNecessaria).toBe(19);
+  });
+
+  it('método a, quer só passar: nunca menos de 10 no escrito (art. 18.º n.º 1 al. a)', () => {
+    expect(simularNotaNecessaria({ metodo: 'A', notaAC: 11, notaDesejada: 10 }).notaNecessaria).toBe(10);
+    expect(simularNotaNecessaria({ metodo: 'A', notaAC: 10, notaDesejada: 10 }).notaNecessaria).toBe(10);
+  });
+
+  it('o resultado do simulador bate com o motor de avaliação', () => {
+    for (const notaAC of [10, 11]) {
+      for (let desejada = 10; desejada <= 15; desejada++) {
+        const { notaNecessaria } = simularNotaNecessaria({ metodo: 'A', notaAC, notaDesejada: desejada });
+        const final = avaliarCadeira({ metodo: 'A', notaAC, exameEscrito: notaNecessaria });
+        expect(final.notaFinal).toBeGreaterThanOrEqual(desejada);
+      }
+    }
+  });
+
+  it('método a, impossível: AC 10 a querer 17 → máximo possível 15', () => {
+    const r = simularNotaNecessaria({ metodo: 'A', notaAC: 10, notaDesejada: 17 });
+    expect(r.impossivel).toBe(true);
+    expect(r.maximoPossivel).toBe(15);
+  });
+
+  it('método a só simula com 10 ou 11 na contínua', () => {
+    expect(simularNotaNecessaria({ metodo: 'A', notaAC: 13, notaDesejada: 15 })).toBeNull();
+    expect(simularNotaNecessaria({ metodo: 'A', notaAC: 8, notaDesejada: 12 })).toBeNull();
+    expect(simularNotaNecessaria({ metodo: 'A', notaAC: null, notaDesejada: 12 })).toBeNull();
+  });
+
+  it('método b: 12 para passar logo; para mais, a própria nota desejada', () => {
+    expect(simularNotaNecessaria({ metodo: 'B', notaDesejada: 10 }).notaNecessaria).toBe(12);
+    expect(simularNotaNecessaria({ metodo: 'B', notaDesejada: 15 }).notaNecessaria).toBe(15);
+  });
+
+  it('já com exame lançado não há nada para simular', () => {
+    expect(simularNotaNecessaria({ metodo: 'B', exameEscrito: 11, notaDesejada: 14 })).toBeNull();
   });
 });

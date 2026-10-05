@@ -1,34 +1,35 @@
 import './App.css'
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-// páginas existentes
+// entrada da app — carregada logo; as restantes páginas só descarregam quando a rota abre
 import SplashScreen from './pages/SplashScreen'
 import Login from './pages/Login'
-import Onboarding from './pages/Onboarding'
-import Dashboard from './pages/Dashboard'
-// páginas novas
-import Horario from './pages/Horario'
-import Cadeiras from './pages/Cadeiras'
-import Cadeira from './pages/Cadeira'
-import Anotacoes from './pages/Anotacoes'
-import Anotacao from './pages/Anotacao'
-import Casos from './pages/Casos'
-import Caso from './pages/Caso'
-import Estudo from './pages/Estudo'
-import Glossario from './pages/Glossario'
-import Artigos from './pages/Artigos'
-import Leituras from './pages/Leituras'
-import Pesquisa from './pages/Pesquisa'
-import Flashcards from './pages/Flashcards'
-import Ajuda from './pages/Ajuda'
-import Tarefas from './pages/Tarefas'
-import Calendario from './pages/Calendario'
-import Perfil from './pages/Perfil'
+const Onboarding = lazy(() => import('./pages/Onboarding'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Horario = lazy(() => import('./pages/Horario'))
+const Cadeiras = lazy(() => import('./pages/Cadeiras'))
+const Cadeira = lazy(() => import('./pages/Cadeira'))
+const Anotacoes = lazy(() => import('./pages/Anotacoes'))
+const Anotacao = lazy(() => import('./pages/Anotacao'))
+const Casos = lazy(() => import('./pages/Casos'))
+const Caso = lazy(() => import('./pages/Caso'))
+const Estudo = lazy(() => import('./pages/Estudo'))
+const Glossario = lazy(() => import('./pages/Glossario'))
+const Artigos = lazy(() => import('./pages/Artigos'))
+const Leituras = lazy(() => import('./pages/Leituras'))
+const Pesquisa = lazy(() => import('./pages/Pesquisa'))
+const Flashcards = lazy(() => import('./pages/Flashcards'))
+const Ajuda = lazy(() => import('./pages/Ajuda'))
+const Tarefas = lazy(() => import('./pages/Tarefas'))
+const Calendario = lazy(() => import('./pages/Calendario'))
+const Perfil = lazy(() => import('./pages/Perfil'))
 // componente de navegação — vai envolver todas as páginas principais
 import NavBar from './components/NavBar'
 
 function App() {
   return (
     <BrowserRouter>
+      <Suspense fallback={null}>
       <Routes>
         {/* páginas sem navbar — entrada da app */}
         <Route path="/" element={<SplashScreen />} />
@@ -55,6 +56,7 @@ function App() {
         <Route path="/calendario" element={<NavBar><Calendario /></NavBar>} />
         <Route path="/perfil" element={<NavBar><Perfil /></NavBar>} />
       </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }

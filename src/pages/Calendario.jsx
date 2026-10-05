@@ -307,6 +307,8 @@ function VistaSemanal({ data, eventosDoDia, onDiaClick, onEventoClick, onDataCha
       const largura = scrollRef.current.offsetWidth;
       scrollRef.current.scrollLeft = indice * largura;
     }
+    // só corre quando a data muda: dias e mesmoDia são recriados a cada render e re-posicionariam o scroll sem necessidade
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   // ── desktop: grelha 7 colunas ──

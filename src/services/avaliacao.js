@@ -1,5 +1,7 @@
 // motor de avaliação — função pura, sem firebase, sem react
 // regulamento de avaliação de conhecimentos da licenciatura em direito, fdul
+// versão consolidada de 2018 — método a: arts. 17.º a 19.º, método b: arts. 20.º a 22.º,
+// melhoria: art. 33.º, recurso: art. 37.º, classificação anual: art. 41.º
 
 // arredonda ao inteiro mais próximo, com 0,5 sempre para cima
 export function arredondar(valor) {
@@ -16,6 +18,7 @@ export function calcularNotaAC({ provaEscrita, outrosElementos, pesos }) {
 
 // aplica a regra do exame oral, igual nos dois métodos —
 // a oral só prevalece se for positiva e melhor que a nota de entrada
+// (arts. 19.º e 22.º): aprovada se a média arredondada for positiva ou se a oral for positiva e superior à entrada
 function avaliarOral(entrada, exameOral) {
   const media = arredondar((exameOral + entrada) / 2);
   if (exameOral >= 10 && exameOral > entrada) {
@@ -74,11 +77,13 @@ function avaliarMetodoA({ notaAC, exameEscrito, exameOral, avisos }) {
     return { estado: 'semDados', notaFinal: null, explicacao: 'Ainda não há nota de avaliação contínua.', proximoPasso: 'Aguarda os elementos de avaliação.' };
   }
 
+  // art. 17.º n.º 1: com 12 ou mais na contínua fica aprovada, sem exame
   if (notaAC >= 12) {
     let base = { estado: 'aprovada', notaFinal: notaAC, explicacao: `Aprovada com ${notaAC} valores. A tua nota de avaliação contínua chegou aos ${notaAC}, por isso não tens de ir a exame.`, proximoPasso: 'Cadeira concluída.' };
     return base;
   }
 
+  // art. 17.º n.º 2 e art. 18.º: com 10 ou 11 vai a exame escrito
   if (notaAC === 10 || notaAC === 11) {
     if (exameEscrito == null) {
       return { estado: 'admitidaEscrito', notaFinal: null, explicacao: `Ficaste com ${notaAC} na avaliação contínua — vais a exame escrito.`, proximoPasso: 'Fazer o exame escrito.' };
@@ -114,7 +119,7 @@ function avaliarMetodoA({ notaAC, exameEscrito, exameOral, avisos }) {
     };
   }
 
-  // notaAC <= 9
+  // notaAC <= 9 — art. 17.º n.º 3 e 4: passa a método b; com 8 ou 9 pode pedir reinscrição em 24h
   const podeReinscricao = notaAC === 8 || notaAC === 9;
   if (podeReinscricao) {
     avisos.push('Tens 24 horas para pedir reinscrição em Método A.');
@@ -133,6 +138,7 @@ function avaliarMetodoB({ exameEscrito, exameOral }) {
     return { estado: 'semDados', notaFinal: null, explicacao: 'Ainda não há nota do exame escrito.', proximoPasso: 'Fazer o exame escrito.' };
   }
 
+  // art. 21.º: 12 ou mais aprova, 8 a 11 vai à oral, 7 ou menos exclui
   if (exameEscrito >= 12) {
     return { estado: 'aprovada', notaFinal: exameEscrito, explicacao: `Aprovada com ${exameEscrito} valores.`, proximoPasso: 'Cadeira concluída.' };
   }

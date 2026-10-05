@@ -36,10 +36,10 @@ describe('avaliarCadeira', () => {
     { n: 22, metodo: 'B', exameEscrito: 8, exameOral: 9, estado: 'excluida', notaFinal: 9 },
     { n: 23, metodo: 'B', exameEscrito: 10, exameOral: 8, estado: 'excluida', notaFinal: 9 },
     { n: 24, metodo: 'A', notaAC: 10, exameEscrito: 8, exameOral: 12, estado: 'aprovada', notaFinal: 12 },
-    // caso 25: caso limite da própria especificação — a tabela original diz "excluida"/10,
-    // mas o texto que a acompanha resolve a ambiguidade a favor de "aprovada"/10, usando a
-    // média arredondada (9,5 → 10) como critério de aprovação. implementado assim; confirmar
-    // com o vini se esta leitura do regulamento está correcta.
+    // caso 25: caso limite — média entre a nota de entrada (10) e a oral (9) dá 9,5, que o
+    // art. 19.º n.º 3 manda arredondar para o inteiro mais próximo (10), logo positiva → aprovada
+    // com 10 (art. 19.º n.º 1 al. a). fonte: regulamento de avaliação de conhecimentos da
+    // licenciatura em direito da fdul, versão consolidada de 2018 (texto fornecido pela leonor, 05-10-2026).
     { n: 25, metodo: 'A', notaAC: 11, exameEscrito: 9, exameOral: 9, estado: 'aprovada', notaFinal: 10 },
   ];
 

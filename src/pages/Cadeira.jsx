@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useCadeira } from '../hooks/useCadeira.js';
-import { avaliarCadeira, calcularNotaAC } from '../services/avaliacao.js';
+import { avaliarCadeira, calcularNotaAC, simularNotaNecessaria } from '../services/avaliacao.js';
 import { estadoFaltas } from '../services/faltas.js';
 import { getCadeira } from '../data/dadosLeonor.js';
 import { escolherFrase } from '../hooks/useFrase.js';
@@ -78,6 +78,7 @@ function SeccaoAvaliacao({ cadeira, infoBase, avaliacaoDados, guardarAvaliacao }
   const [guardado, setGuardado] = useState(false);
   const [celebracaoAtiva, setCelebracaoAtiva] = useState(false);
   const [consolo, setConsolo] = useState(null);
+  const [notaDesejada, setNotaDesejada] = useState('');
 
   const pesos = infoBase?.pesos || { provaEscrita: 0.5, outrosElementos: 0.5 };
   const provaEscritaNum = paraNumero(form.provaEscrita);
@@ -94,6 +95,15 @@ function SeccaoAvaliacao({ cadeira, infoBase, avaliacaoDados, guardarAvaliacao }
     exameRecurso: paraNumero(form.exameRecurso),
     melhoriaOral: paraNumero(form.melhoriaOral),
   });
+
+  // simulador: só faz sentido antes de haver nota de exame escrito
+  const simulacao = simularNotaNecessaria({
+    metodo: cadeira.metodo,
+    notaAC,
+    exameEscrito: paraNumero(form.exameEscrito),
+    notaDesejada: paraNumero(notaDesejada),
+  });
+  const podeSimular = resultado.estado === 'admitidaEscrito' || (cadeira.metodo === 'B' && form.exameEscrito === '');
 
   function atualizar(campo, valor) {
     setForm((prev) => ({ ...prev, [campo]: valor }));
@@ -162,6 +172,15 @@ function SeccaoAvaliacao({ cadeira, infoBase, avaliacaoDados, guardarAvaliacao }
           <p key={i} className="cadeira-resultado__aviso">⚠️ {aviso}</p>
         ))}
       </div>
+
+      {podeSimular && (
+        <div className="cadeira-simulador">
+          <CampoNota label="Que nota queres ter na cadeira?" valor={notaDesejada} onChange={setNotaDesejada} />
+          {simulacao && (
+            <p className="cadeira-nota-ac" style={{ whiteSpace: 'pre-line' }}>{simulacao.texto}</p>
+          )}
+        </div>
+      )}
 
       <button className="cadeira-btn-guardar" onClick={guardar} disabled={guardando}>
         {guardando ? 'A guardar...' : guardado ? '✓ Guardado' : 'Guardar notas'}

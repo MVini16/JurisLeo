@@ -25,18 +25,6 @@
   justify-content: space-between;
 }
 
-.anotacao-editor__voltar {
-  background: none;
-  border: none;
-  color: inherit;
-  opacity: 0.6;
-  font-size: 0.85rem;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.anotacao-editor__voltar:hover { opacity: 1; }
-
 .anotacao-editor__estrela {
   background: none;
   border: none;

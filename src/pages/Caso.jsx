@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useCaso } from '../hooks/useCaso.js';
 import { cadeirasS1 } from '../data/dadosLeonor.js';
+import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Caso.css';
 
 const ESTADOS = [
@@ -86,7 +87,7 @@ function Formulario({ caso, novo, criar, guardar, apagar, onVoltar }) {
 
   return (
     <>
-      <button className="caso-editor__voltar" onClick={onVoltar}>‹ Casos Práticos</button>
+      <BotaoVoltar destino="/casos" texto="‹ Casos Práticos" />
 
       <input className="caso-editor__titulo" placeholder="Título do caso" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
 

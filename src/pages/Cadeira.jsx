@@ -1,6 +1,6 @@
 // página de detalhe de uma cadeira — avaliação e faltas
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useCadeira } from '../hooks/useCadeira.js';
 import { avaliarCadeira, calcularNotaAC } from '../services/avaliacao.js';
@@ -10,6 +10,7 @@ import { escolherFrase } from '../hooks/useFrase.js';
 import Celebracao from '../components/Celebracao.jsx';
 import EcraConsolo from '../components/EcraConsolo.jsx';
 import MensagemCarinhosa from '../components/MensagemCarinhosa.jsx';
+import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import './Cadeira.css';
 
 const ROTULO_ESTADO = {
@@ -30,7 +31,6 @@ function paraNumero(valor) {
 
 export default function Cadeira() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { darkMode } = useTheme();
   const { cadeira, faltasDados, avaliacaoDados, loading, guardarFaltas, guardarAvaliacao } = useCadeira(id);
   const infoBase = getCadeira(id);
@@ -42,7 +42,7 @@ export default function Cadeira() {
 
   return (
     <div className={`cadeira-pagina ${darkMode ? 'dark' : ''}`}>
-      <button className="cadeira-voltar" onClick={() => navigate('/cadeiras')}>‹ Cadeiras</button>
+      <BotaoVoltar destino="/cadeiras" texto="‹ Cadeiras" />
 
       <header className="cadeira-header" style={{ '--cor': cor }}>
         <span className="cadeira-header__abrev">{cadeira.abrev}</span>

@@ -45,7 +45,7 @@ Projeto Firebase: `jurisleo-67124` (ver `.firebaserc`).
 
 - **`firestore.rules` já está correta e minimalista:** `match /users/{uid}` com `allow read, write: if request.auth != null && request.auth.uid == uid`, e um `match /{document=**}` recursivo por baixo para cobrir todas as subcoleções (`perfil`, `configuracoes`, `cadeiras/{id}/faltas`, `cadeiras/{id}/avaliacao`, etc.). O comentário no ficheiro já explica: é a única utilizadora, mas a regra fica correta na mesma — **manter esse espírito**: nunca simplificar para uma regra mais permissiva só porque "é só ela".
 - **Padrão de documento:** cada subcoleção tem um único documento chamado `dados` (`perfil/dados`, `configuracoes/dados`, `cadeiras/{id}/faltas/dados`, `cadeiras/{id}/avaliacao/dados`). Ao adicionar um nó novo, seguir este padrão em vez de inventar um esquema diferente — mantém `initFirestore.js` e as regras previsíveis.
-- **As variáveis `VITE_FIREBASE_*` no `.env` não são segredos verdadeiros.** O Vite embebe-as no bundle final: quem inspecionar o JavaScript da app publicada vê a `apiKey` na mesma. Isto é normal e esperado para configuração pública do Firebase (a segurança real está nas `firestore.rules`, não em esconder esta chave) — mas o `.env` continua fora do git por organização e para não obrigar a reescrever o ficheiro em cada máquina. **Não existe `.env.example` ainda**: vale a pena criar um com os nomes das variáveis vazios, para o projeto arrancar noutra máquina sem adivinhar.
+- **As variáveis `VITE_FIREBASE_*` no `.env` não são segredos verdadeiros.** O Vite embebe-as no bundle final: quem inspecionar o JavaScript da app publicada vê a `apiKey` na mesma. Isto é normal e esperado para configuração pública do Firebase (a segurança real está nas `firestore.rules`, não em esconder esta chave) — mas o `.env` continua fora do git por organização e para não obrigar a reescrever o ficheiro em cada máquina. Existe um `.env.example` com os nomes das variáveis vazios: copiar para `.env` e preencher (ou `firebase apps:sdkconfig WEB <app-id> --project jurisleo-67124`). Depois de `npm run build` e antes do deploy, confirmar que a apiKey está no bundle: `grep -c "<apiKey>" dist/assets/*.js` tem de dar `1` — sem `.env` o build sai com `apiKey` indefinida e a app fica em branco.
 - **`initCalendario.js` e `initFirestore.js` só correm no registo** (`registar()` em `auth.js`). Se a estrutura de dados mudar, uma conta já criada não é atualizada sozinha — qualquer migração de esquema tem de ser pensada à parte (não há painel de administração nem função de migração ainda).
 - **Sincronização tema Firestore ↔ localStorage** (`ThemeContext.jsx`) usa um `useRef` (`aCarregarDoFirestore`) para não reescrever no Firestore o valor que acabou de vir de lá. Padrão a repetir sempre que houver um estado sincronizado nos dois sentidos entre local e remoto, para não entrar em ciclo.
 
@@ -53,30 +53,30 @@ Projeto Firebase: `jurisleo-67124` (ver `.firebaserc`).
 
 ## REGRAS DE NEGÓCIO (nunca inventar, só copiar do regulamento real)
 
-- **Avaliação** (`src/services/avaliacao.js`): segue o Regulamento de Avaliação de Conhecimentos da Licenciatura em Direito da FDUL. Método A (avaliação contínua) e Método B (só exame) têm regras diferentes de admissão a oral, recurso e melhoria — já implementadas e testadas em `avaliacao.test.js`. Qualquer ajuste tem de citar a fonte (secção do regulamento) no comentário, como já é feito.
+- **Avaliação** (`src/services/avaliacao.js`): segue o Regulamento de Avaliação de Conhecimentos da Licenciatura em Direito da FDUL (versão consolidada de 2018; método A arts. 17.º–19.º, método B arts. 20.º–22.º, melhoria art. 33.º, recurso art. 37.º). Pode haver versão mais recente (despacho de 2024) por confirmar. Método A (avaliação contínua) e Método B (só exame) têm regras diferentes de admissão a oral, recurso e melhoria — já implementadas e testadas em `avaliacao.test.js`. Qualquer ajuste tem de citar a fonte (secção do regulamento) no comentário, como já é feito.
 - **Faltas** (`src/services/faltas.js`): exclusão por um quarto ou mais das aulas práticas lecionadas com falta injustificada, ou por metade ou mais das previstas no calendário (justificadas + injustificadas). Testado em `faltas.test.js`. `src/data/motivosFalta.js` tem a lista exata de motivos aceites e o prazo de 24h para comprovativos — são etiquetas oficiais, não parafrasear.
 - **`src/data/dadosLeonor.js`** é a fonte de verdade das cadeiras reais do semestre (nome, regente, método, aulas previstas). Vem do horário oficial da FDUL, cruzado com programas e regentes do ano letivo — citar sempre a fonte e a data quando for atualizado, como já está.
 - Antes de alterar qualquer fórmula destes três ficheiros, confirmar com a Leonor (via Vini) que a leitura do regulamento está correta — não assumir por lógica própria.
 
 ---
 
-## Estrutura de ficheiros (levantada em 17-09-2026)
+## Estrutura de ficheiros (atualizada em 05-10-2026)
 
-Entrada: `index.html` → `src/main.jsx` → `src/App.jsx` (rotas).
+Entrada: `index.html` → `src/main.jsx` → `src/App.jsx` (rotas; todas as páginas menos `SplashScreen` e `Login` carregam com `React.lazy`).
 
-Páginas (`src/pages/`): `SplashScreen`, `Login`, `Onboarding` (sem NavBar) · `Dashboard`, `Horario`, `Cadeiras`, `Tarefas`, `Calendario`, `Perfil` (com `NavBar`).
+Páginas (`src/pages/`): `SplashScreen`, `Login`, `Onboarding` (sem NavBar) · `Dashboard`, `Horario`, `Cadeiras`, `Cadeira`, `Anotacoes`, `Anotacao`, `Casos`, `Caso`, `Estudo`, `Glossario`, `Artigos`, `Leituras`, `Pesquisa`, `Flashcards`, `Ajuda`, `Tarefas`, `Calendario`, `Perfil` (com `NavBar`).
 
-Componentes (`src/components/`): `NavBar`, `ModalCriarEvento`.
+Componentes (`src/components/`): `NavBar`, `ModalCriarEvento`, `BotaoVoltar` (partilhado por todas as páginas fora dos separadores), `BotaoAjuda`, `DicaPrimeiraVez`, `Tutorial`, `Celebracao`, `EcraConsolo`, `MensagemCarinhosa`.
 
-Hooks (`src/hooks/`): `useDashboard`, `useCalendario`.
+Hooks (`src/hooks/`): um por coleção (`useCadeiras`, `useAnotacoes`, `useCasos`, `useArtigos`, `useGlossario`, `useLeituras`, `useFlashcards`, `useTarefas`, `useSessoesEstudo`, …) mais `useDashboard`, `useCalendario`, `useCronometro`, `useFrase`, `useDicaPrimeiraVez`.
 
 Contexto (`src/context/`): `ThemeContext` (+ `useTheme.js`).
 
-Serviços (`src/services/`): `firebase.js` (config + `db`/`auth`), `auth.js` (registar/login/logout, chama `initFirestore` e `initCalendario` no registo), `initFirestore.js`, `initCalendario.js`, `avaliacao.js` + `avaliacao.test.js`, `faltas.js` + `faltas.test.js`.
+Serviços (`src/services/`): `firebase.js` (config + `db`/`auth`, cache offline), `auth.js`, `initFirestore.js`, `initCalendario.js`, `exportar.js` (backup JSON), e os motores puros testados: `avaliacao.js`, `faltas.js`, `repeticaoEspacada.js` (cada um com `.test.js`).
 
-Dados (`src/data/`): `dadosLeonor.js` (cadeiras reais, cores), `motivosFalta.js`.
+Dados (`src/data/`): `dadosLeonor.js`, `motivosFalta.js`, `ajuda.js` (texto da ajuda contextual por rota), `frases.js` (mensagens da camada de mimo).
 
-Config: `vite.config.js`, `eslint.config.js`, `firebase.json`, `firestore.rules`, `firestore.indexes.json`, `.firebaserc` (projeto `jurisleo-67124`).
+Config: `vite.config.js` (inclui PWA), `eslint.config.js`, `firebase.json`, `firestore.rules`, `firestore.indexes.json`, `.firebaserc`, `.env.example`.
 
 ---
 

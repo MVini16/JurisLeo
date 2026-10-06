@@ -13,24 +13,14 @@
 
 .caso-editor.dark { color: var(--text-dark); }
 
+/* o botão de voltar não estica à largura toda da coluna */
+.caso-editor > .botao-voltar { align-self: flex-start; }
+
 .caso-editor__loading {
   opacity: 0.5;
   font-style: italic;
   padding: 32px 0;
 }
-
-.caso-editor__voltar {
-  align-self: flex-start;
-  background: none;
-  border: none;
-  color: inherit;
-  opacity: 0.6;
-  font-size: 0.85rem;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.caso-editor__voltar:hover { opacity: 1; }
 
 .caso-editor__titulo {
   font-family: 'Playfair Display', serif;

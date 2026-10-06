@@ -1,0 +1,19 @@
+
+/* fallback enquanto a página da rota é carregada */
+.rota-carregar {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Georgia, serif;
+  font-style: italic;
+  color: var(--burgundy);
+  background: var(--bg-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .rota-carregar {
+    color: var(--gold);
+    background: var(--bg-dark);
+  }
+}

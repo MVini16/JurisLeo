@@ -3,7 +3,7 @@
 window.CONTEUDO = {
   nome: 'Leonor',
   subtitulo: 'Para a minha Necas',
-  apelidos: ['Necas', 'Nô', 'bebé', 'princesa', 'meu bem', 'Leonor'],
+  apelidos: ['Necas', 'Nô', 'Def', 'bebé', 'princesa', 'meu bem', 'Leonor'],
   // o genérico de abertura, como num filme
   intro: ['Vini apresenta', 'Um filme que não cabia numa carta', 'Com a Leonor no papel principal'],
   // os cartões de capítulo
@@ -28,7 +28,7 @@ window.CONTEUDO = {
   creditos: [
     ['Realizado por', 'Vini'],
     ['Protagonista', 'Leonor'],
-    ['Também conhecida por', 'Necas, Nô, bebé, princesa, meu bem'],
+    ['Também conhecida por', 'Necas, Nô, Def, bebé, princesa, meu bem'],
     ['Local das filmagens', 'Onde nós estivermos'],
     ['Banda sonora', 'O nosso riso'],
     ['Direção de arte', 'O teu sorriso'],
@@ -54,7 +54,7 @@ window.CONTEUDO = {
         { foto: 'fotos/02.jpg', data: 'Algarve', titulo: 'A FOTO', texto: 'Aquela que toda a gente quer ter: formámos o casal perfeito, meu bem.' },
         { foto: 'fotos/03.jpg', data: 'Algarve', titulo: 'Um beijo nas escadas da praia', texto: 'Umas escadas de madeira que davam para a praia. Praia, bola, sol e tu. Nem precisava de mais nada, bebé.' },
         { foto: 'fotos/05.jpg', data: '', titulo: 'Os dias em que o tempo pára', texto: 'Deitada ao sol, a olhar para mim assim. Esse sorriso, meu bem, é a minha casa.' },
-        { foto: 'fotos/07.jpg', data: '', titulo: 'Def, olha para nós', texto: 'Tu a sorrir para a câmara e eu a olhar para o lado como se não fosse nada comigo. Def que és tu quem me dá sorte, bebé.' },
+        { foto: 'fotos/07.jpg', data: '', titulo: 'Def, olha para nós', texto: 'Tu a sorrir para a câmara e eu a olhar para o lado como se não fosse nada comigo. És tu quem me dá sorte, sabias?' },
         { foto: 'fotos/08.jpg', data: 'Belém', titulo: 'Nos meus braços em Belém', texto: 'Tu a deitar a língua de fora, e eu a pensar que sou o homem mais sortudo do mundo.' },
         { foto: 'fotos/09.jpg', data: '', titulo: 'Tão perto que a foto tremeu', texto: 'Estavas tão perto que até a câmara perdeu o foco. Diz-me tu quem consegue ficar quieto contigo assim.' },
         { foto: 'fotos/11.jpg', data: 'Natal', titulo: 'A terceira vai ser de vez', texto: 'Nesse Natal perdemos o acender das luzes pela segunda vez, mas foi aí que percebi que te amava de verdade. E disse-te: a terceira vai ser de vez.' },
@@ -134,7 +134,7 @@ window.CONTEUDO = {
     { texto: 'Podes ter dias maus. Não os podes é ter sozinha.', efeito: 'cair' },
     { texto: 'Gosto mais de ti do que tu gostas de açaí. E tu sabes o que isso quer dizer.', efeito: 'virar' },
     { texto: 'Um dia vais ser a Dra. Leonor. E eu vou continuar a chamar-te Necas.', efeito: 'foco' },
-    { texto: 'Def que a sorte é minha.', efeito: 'grande' },
+    { texto: 'A sorte é minha, Def.', efeito: 'grande' },
   ],
   // nível 2: perguntas sobre nós (só factos que já estão nas fotos e legendas)
   quiz: {

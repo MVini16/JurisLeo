@@ -9,6 +9,7 @@ import { limparCadeirasAntigas, seedCadeiras } from '../services/initFirestore.j
 import { exportarDadosComoFicheiro } from '../services/exportar.js';
 import { useTheme } from '../context/useTheme.js';
 import { useBarney } from '../hooks/useBarney.jsx';
+import { lerPreferencias, guardarPreferencias } from '../services/preferenciasBrincadeiras.js';
 import './Perfil.css';
 
 export default function Perfil() {
@@ -19,6 +20,7 @@ export default function Perfil() {
   const [aRepor, setARepor] = useState(false);
   const [reposto, setReposto] = useState(false);
   const [aExportar, setAExportar] = useState(false);
+  const [brincadeiras, setBrincadeiras] = useState(() => lerPreferencias());
   const { elemento: barney, disparar: dispararBarney, tocar: tocarAvatar } = useBarney();
 
   useEffect(() => {
@@ -30,6 +32,11 @@ export default function Perfil() {
     });
     return () => unsub();
   }, []);
+
+  // as brincadeiras ficam só neste telemóvel (localstorage), por isso não passam pelo firestore
+  function mudarBrincadeira(parcial) {
+    setBrincadeiras(guardarPreferencias(parcial));
+  }
 
   async function sair() {
     setASair(true);
@@ -98,6 +105,45 @@ export default function Perfil() {
             <span className="perfil-toggle__bolinha" />
           </button>
         </div>
+        <div className="perfil-linha">
+          <span className="perfil-linha__label">Piadas do Barney</span>
+          <button
+            className={`perfil-toggle ${brincadeiras.barney ? 'ativo' : ''}`}
+            role="switch"
+            aria-checked={brincadeiras.barney}
+            aria-label="Piadas do Barney"
+            onClick={() => mudarBrincadeira({ barney: !brincadeiras.barney })}
+          >
+            <span className="perfil-toggle__bolinha" />
+          </button>
+        </div>
+        <div className="perfil-linha">
+          <span className="perfil-linha__label">Mensagens do Vini ao escrever</span>
+          <button
+            className={`perfil-toggle ${brincadeiras.provocacoes ? 'ativo' : ''}`}
+            role="switch"
+            aria-checked={brincadeiras.provocacoes}
+            aria-label="Mensagens do Vini ao escrever"
+            onClick={() => mudarBrincadeira({ provocacoes: !brincadeiras.provocacoes })}
+          >
+            <span className="perfil-toggle__bolinha" />
+          </button>
+        </div>
+        {brincadeiras.provocacoes && (
+          <div className="perfil-opcoes" role="group" aria-label="Frequência das mensagens do Vini">
+            <span className="perfil-opcoes__label">A cada</span>
+            {[5, 10, 20].map((min) => (
+              <button
+                key={min}
+                className={`perfil-opcao ${brincadeiras.frequenciaMin === min ? 'ativo' : ''}`}
+                aria-pressed={brincadeiras.frequenciaMin === min}
+                onClick={() => mudarBrincadeira({ frequenciaMin: min })}
+              >
+                {min} min a escrever
+              </button>
+            ))}
+          </div>
+        )}
         <button className="perfil-btn-tutorial" onClick={reverTutorial}>Rever o tutorial</button>
         <button className="perfil-btn-tutorial" onClick={() => navigate('/ajuda')}>Central de ajuda</button>
       </section>

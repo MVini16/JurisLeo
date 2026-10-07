@@ -13,6 +13,12 @@ export const NOVIDADES = [
       'No Calendário, as aulas práticas aparecem realçadas, as teóricas com o contorno tracejado e a aula em curso a brilhar. Tudo ficou maior.',
       'As tuas escolhas e o teu progresso (série, recordes, selos, cartas guardadas) passam a ficar guardados na tua conta, para não os perderes numa versão nova.',
       'Na Ajuda há agora um guia com tudo o que podes fazer, função a função.',
+      'Página Sumários (em Cadeiras, em Recursos): todos os teus sumários por cadeira, com flashcards a partir deles, partilhar o texto e imprimir em PDF.',
+      'Cadernos: escolhe se vês a estante como prateleira ou como capas com fita, e muda quando quiseres. No computador, os cadernos passam a três painéis: cadernos, páginas e a folha ao lado (N cria uma página, / procura).',
+      'No computador, a barra lateral tem agora todas as páginas, em grupos, e Ctrl+K abre uma caixa para ires a qualquer uma.',
+      'Ecrãs de carregamento com frases do Barney e do Damon, com animações. Escolhes o estilo nas Definições, em Brincadeiras.',
+      'Ícone novo no ecrã principal. Para o veres no iPhone, tira a app do ecrã principal e volta a adicioná-la.',
+      'Lembrete à noite (de segunda a sexta) a pedir para marcares as aulas do dia, se tiveres as notificações ligadas.',
     ],
   },
   {

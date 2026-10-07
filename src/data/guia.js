@@ -38,7 +38,8 @@ export const GUIA = [
     zona: 'Cadernos e notas',
     rota: '/anotacoes',
     funcoes: [
-      { nome: 'Estante de cadernos', texto: 'Um caderno por cadeira, mais o Caderno Livre. Cada caderno tem secções (teóricas, práticas, perguntas para frequência, resumos, dúvidas) e podes criar as tuas.' },
+      { nome: 'Estante de cadernos', texto: 'Um caderno por cadeira, mais o Caderno Livre. Cada caderno tem secções (teóricas, práticas, perguntas para frequência, resumos, dúvidas) e podes criar as tuas. Vês a estante como prateleira ou como capas com fita, e alternas no botão ao lado de "Cadernos" ou nas Definições.' },
+      { nome: 'Três painéis (computador)', texto: 'No computador os cadernos abrem em três painéis: cadernos e vistas, páginas do caderno e a folha ao lado. N cria uma página, / procura e Ctrl+K vai a qualquer página da app.' },
       { nome: 'Editor das páginas', texto: 'Escreves com texto formatado, marcas como favorita ou rascunho, pões tags, procuras dentro da página e vês o índice automático.' },
       { nome: 'Modelos de página', texto: 'Começa uma nota já estruturada: resumo de aula, caso prático, ficha de acórdão, Notas Cornell, revisão para a frequência, comparação de conceitos.' },
       { nome: 'Desenhar à mão', texto: 'No separador Desenhar riscas por cima do texto, com o dedo ou a Apple Pencil. "Só Apple Pencil" deixa o dedo para fazer scroll.' },
@@ -75,6 +76,7 @@ export const GUIA = [
     funcoes: [
       { nome: 'Aparência', texto: 'Tema claro, escuro ou do aparelho, e a folha com que as notas novas começam.' },
       { nome: 'Brincadeiras', texto: 'Ligas ou desligas o Barney, as mensagens do Vini e o boneco do Vini (aspeto, sítio, quando puxa conversa).' },
+      { nome: 'Ecrãs de carregamento', texto: 'Enquanto uma página chega, aparece uma frase do Barney ou do Damon. Escolhes entre misto, só Barney, só Damon ou simples, nas Definições.' },
       { nome: 'Os meus dados', texto: 'Cópia de segurança e restauro, avisos de versão nova e "Partilhar com o Vini": está tudo desligado e só mandas o que escolheres, quando quiseres.' },
       { nome: 'Nada se perde', texto: 'As tuas notas, presenças, faltas, flashcards e tarefas ficam na tua conta. As tuas escolhas e o teu progresso (série, recordes, selos, cartas guardadas) são copiados sozinhos para lá, por isso mudam contigo para uma versão nova ou um telemóvel novo.' },
       { nome: 'Ajuda', texto: 'Esta página, e o botão "?" em cada ecrã, que explica o que podes fazer ali.' },

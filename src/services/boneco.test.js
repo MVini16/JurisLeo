@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
   escolherDe, escolherResposta, motivoPorHora, escolherProativa, rotaOcupada, rotaSemBoneco, fimDoDia,
-  podeFalarSozinho, acrescentarAoHistorico, tarefasUrgentes, limparTelefone, telefoneValido, ligacoesDoContacto, ligacaoDaLinha,
+  podeFalarSozinho, acrescentarAoHistorico, deveReagir, escolherReacao, escolherElogio, INTERVALO_REACOES_MS, tarefasUrgentes, limparTelefone, telefoneValido, ligacoesDoContacto, ligacaoDaLinha,
 } from './boneco.js';
-import { RESPOSTAS, ESTADOS, ACOES, ABERTURAS, PROATIVAS, LINHAS_DE_APOIO, ELOGIOS, PIADAS } from '../data/boneco.js';
+import { RESPOSTAS, ESTADOS, ACOES, ABERTURAS, PROATIVAS, LINHAS_DE_APOIO, ELOGIOS, PIADAS, REACOES, FREQUENCIA, AULAS, BARNEY, SAUDADES } from '../data/boneco.js';
 
 // um "aleatório" que devolve os valores por ordem, e depois repete o último
 const sequencia = (...valores) => { let i = 0; return () => valores[Math.min(i++, valores.length - 1)]; };
@@ -189,5 +189,52 @@ describe('whatsapp com indicativo', () => {
   it('um número português de 9 dígitos leva 351 à frente', () => {
     expect(ligacoesDoContacto('931143554').whatsapp).toBe('https://wa.me/351931143554');
     expect(ligacoesDoContacto('+351 931 143 554').whatsapp).toBe('https://wa.me/351931143554');
+  });
+});
+
+describe('as frases na voz do Vini', () => {
+  const todasAsListas = {
+    ABERTURAS, ELOGIOS, PIADAS, REACOES, FREQUENCIA, AULAS, BARNEY, SAUDADES,
+    ...Object.fromEntries(Object.entries(RESPOSTAS).flatMap(([e, r]) => [[`${e}.carinhosa`, r.carinhosa], [`${e}.brincalhona`, r.brincalhona]])),
+    ...Object.fromEntries(Object.entries(PROATIVAS).flatMap(([p, r]) => [[`${p}.carinhosa`, r.carinhosa], [`${p}.brincalhona`, r.brincalhona]])),
+  };
+  const frases = Object.values(todasAsListas).flat();
+
+  it('há muitas frases e nenhuma está repetida', () => {
+    expect(frases.length).toBeGreaterThanOrEqual(500);
+    expect(new Set(frases).size).toBe(frases.length);
+  });
+  it('nenhuma fala dele na terceira pessoa nem tem travessões, emojis ou excesso de tamanho', () => {
+    frases.forEach((f) => {
+      expect(f, f).not.toMatch(/\b(o Vini|do Vini|ao Vini|ao boneco|o boneco)\b/);
+      expect(f, f).not.toMatch(/[\u2013\u2014]/);
+      expect(f, f).not.toMatch(/\p{Extended_Pictographic}/u);
+      expect(f.length, f).toBeLessThanOrEqual(240);
+    });
+  });
+  it('as respostas brincalhonas de "estou mesmo mal" continuam vazias', () => {
+    expect(RESPOSTAS.mal.brincalhona).toEqual([]);
+  });
+});
+
+describe('reações e frases de aulas', () => {
+  it('reage no máximo de 15 em 15 minutos e só às vezes', () => {
+    const agora = 10 * INTERVALO_REACOES_MS;
+    expect(deveReagir({ agora, ultimaReacao: agora - 1000, aleatorio: () => 0 })).toBe(false);
+    expect(deveReagir({ agora, ultimaReacao: agora - INTERVALO_REACOES_MS, aleatorio: () => 0.2 })).toBe(true);
+    expect(deveReagir({ agora, ultimaReacao: 0, aleatorio: () => 0.9 })).toBe(false);
+  });
+  it('a reação vem da lista e não repete a última', () => {
+    expect(REACOES).toContain(escolherReacao(null));
+    expect(escolherReacao(REACOES[0], () => 0)).not.toBe(REACOES[0]);
+  });
+  it('de segunda a sexta, de manhã e à tarde, às vezes fala da aula; ao fim de semana e à noite nunca', () => {
+    expect(AULAS).toContain(escolherProativa(10, sequencia(0.9, 0.1, 0.1), {}, 2).texto);
+    expect(escolherProativa(10, () => 0.1, {}, 6).motivo).not.toBe('aulas');
+    expect(escolherProativa(23, () => 0.1, {}, 2).motivo).toBe('noite');
+  });
+  it('"uma coisa boa para ouvir" mistura elogios, saudades e barney', () => {
+    const juntas = new Set([...ELOGIOS, ...SAUDADES, ...BARNEY]);
+    for (let i = 0; i < 30; i += 1) expect(juntas.has(escolherElogio(null))).toBe(true);
   });
 });

@@ -13,13 +13,15 @@ import {
   ABERTURAS, ACOES, ESTADOS, RESPOSTAS, LINHAS_DE_APOIO,
 } from '../../data/boneco.js';
 import {
-  acrescentarAoHistorico, escolherElogio, escolherPiada, escolherProativa, escolherResposta, fimDoDia,
+  acrescentarAoHistorico, deveReagir, escolherDe, escolherElogio, escolherReacao, escolherPiada, escolherProativa, escolherResposta, fimDoDia,
   ligacaoDaLinha, ligacoesDoContacto, podeFalarSozinho, rotaOcupada, rotaSemBoneco, tarefasUrgentes,
 } from '../../services/boneco.js';
+import { EVENTO_ESTUDO_CONCLUIDO } from '../../services/eventosApp.js';
 import './Boneco.css';
 
 const CHAVE_HISTORICO = 'jurisleo-boneco-historico';
 const CHAVE_ADIADO = 'jurisleo-boneco-adiado';
+const CHAVE_REACAO = 'jurisleo-boneco-reacao';
 const PASSO_MS = 60 * 1000;
 const ESPERA_INICIAL_MS = 2 * 60 * 1000;
 const PAUSA_MS = 5 * 60 * 1000;
@@ -98,7 +100,7 @@ export default function BonecoDoVini() {
   const [falando, setFalando] = useState(false);
 
   const idMensagem = useRef(0);
-  const ultimas = useRef({ resposta: null, piada: null, elogio: null });
+  const ultimas = useRef({ resposta: null, piada: null, elogio: null, reacao: null });
   const aberturas = useRef(0);
   const inicio = useRef(0);
   const caminho = useRef(pathname);
@@ -123,7 +125,7 @@ export default function BonecoDoVini() {
     setBalao(null);
     setAberto(true);
     if (mensagens.length === 0) {
-      dizer('boneco', ABERTURAS[Math.min(aberturas.current, ABERTURAS.length - 1)]);
+      dizer('boneco', aberturas.current === 0 ? escolherDe(ABERTURAS, null) : 'Estou aqui outra vez, Necas. Como estás agora?');
       aberturas.current += 1;
       setPasso('estado');
     }
@@ -161,9 +163,22 @@ export default function BonecoDoVini() {
       });
       if (!pode) return;
       guardarJson(CHAVE_HISTORICO, acrescentarAoHistorico(lerJson(CHAVE_HISTORICO, []), agora));
-      setBalao({ tipo: 'proativa', texto: escolherProativa(new Date(agora).getHours(), Math.random, lerExtras()).texto });
+      setBalao({ tipo: 'proativa', texto: escolherProativa(new Date(agora).getHours(), Math.random, lerExtras(), new Date(agora).getDay()).texto });
     }, PASSO_MS);
     return () => clearInterval(id);
+  }, []);
+
+  // depois de um jogo ou de uma sessão de flashcards, às vezes comenta (e só se ela não estiver a falar com ele)
+  useEffect(() => {
+    const aoAcabar = () => {
+      const agora = Date.now();
+      if (janelaAberta.current || !lerPreferencias().boneco) return;
+      if (!deveReagir({ agora, ultimaReacao: lerJson(CHAVE_REACAO, 0) })) return;
+      guardarJson(CHAVE_REACAO, agora);
+      setTimeout(() => setBalao({ tipo: 'aviso', texto: escolherReacao(ultimas.current.reacao) }), 1500);
+    };
+    window.addEventListener(EVENTO_ESTUDO_CONCLUIDO, aoAcabar);
+    return () => window.removeEventListener(EVENTO_ESTUDO_CONCLUIDO, aoAcabar);
   }, []);
 
   // a pausa de 5 minutos avisa quando acaba

@@ -1,6 +1,6 @@
 // a lógica do boneco do vini — pura, sem react nem firebase, para testar com vitest sem mocks:
 // que resposta dar, quando pode puxar conversa sozinho, e as contas das tarefas e do contacto
-import { PESO_DA_VOZ_BRINCALHONA, RESPOSTAS, PROATIVAS, ELOGIOS, PIADAS } from '../data/boneco.js';
+import { PESO_DA_VOZ_BRINCALHONA, RESPOSTAS, PROATIVAS, ELOGIOS, PIADAS, REACOES, AULAS, BARNEY, SAUDADES } from '../data/boneco.js';
 
 const UM_DIA_MS = 24 * 60 * 60 * 1000;
 const HORA_MS = 60 * 60 * 1000;
@@ -30,8 +30,21 @@ export function escolherResposta(estado, { ultima = null, aleatorio = Math.rando
   return { texto: escolherDe(brincalhona ? brincalhonas : banco.carinhosa, ultima, aleatorio), voz };
 }
 
+// "uma coisa boa para ouvir": elogios, saudades e frases do barney misturados, mais as da consola
 export function escolherElogio(ultimo, aleatorio = Math.random, extra = {}) {
-  return escolherDe([...ELOGIOS, ...(extra.elogios ?? [])], ultimo, aleatorio);
+  return escolherDe([...ELOGIOS, ...SAUDADES, ...BARNEY, ...(extra.elogios ?? [])], ultimo, aleatorio);
+}
+
+// o que ele diz depois de ela jogar ou estudar
+export function escolherReacao(ultima, aleatorio = Math.random) {
+  return escolherDe(REACOES, ultima, aleatorio);
+}
+
+// reage a um fim de jogo ou de estudo? nem sempre (senão cansava): ~metade das vezes e no máximo de 15 em 15 minutos
+export const INTERVALO_REACOES_MS = 15 * 60 * 1000;
+export function deveReagir({ agora, ultimaReacao = 0, aleatorio = Math.random }) {
+  if (agora - ultimaReacao < INTERVALO_REACOES_MS) return false;
+  return aleatorio() < 0.5;
 }
 
 export function escolherPiada(ultima, aleatorio = Math.random, extra = {}) {
@@ -46,9 +59,12 @@ export function motivoPorHora(hora) {
   return 'tarde';
 }
 
-export function escolherProativa(hora, aleatorio = Math.random, extra = {}) {
+// `diaDaSemana` (0 a 6, domingo é 0): de segunda a sexta, de manhã e à tarde, às vezes fala da aula
+export function escolherProativa(hora, aleatorio = Math.random, extra = {}, diaDaSemana = null) {
   const motivo = motivoPorHora(hora);
   const voz = aleatorio() < 0.5 ? 'brincalhona' : 'carinhosa';
+  const diaDeAulas = diaDaSemana !== null && diaDaSemana >= 1 && diaDaSemana <= 5;
+  if (diaDeAulas && motivo !== 'noite' && aleatorio() < 0.2) return { motivo: 'aulas', voz, texto: escolherDe(AULAS, null, aleatorio) };
   return { motivo, voz, texto: escolherDe([...PROATIVAS[motivo][voz], ...(extra.proativas ?? [])], null, aleatorio) };
 }
 

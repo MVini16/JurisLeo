@@ -10,6 +10,7 @@ import { usePreferencias } from '../hooks/usePreferencias.js';
 import SessaoVertical from '../components/estudo/SessaoVertical.jsx';
 import SessaoStory from '../components/estudo/SessaoStory.jsx';
 import { varianteValida } from '../services/modoEstudo.js';
+import { anunciarEstudoConcluido } from '../services/eventosApp.js';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Flashcards.css';
 
@@ -85,7 +86,7 @@ export default function Flashcards() {
           todos={flashcards}
           onResponder={registarResposta}
           onFechar={() => setFilaSessao(null)}
-          onConcluir={() => dispararBarney('flashcards')}
+          onConcluir={() => { dispararBarney('flashcards'); anunciarEstudoConcluido(); }}
         />
       ) : (
         <SessaoVertical
@@ -93,7 +94,7 @@ export default function Flashcards() {
           variante={prefs.estudoVisual}
           onResponder={registarResposta}
           onFechar={() => setFilaSessao(null)}
-          onConcluir={() => dispararBarney('flashcards')}
+          onConcluir={() => { dispararBarney('flashcards'); anunciarEstudoConcluido(); }}
         />
       ))}
     </div>

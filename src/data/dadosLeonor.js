@@ -134,6 +134,7 @@ export const idsCadeiras = cadeirasS1.map((c) => c.id);
 export const coresCadeiras = Object.fromEntries(cadeirasS1.map((c) => [c.id, c.cor]));
 export const abrevCadeiras = Object.fromEntries(cadeirasS1.map((c) => [c.id, c.abrev]));
 export const nomesCadeiras = Object.fromEntries(cadeirasS1.map((c) => [c.id, c.nome]));
+export const nomesCadernos = { ...nomesCadeiras, livre: 'Caderno Livre' };
 
 // nome curto para mostrar num badge — usa a abreviatura, ou o próprio id em maiúsculas se for desconhecido
 export function nomeCurtoCadeira(id) {

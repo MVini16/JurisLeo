@@ -6,9 +6,11 @@ import { useAnotacao } from '../hooks/useAnotacao.js';
 import { useProvocacoes } from '../hooks/useProvocacoes.jsx';
 import { useAnotacoes } from '../hooks/useAnotacoes.js';
 import EditorRico from '../components/editor/EditorRico.jsx';
+import ExportarNotas from '../components/exportar/ExportarNotas.jsx';
+import { paginasParaExportar } from '../services/exportarNotas.js';
 import { abrirNota, serializarNota, estadoTamanho, folhaValida } from '../services/notaRica.js';
 import { cadernoDaNota, seccaoDaNota, seccoesDoCaderno, seccoesPadrao, mesmoNome, normalizarNomeSeccao, CADERNO_LIVRE } from '../services/cadernos.js';
-import { cadeirasS1, idsCadeiras } from '../data/dadosLeonor.js';
+import { cadeirasS1, idsCadeiras, nomesCadernos } from '../data/dadosLeonor.js';
 import './Anotacao.css';
 
 export default function Anotacao() {
@@ -48,6 +50,7 @@ function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guar
   const [criandoSeccao, setCriandoSeccao] = useState(false);
   const [nomeNovaSeccao, setNomeNovaSeccao] = useState('');
   const { anotacoes: todasAsNotas } = useAnotacoes();
+  const [exportacao, setExportacao] = useState(null);
   // o conteúdo vive dentro do editor; aqui só guardamos a folha e o que é preciso para abrir a nota
   const editorRef = useRef(null);
   const [docInicial] = useState(() => abrirNota(anotacao));
@@ -67,6 +70,26 @@ function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guar
   // secções do caderno escolhido; a que está escolhida entra sempre, mesmo que ainda não tenha páginas
   const seccoesExistentes = seccoesDoCaderno(todasAsNotas, cadeiraId, idsCadeiras);
   const seccoes = seccoesExistentes.some((s) => mesmoNome(s, seccao)) ? seccoesExistentes : [...seccoesExistentes, seccao];
+
+  // monta o que se pode exportar a partir do que está no ecrã agora (mesmo o que ainda não foi guardado)
+  function abrirExportacao() {
+    const atual = {
+      id: anotacao?.id,
+      titulo: titulo.trim(),
+      cadeiraId,
+      seccao,
+      tags: tagsTexto.split(',').map((t) => t.trim()).filter(Boolean),
+      doc: editorRef.current?.obterDoc() ?? docInicial,
+    };
+    const nomeCaderno = nomesCadernos[cadeiraId];
+    const base = { cadernoId: cadeiraId, seccao, atual, idsConhecidos: idsCadeiras, nomesCadernos };
+    const paginasDe = (escopo) => paginasParaExportar(todasAsNotas, { ...base, escopo });
+    setExportacao([
+      { id: 'pagina', rotulo: 'Esta página', titulo: atual.titulo || 'Sem título', nomeBase: `${nomeCaderno} - ${atual.titulo || 'Sem título'}`, paginas: paginasDe('pagina') },
+      { id: 'seccao', rotulo: `Secção ${seccao}`, titulo: `${nomeCaderno} · ${seccao}`, nomeBase: `${nomeCaderno} - ${seccao}`, paginas: paginasDe('seccao') },
+      { id: 'caderno', rotulo: 'Caderno inteiro', titulo: nomeCaderno, nomeBase: nomeCaderno, paginas: paginasDe('caderno') },
+    ]);
+  }
 
   function escolherCaderno(id) {
     setCadeiraId(id);
@@ -129,8 +152,10 @@ function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guar
   return (
     <>
       {provocacao}
+      {exportacao && <ExportarNotas opcoes={exportacao} aoFechar={() => setExportacao(null)} />}
       <div className="anotacao-editor__header">
         <button className="anotacao-editor__voltar" onClick={() => onVoltar(cadeiraId)}>‹ {cadeira?.abrev ?? 'Livre'}</button>
+        <button className="anotacao-editor__exportar" onClick={abrirExportacao}>Exportar</button>
         <button className={`anotacao-editor__estrela ${favorita ? 'ativa' : ''}`} onClick={() => setFavorita((f) => !f)}>
           {favorita ? '★' : '☆'}
         </button>

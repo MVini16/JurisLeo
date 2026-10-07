@@ -19,6 +19,11 @@ function corDocx(valor, cores) {
   return achado ? cores[`${achado[1]}-${achado[2]}`] : undefined;
 }
 
+// sombreado só quando a cor existe (vem sempre do index.css)
+function sombra(fill) {
+  return fill ? { shading: { type: ShadingType.CLEAR, fill, color: 'auto' } } : {};
+}
+
 function corDoBloco(tipo, cores) {
   return cores[COR_DO_BLOCO[tipo] ?? 'cor-azul'];
 }
@@ -36,8 +41,7 @@ function runsDe(no, cores) {
       else if (marca.type === 'strike') opcoes.strike = true;
       else if (marca.type === 'artigo') opcoes.font = 'Courier New';
       else if (marca.type === 'highlight') {
-        const fill = corDocx(marca.attrs?.color, cores);
-        if (fill) opcoes.shading = { type: ShadingType.CLEAR, fill, color: 'auto' };
+        Object.assign(opcoes, sombra(corDocx(marca.attrs?.color, cores)));
       } else if (marca.type === 'textStyle') {
         const cor = corDocx(marca.attrs?.color, cores);
         if (cor) opcoes.color = cor;
@@ -71,7 +75,7 @@ function celulaDe(no, ctx) {
   const cabecalho = no.type === 'tableHeader';
   return new TableCell({
     children: blocosDe(no, { ...ctx, caixa: {} }),
-    shading: cabecalho ? { type: ShadingType.CLEAR, fill: ctx.cores['marca-azul'] ?? 'DDDDDD', color: 'auto' } : undefined,
+    ...(cabecalho ? sombra(ctx.cores['marca-azul']) : {}),
   });
 }
 
@@ -119,7 +123,7 @@ function bloco(no, ctx) {
       return blocosDe(no, { ...ctx, caixa: { ...ctx.caixa, indent: { left: 360 }, border: { left: bordaEsquerda(ctx.cores['cor-ouro']) } } });
     case 'blocoEstudo': {
       const cor = corDoBloco(no.attrs?.tipo, ctx.cores);
-      const caixa = { indent: { left: 240 }, border: { left: bordaEsquerda(cor) }, shading: { type: ShadingType.CLEAR, fill: ctx.cores['fundo-bloco'] ?? 'F4F0EA', color: 'auto' } };
+      const caixa = { indent: { left: 240 }, border: { left: bordaEsquerda(cor) }, ...sombra(ctx.cores['fundo-bloco']) };
       const rotulo = new Paragraph({
         children: [new TextRun({ text: rotuloDoBloco(no.attrs?.tipo).toUpperCase(), bold: true, size: 16, color: cor })],
         spacing: { after: 40 },

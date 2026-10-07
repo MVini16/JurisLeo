@@ -57,8 +57,10 @@ export function resumoExportacao(paginas) {
 
 // um nome de ficheiro que o telemóvel e o windows aceitam
 export function nomeFicheiro(base, extensao) {
-  const limpo = String(base ?? '')
-    .replace(/[\\/:*?"<>|\u0000-\u001f]/g, ' ')
+  const limpo = Array.from(String(base ?? ''))
+    .filter((letra) => letra.charCodeAt(0) >= 32) // sem carateres de controlo
+    .join('')
+    .replace(/[\\/:*?"<>|]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 80)

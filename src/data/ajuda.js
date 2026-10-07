@@ -87,6 +87,7 @@ export const ajudaPorRota = {
       'Toca numa secção para a abrir ou fechar. O + dentro dela cria uma página nessa secção.',
       'Toca numa página para ver uma pré-visualização, e em "Abrir página" para escrever.',
       '"+ Nova secção" cria uma secção tua, com o nome que quiseres.',
+      '"Exportar" leva o caderno inteiro, ou só uma secção, para partilhar, PDF ou Word.',
     ],
   },
   '/anotacoes/:id': {
@@ -94,6 +95,7 @@ export const ajudaPorRota = {
     texto: 'Escreve à vontade, marca como favorita, e assinala se ainda é rascunho.',
     pontos: [
       'As tags (separadas por vírgula) ajudam a encontrar isto mais tarde na pesquisa.',
+      '"Exportar" leva esta página, a secção ou o caderno para o menu de partilha do telemóvel, para PDF ou para Word.',
       '"Guardar" grava as alterações.',
       '"Apagar" remove de vez, sempre com confirmação antes.',
     ],

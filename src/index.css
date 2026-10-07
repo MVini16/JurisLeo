@@ -1,5 +1,6 @@
 /* variáveis globais de cor e fonte do jurisleo */
-:root {
+:root,
+.tema-papel {
   --burgundy: #6B0F1A;
   --gold: #C9A84C;
   --bg-light: #FAF8F5;
@@ -26,6 +27,13 @@
   --folha-fundo: #FFFDF8;
   --folha-regua: #D9CDBE;
   --folha-margem: #C2565F;
+  --nota-fundo-bloco: #F4F0EA;
+}
+
+/* um pedaço de página sempre em tema claro (impressão e exportação), mesmo com a app em escuro */
+.tema-papel {
+  background: var(--bg-light);
+  color: var(--text-light);
 }
 
 /* o tema escuro da app põe a classe dark no html (ThemeContext) */

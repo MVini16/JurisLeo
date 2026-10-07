@@ -350,3 +350,21 @@
 @media (prefers-reduced-motion: reduce) {
   .caderno-pagina *, .caderno-pagina { animation-duration: 0.01ms !important; animation-delay: 0s !important; transition-duration: 0.01ms !important; }
 }
+
+.caderno-exportar {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1.5px solid color-mix(in srgb, var(--cor) 50%, transparent);
+  background: none;
+  color: var(--cor);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.caderno-exportar:hover:not(:disabled) { background: color-mix(in srgb, var(--cor) 12%, transparent); transform: translateY(-1px); }
+.caderno-exportar:disabled { opacity: 0.4; cursor: default; }

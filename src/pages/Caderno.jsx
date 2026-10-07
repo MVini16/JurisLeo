@@ -4,8 +4,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useAnotacoes } from '../hooks/useAnotacoes.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
+import ExportarNotas from '../components/exportar/ExportarNotas.jsx';
+import { paginasParaExportar } from '../services/exportarNotas.js';
 import { agruparPorSeccao, normalizarNomeSeccao, previewTexto, dataCurta, CADERNO_LIVRE } from '../services/cadernos.js';
-import { cadeirasS1, idsCadeiras } from '../data/dadosLeonor.js';
+import { cadeirasS1, idsCadeiras, nomesCadernos } from '../data/dadosLeonor.js';
 import './Caderno.css';
 
 export default function Caderno() {
@@ -18,6 +20,7 @@ export default function Caderno() {
   const [invertidas, setInvertidas] = useState(() => new Set());
   const [criandoSeccao, setCriandoSeccao] = useState(false);
   const [nomeNovaSeccao, setNomeNovaSeccao] = useState('');
+  const [exportacao, setExportacao] = useState(null);
 
   const livre = id === CADERNO_LIVRE;
   const cadeira = cadeirasS1.find((c) => c.id === id);
@@ -37,6 +40,21 @@ export default function Caderno() {
   const totalPaginas = grupos.reduce((soma, g) => soma + g.notas.length, 0);
   const selecionada = grupos.flatMap((g) => g.notas).find((n) => n.id === selecionadaId) ?? null;
   const seccaoDaSelecionada = selecionada ? grupos.find((g) => g.notas.some((n) => n.id === selecionada.id))?.nome : '';
+
+  // o caderno inteiro e, à parte, cada secção que já tem páginas
+  function abrirExportacao() {
+    const base = { cadernoId: id, idsConhecidos: idsCadeiras, nomesCadernos };
+    setExportacao([
+      { id: 'caderno', rotulo: 'Caderno inteiro', titulo: nome, nomeBase: nome, paginas: paginasParaExportar(anotacoes, { ...base, escopo: 'caderno' }) },
+      ...grupos.filter((g) => g.notas.length > 0).map((g) => ({
+        id: `seccao-${g.nome}`,
+        rotulo: g.nome,
+        titulo: `${nome} · ${g.nome}`,
+        nomeBase: `${nome} - ${g.nome}`,
+        paginas: paginasParaExportar(anotacoes, { ...base, escopo: 'seccao', seccao: g.nome }),
+      })),
+    ]);
+  }
 
   function novaPagina(seccao) {
     navigate('/anotacoes/nova', { state: { cadeiraId: id, seccao } });
@@ -65,7 +83,9 @@ export default function Caderno() {
         <span className="caderno-contagem">
           {totalPaginas} {totalPaginas === 1 ? 'página' : 'páginas'} · {grupos.length} secções
         </span>
+        <button className="caderno-exportar" disabled={totalPaginas === 0} onClick={abrirExportacao}>Exportar</button>
       </header>
+      {exportacao && <ExportarNotas opcoes={exportacao} aoFechar={() => setExportacao(null)} />}
 
       {loading && <p className="caderno-vazio">A carregar...</p>}
 

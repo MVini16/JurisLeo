@@ -1,0 +1,40 @@
+/* margem só para estas páginas (o resto da app imprime com a margem normal) */
+@page notas { margin: 18mm; }
+
+/* só existe no papel: no ecrã fica escondido e, ao imprimir, a app inteira dá lugar a isto */
+.impressao-notas { display: none; }
+
+@media print {
+  body.imprimindo-notas #root { display: none !important; }
+
+  body.imprimindo-notas .impressao-notas {
+    display: block;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 11pt;
+    line-height: 1.5;
+    page: notas;
+  }
+
+  .impressao-pagina { break-after: page; }
+  .impressao-pagina:last-child { break-after: auto; }
+
+  .impressao-colecao { font-size: 22pt; margin-bottom: 18pt; }
+  .impressao-titulo { font-size: 20pt; line-height: 1.2; margin-bottom: 2pt; color: var(--nota-cor-vinho); }
+  .impressao-meta { font-style: italic; font-size: 9.5pt; opacity: 0.7; margin-bottom: 12pt; }
+  .impressao-tags { margin-top: 12pt; font-size: 9pt; color: var(--nota-cor-ouro); }
+
+  /* as regras do texto do editor, sem a altura mínima nem o espaço da folha */
+  .impressao-notas .er-texto { min-height: 0; padding: 0; line-height: 1.5; font-size: 11pt; }
+  .impressao-notas .er-texto h1, .impressao-notas .er-texto h2, .impressao-notas .er-texto h3 { line-height: 1.25; break-after: avoid; }
+  .impressao-notas .er-texto h2 { font-size: 15pt; }
+  .impressao-notas .er-texto h3 { font-size: 13pt; }
+  .impressao-notas .er-texto p { margin-bottom: 6pt; }
+  .impressao-notas .er-texto table, .impressao-notas .er-texto [data-bloco] { break-inside: avoid; }
+
+  .impressao-tarefas { list-style: none; padding-left: 0; }
+  .impressao-tarefas li { display: flex; gap: 6pt; }
+  .impressao-tarefas li > div { flex: 1; }
+
+  /* o fundo e as cores dos blocos têm de sair no papel */
+  .impressao-notas * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

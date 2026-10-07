@@ -58,7 +58,7 @@ export default defineConfig({
     copiarBibliotecasDaSurpresa(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icon.svg'],
+      includeAssets: ['icon.svg', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png'],
       manifest: {
         name: 'JurisLeo',
         short_name: 'JurisLeo',
@@ -68,9 +68,12 @@ export default defineConfig({
         background_color: '#FAF8F5',
         display: 'standalone',
         start_url: '/',
+        // png para o iphone e o android (o iOS ignora ícones svg no ecrã principal); o desenho cabe na zona segura dos maskable
         icons: [
+          { src: '/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
           { src: '/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
-          { src: '/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'maskable' },
         ],
       },
       workbox: {

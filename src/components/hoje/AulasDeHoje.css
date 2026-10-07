@@ -1,0 +1,12 @@
+/* aulas de hoje no dashboard, com marcação rápida */
+.aulas-hoje { margin: 12px 0; padding: 14px; border-radius: 14px; border: 1px solid var(--border-light); background: rgba(201, 168, 76, 0.06); }
+.aulas-hoje__titulo { font-size: 15px; margin-bottom: 8px; color: var(--burgundy); }
+.aulas-hoje__lista { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.aulas-hoje__item { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.aulas-hoje__info { display: flex; align-items: center; gap: 8px; font-size: 14px; flex-wrap: wrap; }
+.aulas-hoje__botoes { display: flex; gap: 6px; }
+.aulas-hoje button { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--gold); background: transparent; color: inherit; font: inherit; font-size: 12px; cursor: pointer; }
+.aulas-hoje button:first-child:not(.aulas-hoje__mais) { background: var(--aula-fui); border-color: var(--aula-fui); color: var(--bg-dark); font-weight: 700; }
+.aulas-hoje__mais { opacity: 0.8; }
+html.dark .aulas-hoje { border-color: var(--border-dark); }
+html.dark .aulas-hoje__titulo { color: var(--gold); }

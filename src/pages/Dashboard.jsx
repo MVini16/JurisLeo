@@ -9,6 +9,7 @@ import Tutorial from '../components/Tutorial.jsx'
 import { useFrase } from '../hooks/useFrase.js'
 import { useBarney } from '../hooks/useBarney.jsx'
 import CartaoHoje from '../components/hoje/CartaoHoje.jsx'
+import AulasDeHoje from '../components/hoje/AulasDeHoje.jsx'
 
 // cores por cadeira — usadas nos dots das aulas
 const CORES_CADEIRA = coresCadeiras;
@@ -133,6 +134,7 @@ function Dashboard() {
 
         {/* o que ela tem para hoje (série, flashcards prontos, desafio) */}
         <CartaoHoje tarefas={tarefas} />
+        <AulasDeHoje />
 
         {/* grelha de cards */}
         <div className="dashboard-grid">

@@ -9,14 +9,27 @@ import { destinoDoUtilizador, esperarSessao } from '../services/sessao.js'
 // importa o css
 import './Login.css'
 
+// o último email que entrou neste telemóvel: o campo já vem preenchido
+const CHAVE_EMAIL = 'jurisleo-ultimo-email'
+function lerUltimoEmail() {
+  try { return localStorage.getItem(CHAVE_EMAIL) || '' } catch { return '' }
+}
+
+// criar conta só aparece com ?registar no endereço: a app é só de uma pessoa, e uma conta nova
+// por engano (depois de uma atualização) parece que apagou tudo, porque começa vazia
+function registoPermitido() {
+  try { return new URLSearchParams(window.location.search).has('registar') } catch { return false }
+}
+
 function Login() {
   const navigate = useNavigate()
 
   // controla se está em modo login ou registo
   const [modoRegisto, setModoRegisto] = useState(false)
+  const [podeRegistar] = useState(registoPermitido)
 
   // campos do formulário
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(lerUltimoEmail)
   const [password, setPassword] = useState('')
 
   // estado de carregamento e erro
@@ -46,6 +59,7 @@ function Login() {
     setCarregando(false)
 
     if (resultado.sucesso) {
+      try { localStorage.setItem(CHAVE_EMAIL, email.trim()) } catch { /* sem localStorage */ }
       if (modoRegisto) {
         // registo novo — vai sempre para onboarding
         navigate('/onboarding')
@@ -95,8 +109,8 @@ function Login() {
         {/* título */}
         <h1 className="login-titulo">JurisLeo</h1>
 
-        {/* toggle login/registo */}
-        <div className="login-toggle">
+        {/* toggle login/registo (só com ?registar no endereço) */}
+        {podeRegistar && <div className="login-toggle">
           <button
             className={`toggle-btn ${!modoRegisto ? 'toggle-ativo' : ''}`}
             onClick={() => { setModoRegisto(false); setErro('') }}
@@ -109,7 +123,8 @@ function Login() {
           >
             Registar
           </button>
-        </div>
+        </div>}
+        {!podeRegistar && <p className="login-dica">Entra com o teu email e password de sempre. Os teus dados estão na tua conta.</p>}
 
         {/* campos */}
         <div className="login-campos">

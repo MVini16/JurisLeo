@@ -42,9 +42,10 @@ export const PLATAFORMAS_TUTORIAL = [
   { id: 'outra', nome: 'Computador' },
 ];
 
-const COPIA = { titulo: 'Guarda uma cópia', texto: 'Antes de apagares nada: abre a app, toca em Perfil, depois em Os meus dados e em "Copiar os dados deste telemóvel". Abre as Mensagens, escreve para ti própria e cola o texto lá. Fica guardado.' };
-const LOGIN = { titulo: 'Entra com a tua conta', texto: 'Abre o ícone novo e faz login com o teu email e password. Só precisas de o fazer esta vez: depois a app lembra-se de ti.' };
-const REPOR = { titulo: 'Repõe a cópia', texto: 'Perfil, Os meus dados, "Repor uma cópia". Cola o texto que guardaste nas Mensagens e toca em Repor. Fecha a app e abre-a outra vez para veres tudo.' };
+// antes de apagar a app: confirmar que não há nada só no telemóvel (o cofre e a cópia automática tratam do resto)
+const COPIA = { titulo: 'Confirma a cópia na tua conta', texto: 'Antes de apagares nada: abre a app com rede, toca em Perfil e depois em Os meus dados. Tem de dizer "Tudo guardado na tua conta". Se disser "A enviar" ou "Sem rede", espera uns segundos com rede. Toca também em "Guardar uma cópia agora".' };
+const LOGIN = { titulo: 'Entra com a tua conta', texto: 'Abre o ícone novo e faz login com o teu email e password (o mesmo de sempre, nunca cries uma conta nova). Só precisas de o fazer esta vez: depois a app lembra-se de ti.' };
+const REPOR = { titulo: 'Confirma que voltou tudo', texto: 'Espera uns segundos com rede: as tuas escolhas e os jogos voltam sozinhos. Se faltar alguma coisa, vai a Perfil, Os meus dados, Cópias guardadas e toca em Repor na cópia de hoje.' };
 
 // o caminho rápido resolve quase sempre; o completo só se a versão antiga teimar. cada plataforma tem os seus passos
 export function passosDoTutorial(plataforma, endereco) {
@@ -99,4 +100,4 @@ export function passosDoTutorial(plataforma, endereco) {
 }
 
 // o que se perde se ela apagar o ícone antigo e instalar de novo: só o que está guardado no próprio telemóvel
-export const AVISO_DE_REINSTALAR = 'Instalar de novo cria uma app limpa: o que só está guardado neste telemóvel (recordes e selos dos jogos, escolhas de aparência, série de estudo) perde-se, a não ser que faças a cópia no primeiro passo. As notas, tarefas e flashcards ficam na tua conta e voltam todos.';
+export const AVISO_DE_REINSTALAR = 'Só faças isto se fechar e abrir não chegou. Instalar de novo cria uma app limpa: perde-se a sessão e o que ainda não chegou à tua conta. Por isso confirma primeiro que diz "Tudo guardado na tua conta". Depois, as aulas, faltas, notas, jogos e escolhas voltam todos quando entrares.';

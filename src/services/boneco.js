@@ -1,6 +1,6 @@
 // a lógica do boneco do vini — pura, sem react nem firebase, para testar com vitest sem mocks:
 // que resposta dar, quando pode puxar conversa sozinho, e as contas das tarefas e do contacto
-import { PESO_DA_VOZ_BRINCALHONA, RESPOSTAS, PROATIVAS, ELOGIOS, PIADAS, REACOES, AULAS, BARNEY, SAUDADES } from '../data/boneco.js';
+import { PESO_DA_VOZ_BRINCALHONA, RESPOSTAS, PROATIVAS, ELOGIOS, PIADAS, REACOES, AULAS, BARNEY, SAUDADES, FREQUENCIA_ANTES, FREQUENCIA_HOJE, FREQUENCIA_DEPOIS } from '../data/boneco.js';
 
 const UM_DIA_MS = 24 * 60 * 60 * 1000;
 const HORA_MS = 60 * 60 * 1000;
@@ -152,4 +152,42 @@ export function ligacaoDaLinha(numero) {
 export function contactoDoLink(textoDaUrl) {
   const valor = new URLSearchParams(String(textoDaUrl ?? '')).get('vini');
   return valor && telefoneValido(valor) ? limparTelefone(valor) : null;
+}
+
+// ---------- frequências ----------
+
+const DIAS_DE_AVISO = 7;
+
+// em que fase está a frequência mais próxima? 'antes' (até 7 dias), 'hoje', 'depois' (ontem) ou null.
+// `datas` são as datas das frequências em milissegundos; os dias contam-se no calendário local
+export function faseDaFrequencia(datas, agora) {
+  const diaDe = (t) => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
+  const hoje = diaDe(agora);
+  let melhor = null;
+  for (const t of datas) {
+    const dias = Math.round((diaDe(t) - hoje) / UM_DIA_MS);
+    if (dias < -1 || dias > DIAS_DE_AVISO) continue;
+    if (melhor === null || Math.abs(dias) < Math.abs(melhor)) melhor = dias;
+  }
+  if (melhor === null) return null;
+  if (melhor === 0) return 'hoje';
+  return melhor < 0 ? 'depois' : 'antes';
+}
+
+export function escolherFrequencia(fase, ultima = null, aleatorio = Math.random) {
+  const lista = { antes: FREQUENCIA_ANTES, hoje: FREQUENCIA_HOJE, depois: FREQUENCIA_DEPOIS }[fase];
+  return lista ? escolherDe(lista, ultima, aleatorio) : null;
+}
+
+// ---------- ver como ela está depois de uma versão nova ----------
+
+export const ESPERA_CHECKIN_MS = 20 * 60 * 1000;
+export const ESPERA_CHECKIN_APOS_ESTUDO_MS = 3 * 60 * 1000;
+
+// `registo` é { versao, desde, feito }, guardado quando ela fecha as novidades. pergunta uma só vez por versão:
+// passados 20 minutos, ou 3 minutos depois de ela jogar ou estudar (é sinal de que experimentou)
+export function checkInPendente({ registo, versao, agora, estudou = false }) {
+  if (!registo || registo.versao !== versao || registo.feito) return false;
+  const passou = agora - registo.desde;
+  return passou >= ESPERA_CHECKIN_MS || (estudou && passou >= ESPERA_CHECKIN_APOS_ESTUDO_MS);
 }

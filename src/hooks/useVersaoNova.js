@@ -7,6 +7,7 @@ import {
 } from '../services/atualizacao.js';
 
 const CHAVE_VISTA = 'jurisleo-versao-vista';
+const CHAVE_CHECKIN = 'jurisleo-boneco-checkin';
 const CHAVE_ADIADO = 'jurisleo-versao-adiado';
 
 function ler(chave) {
@@ -52,6 +53,8 @@ export function useVersaoNova() {
 
   const dispensarNovidades = useCallback(() => {
     guardar(CHAVE_VISTA, VERSAO_ATUAL);
+    // o boneco pergunta mais tarde o que ela achou e como está (ver checkInPendente)
+    guardar(CHAVE_CHECKIN, JSON.stringify({ versao: VERSAO_ATUAL, desde: Date.now(), feito: false }));
     setNovidades(null);
   }, []);
 

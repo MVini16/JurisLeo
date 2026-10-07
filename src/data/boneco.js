@@ -534,28 +534,17 @@ export const REACOES = [
   'Cada pontinho teu é uma razão a mais para eu me gabar de ti.',
 ];
 
-// para perto de frequências e exames (ainda por ligar: precisa das datas do calendário)
-export const FREQUENCIA = [
+// para perto de frequências e exames, por fase (dias antes, no dia, no dia a seguir)
+export const FREQUENCIA_ANTES = [
   'Faltam poucos dias para a frequência. Eu acredito em ti, Necas. Um passo de cada vez.',
   'Respira. Já estudaste mais do que achas. A frequência vai sentir a tua força.',
   'Antes da frequência: dorme bem, come bem e confia em ti. O resto trato eu com beijinhos.',
   'Nas vésperas, o mais importante é descansar. Estuda o essencial e deixa o pânico em casa.',
-  'Vou estar a pensar em ti durante a frequência, a mandar-te boa sorte em silêncio.',
-  'Hoje é dia de frequência, princesa. Entras como Necas e sais como Doutora.',
-  'Boa sorte, meu bem! Já cruzei os dedos, as pernas e os braços.',
-  'Quando estiveres a escrever, imagina-me ao teu lado a acenar com a cabeça.',
   'Não precisas de saber tudo. Só precisas de mostrar o que sabes, e tu sabes muito.',
-  'Se a mente der um branco, respira e recomeça pela primeira frase. Já ajuda.',
-  'Respira fundo antes de abrires a prova. Sopro-te sorte no ombro.',
   'Depois da frequência, há um miminho à tua espera. Está prometido.',
-  'Pega nas canetas, nos óculos e na confiança. A Necas vai entrar em campo.',
   'A frequência é só mais um dia. Tu já vives de provas e passas sempre.',
   'Acredito tanto em ti que já planeei a festa do fim da frequência.',
-  'Qualquer resultado é só um número. Gosto de ti da mesma maneira.',
-  'Fizeste o que podias, e foi muito. Agora descansa que eu mando-te um abraço.',
-  'Hoje foi dia de prova. Hoje também é dia de mimo. Diz-me como correu.',
   'Passar não é tudo, mas eu sei que vais passar com distinção.',
-  'Se algo correu menos bem, fazemos um plano. Se correu bem, fazemos uma festa.',
   'A semana de frequências é uma maratona. Dorme, bebe água e fala comigo se precisares.',
   'Mais um capítulo estudado, mais um passo para a frequência. Orgulho, Necas.',
   'O Tribunal declara-te preparada para a frequência. Sem objeções.',
@@ -563,16 +552,36 @@ export const FREQUENCIA = [
   'Revisão final: só o que importa. O resto fica para depois da prova.',
   'Hoje estuda com calma. O teu cérebro precisa de dormir para guardar o que aprendeu.',
   'Na véspera, não se aprende, consolida-se. Uma leitura leve e cama cedo.',
-  'O resultado não define quem és. Eu já sei quem és: uma campeã.',
-  'Se a frequência correr mal, tens-me a mim. Se correr bem, também. É um negócio sem perda.',
   'Cada hora que dedicas ao estudo é uma promessa que fazes ao teu futuro. Estou do teu lado.',
   'Para a frequência e para a vida: respira, confia e escreve com o coração.',
   'Nada de comparações com os colegas. Tu és a tua própria referência e eu sou o teu fã número um.',
   'Já te disse que és capaz? Digo outra vez: és capaz, Necas.',
+];
+
+export const FREQUENCIA_HOJE = [
+  'Vou estar a pensar em ti durante a frequência, a mandar-te boa sorte em silêncio.',
+  'Hoje é dia de frequência, princesa. Entras como Necas e sais como Doutora.',
+  'Boa sorte, meu bem! Já cruzei os dedos, as pernas e os braços.',
+  'Quando estiveres a escrever, imagina-me ao teu lado a acenar com a cabeça.',
+  'Se a mente der um branco, respira e recomeça pela primeira frase. Já ajuda.',
+  'Respira fundo antes de abrires a prova. Sopro-te sorte no ombro.',
+  'Pega nas canetas, nos óculos e na confiança. A Necas vai entrar em campo.',
   'Dia de prova é dia de coragem. E tu nasceste com muita.',
   'Se tremeres um pouco, é normal. Quem treme é porque se importa.',
+];
+
+export const FREQUENCIA_DEPOIS = [
+  'Qualquer resultado é só um número. Gosto de ti da mesma maneira.',
+  'Fizeste o que podias, e foi muito. Agora descansa que eu mando-te um abraço.',
+  'Hoje foi dia de prova. Hoje também é dia de mimo. Diz-me como correu.',
+  'Se algo correu menos bem, fazemos um plano. Se correu bem, fazemos uma festa.',
+  'O resultado não define quem és. Eu já sei quem és: uma campeã.',
+  'Se a frequência correr mal, tens-me a mim. Se correr bem, também. É um negócio sem perda.',
   'Quando acabares, quero saber tudo. E quero abraçar-te.',
 ];
+
+// todas juntas
+export const FREQUENCIA = [...FREQUENCIA_ANTES, ...FREQUENCIA_HOJE, ...FREQUENCIA_DEPOIS];
 
 // para dias de aula (de segunda a sexta)
 export const AULAS = [
@@ -663,4 +672,16 @@ export const LINHAS_DE_APOIO = [
   { id: 'sns24', nome: 'SNS 24, aconselhamento psicológico', numero: '808 24 24 24', nota: 'Marca 4. Todos os dias, a qualquer hora, com psicólogos.' },
   { id: 'voz-amiga', nome: 'SOS Voz Amiga', numero: '213 544 545', nota: 'Apoio emocional por voluntários. Horário em sosvozamiga.org.' },
   { id: '112', nome: 'Emergência', numero: '112', nota: 'Se estás em perigo imediato.' },
+];
+
+// depois de ela ver as novidades de uma versão nova e experimentar: puxo conversa uma vez a perguntar como está
+export const CHECKIN_BALOES = [
+  'Já andaste a experimentar as novidades, Necas? Diz-me o que achaste e como estás hoje.',
+  'Então, gostaste das coisas novas? Conta-me, e já agora, como estás hoje?',
+  'Experimentaste os jogos e o resto? Quero saber se gostaste e como te sentes hoje.',
+  'Passei aqui para saber duas coisas: se gostaste das novidades e como estás hoje.',
+];
+export const CHECKIN_ABERTURAS = [
+  'Então, o que achaste das novidades? Fiz tudo a pensar em ti. E agora a pergunta que importa mais: como estás hoje, ainda?',
+  'Já deste uma volta pelas coisas novas? Espero que tenhas gostado. Diz-me como estás hoje, a sério.',
 ];

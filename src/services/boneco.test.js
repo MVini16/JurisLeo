@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
   escolherDe, escolherResposta, motivoPorHora, escolherProativa, rotaOcupada, rotaSemBoneco, fimDoDia,
-  podeFalarSozinho, acrescentarAoHistorico, deveReagir, escolherReacao, escolherElogio, INTERVALO_REACOES_MS, tarefasUrgentes, limparTelefone, telefoneValido, ligacoesDoContacto, ligacaoDaLinha,
+  podeFalarSozinho, acrescentarAoHistorico, deveReagir, escolherReacao, escolherElogio, INTERVALO_REACOES_MS, tarefasUrgentes, limparTelefone, telefoneValido, ligacoesDoContacto, ligacaoDaLinha, faseDaFrequencia, escolherFrequencia, checkInPendente,
 } from './boneco.js';
-import { RESPOSTAS, ESTADOS, ACOES, ABERTURAS, PROATIVAS, LINHAS_DE_APOIO, ELOGIOS, PIADAS, REACOES, FREQUENCIA, AULAS, BARNEY, SAUDADES } from '../data/boneco.js';
+import { RESPOSTAS, ESTADOS, ACOES, ABERTURAS, PROATIVAS, LINHAS_DE_APOIO, ELOGIOS, PIADAS, REACOES, FREQUENCIA, CHECKIN_BALOES, CHECKIN_ABERTURAS, AULAS, BARNEY, SAUDADES } from '../data/boneco.js';
 
 // um "aleatório" que devolve os valores por ordem, e depois repete o último
 const sequencia = (...valores) => { let i = 0; return () => valores[Math.min(i++, valores.length - 1)]; };
@@ -194,7 +194,7 @@ describe('whatsapp com indicativo', () => {
 
 describe('as frases na voz do Vini', () => {
   const todasAsListas = {
-    ABERTURAS, ELOGIOS, PIADAS, REACOES, FREQUENCIA, AULAS, BARNEY, SAUDADES,
+    ABERTURAS, ELOGIOS, PIADAS, REACOES, FREQUENCIA, CHECKIN_BALOES, CHECKIN_ABERTURAS, AULAS, BARNEY, SAUDADES,
     ...Object.fromEntries(Object.entries(RESPOSTAS).flatMap(([e, r]) => [[`${e}.carinhosa`, r.carinhosa], [`${e}.brincalhona`, r.brincalhona]])),
     ...Object.fromEntries(Object.entries(PROATIVAS).flatMap(([p, r]) => [[`${p}.carinhosa`, r.carinhosa], [`${p}.brincalhona`, r.brincalhona]])),
   };
@@ -236,5 +236,33 @@ describe('reações e frases de aulas', () => {
   it('"uma coisa boa para ouvir" mistura elogios, saudades e barney', () => {
     const juntas = new Set([...ELOGIOS, ...SAUDADES, ...BARNEY]);
     for (let i = 0; i < 30; i += 1) expect(juntas.has(escolherElogio(null))).toBe(true);
+  });
+});
+
+describe('frequências e ver como ela está', () => {
+  const dia = (d, h = 10) => new Date(2026, 9, d, h).getTime();
+  it('a fase depende dos dias que faltam', () => {
+    const agora = dia(10, 20);
+    expect(faseDaFrequencia([dia(14)], agora)).toBe('antes');
+    expect(faseDaFrequencia([dia(10, 8)], agora)).toBe('hoje');
+    expect(faseDaFrequencia([dia(9)], agora)).toBe('depois');
+    expect(faseDaFrequencia([dia(25)], agora)).toBeNull();
+    expect(faseDaFrequencia([dia(1)], agora)).toBeNull();
+    expect(faseDaFrequencia([], agora)).toBeNull();
+  });
+  it('escolhe uma frase da fase certa', () => {
+    expect(escolherFrequencia('hoje', null, () => 0)).toContain('Vou estar a pensar em ti');
+    expect(escolherFrequencia('nada')).toBeNull();
+  });
+  it('o check-in só acontece uma vez, passado o tempo ou depois de estudar', () => {
+    const registo = { versao: 'v1', desde: 1000, feito: false };
+    const M = 60 * 1000;
+    expect(checkInPendente({ registo, versao: 'v1', agora: 1000 + 5 * M })).toBe(false);
+    expect(checkInPendente({ registo, versao: 'v1', agora: 1000 + 21 * M })).toBe(true);
+    expect(checkInPendente({ registo, versao: 'v1', agora: 1000 + 4 * M, estudou: true })).toBe(true);
+    expect(checkInPendente({ registo, versao: 'v1', agora: 1000 + 1 * M, estudou: true })).toBe(false);
+    expect(checkInPendente({ registo: { ...registo, feito: true }, versao: 'v1', agora: 1000 + 30 * M })).toBe(false);
+    expect(checkInPendente({ registo, versao: 'v2', agora: 1000 + 30 * M })).toBe(false);
+    expect(checkInPendente({ registo: null, versao: 'v1', agora: 1000 + 30 * M })).toBe(false);
   });
 });

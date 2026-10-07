@@ -10,18 +10,21 @@ import { usePreferencias } from '../../hooks/usePreferencias.js';
 import { guardarPreferencias, lerPreferencias } from '../../services/preferenciasBrincadeiras.js';
 import { lerExtras } from '../../services/armazemFrases.js';
 import {
-  ABERTURAS, ACOES, ESTADOS, RESPOSTAS, LINHAS_DE_APOIO,
+  ABERTURAS, ACOES, CHECKIN_ABERTURAS, CHECKIN_BALOES, ESTADOS, RESPOSTAS, LINHAS_DE_APOIO,
 } from '../../data/boneco.js';
 import {
-  acrescentarAoHistorico, deveReagir, escolherDe, escolherElogio, escolherReacao, escolherPiada, escolherProativa, escolherResposta, fimDoDia,
+  acrescentarAoHistorico, checkInPendente, deveReagir, escolherFrequencia, faseDaFrequencia, escolherDe, escolherElogio, escolherReacao, escolherPiada, escolherProativa, escolherResposta, fimDoDia,
   ligacaoDaLinha, ligacoesDoContacto, podeFalarSozinho, rotaOcupada, rotaSemBoneco, tarefasUrgentes,
 } from '../../services/boneco.js';
+import { datasDasFrequencias } from '../../services/frequenciaProxima.js';
+import { VERSAO_ATUAL } from '../../data/novidades.js';
 import { EVENTO_ESTUDO_CONCLUIDO } from '../../services/eventosApp.js';
 import './Boneco.css';
 
 const CHAVE_HISTORICO = 'jurisleo-boneco-historico';
 const CHAVE_ADIADO = 'jurisleo-boneco-adiado';
 const CHAVE_REACAO = 'jurisleo-boneco-reacao';
+const CHAVE_CHECKIN = 'jurisleo-boneco-checkin';
 const PASSO_MS = 60 * 1000;
 const ESPERA_INICIAL_MS = 2 * 60 * 1000;
 const PAUSA_MS = 5 * 60 * 1000;
@@ -102,6 +105,8 @@ export default function BonecoDoVini() {
   const idMensagem = useRef(0);
   const ultimas = useRef({ resposta: null, piada: null, elogio: null, reacao: null });
   const aberturas = useRef(0);
+  const estudouAgora = useRef(false);
+  const abrirComCheckin = useRef(false);
   const inicio = useRef(0);
   const caminho = useRef(pathname);
   const janelaAberta = useRef(false);
@@ -125,7 +130,11 @@ export default function BonecoDoVini() {
     setBalao(null);
     setAberto(true);
     if (mensagens.length === 0) {
-      dizer('boneco', aberturas.current === 0 ? escolherDe(ABERTURAS, null) : 'Estou aqui outra vez, Necas. Como estás agora?');
+      const abertura = abrirComCheckin.current
+        ? escolherDe(CHECKIN_ABERTURAS, null)
+        : (aberturas.current === 0 ? escolherDe(ABERTURAS, null) : 'Estou aqui outra vez, Necas. Como estás agora?');
+      abrirComCheckin.current = false;
+      dizer('boneco', abertura);
       aberturas.current += 1;
       setPasso('estado');
     }
@@ -153,9 +162,18 @@ export default function BonecoDoVini() {
       if (document.visibilityState !== 'visible' || aEscrever()) return;
       const agora = Date.now();
       if (agora - inicio.current < ESPERA_INICIAL_MS) return;
+      const prefs = lerPreferencias();
+      // depois de uma versão nova, uma só vez: pergunta pelas novidades e como ela está hoje
+      const registo = lerJson(CHAVE_CHECKIN, null);
+      if (prefs.boneco && !janelaAberta.current && !rotaSemBoneco(caminho.current) && !rotaOcupada(caminho.current)
+        && checkInPendente({ registo, versao: VERSAO_ATUAL, agora, estudou: estudouAgora.current })) {
+        guardarJson(CHAVE_CHECKIN, { ...registo, feito: true });
+        setBalao({ tipo: 'proativa', checkin: true, texto: escolherDe(CHECKIN_BALOES, null) });
+        return;
+      }
       const pode = podeFalarSozinho({
         agora,
-        prefs: lerPreferencias(),
+        prefs,
         caminho: caminho.current,
         historico: lerJson(CHAVE_HISTORICO, []),
         adiadoAte: lerJson(CHAVE_ADIADO, 0),
@@ -163,7 +181,14 @@ export default function BonecoDoVini() {
       });
       if (!pode) return;
       guardarJson(CHAVE_HISTORICO, acrescentarAoHistorico(lerJson(CHAVE_HISTORICO, []), agora));
-      setBalao({ tipo: 'proativa', texto: escolherProativa(new Date(agora).getHours(), Math.random, lerExtras(), new Date(agora).getDay()).texto });
+      const quando = new Date(agora);
+      const normal = escolherProativa(quando.getHours(), Math.random, lerExtras(), quando.getDay()).texto;
+      // perto de uma frequência, fala dela (a data vai-se buscar só agora, uma vez por dia)
+      datasDasFrequencias(agora).then((datas) => {
+        const fase = faseDaFrequencia(datas, agora);
+        const texto = fase && Math.random() < 0.6 ? escolherFrequencia(fase) : normal;
+        if (!janelaAberta.current) setBalao({ tipo: 'proativa', texto });
+      });
     }, PASSO_MS);
     return () => clearInterval(id);
   }, []);
@@ -171,6 +196,7 @@ export default function BonecoDoVini() {
   // depois de um jogo ou de uma sessão de flashcards, às vezes comenta (e só se ela não estiver a falar com ele)
   useEffect(() => {
     const aoAcabar = () => {
+      estudouAgora.current = true;
       const agora = Date.now();
       if (janelaAberta.current || !lerPreferencias().boneco) return;
       if (!deveReagir({ agora, ultimaReacao: lerJson(CHAVE_REACAO, 0) })) return;
@@ -250,7 +276,7 @@ export default function BonecoDoVini() {
   const lado = prefs.bonecoPosicao === 'direita' ? 'direita' : 'esquerda';
 
   const responderBalao = (aceita, hoje) => {
-    if (aceita) { abrir(); return; }
+    if (aceita) { abrirComCheckin.current = !!balao?.checkin; abrir(); return; }
     if (hoje) guardarJson(CHAVE_ADIADO, fimDoDia(Date.now()));
     setBalao(null);
   };

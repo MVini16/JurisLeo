@@ -48,13 +48,15 @@ window.CONTEUDO = {
   marquee: ['ALWAYS AND FOREVER', 'SEMPRE E PARA SEMPRE', 'LEONOR \u2665 VINI'],
   frases: [
     { texto: 'Always and forever.', pt: 'Sempre e para sempre.', fonte: 'The Vampire Diaries', nosso: 'Tinha de entrar. Sempre e para sempre, meu bem.' },
-    { texto: 'You jump, I jump.', pt: 'Se saltares, eu salto.', fonte: 'Titanic', nosso: 'Para onde fores, eu vou contigo.' },
-    { texto: "If you're a bird, I'm a bird.", pt: 'Se fores um pássaro, eu sou um pássaro.', fonte: 'The Notebook', nosso: 'Sem pensar duas vezes, bebé.' },
-    { texto: 'Always.', pt: 'Sempre.', fonte: 'Harry Potter', nosso: 'Uma palavra só. É tudo o que eu tenho para te prometer.' },
-    { texto: 'Okay? Okay.', pt: 'Está bem? Está bem.', fonte: 'The Fault in Our Stars', nosso: 'O nosso "está bem" favorito.' },
-    { texto: 'Ditto.', pt: 'Eu também.', fonte: 'Ghost', nosso: 'Quando disseres que me amas, já sabes a resposta.' },
-    { texto: 'As you wish.', pt: 'Como desejares.', fonte: 'The Princess Bride', nosso: 'Para ti, princesa, sempre.' },
-    { texto: 'To me, you are perfect.', pt: 'Para mim, és perfeita.', fonte: 'Love Actually', nosso: 'E és, Necas.' },
+    { texto: "I'm not sorry that I'm in love with you.", pt: 'Não me arrependo de estar apaixonada por ti.', fonte: 'The Vampire Diaries, Elena', nosso: 'Eu também não, bebé. Nem um bocadinho.' },
+    { texto: 'I would rather spend every moment in agony than erase the memory of you.', pt: 'Preferia passar cada momento em agonia a apagar a memória de ti.', fonte: 'The Vampire Diaries, Stefan', nosso: 'Prefiro mil vezes as tuas lembranças a qualquer outra coisa.' },
+    { texto: "Kids, I'm going to tell you an incredible story.", pt: 'Meninos, vou contar-vos uma história incrível.', fonte: 'How I Met Your Mother', nosso: 'A nossa tem ainda muitos capítulos. E quero escrevê-los todos contigo.' },
+    { texto: 'Legen... wait for it... dary!', pt: 'Lende... espera por ele... ário!', fonte: 'How I Met Your Mother, Barney', nosso: 'O melhor de nós ainda vem aí. Espera por ele, princesa.' },
+    { texto: 'You know you love me. XOXO, Gossip Girl.', pt: 'Sabes que me adoras.', fonte: 'Gossip Girl', nosso: 'Eu sei, Necas. E tu sabes que eu também.' },
+    { texto: "The next time you forget you're Blair Waldorf, remember I'm Chuck Bass. And I love you.", pt: 'Da próxima vez que te esqueceres de quem és, lembra-te de que eu sou o Chuck Bass. E que te amo.', fonte: 'Gossip Girl, Chuck', nosso: 'Quando duvidares de ti, lembra-te de que eu não me esqueço de quem tu és. Amo-te, Leonor.' },
+    { texto: 'Three words. Eight letters. Say it and I\'m yours.', pt: 'Três palavras. Oito letras. Diz e sou tua.', fonte: 'Gossip Girl, Blair', nosso: 'Eu digo-as as vezes que forem precisas: amo-te.' },
+    { texto: "Carrie, you're the one.", pt: 'Carrie, tu és a escolhida.', fonte: 'Sex and the City, Big', nosso: 'E tu és a minha, meu bem.' },
+    { texto: "If you find someone to love the you you love, well... that's just fabulous.", pt: 'Se encontrares alguém que ame a ti que tu amas, bem... isso é simplesmente fabuloso.', fonte: 'Sex and the City, Carrie', nosso: 'Eu encontrei. E é mesmo fabuloso, Necas.' },
   ],
   // minijogo da memória com as nossas fotos: cada par que acertares revela uma frase
   jogo: {

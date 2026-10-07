@@ -20,6 +20,7 @@ Projeto Firebase: `jurisleo-67124` (ver `.firebaserc`).
    ```bash
    npm run build && firebase deploy --only firestore,hosting
    ```
+   Na prática o deploy corre no **GitHub Actions** (`.github/workflows/deploy.yml`): muda-se `.github/deploy-trigger.txt` e faz-se push. Ver `docs/handoff-07-10-2026-final.md`.
    `firestore` inclui as regras (`firestore.rules`) e os índices (`firestore.indexes.json`) — nunca fazer deploy só do hosting quando as regras ou os índices mudarem.
 9. **Todo o deploy que acrescenta funcionalidades leva um aviso de versão nova para a Leonor.** Antes do `npm run build`, acrescentar uma entrada NO TOPO de `src/data/novidades.js` (nova `versao`, `titulo` e `itens` com o que há de novo, em linguagem simples). O build escreve `dist/versao.json` com essa entrada e a app instalada, ao ver uma versão diferente da que corre, mostra o aviso "há uma versão nova" com o tutorial de como a ir buscar e pôr outra vez no ecrã principal; depois de atualizar, mostra as novidades uma vez. Deploys só de correções, sem novidades, não mexem neste ficheiro (e não fazem aparecer o aviso). Confirmar depois do deploy que `versao.json` publicado tem a versão nova.
 
@@ -78,6 +79,13 @@ Dados (`src/data/`): `dadosLeonor.js`, `motivosFalta.js`, `boneco.js` (frases e 
 **Preferências da Leonor** (`jurisleo-brincadeiras` em localStorage, nunca no Firebase): brincadeiras, folha das notas, modo de estudo, pacote de animações, cartão de hoje, estilo dos jogos e tudo do boneco. Também em localStorage: série de dias de estudo, recordes e perfil dos jogos (`jurisleo-jogos`, `jurisleo-jogos-perfil`) e frases extra do boneco. As perguntas dela para os jogos são flashcards com campos opcionais (`tipo`, `opcoes`, `verdade`, `explicacao`), na coleção que já existia. Ver `services/preferenciasBrincadeiras.js`.
 
 IA do boneco: só desenho em `docs/IA-DO-BONECO.md` (servidor à parte, sem Firebase, sem chave no cliente).
+
+## Estado e documentos (atualizado em 07-10-2026)
+
+- **Lê primeiro `docs/handoff-07-10-2026-final.md`**: estado, como publicar, pendências e decisões.
+- Páginas novas: `Admin` (`/admin`, resumos que a Leonor decide partilhar) e `AdminBoneco`. Página-surpresa estática em `public/s/titsvdzkihyi/` (fora da app, sem login; texto em `conteudo.js`).
+- Serviços novos: `resumoParaVini`, `armazemResumos`, `notificacoes`, `sessao`, `destinoLogin`, `frequenciaProxima`.
+- **Privacidade:** a consola do Vini só mostra o que a Leonor manda. Não criar recolha escondida de dados dela.
 
 ## Design
 

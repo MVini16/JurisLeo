@@ -94,6 +94,13 @@ describe('estadoTamanho', () => {
     expect(estadoTamanho(demais).estado).toBe('excedido');
   });
 
+  it('o desenho à mão conta para o limite da mesma nota', () => {
+    const doc = textoParaDoc('nota curta');
+    expect(estadoTamanho(doc, 0).estado).toBe('ok');
+    expect(estadoTamanho(doc, Math.floor(LIMITE_FIRESTORE_BYTES * 0.85)).estado).toBe('perto');
+    expect(estadoTamanho(doc, LIMITE_FIRESTORE_BYTES).estado).toBe('excedido');
+  });
+
   it('conta bytes e não carateres (acentos ocupam mais)', () => {
     expect(tamanhoEmBytes('ç')).toBe(2);
     expect(tamanhoEmBytes('a')).toBe(1);

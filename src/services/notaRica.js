@@ -66,9 +66,10 @@ export function tamanhoEmBytes(texto) {
 }
 
 // 'ok' | 'perto' | 'excedido' — para o aviso no editor e para travar o guardar
-export function estadoTamanho(doc) {
+// `bytesDoDesenho` é o que o desenho à mão ocupa na mesma nota
+export function estadoTamanho(doc, bytesDoDesenho = 0) {
   const { rico, conteudo } = serializarNota(doc);
-  const total = tamanhoEmBytes(rico) + tamanhoEmBytes(conteudo) + MARGEM_OUTROS_CAMPOS_BYTES;
+  const total = tamanhoEmBytes(rico) + tamanhoEmBytes(conteudo) + bytesDoDesenho + MARGEM_OUTROS_CAMPOS_BYTES;
   if (total >= LIMITE_FIRESTORE_BYTES) return { estado: 'excedido', bytes: total };
   if (total >= LIMITE_FIRESTORE_BYTES * FRACAO_AVISO) return { estado: 'perto', bytes: total };
   return { estado: 'ok', bytes: total };

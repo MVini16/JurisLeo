@@ -22,6 +22,7 @@ import { CartaFlashcard, CartaPergunta, CartaGlossario, CartaAula, CartaAviso } 
 import FimDaMeta from '../components/feed/FimDaMeta.jsx';
 import AlternarModo from '../components/feed/AlternarModo.jsx';
 import Icone from '../components/icones/Icone.jsx';
+import EcraCarregar from '../components/EcraCarregar.jsx';
 import './Feed.css';
 
 const RAIO = 11;
@@ -152,7 +153,7 @@ export default function Feed() {
         <div className="feed-topo__serie"><Icone nome="chama" tamanho={20} viva={serie > 0} /><span>{serie}</span></div>
       </header>
 
-      {cartas === null && <div className="feed-vazio"><Icone nome="feed" tamanho={44} viva /><p>A preparar o teu feed...</p></div>}
+      {cartas === null && <div className="feed-vazio"><EcraCarregar compacto /></div>}
 
       {cartas !== null && cartas.length === 0 && (
         <div className="feed-vazio">

@@ -54,7 +54,7 @@ const DESENHOS = {
   // chama da série
   chama: (<>
     <path className="ic__tr ic__oscila" d="M12 3c.6 3 3.6 4.6 3.6 8.4A3.6 3.6 0 0 1 12 15a3.6 3.6 0 0 1-3.6-3.6c0-1.3.5-2.2 1.2-3C10 10 11 10 11.4 9 11.7 7.2 11.2 4.8 12 3z" transform="translate(0 2.5)" />
-    <path className="ic__ac ic__oscila" d="M12 19.400c-1.2 0-2-.8-2-1.9 0-1 .8-1.4 1.2-2.2.3.6 1 .8 1.3 1.5.200.4.400.7.400 1.1 0 .8-.4 1.5-.9 1.500z" transform="translate(0 .4)" />
+    <path className="ic__ac ic__oscila" d="M12 19.400c-1.2 0-2-.8-2-1.9 0-1 .8-1.4 1.2-2.2.3.6 1 .8 1.3 1.5.2.4.4.7.4 1.1 0 .8-.4 1.5-.9 1.500z" transform="translate(0 .4)" />
   </>),
   // balança (casos)
   balanca: (<>
@@ -91,6 +91,42 @@ const DESENHOS = {
     <circle className="ic__tr" cx="12" cy="12" r="8.6" />
     <circle className="ic__tr" cx="12" cy="12" r="4.6" />
     <circle className="ic__ac ic__bate" cx="12" cy="12" r="1.4" />
+  </>),
+  // lupa (pesquisa)
+  lupa: (<>
+    <circle className="ic__tr" cx="10.5" cy="10.5" r="6.2" />
+    <path className="ic__ac ic__pende" d="m15.2 15.2 4.8 4.8" />
+  </>),
+  // pergaminho com parágrafo (artigos de lei)
+  pergaminho: (<>
+    <path className="ic__tr" d="M7 4h11a1.5 1.5 0 0 1 1.5 1.500V17a3 3 0 0 1-3 3H6.500a3 3 0 0 0 3-3V5.500A1.5 1.5 0 0 0 8 4" />
+    <path className="ic__ac" d="M12.5 8.500a2 2 0 1 0 0 3h1a2 2 0 1 1-2.5 2.5" />
+  </>),
+  // cronómetro (estudo)
+  cronometro: (<>
+    <circle className="ic__tr" cx="12" cy="13.5" r="7.2" />
+    <path className="ic__tr" d="M9.5 3h5M12 3v3" />
+    <path className="ic__ac ic__ponteiro" d="M12 13.500V9.8" />
+  </>),
+  // lista com marcadores (sumários)
+  lista: (<>
+    <path className="ic__tr" d="M9 7h10.500M9 12h10.500M9 17h10.5" />
+    <circle className="ic__ac" cx="4.8" cy="7" r="1.1" /><circle className="ic__ac" cx="4.8" cy="12" r="1.1" /><circle className="ic__ac" cx="4.8" cy="17" r="1.1" />
+  </>),
+  // ponto de interrogação num balão (ajuda)
+  ajuda: (<>
+    <path className="ic__tr" d="M5 5.500A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.500v8a2.5 2.5 0 0 1-2.5 2.500H11l-4 4v-4H7.500A2.5 2.5 0 0 1 5 13.500z" />
+    <path className="ic__ac ic__bate" d="M10.2 8.600a1.9 1.9 0 1 1 2.6 1.800c-.5.3-.8.7-.8 1.300M12 13.500v.1" />
+  </>),
+  // pessoa (eu e definições)
+  pessoa: (<>
+    <circle className="ic__tr" cx="12" cy="8.5" r="3.7" />
+    <path className="ic__ac" d="M4.8 20c.8-3.6 3.7-5.5 7.2-5.500s6.4 1.9 7.2 5.5" />
+  </>),
+  // cartões do jogo (jurista)
+  coroa: (<>
+    <path className="ic__tr" d="M4 17.5 3 8l5 3.500L12 5l4 6.500L21 8l-1 9.500z" />
+    <path className="ic__ac ic__bate" d="M5 20.500h14" />
   </>),
   // sol/lua (modo)
   modo: (<>

@@ -13,6 +13,7 @@ import { recolherCopia, restaurarCopia } from '../services/copiaLocal.js';
 import { PACOTES_ANIMACAO, pacoteValido } from '../services/animacoes.js';
 import { VARIANTES_ESTUDO, varianteValida } from '../services/modoEstudo.js';
 import { telefoneValido } from '../services/boneco.js';
+import { ESTILOS_CARREGAMENTO, estiloCarregamentoValido } from '../data/carregamento.js';
 import AvisosDeVersao from '../components/definicoes/AvisosDeVersao.jsx';
 import PartilharComOVini from '../components/definicoes/PartilharComOVini.jsx';
 import AvatarBoneco from '../components/boneco/AvatarBoneco.jsx';
@@ -132,6 +133,13 @@ function Brincadeiras() {
   return (
     <>
       {barney}
+      <GrupoDefinicoes titulo="Ecrãs de carregamento" indice={0} nota="As frases que aparecem enquanto uma página chega. Muda a qualquer momento.">
+        {ESTILOS_CARREGAMENTO.map((e) => (
+          <LinhaDefinicao key={e.id} tipo="opcao" rotulo={e.nome} descricao={e.descricao} marcada={estiloCarregamentoValido(prefs.carregamento) === e.id}
+            aoClicar={() => mudar({ carregamento: e.id })} />
+        ))}
+      </GrupoDefinicoes>
+
       <GrupoDefinicoes titulo="Jogos" indice={0} nota="Sons curtos nos jogos (acertos, erros, combos e prémios). Se o telemóvel estiver em silêncio, não se ouve nada.">
         <LinhaDefinicao tipo="interruptor" rotulo="Sons dos jogos" ligado={prefs.jogosSom} aoClicar={() => mudar({ jogosSom: !prefs.jogosSom })} />
       </GrupoDefinicoes>

@@ -1,0 +1,35 @@
+/* carregamento: cada personagem com a sua cor e a sua animação */
+.carr { --carr-cor: var(--gold); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; text-align: center; color: var(--text-light); }
+html.dark .carr { color: var(--text-dark); }
+.carr--compacto { min-height: 260px; }
+.carr--barney { --carr-cor: var(--burgundy); }
+html.dark .carr--barney { --carr-cor: var(--gold); }
+.carr--damon { --carr-cor: var(--gold); }
+.carr-simples { opacity: 0.7; }
+.carr-cena { position: relative; width: 96px; height: 96px; display: grid; place-items: center; }
+.carr-anel { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--carr-cor); opacity: 0.5; animation: carr-onda 2s ease-out infinite; }
+.carr-icone { position: relative; z-index: 1; }
+.carr-frase { max-width: 32ch; font-size: 18px; line-height: 1.4; font-style: italic; text-wrap: balance; animation: carr-frase 0.6s ease both; }
+.carr-assina { font-family: system-ui, sans-serif; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--carr-cor); }
+.carr-barra { width: 140px; height: 3px; border-radius: 3px; background: var(--border-light); overflow: hidden; }
+html.dark .carr-barra { background: var(--border-dark); }
+.carr-barra i { display: block; width: 40%; height: 100%; background: var(--carr-cor); border-radius: 3px; animation: carr-barra 1.4s ease-in-out infinite; }
+
+/* barney: a gravata balança e o nó aperta */
+.carr-gravata { transform-origin: 50% 8%; animation: carr-balanca 1.8s ease-in-out infinite; }
+.carr-gravata__no, .carr-gravata__corpo { fill: var(--carr-cor); }
+.carr-gravata__corpo { opacity: 0.9; }
+.carr-gravata__no { animation: carr-aperta 1.8s ease-in-out infinite; transform-origin: 20px 8px; }
+/* damon: o licor ondula no copo e o brilho pisca */
+.carr-copo__vidro { fill: none; stroke: var(--carr-cor); stroke-width: 2; stroke-linejoin: round; }
+.carr-copo__licor { fill: var(--carr-cor); opacity: 0.55; transform-origin: 50% 100%; animation: carr-licor 2.4s ease-in-out infinite; }
+.carr-copo__brilho { fill: var(--carr-cor); animation: carr-brilho 1.6s ease-in-out infinite; }
+
+@keyframes carr-onda { 0% { transform: scale(0.6); opacity: 0.6; } 100% { transform: scale(1.25); opacity: 0; } }
+@keyframes carr-frase { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes carr-barra { 0% { transform: translateX(-120%); } 100% { transform: translateX(340%); } }
+@keyframes carr-balanca { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+@keyframes carr-aperta { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12, 0.9); } }
+@keyframes carr-licor { 0%, 100% { transform: scaleY(1) skewX(0); } 50% { transform: scaleY(0.94) skewX(5deg); } }
+@keyframes carr-brilho { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .carr * { animation: none !important; } .carr-anel { display: none; } }

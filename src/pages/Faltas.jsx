@@ -8,6 +8,7 @@ import { cadeirasS1, nomeCurtoCadeira } from '../data/dadosLeonor.js';
 import { contarMarcas } from '../services/presencas.js';
 import { historicoDeMarcas, comprovativosEmFalta, situacaoDaCadeira, simularFaltas, faltasAteExclusao, percentagemPresenca } from '../services/assiduidade.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
+import EcraCarregar from '../components/EcraCarregar.jsx';
 import '../components/calendario/MarcarAula.css';
 import './Faltas.css';
 
@@ -42,7 +43,7 @@ export default function Faltas() {
         <span className="faltas-subtitulo">1.º semestre · só contam as aulas práticas</span>
       </header>
 
-      {!carregado && <p className="faltas-vazio">A carregar...</p>}
+      {!carregado && <EcraCarregar compacto />}
 
       {pendentes.length > 0 && (
         <section className="faltas-comprovativos" aria-label="Comprovativos por entregar">

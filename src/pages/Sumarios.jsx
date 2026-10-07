@@ -9,6 +9,7 @@ import { cadeirasS1, coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor
 import { cartaoDaAula, cartaoDoTopico, contarPorCadeira, dataBonita, filtrarSumarios, listarSumarios, sumariosParaTexto } from '../services/sumarios.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import Icone from '../components/icones/Icone.jsx';
+import EcraCarregar from '../components/EcraCarregar.jsx';
 import './Sumarios.css';
 
 export default function Sumarios() {
@@ -75,7 +76,7 @@ export default function Sumarios() {
       </div>
       {aviso && <p className="sumarios-aviso no-print" role="status">{aviso}</p>}
 
-      {!carregado && <p className="sumarios-vazio">A carregar...</p>}
+      {!carregado && <EcraCarregar compacto />}
       {carregado && todos.length === 0 && (
         <div className="sumarios-vazio sumarios-vazio--grande">
           <Icone nome="pena" tamanho={44} />

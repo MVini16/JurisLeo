@@ -1,0 +1,80 @@
+/* cartão "hoje" do dashboard. só variáveis do index.css */
+.hoje { display: grid; gap: 10px; margin-bottom: 16px; }
+.cartao-hoje {
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--bg-light);
+  border: 1px solid var(--border-light);
+  color: var(--text-light);
+}
+html.dark .cartao-hoje { background: var(--bg-dark); border-color: var(--border-dark); color: var(--text-dark); }
+.hoje-titulo { margin: 0; font-family: Georgia, serif; font-size: 1.05rem; color: var(--burgundy); }
+html.dark .hoje-titulo { color: var(--gold); }
+
+.hoje-botao {
+  justify-self: start;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--burgundy);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+html.dark .hoje-botao { background: var(--gold); color: var(--bg-dark); }
+.hoje-botao:focus-visible, .hoje-story:focus-visible, .hoje-pilula:focus-visible, .hoje-desafio:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+/* série e meta */
+.hoje-anel { display: flex; align-items: center; gap: 14px; }
+.hoje-anel svg { width: 84px; height: 84px; flex: none; }
+.hoje-anel circle { fill: none; stroke-width: 9; }
+.hoje-anel__fundo { stroke: var(--border-light); }
+html.dark .hoje-anel__fundo { stroke: var(--border-dark); }
+.hoje-anel__meta { stroke: var(--burgundy); stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 1s cubic-bezier(0.2, 0.9, 0.3, 1); animation: hoje-enche 1.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
+html.dark .hoje-anel__meta { stroke: var(--gold); }
+@keyframes hoje-enche { from { stroke-dashoffset: 226; } }
+.hoje-anel text { fill: currentColor; font-family: Georgia, serif; font-weight: 700; font-size: 22px; text-anchor: middle; }
+.hoje-anel__texto { display: grid; gap: 6px; min-width: 0; }
+.hoje-anel__texto p { margin: 0; font-size: 0.85rem; opacity: 0.75; line-height: 1.4; }
+.hoje-serie { display: inline-flex; gap: 6px; align-items: center; width: fit-content; padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; border: 1px solid var(--border-light); }
+html.dark .hoje-serie { border-color: var(--border-dark); }
+.hoje-serie b { color: var(--selo); }
+.hoje-serie.pulsa b { display: inline-block; animation: hoje-pulsa 1.2s ease-in-out infinite; }
+@keyframes hoje-pulsa { 50% { transform: scale(1.3); } }
+
+/* stories */
+.hoje-stories { display: flex; gap: 12px; overflow-x: auto; padding: 6px 4px 8px; }
+.hoje-story { display: grid; gap: 4px; justify-items: center; flex: none; background: none; border: 0; color: inherit; font: inherit; font-size: 0.72rem; cursor: pointer; }
+.hoje-story i { position: relative; display: grid; place-items: center; width: 58px; height: 58px; border-radius: 50%; border: 3px solid var(--c); font-style: normal; font-weight: 700; font-size: 0.8rem; }
+.hoje-story.novo i { box-shadow: 0 0 0 3px var(--bg-light), 0 0 0 5px var(--c); animation: hoje-anel 2s ease-in-out infinite; }
+html.dark .hoje-story.novo i { box-shadow: 0 0 0 3px var(--bg-dark), 0 0 0 5px var(--c); }
+@keyframes hoje-anel { 50% { box-shadow: 0 0 0 3px var(--bg-light), 0 0 0 8px var(--c); } }
+.hoje-story em { position: absolute; right: -4px; top: -4px; min-width: 18px; height: 18px; display: grid; place-items: center; border-radius: 999px; background: var(--selo); color: #fff; font-size: 0.65rem; font-style: normal; }
+
+/* desafio */
+.hoje-desafio { perspective: 800px; display: block; width: 100%; padding: 0; background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.hoje-desafio__miolo { position: relative; display: block; min-height: 110px; transition: transform 0.6s cubic-bezier(0.3, 0.8, 0.3, 1); transform-style: preserve-3d; }
+.hoje-desafio.vira .hoje-desafio__miolo { transform: rotateY(180deg); }
+.hoje-desafio__face { position: absolute; inset: 0; display: grid; align-content: center; gap: 4px; backface-visibility: hidden; font-family: Georgia, serif; }
+.hoje-desafio__face small { font-family: inherit; opacity: 0.65; }
+.hoje-desafio__face--tras { transform: rotateY(180deg); color: var(--burgundy); }
+html.dark .hoje-desafio__face--tras { color: var(--gold); }
+.hoje-vazio { margin: 0; font-size: 0.88rem; opacity: 0.7; }
+
+/* barra */
+.hoje-barra { grid-template-columns: repeat(3, 1fr); }
+.hoje-pilula { display: grid; gap: 2px; justify-items: center; text-align: center; padding: 10px 6px; border-radius: 14px; border: 1px solid var(--border-light); background: var(--bg-light); color: var(--text-light); font: inherit; animation: hoje-entra 0.5s both; }
+html.dark .hoje-pilula { background: var(--bg-dark); border-color: var(--border-dark); color: var(--text-dark); }
+button.hoje-pilula { cursor: pointer; }
+.hoje-pilula b { font-family: Georgia, serif; font-size: 1.4rem; }
+.hoje-pilula small { opacity: 0.65; font-size: 0.7rem; }
+.hoje-pilula:nth-child(2) { animation-delay: 0.08s; }
+.hoje-pilula:nth-child(3) { animation-delay: 0.16s; }
+@keyframes hoje-entra { from { opacity: 0; transform: translateY(14px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hoje-anel__meta, .hoje-serie.pulsa b, .hoje-story.novo i, .hoje-pilula { animation: none; }
+  .hoje-desafio__miolo, .hoje-anel__meta { transition: none; }
+}

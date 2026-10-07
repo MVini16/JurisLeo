@@ -9,6 +9,7 @@ const PADRAO = {
   folhaNotas: 'pautado',
   estudoVisual: 'feed',
   animacoes: 'elegante',
+  hojeVisual: 'serie',
   // boneco do vini: aparece por omissão, "as vezes" puxa conversa, e o contacto do vini fica só neste telemóvel
   boneco: true,
   bonecoAspeto: 'A',

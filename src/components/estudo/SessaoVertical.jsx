@@ -5,17 +5,10 @@ import { abrevCadeiras } from '../../data/dadosLeonor.js';
 import {
   acaoDoGesto, diaDe, direcaoDoGesto, mensagemFinal, registarDia, resumoDaSessao, serieDeDias, varianteValida,
 } from '../../services/modoEstudo.js';
+import { contarRespostaDeHoje, guardarDiasDeEstudo, lerDiasDeEstudo } from '../../services/estudoLocal.js';
 import './SessaoVertical.css';
 
-const CHAVE_DIAS = 'jurisleo-estudo-dias';
 const SAIDA_MS = 420;
-
-function lerDias() {
-  try { return JSON.parse(localStorage.getItem(CHAVE_DIAS)) || []; } catch { return []; }
-}
-function guardarDias(dias) {
-  try { localStorage.setItem(CHAVE_DIAS, JSON.stringify(dias)); } catch { /* sem localstorage, a série fica só nesta sessão */ }
-}
 function vibrar(ms) {
   try { navigator.vibrate?.(ms); } catch { /* sem vibração */ }
 }
@@ -27,7 +20,7 @@ export default function SessaoVertical({ fila, variante: varianteBruta, onRespon
   const [saida, setSaida] = useState(null); // 'cima' | 'direita' | 'esquerda' | 'carimbo-ok' | 'carimbo-mal'
   const [respostas, setRespostas] = useState({}); // id -> true | false
   const [terminou, setTerminou] = useState(false);
-  const [serie, setSerie] = useState(() => serieDeDias(lerDias(), diaDe(Date.now())));
+  const [serie, setSerie] = useState(() => serieDeDias(lerDiasDeEstudo(), diaDe(Date.now())));
   const [subiuSerie, setSubiuSerie] = useState(false);
   const inicioGesto = useRef(null);
   const ocupado = useRef(false);
@@ -37,8 +30,8 @@ export default function SessaoVertical({ fila, variante: varianteBruta, onRespon
 
   const terminar = useCallback((resultado) => {
     const hoje = diaDe(Date.now());
-    const dias = registarDia(lerDias(), hoje);
-    guardarDias(dias);
+    const dias = registarDia(lerDiasDeEstudo(), hoje);
+    guardarDiasDeEstudo(dias);
     setSerie(serieDeDias(dias, hoje));
     setSubiuSerie(true);
     setTerminou(true);
@@ -61,6 +54,7 @@ export default function SessaoVertical({ fila, variante: varianteBruta, onRespon
     if (!(atual.id in respostas)) {
       novas[atual.id] = acertou;
       setRespostas(novas);
+      contarRespostaDeHoje(diaDe(Date.now()));
       Promise.resolve(onResponder(atual, acertou)).catch(() => { /* a resposta fica por guardar, o cartão volta amanhã */ });
     }
     if (variante === 'processo') setSaida(acertou ? 'carimbo-ok' : 'carimbo-mal');

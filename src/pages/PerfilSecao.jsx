@@ -7,6 +7,7 @@ import { useBarney } from '../hooks/useBarney.jsx';
 import { usePerfil } from '../hooks/usePerfil.js';
 import { usePreferencias } from '../hooks/usePreferencias.js';
 import { ASPETOS } from '../data/boneco.js';
+import { VARIANTES_HOJE, varianteHojeValida } from '../services/hoje.js';
 import { PACOTES_ANIMACAO, pacoteValido } from '../services/animacoes.js';
 import { VARIANTES_ESTUDO, varianteValida } from '../services/modoEstudo.js';
 import { telefoneValido } from '../services/boneco.js';
@@ -69,7 +70,20 @@ function Aparencia() {
         ))}
       </GrupoDefinicoes>
 
-      <GrupoDefinicoes titulo="Modo de estudo" indice={3} nota="É o aspeto da revisão de flashcards em ecrã inteiro.">
+      <GrupoDefinicoes titulo="Cartão de hoje" indice={3} nota="É o bloco no topo do Dashboard com a tua série, os flashcards para rever e o desafio do dia.">
+        {VARIANTES_HOJE.map((v) => (
+          <LinhaDefinicao
+            key={v.id}
+            tipo="opcao"
+            rotulo={v.nome}
+            descricao={v.descricao}
+            marcada={varianteHojeValida(prefs.hojeVisual) === v.id}
+            aoClicar={() => setPrefs(guardarPreferencias({ hojeVisual: v.id }))}
+          />
+        ))}
+      </GrupoDefinicoes>
+
+      <GrupoDefinicoes titulo="Modo de estudo" indice={4} nota="É o aspeto da revisão de flashcards em ecrã inteiro.">
         {VARIANTES_ESTUDO.map((v) => (
           <LinhaDefinicao
             key={v.id}

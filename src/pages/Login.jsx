@@ -1,12 +1,11 @@
 // importa os hooks do react
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 // importa a navegação
 import { useNavigate } from 'react-router-dom'
 // importa as funções de autenticação
 import { login, registar } from '../services/auth.js'
 // importa o firestore para verificar o onboarding
-import { doc, getDoc } from 'firebase/firestore'
-import { db } from '../services/firebase.js'
+import { destinoDoUtilizador, esperarSessao } from '../services/sessao.js'
 // importa o css
 import './Login.css'
 
@@ -23,6 +22,17 @@ function Login() {
   // estado de carregamento e erro
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
+
+  // se ela já entrou antes neste telemóvel, não pede o email: vai direta para onde devia
+  useEffect(() => {
+    let vivo = true
+    esperarSessao().then(async (utilizador) => {
+      if (!vivo || !utilizador) return
+      const destino = await destinoDoUtilizador(utilizador.uid)
+      if (vivo) navigate(destino, { replace: true })
+    })
+    return () => { vivo = false }
+  }, [navigate])
 
   // submete o formulário
   const handleSubmit = async () => {
@@ -41,21 +51,7 @@ function Login() {
         navigate('/onboarding')
       } else {
         // login — verifica se o onboarding já foi feito
-        try {
-          const userId = resultado.utilizador.uid
-          const perfilRef = doc(db, 'users', userId, 'perfil', 'dados')
-          const perfilSnap = await getDoc(perfilRef)
-
-          if (perfilSnap.exists() && perfilSnap.data().onboardingFeito) {
-            // onboarding já feito — vai para dashboard
-            navigate('/dashboard')
-          } else {
-            // onboarding não feito — vai para onboarding
-            navigate('/onboarding')
-          }
-        } catch {
-          navigate('/dashboard')
-        }
+        navigate(await destinoDoUtilizador(resultado.utilizador.uid))
       }
     } else {
       // traduz os erros mais comuns do firebase
@@ -120,6 +116,10 @@ function Login() {
           <input
             className="login-input"
             type="email"
+            name="email"
+            autoComplete="username"
+            autoCapitalize="none"
+            autoCorrect="off"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -127,6 +127,8 @@ function Login() {
           <input
             className="login-input"
             type="password"
+            name="password"
+            autoComplete={modoRegisto ? 'new-password' : 'current-password'}
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

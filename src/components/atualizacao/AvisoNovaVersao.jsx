@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useVersaoNova } from '../../hooks/useVersaoNova.js';
 import { rotaOcupada, rotaSemBoneco } from '../../services/boneco.js';
-import { AVISO_DE_REINSTALAR, detetarPlataforma, passosDoTutorial } from '../../services/atualizacao.js';
+import { AVISO_DE_REINSTALAR, PLATAFORMAS_TUTORIAL, detetarPlataforma, passosDoTutorial } from '../../services/atualizacao.js';
 import './AvisoNovaVersao.css';
 
 function Passos({ passos }) {
@@ -25,13 +25,13 @@ export default function AvisoNovaVersao() {
   const { aviso, novidades, adiar, dispensarNovidades } = useVersaoNova();
   const [aberto, setAberto] = useState('rapido'); // 'rapido' | 'completo' | null
   const [copiado, setCopiado] = useState('');
+  const [escolhida, setEscolhida] = useState(() => detetarPlataforma(navigator.userAgent, navigator.maxTouchPoints));
 
   const ocupada = rotaOcupada(pathname) || rotaSemBoneco(pathname) || pathname.startsWith('/jogos');
   if (ocupada || (!aviso && !novidades)) return null;
 
   const endereco = window.location.origin;
-  const plataforma = detetarPlataforma(navigator.userAgent, navigator.maxTouchPoints);
-  const tutorial = passosDoTutorial(plataforma, endereco);
+  const tutorial = passosDoTutorial(escolhida, endereco);
 
   async function copiar() {
     try {
@@ -63,6 +63,12 @@ export default function AvisoNovaVersao() {
         <h2>{aviso.titulo || 'O JurisLeo tem novidades'}</h2>
         {aviso.itens.length > 0 && <ul className="anv-itens">{aviso.itens.map((i) => <li key={i}>{i}</li>)}</ul>}
         <p className="anv-nota">Para a veres, a app tem de ir buscar a versão nova à internet. É rápido, segue estes passos.</p>
+
+        <div className="anv-plataformas" role="radiogroup" aria-label="Em que aparelho estás?">
+          {PLATAFORMAS_TUTORIAL.map((p) => (
+            <button key={p.id} type="button" role="radio" aria-checked={escolhida === p.id} className="anv-plataforma" onClick={() => setEscolhida(p.id)}>{p.nome}</button>
+          ))}
+        </div>
 
         <div className="anv-bloco">
           <button type="button" className="anv-cab" aria-expanded={aberto === 'rapido'} onClick={() => setAberto(aberto === 'rapido' ? null : 'rapido')}>

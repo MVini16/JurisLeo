@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { destinoDoUtilizador, esperarSessao } from '../services/sessao.js'
 import './SplashScreen.css'
 
 // frases motivacionais — podes adicionar mais aqui
@@ -137,10 +138,26 @@ function SplashScreen() {
   }, [])
 
   // transição de saída suave antes de navegar
-  const handleEntrar = () => {
+  const handleEntrar = async () => {
     setSaindo(true)
-    setTimeout(() => navigate('/login'), 800)
+    // se ela já tem sessão neste telemóvel, entra direta sem passar pelo login
+    const utilizador = await esperarSessao()
+    const destino = utilizador ? await destinoDoUtilizador(utilizador.uid) : '/login'
+    setTimeout(() => navigate(destino), 800)
   }
+
+  // com sessão guardada, a abertura mostra o splash um instante e segue sozinha
+  useEffect(() => {
+    let vivo = true
+    esperarSessao().then(async (utilizador) => {
+      if (!vivo || !utilizador) return
+      const destino = await destinoDoUtilizador(utilizador.uid)
+      if (!vivo) return
+      setSaindo(true)
+      setTimeout(() => { if (vivo) navigate(destino, { replace: true }) }, 2200)
+    })
+    return () => { vivo = false }
+  }, [navigate])
 
   return (
     <div className="splash-container" onClick={handleClick}>

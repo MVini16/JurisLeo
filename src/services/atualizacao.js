@@ -35,36 +35,67 @@ export function detetarPlataforma(userAgent = '', pontosDeToque = 0) {
   return 'outra';
 }
 
-// o caminho rápido resolve quase sempre; o completo só se a versão antiga teimar
+// as plataformas que o tutorial sabe explicar, pela ordem em que aparecem no ecrã
+export const PLATAFORMAS_TUTORIAL = [
+  { id: 'ios', nome: 'iPhone' },
+  { id: 'android', nome: 'Android' },
+  { id: 'outra', nome: 'Computador' },
+];
+
+const COPIA = { titulo: 'Guarda uma cópia', texto: 'Antes de apagares nada: abre a app, toca em Perfil, depois em Os meus dados e em "Copiar os dados deste telemóvel". Abre as Mensagens, escreve para ti própria e cola o texto lá. Fica guardado.' };
+const LOGIN = { titulo: 'Entra com a tua conta', texto: 'Abre o ícone novo e faz login com o teu email e password. Só precisas de o fazer esta vez: depois a app lembra-se de ti.' };
+const REPOR = { titulo: 'Repõe a cópia', texto: 'Perfil, Os meus dados, "Repor uma cópia". Cola o texto que guardaste nas Mensagens e toca em Repor. Fecha a app e abre-a outra vez para veres tudo.' };
+
+// o caminho rápido resolve quase sempre; o completo só se a versão antiga teimar. cada plataforma tem os seus passos
 export function passosDoTutorial(plataforma, endereco) {
-  const rapido = [
-    { titulo: 'Fecha o JurisLeo', texto: 'Desliza do fundo do ecrã para cima, até a app mostrar as janelas abertas, e empurra o JurisLeo para cima.' },
-    { titulo: 'Abre-o outra vez', texto: 'Toca no ícone no ecrã principal. A versão nova descarrega sozinha em segundo plano.' },
-    { titulo: 'Fecha e abre de novo', texto: 'Repete os dois passos acima uma segunda vez. É quase sempre à segunda que a versão nova aparece.' },
-  ];
-  const completo = {
+  const rapido = {
     ios: [
-      { titulo: 'Guarda uma cópia', texto: 'Antes de apagares nada: Definições, Os meus dados, "Copiar os dados deste telemóvel". Cola o texto numa mensagem para ti.' },
-      { titulo: 'Abre o Safari', texto: `Escreve o endereço ${endereco} e espera que a página carregue toda.` },
-      { titulo: 'Toca em Partilhar', texto: 'É o quadrado com uma seta para cima, em baixo no centro do ecrã.' },
-      { titulo: 'Adicionar ao ecrã principal', texto: 'Desce na lista, toca em "Adicionar ao ecrã principal" e depois em "Adicionar".' },
-      { titulo: 'Entra com a tua conta', texto: 'Abre o ícone novo e faz login outra vez. Os teus dados da conta estão todos lá.' },
-      { titulo: 'Repõe a cópia', texto: 'Definições, Os meus dados, "Repor uma cópia". Cola o texto e toca em Repor.' },
+      { titulo: 'Abre as janelas abertas', texto: 'No iPhone com Face ID: põe o dedo na linha de baixo do ecrã, desliza para cima até ao meio do ecrã e solta. No iPhone com botão central: carrega duas vezes no botão.' },
+      { titulo: 'Fecha o JurisLeo', texto: 'Procura o cartão do JurisLeo e empurra-o para cima, até desaparecer.' },
+      { titulo: 'Abre-o outra vez', texto: 'Toca no ícone do JurisLeo no ecrã principal e espera uns segundos. A versão nova descarrega sozinha em segundo plano, se tiveres rede.' },
+      { titulo: 'Repete uma segunda vez', texto: 'Fecha e abre de novo, como nos passos de cima. É quase sempre à segunda vez que a versão nova aparece.' },
     ],
     android: [
-      { titulo: 'Guarda uma cópia', texto: 'Antes de apagares nada: Definições, Os meus dados, "Copiar os dados deste telemóvel". Cola o texto numa mensagem para ti.' },
+      { titulo: 'Fecha o JurisLeo', texto: 'Toca no botão das janelas abertas (ou desliza do fundo para cima e pára a meio) e empurra o JurisLeo para cima.' },
+      { titulo: 'Abre-o outra vez', texto: 'Toca no ícone no ecrã principal. A versão nova descarrega sozinha em segundo plano.' },
+      { titulo: 'Repete uma segunda vez', texto: 'Fecha e abre de novo. É quase sempre à segunda vez que a versão nova aparece.' },
+    ],
+    outra: [
+      { titulo: 'Atualiza a página', texto: 'No navegador, carrega em Ctrl+Shift+R (ou Cmd+Shift+R num Mac). Isto ignora a cópia guardada e vai buscar tudo outra vez.' },
+      { titulo: 'Se a usas como app instalada', texto: 'Fecha a janela do JurisLeo por completo e volta a abri-la a partir do ícone. Repete uma segunda vez se a versão antiga continuar.' },
+    ],
+  };
+  const completo = {
+    ios: [
+      COPIA,
+      { titulo: 'Apaga o ícone antigo', texto: 'No ecrã principal, mantém o dedo em cima do ícone do JurisLeo até os ícones tremerem. Toca em "Remover app" e depois em "Apagar". Se aparecer a pergunta, escolhe apagar a app (não só tirar do ecrã).' },
+      { titulo: 'Abre o Safari', texto: `Tem de ser o Safari, não outro navegador. Escreve o endereço ${endereco} na barra e espera que a página carregue toda.` },
+      { titulo: 'Toca em Partilhar', texto: 'É o quadrado com uma seta para cima, na barra de baixo (ou ao lado do endereço, se o iPhone estiver deitado).' },
+      { titulo: 'Adicionar ao ecrã principal', texto: 'Desce na lista até encontrares "Adicionar ao ecrã principal", toca nela e depois em "Adicionar", em cima à direita. Se vires "Abrir como app web", deixa ligado.' },
+      { titulo: 'Abre pelo ícone novo', texto: 'Volta ao ecrã principal e abre o JurisLeo pelo ícone que acabou de aparecer. Não uses o Safari daqui para a frente.' },
+      LOGIN,
+      REPOR,
+      { titulo: 'Notificações (opcional)', texto: 'Se quiseres um aviso quando houver uma versão nova: Perfil, Os meus dados, "Avisos de versão nova", "Ligar as notificações" e toca em Permitir. Só funciona com a app aberta pelo ícone do ecrã principal.' },
+    ],
+    android: [
+      COPIA,
       { titulo: 'Abre o Chrome', texto: `Escreve o endereço ${endereco} e espera que a página carregue toda.` },
       { titulo: 'Abre o menu', texto: 'Toca nos três pontinhos, em cima à direita.' },
       { titulo: 'Instalar a app', texto: 'Escolhe "Instalar app" (ou "Adicionar ao ecrã principal") e confirma.' },
-      { titulo: 'Entra com a tua conta', texto: 'Abre o ícone novo e faz login outra vez. Os teus dados da conta estão todos lá.' },
-      { titulo: 'Repõe a cópia', texto: 'Definições, Os meus dados, "Repor uma cópia". Cola o texto e toca em Repor.' },
+      LOGIN,
+      REPOR,
     ],
     outra: [
-      { titulo: 'Abre o navegador', texto: `Escreve o endereço ${endereco}.` },
-      { titulo: 'Atualiza a página', texto: 'Carrega em Ctrl+Shift+R (ou Cmd+Shift+R no Mac) para ir buscar a versão nova.' },
+      COPIA,
+      { titulo: 'Abre o navegador', texto: `Escreve o endereço ${endereco} e espera que a página carregue toda.` },
+      { titulo: 'Atualiza a página', texto: 'Carrega em Ctrl+Shift+R (ou Cmd+Shift+R num Mac) para ir buscar a versão nova.' },
+      { titulo: 'Se a página continuar igual', texto: 'Carrega em F12, abre o separador "Aplicação" (ou "Armazenamento"), escolhe "Service Workers" e toca em "Cancelar registo". Depois, em "Armazenamento da cache", apaga as entradas e recarrega a página.' },
+      { titulo: 'Para a instalares como app (opcional)', texto: 'No Chrome ou no Edge, o ícone de instalar aparece no fim da barra de endereço. No Firefox, usa a página normal.' },
+      LOGIN,
     ],
   };
-  return { rapido, completo: completo[plataforma] ?? completo.outra };
+  const id = completo[plataforma] ? plataforma : 'outra';
+  return { rapido: rapido[id], completo: completo[id] };
 }
 
 // o que se perde se ela apagar o ícone antigo e instalar de novo: só o que está guardado no próprio telemóvel

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  precisaDeAtualizar, estaAdiado, deveMostrarNovidades, lerVersaoDoServidor, detetarPlataforma, passosDoTutorial, ADIAR_MS, AVISO_DE_REINSTALAR,
+  PLATAFORMAS_TUTORIAL, precisaDeAtualizar, estaAdiado, deveMostrarNovidades, lerVersaoDoServidor, detetarPlataforma, passosDoTutorial, ADIAR_MS, AVISO_DE_REINSTALAR,
 } from './atualizacao.js';
 import { NOVIDADES, VERSAO_ATUAL } from '../data/novidades.js';
 
@@ -76,5 +76,26 @@ describe('novidades', () => {
   });
   it('as versões são únicas', () => {
     expect(new Set(NOVIDADES.map((n) => n.versao)).size).toBe(NOVIDADES.length);
+  });
+});
+
+describe('o tutorial por aparelho', () => {
+  it('iPhone e computador têm passos próprios, e o do iPhone é o mais detalhado', () => {
+    const ios = passosDoTutorial('ios', 'https://x.pt');
+    const pc = passosDoTutorial('outra', 'https://x.pt');
+    expect(PLATAFORMAS_TUTORIAL.map((p) => p.id)).toEqual(['ios', 'android', 'outra']);
+    expect(ios.completo.length).toBeGreaterThan(pc.completo.length);
+    expect(ios.completo.some((p) => /Safari/.test(p.texto))).toBe(true);
+    expect(ios.completo.some((p) => /Remover app/.test(p.texto))).toBe(true);
+    expect(pc.completo.some((p) => /Ctrl\+Shift\+R/.test(p.texto))).toBe(true);
+    expect(pc.completo.some((p) => /Safari/.test(p.texto))).toBe(false);
+  });
+  it('nenhum passo tem travessões nem emojis', () => {
+    for (const id of ['ios', 'android', 'outra']) {
+      const t = passosDoTutorial(id, 'x');
+      for (const p of [...t.rapido, ...t.completo]) {
+        expect(`${p.titulo} ${p.texto}`).not.toMatch(/—|–|\p{Extended_Pictographic}/u);
+      }
+    }
   });
 });

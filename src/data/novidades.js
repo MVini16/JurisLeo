@@ -4,6 +4,15 @@
 // (o build escreve-a em /versao.json). deploys só de correções, sem novidades, não mexem aqui e não fazem aparecer o aviso.
 export const NOVIDADES = [
   {
+    versao: '2026-10-09',
+    titulo: 'Entras sem escrever o email',
+    itens: [
+      'Já não precisas de escrever o email e a password sempre que abres a app: ela lembra-se de ti e entra sozinha. Só voltas ao login se saíres da conta.',
+      'Avisos de versão nova no telemóvel: nas Definições, em "Os meus dados", liga as notificações e toca em Permitir. No iPhone, abre a app pelo ícone do ecrã principal.',
+      'O tutorial para ir buscar a versão nova tem agora passos separados para iPhone, Android e computador, mais detalhados.',
+    ],
+  },
+  {
     versao: '2026-10-08',
     titulo: 'Partilhar com o Vini, se quiseres',
     itens: [

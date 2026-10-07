@@ -43,3 +43,9 @@ html.dark .anv-botao { border-color: var(--gold); color: var(--gold); }
 html.dark .anv-botao--forte { background: var(--gold); color: var(--bg-dark); }
 .anv-fundo button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .anv-fundo, .anv-folha, .anv-passos li, .anv-bloco > * { animation: none; } }
+
+/* escolha do aparelho: iphone, android ou computador */
+.anv-plataformas { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 10px; }
+.anv-plataforma { padding: 8px 14px; border-radius: 999px; border: 1px solid var(--gold); background: transparent; color: inherit; font: inherit; font-weight: 600; cursor: pointer; }
+.anv-plataforma[aria-checked='true'] { background: var(--burgundy); border-color: var(--burgundy); color: #fff; }
+.anv-plataforma:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }

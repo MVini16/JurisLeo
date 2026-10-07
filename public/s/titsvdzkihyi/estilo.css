@@ -85,6 +85,11 @@ h1 { font-size: clamp(3.4rem, 17vw, 8rem); font-weight: 400; margin: 0; letter-s
 .razoes li { counter-increment: r; display: grid; grid-template-columns: 2.6rem 1fr; gap: 12px; align-items: baseline; font-size: clamp(1.15rem, 4.8vw, 1.5rem); }
 .razoes li::before { content: counter(r, decimal-leading-zero); font-family: var(--sans); font-size: .8rem; letter-spacing: .15em; color: var(--ouro); }
 
+.cap--carta { align-content: start; padding-block: 16svh 18svh; }
+.carta-longa { max-width: 34rem; display: grid; gap: 1.7rem; text-align: left; font-size: clamp(1.12rem, 4.6vw, 1.3rem); line-height: 1.85; color: var(--texto); }
+.carta-longa p { margin: 0; text-wrap: pretty; }
+.carta-longa p:first-child, .carta-longa p:last-child { color: var(--ouro); }
+
 .cap--final { gap: 2.4rem; background: radial-gradient(ellipse at 50% 60%, rgba(142,31,51,.3), transparent 70%); }
 .assinatura { color: var(--ouro); font-size: 1.2rem; margin: 0; }
 

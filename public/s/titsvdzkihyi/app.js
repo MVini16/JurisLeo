@@ -33,6 +33,8 @@
   paragrafos($('interludioTexto'), C.interludio);
   paragrafos($('finalTexto'), C.final);
   $('assinatura').textContent = C.assinatura;
+  $('cartaTitulo').textContent = C.cartaTitulo || '';
+  (C.carta || []).forEach(function (par) { $('cartaLonga').appendChild(el('p', null, par)); });
 
   var caixaMomentos = $('momentos');
   C.momentos.forEach(function (m) {
@@ -148,6 +150,11 @@
       variantes[i % variantes.length](tl, q, l);
       tl.fromTo(l, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' }, 0.14);
       tl.to([q, l], { opacity: 0.12, y: -60, duration: 0.24, ease: 'power1.in' }, 0.76);
+    });
+
+    // a carta longa: cada parágrafo aparece com calma ao chegar ao ecrã
+    gsap.utils.toArray('#cartaLonga p').forEach(function (p) {
+      gsap.from(p, { opacity: 0, y: 24, duration: 1, ease: 'power2.out', scrollTrigger: { trigger: p, start: 'top 90%' } });
     });
 
     // razões vão aparecendo uma a uma

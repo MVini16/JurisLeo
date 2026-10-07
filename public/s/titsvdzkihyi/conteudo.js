@@ -19,6 +19,22 @@ window.CONTEUDO = {
     { titulo: 'O abraço que ficou comigo', data: '', foto: '', texto: 'Há abraços que arrumam o dia inteiro. O teu é um deles. Se eu pudesse guardar um momento para sempre, escolhia este.' },
     { titulo: 'E o que ainda vem', data: '', foto: '', texto: 'O melhor de ter as nossas fotos até aqui é saber que ainda faltam tantas. Quero muitas mais contigo.' },
   ],
+  // o texto longo, para ler quando ela quiser. cada item é um parágrafo. troca por palavras tuas, com factos vossos
+  cartaTitulo: 'Para leres quando quiseres',
+  carta: [
+    'Necas,',
+    'Não sei bem por onde começar, por isso começo pelo mais simples: obrigado. Obrigado por existires na minha vida e por me deixares fazer parte da tua.',
+    'Quando penso em nós, não penso só nos dias grandes. Penso nos pequenos. Nas mensagens sem motivo, nas conversas que se esticam sem darmos por isso, nos silêncios em que estamos bem sem ter de dizer nada. É aí que eu percebo o quanto tu significas para mim.',
+    'Tu tens uma força que muitas vezes não vês. Vejo-te a levantar-te cedo, a estudar até tarde, a preocupares-te com cada frequência, e a continuares mesmo quando estás cansada. Isso é coragem. E eu tenho um orgulho enorme em ti, mesmo nos dias em que tu não tens.',
+    'Quero que saibas que não tens de ser perfeita para mim. Não preciso da Necas que tem tudo controlado, que sabe todas as respostas, que nunca falha. Gosto da Necas inteira: a que ri, a que se chateia, a que duvida, a que se esquece de comer porque estava a estudar, a que me olha de uma maneira que me desarma.',
+    'Há dias que vão ser difíceis. Vão haver notas que não correm como querias, semanas pesadas, e dias em que o mundo parece demasiado grande. Nesses dias, quero que te lembres de uma coisa: não estás sozinha. Mesmo quando não consigo resolver o que te custa, posso ficar contigo enquanto custa. E isso eu faço sempre.',
+    'Também quero pedir-te desculpa pelas vezes em que não fui o melhor. Pelas vezes em que fui impaciente, em que não ouvi como devia, em que estava distraído. Estou a aprender, e tu fazes-me querer aprender melhor.',
+    'Quero-te ver a acabar este curso, a ser a advogada que sempre disseste que querias ser, a entrar numa sala e a deixá-la mais justa só por estares lá. E quero estar do teu lado quando isso acontecer, a aplaudir o mais alto de todos.',
+    'Quero as nossas manhãs lentas, os nossos jantares, as nossas viagens, as nossas discussões parvas que acabam em riso. Quero as nossas fotos de agora e as que ainda não tirámos. Quero envelhecer a descobrir coisas novas sobre ti.',
+    'Se um dia duvidares do quanto és amada, volta a esta página. Lê devagar, quantas vezes forem precisas. Está aqui sempre para ti.',
+    'Eu escolho-te hoje, e escolho-te amanhã. E no dia a seguir, outra vez.',
+    'Amo-te, Necas. Mais do que consigo escrever.',
+  ],
   interludio: [
     'Tu fazes o mundo parecer mais pequeno,',
     'e a minha vida muito maior.',

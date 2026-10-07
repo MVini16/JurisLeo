@@ -5,27 +5,12 @@ import { cadeirasS1 } from '../../data/dadosLeonor.js';
 import { prepararFlashcard } from '../../services/notaFerramentas.js';
 import { criarFlashcard } from '../../services/flashcards.js';
 
-export function BarraProcura({ termo, total, atual, aoMudar, aoAvancar, aoFechar }) {
-  const campo = useRef(null);
-  useEffect(() => { campo.current?.focus(); }, []);
+// a pílula que fica a flutuar depois de escolher um resultado: anda para a frente e para trás nas ocorrências
+export function BarraProcura({ termo, total, atual, aoAvancar, aoFechar, aoReabrir }) {
   return (
-    <div className="er-procura" role="search">
-      <input
-        ref={campo}
-        type="search"
-        className="er-procura__campo"
-        placeholder="Procurar nesta nota"
-        value={termo}
-        onChange={(e) => aoMudar(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') { e.preventDefault(); aoAvancar(e.shiftKey ? -1 : 1); }
-          if (e.key === 'Escape') aoFechar();
-        }}
-        aria-label="Procurar nesta nota"
-      />
-      <span className="er-procura__contagem" aria-live="polite">
-        {termo.trim() ? (total === 0 ? 'Nada encontrado' : `${atual + 1} de ${total}`) : ''}
-      </span>
+    <div className="er-procura er-procura--flutua" role="search">
+      <button type="button" className="er-procura__termo" onClick={aoReabrir} aria-label="Alterar a procura">{termo}</button>
+      <span className="er-procura__contagem" aria-live="polite">{total === 0 ? 'Nada encontrado' : `${atual + 1} de ${total}`}</span>
       <button type="button" className="er-btn" onClick={() => aoAvancar(-1)} disabled={total === 0} aria-label="Anterior">↑</button>
       <button type="button" className="er-btn" onClick={() => aoAvancar(1)} disabled={total === 0} aria-label="Seguinte">↓</button>
       <button type="button" className="er-btn" onClick={aoFechar} aria-label="Fechar a procura">✕</button>
@@ -33,25 +18,72 @@ export function BarraProcura({ termo, total, atual, aoMudar, aoAvancar, aoFechar
   );
 }
 
-export function PainelIndice({ itens, aoIr, aoFechar }) {
+// a procura ao centro, à maneira de um spotlight: escreve-se, vê-se a lista de frases e escolhe-se uma
+export function PesquisaSpotlight({ termo, resultados, aoMudar, aoEscolher, aoFechar }) {
+  const campo = useRef(null);
+  const [foco, setFoco] = useState(0);
+  useEffect(() => { campo.current?.focus(); }, []);
+  const ativo = Math.min(foco, Math.max(0, resultados.length - 1));
+
+  const aoTeclar = (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); aoFechar(); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); setFoco(Math.min(ativo + 1, resultados.length - 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setFoco(Math.max(ativo - 1, 0)); }
+    else if (e.key === 'Enter' && resultados.length > 0) { e.preventDefault(); aoEscolher(ativo); }
+  };
+
   return (
-    <nav className="er-indice" aria-label="Índice da nota">
-      <div className="er-indice__topo">
-        <b>Índice</b>
-        <button type="button" className="er-btn" onClick={aoFechar} aria-label="Fechar o índice">✕</button>
+    <div className="er-spot" onClick={aoFechar}>
+      <div className="er-spot__caixa" role="dialog" aria-modal="true" aria-label="Procurar nesta nota" onClick={(e) => e.stopPropagation()}>
+        <input
+          ref={campo}
+          type="search"
+          className="er-spot__campo"
+          placeholder="Procurar na nota..."
+          value={termo}
+          onChange={(e) => { setFoco(0); aoMudar(e.target.value); }}
+          onKeyDown={aoTeclar}
+          aria-label="Procurar nesta nota"
+        />
+        <p className="er-spot__contagem" aria-live="polite">
+          {termo.trim() ? (resultados.length === 0 ? 'Nada encontrado' : `${resultados.length} ${resultados.length === 1 ? 'resultado' : 'resultados'}`) : 'Escreve uma palavra ou um artigo'}
+        </p>
+        <ul className="er-spot__lista">
+          {resultados.map((r, i) => (
+            <li key={i}>
+              <button type="button" className={i === ativo ? 'ativo' : ''} onClick={() => aoEscolher(i)} onMouseEnter={() => setFoco(i)}>
+                <span>{r.antes}<mark>{r.achado}</mark>{r.depois}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
+    </div>
+  );
+}
+
+// o índice como uma fila de etiquetas no topo da folha: desliza-se e toca-se num título
+export function ChipsIndice({ itens, aoIr, aoFechar }) {
+  return (
+    <nav className="er-chips" aria-label="Índice da nota">
       {itens.length === 0
-        ? <p className="er-indice__vazio">Ainda não há títulos. Usa T1, T2 ou T3 no separador Parágrafo e eles aparecem aqui.</p>
-        : (
-          <ol className="er-indice__lista">
-            {itens.map((item, i) => (
-              <li key={`${i}-${item.texto}`} style={{ '--nivel': item.nivel - 1 }}>
-                <button type="button" onClick={() => aoIr(i)}>{item.texto}</button>
-              </li>
-            ))}
-          </ol>
-        )}
+        ? <span className="er-chips__vazio">Ainda não há títulos. Usa T1, T2 ou T3 no separador Parágrafo.</span>
+        : itens.map((item, i) => (
+          <button key={`${i}-${item.texto}`} type="button" className={`er-chip-indice nivel-${item.nivel}`} onClick={() => aoIr(i)}>{item.texto}</button>
+        ))}
+      <button type="button" className="er-chips__fechar" onClick={aoFechar} aria-label="Fechar o índice">✕</button>
     </nav>
+  );
+}
+
+// a barrinha escura que aparece junto ao texto selecionado
+export function MenuSelecao({ posicao, aoFlashcard, aoMarcar, aoCopiar }) {
+  return (
+    <div className="er-menusel" style={{ top: posicao.top, left: posicao.left }} role="toolbar" aria-label="Ações para o texto selecionado" onMouseDown={(e) => e.preventDefault()}>
+      <button type="button" onClick={aoFlashcard}>Flashcard</button>
+      <button type="button" onClick={aoMarcar}>Marcar</button>
+      <button type="button" onClick={aoCopiar}>Copiar</button>
+    </div>
   );
 }
 

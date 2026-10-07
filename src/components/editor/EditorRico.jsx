@@ -6,7 +6,7 @@ import { useEditor, useEditorState, EditorContent } from '@tiptap/react';
 import { extensoes } from './extensoes.js';
 import BarraEditor from './BarraEditor.jsx';
 import CamadaDesenho from './CamadaDesenho.jsx';
-import { BarraProcura, PainelIndice, FolhaFlashcard } from './FerramentasDaNota.jsx';
+import { BarraProcura, PesquisaSpotlight, ChipsIndice, MenuSelecao, FolhaFlashcard } from './FerramentasDaNota.jsx';
 import { indiceDoDocumento, proximaOcorrencia } from '../../services/notaFerramentas.js';
 import { bytesDoDocumento, classificarTamanho, folhaValida } from '../../services/notaRica.js';
 import {
@@ -29,7 +29,8 @@ export default function EditorRico({ ref, valorInicial, folhaInicial, desenhoIni
   const tamanho = useMemo(() => classificarTamanho(bytesDoTexto + tamanhoDoDesenhoEmBytes(tracos)), [bytesDoTexto, tracos]);
   const alturaUnidades = useMemo(() => alturaDoDesenho(tracos), [tracos]);
   const temporizador = useRef(null);
-  const [painel, setPainel] = useState(null); // null | 'procurar' | 'indice'
+  const [procurarAberto, setProcurarAberto] = useState(false);
+  const [indiceAberto, setIndiceAberto] = useState(false);
   const [termo, setTermo] = useState('');
   const [selecaoParaFlashcard, setSelecaoParaFlashcard] = useState(null);
   const [aviso, setAviso] = useState('');
@@ -47,10 +48,14 @@ export default function EditorRico({ ref, valorInicial, folhaInicial, desenhoIni
     },
   });
 
-  const temSelecao = useEditorState({
+  // o texto selecionado (se houver um bocado a sério), para mostrar o menu junto dele
+  const selecao = useEditorState({
     editor,
-    selector: ({ editor: ed }) => !!ed && !ed.state.selection.empty
-      && ed.state.doc.textBetween(ed.state.selection.from, ed.state.selection.to, ' ').trim().length > 2,
+    selector: ({ editor: ed }) => {
+      if (!ed || ed.state.selection.empty) return null;
+      const { from, to } = ed.state.selection;
+      return ed.state.doc.textBetween(from, to, ' ').trim().length > 2 ? { from, to } : null;
+    },
   });
 
   useEffect(() => () => clearTimeout(temporizador.current), []);
@@ -59,7 +64,7 @@ export default function EditorRico({ ref, valorInicial, folhaInicial, desenhoIni
   useEffect(() => {
     if (!editor) return undefined;
     const aoTeclar = (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f' && editor.isFocused) { e.preventDefault(); setPainel('procurar'); }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f' && editor.isFocused) { e.preventDefault(); setProcurarAberto(true); }
     };
     window.addEventListener('keydown', aoTeclar);
     return () => window.removeEventListener('keydown', aoTeclar);
@@ -88,8 +93,23 @@ export default function EditorRico({ ref, valorInicial, folhaInicial, desenhoIni
   function fecharProcura() {
     setTermo('');
     editor?.commands.pesquisar('');
-    setPainel(null);
+    setProcurarAberto(false);
   }
+
+  // escolher uma frase da lista: fecha a caixa, deixa o termo marcado e a pílula para andar entre ocorrências
+  function escolherResultado(i) {
+    editor.commands.irParaOcorrencia(i);
+    setProcurarAberto(false);
+    redesenhar();
+  }
+
+  // o menu da seleção acompanha o scroll
+  useEffect(() => {
+    if (!selecao) return undefined;
+    window.addEventListener('scroll', redesenhar, true);
+    window.addEventListener('resize', redesenhar);
+    return () => { window.removeEventListener('scroll', redesenhar, true); window.removeEventListener('resize', redesenhar); };
+  }, [selecao]);
 
   // o índice leva ao n-ésimo título, pela mesma ordem em que o índice os lista
   function irParaTitulo(i) {
@@ -125,6 +145,37 @@ export default function EditorRico({ ref, valorInicial, folhaInicial, desenhoIni
     return editor.state.doc.textBetween(from, to, ' ');
   }
 
+  function marcarSelecao() {
+    editor.chain().focus().toggleHighlight({ color: 'var(--nota-marca-amarelo)' }).run();
+  }
+
+  function copiarSelecao() {
+    navigator.clipboard?.writeText(abrirSelecao()).then(() => setAviso('Copiado'), () => setAviso('Não consegui copiar'));
+  }
+
+  // as frases onde o termo aparece, com um bocado de texto antes e depois (para a caixa de procura)
+  const resultados = (() => {
+    if (!procurarAberto) return [];
+    const { ocorrencias } = editor.storage.pesquisa;
+    const doc = editor.state.doc;
+    return ocorrencias.slice(0, 50).map((o) => ({
+      antes: doc.textBetween(Math.max(0, o.from - 28), o.from, ' '),
+      achado: doc.textBetween(o.from, o.to, ' '),
+      depois: doc.textBetween(o.to, Math.min(doc.content.size, o.to + 40), ' '),
+    }));
+  })();
+
+  let posicaoMenu = null;
+  if (selecao && !modoDesenho && selecaoParaFlashcard === null && !foco) {
+    try {
+      const ponto = editor.view.coordsAtPos(selecao.to);
+      posicaoMenu = {
+        top: Math.min(ponto.bottom + 10, window.innerHeight - 56),
+        left: Math.max(8, Math.min(ponto.left - 80, window.innerWidth - 232)),
+      };
+    } catch { /* a seleção saiu do ecrã: sem menu */ }
+  }
+
   const desenho = {
     ferramenta,
     mudarFerramenta: (parcial) => setFerramenta((f) => ({ ...f, ...parcial })),
@@ -149,26 +200,27 @@ export default function EditorRico({ ref, valorInicial, folhaInicial, desenhoIni
             desenho={desenho}
             aoMudarAba={(aba) => setModoDesenho(aba === 'Desenhar')}
             ferramentas={{
-              painel,
-              procurar: () => (painel === 'procurar' ? fecharProcura() : setPainel('procurar')),
-              indice: () => { if (painel === 'procurar') fecharProcura(); setPainel(painel === 'indice' ? null : 'indice'); },
+              procurarAtivo: procurarAberto || !!termo.trim(),
+              indiceAtivo: indiceAberto,
+              procurar: () => setProcurarAberto(true),
+              indice: () => setIndiceAberto((a) => !a),
               flashcard: () => setSelecaoParaFlashcard(abrirSelecao()),
             }}
           />
         )}
 
-      {painel === 'procurar' && !foco && (
+      {indiceAberto && !foco && (
+        <ChipsIndice itens={indiceDoDocumento(editor.getJSON())} aoIr={irParaTitulo} aoFechar={() => setIndiceAberto(false)} />
+      )}
+      {!procurarAberto && termo.trim() && !foco && (
         <BarraProcura
           termo={termo}
           total={editor.storage.pesquisa.ocorrencias.length}
           atual={editor.storage.pesquisa.atual}
-          aoMudar={mudarTermo}
           aoAvancar={andarNasOcorrencias}
           aoFechar={fecharProcura}
+          aoReabrir={() => setProcurarAberto(true)}
         />
-      )}
-      {painel === 'indice' && !foco && (
-        <PainelIndice itens={indiceDoDocumento(editor.getJSON())} aoIr={irParaTitulo} aoFechar={() => setPainel(null)} />
       )}
 
       <div
@@ -186,10 +238,11 @@ export default function EditorRico({ ref, valorInicial, folhaInicial, desenhoIni
         />
       </div>
 
-      {temSelecao && !modoDesenho && !selecaoParaFlashcard && !foco && (
-        <button type="button" className="er-selecao" onMouseDown={(e) => e.preventDefault()} onClick={() => setSelecaoParaFlashcard(abrirSelecao())}>
-          Criar flashcard com isto
-        </button>
+      {posicaoMenu && (
+        <MenuSelecao posicao={posicaoMenu} aoFlashcard={() => setSelecaoParaFlashcard(abrirSelecao())} aoMarcar={marcarSelecao} aoCopiar={copiarSelecao} />
+      )}
+      {procurarAberto && (
+        <PesquisaSpotlight termo={termo} resultados={resultados} aoMudar={mudarTermo} aoEscolher={escolherResultado} aoFechar={() => { if (!termo.trim()) fecharProcura(); else setProcurarAberto(false); }} />
       )}
       {selecaoParaFlashcard !== null && (
         <FolhaFlashcard

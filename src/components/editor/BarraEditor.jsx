@@ -223,8 +223,8 @@ export default function BarraEditor({ editor, folha, aoMudarFolha, aoFoco, desen
               <Botao key={id} ativo={folha === id} titulo={`Folha ${nome.toLowerCase()}`} onClick={() => aoMudarFolha(id)}>{nome}</Botao>
             ))}
             <span className="er-sep" />
-            <Botao titulo="Procurar nesta nota (Ctrl+F)" ativo={ferramentas.painel === 'procurar'} onClick={ferramentas.procurar}>Procurar</Botao>
-            <Botao titulo="Ver os títulos desta nota" ativo={ferramentas.painel === 'indice'} onClick={ferramentas.indice}>Índice</Botao>
+            <Botao titulo="Procurar nesta nota (Ctrl+F)" ativo={ferramentas.procurarAtivo} onClick={ferramentas.procurar}>Procurar</Botao>
+            <Botao titulo="Ver os títulos desta nota" ativo={ferramentas.indiceAtivo} onClick={ferramentas.indice}>Índice</Botao>
             <Botao titulo="Criar um flashcard com o texto selecionado" desativado={!e.temSelecao} onClick={ferramentas.flashcard}>Flashcard</Botao>
             <span className="er-sep" />
             <Botao titulo="Esconder tudo menos o texto" onClick={() => aoFoco(true)}>Modo foco</Botao>

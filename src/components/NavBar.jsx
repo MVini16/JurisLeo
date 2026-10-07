@@ -155,7 +155,7 @@ function NavBar({ children }) {
       </aside>
 
       {/* conteúdo da página */}
-      <main className="navbar-conteudo">
+      <main className="navbar-conteudo" key={location.pathname}>
         {ajuda && <DicaPrimeiraVez chave={ajuda.chave} titulo={ajuda.titulo} texto={ajuda.texto} />}
         {children}
       </main>

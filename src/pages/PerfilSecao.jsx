@@ -7,6 +7,7 @@ import { useBarney } from '../hooks/useBarney.jsx';
 import { usePerfil } from '../hooks/usePerfil.js';
 import { usePreferencias } from '../hooks/usePreferencias.js';
 import { ASPETOS } from '../data/boneco.js';
+import { PACOTES_ANIMACAO, pacoteValido } from '../services/animacoes.js';
 import { VARIANTES_ESTUDO, varianteValida } from '../services/modoEstudo.js';
 import { telefoneValido } from '../services/boneco.js';
 import AvatarBoneco from '../components/boneco/AvatarBoneco.jsx';
@@ -55,7 +56,20 @@ function Aparencia() {
         ))}
       </GrupoDefinicoes>
 
-      <GrupoDefinicoes titulo="Modo de estudo" indice={2} nota="É o aspeto da revisão de flashcards em ecrã inteiro.">
+      <GrupoDefinicoes titulo="Animações" indice={2} nota="Escolhe como as páginas e as listas aparecem. Se o telemóvel tiver «reduzir movimento» ligado, a app respeita isso.">
+        {PACOTES_ANIMACAO.map((p) => (
+          <LinhaDefinicao
+            key={p.id}
+            tipo="opcao"
+            rotulo={p.nome}
+            descricao={p.descricao}
+            marcada={pacoteValido(prefs.animacoes) === p.id}
+            aoClicar={() => setPrefs(guardarPreferencias({ animacoes: p.id }))}
+          />
+        ))}
+      </GrupoDefinicoes>
+
+      <GrupoDefinicoes titulo="Modo de estudo" indice={3} nota="É o aspeto da revisão de flashcards em ecrã inteiro.">
         {VARIANTES_ESTUDO.map((v) => (
           <LinhaDefinicao
             key={v.id}

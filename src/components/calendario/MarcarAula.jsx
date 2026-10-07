@@ -2,7 +2,7 @@
 // usado no detalhe do evento do calendário; as etiquetas aparecem também nas listas e vistas
 import { useState } from 'react';
 import { ESTADOS_AULA, ROTULO_CURTO, MOTIVO_DOENCA } from '../../data/estadosAula.js';
-import { motivosFalta, PRAZO_COMPROVATIVO_HORAS } from '../../data/motivosFalta.js';
+import { motivosFalta } from '../../data/motivosFalta.js';
 import { jaPodeMarcar } from '../../services/presencas.js';
 import './MarcarAula.css';
 
@@ -102,7 +102,7 @@ export default function MarcarAula({ evento, marca, onMarcar, onLimpar }) {
             <input type="checkbox" checked={comprovativo} onChange={(e) => setComprovativo(e.target.checked)} />
             <span>Já entreguei o comprovativo</span>
           </label>
-          {!comprovativo && <p className="marcar-aula__aviso">Os comprovativos têm de ser entregues até às {PRAZO_COMPROVATIVO_HORAS}h do dia útil seguinte. Sem eles a falta pode não ser aceite.</p>}
+          {!comprovativo && <p className="marcar-aula__aviso">Guarda o comprovativo e confirma com o docente ou com a secretaria o prazo para o entregar. Sem ele a falta pode não ser aceite.</p>}
         </div>
       )}
 

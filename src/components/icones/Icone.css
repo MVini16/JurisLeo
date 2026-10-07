@@ -1,0 +1,40 @@
+/* ícones do JurisLeo: traço na cor do texto, detalhe a dourado, animação própria ao ativar */
+.ic { --ic-acento: var(--gold); display: inline-block; overflow: visible; flex-shrink: 0; }
+.ic .ic__tr { stroke: currentColor; stroke-width: 1.7; fill: none; }
+.ic .ic__ac { stroke: var(--ic-acento); stroke-width: 1.7; fill: none; }
+.ic .ic__bate, .ic .ic__enche { fill: var(--ic-acento); stroke-width: 0.8; }
+.ic .ic__atras { opacity: 0.5; }
+.ic circle.ic__ac { fill: var(--ic-acento); }
+
+/* ao ativar: o traço desenha-se e o ícone salta */
+.ic--ativo { animation: ic-salta 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.ic--ativo .ic__tr, .ic--ativo .ic__ac:not(.ic__bate):not(.ic__enche) { stroke-dasharray: 60; stroke-dashoffset: 60; animation: ic-desenha 0.7s ease forwards; }
+.ic--ativo circle.ic__ac { stroke-dasharray: none; stroke-dashoffset: 0; animation: none; }
+
+/* animações próprias */
+.ic--ativo .ic__bate, .ic--viva .ic__bate { transform-box: fill-box; transform-origin: center; animation: ic-bate 1.4s ease-in-out infinite; }
+.ic--ativo .ic__gira, .ic--viva .ic__gira { transform-box: fill-box; transform-origin: center; animation: ic-gira 3.2s linear infinite; }
+.ic--viva .ic__oscila { transform-box: fill-box; transform-origin: 50% 100%; animation: ic-chama 1.1s ease-in-out infinite alternate; }
+.ic--ativo .ic__pende { transform-box: fill-box; transform-origin: 50% 0; animation: ic-pende 2s ease-in-out infinite alternate; }
+.ic--ativo .ic__roda { transform-box: fill-box; transform-origin: center; animation: ic-roda 0.8s ease-out; }
+.ic--ativo .ic__ponteiro { transform-box: view-box; transform-origin: 12px 12px; animation: ic-gira 2.4s linear infinite; }
+.ic--ativo .ic__p1 { animation: ic-p 0.6s ease-out; transform-box: fill-box; transform-origin: center; }
+.ic--ativo .ic__p3 { animation: ic-p 0.6s 0.1s ease-out; transform-box: fill-box; transform-origin: center; }
+.ic--ativo .ic__enche { animation: ic-bate 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); transform-box: fill-box; transform-origin: center; }
+
+/* ao passar o rato / dedo: um aceno discreto */
+button:hover > .ic:not(.ic--ativo), a:hover > .ic:not(.ic--ativo) { animation: ic-aceno 0.5s ease; }
+
+@keyframes ic-desenha { to { stroke-dashoffset: 0; } }
+@keyframes ic-salta { 0% { transform: scale(0.8); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+@keyframes ic-bate { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.22); } }
+@keyframes ic-gira { to { transform: rotate(360deg); } }
+@keyframes ic-chama { from { transform: scaleY(0.94) rotate(-2deg); } to { transform: scaleY(1.06) rotate(2deg); } }
+@keyframes ic-pende { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+@keyframes ic-roda { from { transform: rotate(-90deg) scale(0.8); } to { transform: rotate(0) scale(1); } }
+@keyframes ic-p { 0% { transform: translateX(-4px) scale(0.6); } 100% { transform: none; } }
+@keyframes ic-aceno { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-8deg); } 70% { transform: rotate(8deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ic, .ic * { animation: none !important; stroke-dasharray: none !important; stroke-dashoffset: 0 !important; }
+}

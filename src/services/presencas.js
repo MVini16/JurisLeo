@@ -32,7 +32,7 @@ export function jaPodeMarcar(ev, agora = new Date()) {
 }
 
 // limpa e valida uma marca antes de ir para o firestore
-export function normalizarMarca({ estado, motivo = '', comprovativo = false, nota = '', contaFalta = false }) {
+export function normalizarMarca({ estado, motivo = '', comprovativo = false, nota = '', contaFalta = false, data = '', titulo = '' }) {
   if (!ESTADOS_POR_ID[estado]) return null;
   const justificada = estado === 'faltei-justificada';
   return {
@@ -41,6 +41,9 @@ export function normalizarMarca({ estado, motivo = '', comprovativo = false, not
     motivo: justificada ? String(motivo || '').trim() : '',
     comprovativo: justificada ? !!comprovativo : false,
     nota: String(nota || '').trim().slice(0, 300),
+    // para o histórico: a data (AAAA-MM-DD) e o nome da aula no momento da marcação
+    data: /^\d{4}-\d{2}-\d{2}$/.test(data) ? data : '',
+    titulo: String(titulo || '').slice(0, 80),
   };
 }
 

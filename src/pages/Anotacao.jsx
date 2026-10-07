@@ -16,8 +16,10 @@ import { cadernoDaNota, seccaoDaNota, seccoesDoCaderno, seccoesPadrao, mesmoNome
 import { cadeirasS1, idsCadeiras, nomesCadernos } from '../data/dadosLeonor.js';
 import './Anotacao.css';
 
-export default function Anotacao() {
-  const { id } = useParams();
+// `idProp` e `embutida` servem o modo de três painéis do computador: o editor abre dentro de outra página, sem botão de voltar
+export default function Anotacao({ idProp, embutida = false, aoSair }) {
+  const params = useParams();
+  const id = idProp ?? params.id;
   const location = useLocation();
   const navigate = useNavigate();
   const { darkMode } = useTheme();
@@ -27,7 +29,7 @@ export default function Anotacao() {
   if (!nova && !anotacao) return <div className="anotacao-editor"><p className="anotacao-editor__loading">Anotação não encontrada.</p></div>;
 
   return (
-    <div className={`anotacao-editor ${darkMode ? 'dark' : ''}`}>
+    <div className={`anotacao-editor ${darkMode ? 'dark' : ''} ${embutida ? 'anotacao-editor--embutida' : ''}`}>
       <Formulario
         key={id}
         anotacao={anotacao}
@@ -37,7 +39,7 @@ export default function Anotacao() {
         criar={criar}
         guardar={guardar}
         apagar={apagar}
-        onVoltar={(cadernoId) => navigate(cadernoId ? `/cadernos/${cadernoId}` : '/anotacoes')}
+        onVoltar={(cadernoId) => (embutida ? aoSair?.(cadernoId) : navigate(cadernoId ? `/cadernos/${cadernoId}` : '/anotacoes'))}
       />
     </div>
   );

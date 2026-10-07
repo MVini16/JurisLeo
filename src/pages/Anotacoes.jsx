@@ -8,6 +8,8 @@ import Estante from '../components/Estante.jsx';
 import { usePreferencias } from '../hooks/usePreferencias.js';
 import { guardarPreferencias } from '../services/preferenciasBrincadeiras.js';
 import Icone from '../components/icones/Icone.jsx';
+import CadernosDesktop from './CadernosDesktop.jsx';
+import { useLargura } from '../hooks/useLargura.js';
 import {
   CADERNO_LIVRE, ABAS_NOTAS, filtrarNotas, contarPorAba, contarPorCaderno,
   cadernoDaNota, seccaoDaNota, previewTexto, dataCurta,
@@ -26,6 +28,7 @@ const VAZIO_POR_ABA = {
 export default function Anotacoes() {
   const { darkMode } = useTheme();
   const navigate = useNavigate();
+  const largo = useLargura(1100);
   const estiloEstante = usePreferencias().estanteEstilo === 'capas' ? 'capas' : 'lombadas';
   const { anotacoes, loading } = useAnotacoes();
   const [aba, setAba] = useState('todas');
@@ -40,6 +43,9 @@ export default function Anotacoes() {
 
   const visiveis = filtrarNotas(anotacoes, { aba, pesquisa, idsConhecidos: idsCadeiras });
   const posicaoAba = ABAS_NOTAS.indexOf(aba);
+
+  // no computador as notas passam a três painéis (cadernos, páginas, folha)
+  if (largo) return <CadernosDesktop />;
 
   return (
     <div className={`anotacoes-pagina ${darkMode ? 'dark' : ''}`}>

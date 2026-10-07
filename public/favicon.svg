@@ -1,52 +1,74 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
   <defs>
-    <radialGradient id="fundo" cx="50%" cy="38%" r="75%">
-      <stop offset="0" stop-color="#9B1A2C"/>
-      <stop offset="0.55" stop-color="#5E0E1A"/>
-      <stop offset="1" stop-color="#2A050C"/>
+    <radialGradient id="fundo" cx="50%" cy="40%" r="80%">
+      <stop offset="0" stop-color="#7A1325"/><stop offset="0.6" stop-color="#4A0A16"/><stop offset="1" stop-color="#220409"/>
+    </radialGradient>
+    <radialGradient id="janela" cx="50%" cy="55%" r="65%">
+      <stop offset="0" stop-color="#8E1A2E"/><stop offset="0.7" stop-color="#5A0E1B"/><stop offset="1" stop-color="#3C0712"/>
     </radialGradient>
     <linearGradient id="ouro" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#F7E6A8"/>
-      <stop offset="0.5" stop-color="#D9B85A"/>
-      <stop offset="1" stop-color="#9A7625"/>
+      <stop offset="0" stop-color="#F8E9B0"/><stop offset="0.5" stop-color="#D8B65A"/><stop offset="1" stop-color="#8F6D22"/>
     </linearGradient>
-    <radialGradient id="brilho" cx="50%" cy="45%" r="50%">
-      <stop offset="0" stop-color="#FFD98A" stop-opacity="0.45"/>
-      <stop offset="1" stop-color="#FFD98A" stop-opacity="0"/>
-    </radialGradient>
-    <filter id="sombra" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#1a0206" flood-opacity="0.55"/></filter>
+    <linearGradient id="ouroV" gradientUnits="userSpaceOnUse" x1="0" y1="150" x2="0" y2="880">
+      <stop offset="0" stop-color="#F8E9B0"/><stop offset="0.5" stop-color="#D8B65A"/><stop offset="1" stop-color="#8F6D22"/>
+    </linearGradient>
+    <!-- azulejo: uma flor de quatro pétalas em ouro muito suave -->
+    <pattern id="azulejo" width="128" height="128" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#D8B65A" stroke-width="2.5" opacity="0.16">
+        <circle cx="64" cy="40" r="22"/><circle cx="64" cy="88" r="22"/><circle cx="40" cy="64" r="22"/><circle cx="88" cy="64" r="22"/>
+        <path d="M64 50 L78 64 L64 78 L50 64 Z"/>
+        <path d="M0 0h128v128H0z" opacity="0.5"/>
+      </g>
+    </pattern>
+    <radialGradient id="esbate" cx="50%" cy="50%" r="55%"><stop offset="0.35" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#1c0308" stop-opacity="0.85"/></radialGradient>
+    <clipPath id="arco"><path d="M212 880 V430 C212 262 350 150 512 150 C674 150 812 262 812 430 V880 Z"/></clipPath>
+    <filter id="sombra" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#14020a" flood-opacity="0.6"/></filter>
   </defs>
   <rect width="1024" height="1024" fill="url(#fundo)"/>
-  <circle cx="512" cy="470" r="430" fill="url(#brilho)"/>
-  <circle cx="512" cy="500" r="392" fill="none" stroke="url(#ouro)" stroke-width="5" opacity="0.35"/>
-  <circle cx="512" cy="500" r="372" fill="none" stroke="url(#ouro)" stroke-width="2" opacity="0.25" stroke-dasharray="3 14"/>
-  <g filter="url(#sombra)" fill="url(#ouro)" stroke="url(#ouro)" stroke-linejoin="round" stroke-linecap="round">
-    <circle cx="512" cy="262" r="36" stroke="none"/>
-    <rect x="490" y="296" width="44" height="400" rx="16" stroke="none"/>
-    <rect x="410" y="672" width="204" height="40" rx="18" stroke="none"/>
-    <rect x="344" y="708" width="336" height="44" rx="20" stroke="none"/>
-    <rect x="207" y="336" width="610" height="32" rx="16" stroke="none"/>
-    <circle cx="222" cy="352" r="22" stroke="none"/><circle cx="802" cy="352" r="22" stroke="none"/>
-    <path d="M222 352 L140 560 M222 352 L304 560 M802 352 L720 560 M802 352 L884 560" fill="none" stroke-width="7"/>
-    <path d="M110 560 Q222 676 334 560 Z" stroke="none"/>
-    <path d="M690 560 Q802 676 914 560 Z" stroke="none"/>
+  <rect width="1024" height="1024" fill="url(#azulejo)"/>
+  <rect width="1024" height="1024" fill="url(#esbate)"/>
+
+  <!-- a janela em arco, como num azulejo de Lisboa -->
+  <path d="M200 892 V430 C200 254 344 138 512 138 C680 138 824 254 824 430 V892 Z" fill="none" stroke="url(#ouroV)" stroke-width="9"/>
+  <path d="M212 880 V430 C212 262 350 150 512 150 C674 150 812 262 812 430 V880 Z" fill="url(#janela)"/>
+  <path d="M232 860 V432 C232 276 358 172 512 172 C666 172 792 276 792 432 V860" fill="none" stroke="#D8B65A" stroke-width="2" opacity="0.5"/>
+
+  <g clip-path="url(#arco)">
+    <!-- a cúpula da Basílica da Estrela, discreta, atrás da balança -->
+    <g fill="#D8B65A" opacity="0.2">
+      <path d="M392 700 C392 560 440 500 512 470 C584 500 632 560 632 700 Z"/>
+      <rect x="378" y="696" width="268" height="44"/>
+      <rect x="500" y="420" width="24" height="52"/><circle cx="512" cy="410" r="14"/>
+      <path d="M318 700 V560 C318 530 336 514 352 506 C368 514 386 530 386 560 V700 Z"/>
+      <path d="M638 700 V560 C638 530 656 514 672 506 C688 514 706 530 706 560 V700 Z"/>
+    </g>
   </g>
-  <!-- coração no prato da esquerda -->
-  <g transform="translate(222 502) scale(1.5)">
+
+  <!-- a balança -->
+  <g filter="url(#sombra)" fill="url(#ouroV)" stroke="url(#ouroV)" stroke-linejoin="round" stroke-linecap="round">
+    <circle cx="512" cy="262" r="26" stroke="none"/>
+    <rect x="501" y="284" width="22" height="470" rx="11" stroke="none"/>
+    <rect x="440" y="736" width="144" height="26" rx="13" stroke="none"/>
+    <rect x="396" y="758" width="232" height="30" rx="15" stroke="none"/>
+    <rect x="290" y="334" width="444" height="20" rx="10" stroke="none"/>
+    <circle cx="298" cy="344" r="15" stroke="none"/><circle cx="726" cy="344" r="15" stroke="none"/>
+    <path d="M298 344 L238 530 M298 344 L358 530 M726 344 L666 530 M726 344 L786 530" fill="none" stroke-width="4.5"/>
+    <path d="M222 530 Q298 614 374 530 Z" stroke="none"/>
+    <path d="M650 530 Q726 614 802 530 Z" stroke="none"/>
+  </g>
+  <!-- coração e livro -->
+  <g transform="translate(298 488) scale(1.05)">
     <path d="M0 34 C-34 8 -38 -22 -18 -30 C-8 -34 0 -28 0 -18 C0 -28 8 -34 18 -30 C38 -22 34 8 0 34 Z" fill="#F7B8C4"/>
-    <path d="M-16 -18 C-24 -14 -26 -4 -20 4" fill="none" stroke="#ffffff" stroke-opacity="0.7" stroke-width="4" stroke-linecap="round"/>
+    <path d="M-16 -18 C-24 -14 -26 -4 -20 4" fill="none" stroke="#fff" stroke-opacity="0.7" stroke-width="4" stroke-linecap="round"/>
   </g>
-  <!-- livro no prato da direita -->
-  <g transform="translate(0 -12)">
-    <rect x="750" y="474" width="104" height="80" rx="8" fill="#FAF3E6"/>
-    <rect x="750" y="474" width="16" height="80" rx="6" fill="#8A1020"/>
-    <path d="M780 498 H836 M780 516 H836 M780 534 H816" stroke="#B8923F" stroke-width="5" stroke-linecap="round"/>
+  <g transform="translate(0 -6)">
+    <rect x="684" y="470" width="84" height="62" rx="7" fill="#FAF3E6"/>
+    <rect x="684" y="470" width="13" height="62" rx="5" fill="#8A1020"/>
+    <path d="M708 490 H752 M708 504 H752 M708 518 H738" stroke="#B8923F" stroke-width="4" stroke-linecap="round"/>
   </g>
-  <!-- faíscas -->
+  <!-- duas faíscas -->
   <g fill="#FFE9A8">
-    <path d="M168 196 l10 28 28 10 -28 10 -10 28 -10 -28 -28 -10 28 -10z" opacity="0.9"/>
-    <path d="M868 212 l7 20 20 7 -20 7 -7 20 -7 -20 -20 -7 20 -7z" opacity="0.8"/>
-    <path d="M872 822 l9 24 24 9 -24 9 -9 24 -9 -24 -24 -9 24 -9z" opacity="0.7"/>
-    <path d="M168 836 l6 16 16 6 -16 6 -6 16 -6 -16 -16 -6 16 -6z" opacity="0.7"/>
+    <path d="M300 250 l7 20 20 7 -20 7 -7 20 -7 -20 -20 -7 20 -7z" opacity="0.85"/>
+    <path d="M722 232 l5 14 14 5 -14 5 -5 14 -5 -14 -14 -5 14 -5z" opacity="0.7"/>
   </g>
 </svg>

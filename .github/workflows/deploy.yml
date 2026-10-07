@@ -1,9 +1,13 @@
-# deploy manual do jurisleo: no github, separador actions, "deploy", "run workflow".
+# deploy do jurisleo: corre quando o ficheiro .github/deploy-trigger.txt muda nesta branch (ou pelo botão "run workflow",
+# se este ficheiro estiver na branch principal). nunca corre sozinho a cada push normal.
 # usa os segredos do repositório (settings, secrets and variables, actions); nada disto fica no código
 name: deploy
 
 on:
   workflow_dispatch:
+  push:
+    branches: [claude/intelligent-goldberg-s0lmvv]
+    paths: ['.github/deploy-trigger.txt']
 
 jobs:
   deploy:

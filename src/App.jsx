@@ -1,6 +1,6 @@
 import './App.css'
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 // arranque — carregadas logo, para o splash e o login aparecerem sem espera
 import SplashScreen from './pages/SplashScreen'
 import Login from './pages/Login'
@@ -70,6 +70,10 @@ function App() {
 
           {/* consola do vini: não aparece em menu nenhum, abre-se pelo endereço */}
           <Route path="/admin/boneco" element={<NavBar><AdminBoneco /></NavBar>} />
+          <Route path="/admin" element={<Navigate to="/admin/boneco" replace />} />
+
+          {/* endereço que não existe: volta ao início em vez de ficar em branco */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
       <BonecoDoVini />

@@ -18,6 +18,10 @@ const PADRAO = {
   bonecoPosicao: 'esquerda',
   bonecoConversa: 'as-vezes',
   bonecoContacto: '',
+  // partilhar com o vini: desligado por omissão, ela liga o que quiser e manda o resumo quando quiser
+  partilhaEstudo: false,
+  partilhaJogos: false,
+  partilhaEstado: false,
 };
 
 // quem quiser reagir a mudanças (o boneco, as definições) subscreve aqui

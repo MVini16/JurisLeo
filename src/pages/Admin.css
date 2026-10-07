@@ -1,0 +1,28 @@
+/* consola do vini (/admin): cartões em cima, lista e detalhe por baixo; empilha no telemóvel */
+.admin { max-width: 1040px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; }
+.admin h1 { font-family: Georgia, serif; font-size: 1.5rem; margin: 0 0 4px; color: var(--burgundy); text-wrap: balance; }
+.admin-topo p { margin: 0; color: var(--text-muted, inherit); opacity: .8; max-width: 64ch; line-height: 1.5; }
+.admin-voltar, .admin-atalhos button, .admin-colar button, .admin-apagar {
+  border: 1px solid var(--gold); background: transparent; color: inherit; border-radius: 999px;
+  padding: 8px 16px; font: inherit; cursor: pointer; justify-self: start;
+}
+.admin-colar button[type='submit'] { background: var(--burgundy); color: #fff; border-color: var(--burgundy); font-weight: 600; }
+.admin-colar button:disabled { opacity: .5; cursor: default; }
+.admin-cartoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.admin-cartao, .admin-detalhe, .admin-item { border: 1px solid var(--gold); border-radius: 14px; padding: 12px 14px; background: transparent; }
+.admin-cartao { display: grid; gap: 4px; min-width: 0; }
+.admin-cartao small, .admin-campo small, .admin-item small { opacity: .7; }
+.admin-cartao b { font-family: Georgia, serif; overflow-wrap: anywhere; }
+.admin-colar { display: grid; gap: 8px; }
+.admin-colar textarea { width: 100%; box-sizing: border-box; border-radius: 10px; border: 1px solid var(--gold); background: transparent; color: inherit; font: inherit; padding: 8px 10px; }
+.admin-colar__linha { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.admin-duas { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 12px; align-items: start; }
+.admin-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.admin-item { display: grid; gap: 2px; width: 100%; text-align: left; color: inherit; font: inherit; cursor: pointer; }
+.admin-item[aria-current='true'] { border-color: var(--burgundy); box-shadow: 0 0 0 1px var(--burgundy) inset; }
+.admin-detalhe { display: grid; gap: 10px; }
+.admin-detalhe h2 { margin: 0; font-family: Georgia, serif; font-size: 1.1rem; }
+.admin-campo { display: grid; gap: 2px; overflow-wrap: anywhere; }
+.admin-vazio { border: 2px dashed var(--gold); border-radius: 14px; padding: 16px; opacity: .8; }
+.admin button:focus-visible, .admin textarea:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+@media (max-width: 720px) { .admin { padding-bottom: 110px; } .admin-duas { grid-template-columns: 1fr; } }

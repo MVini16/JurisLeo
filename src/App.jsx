@@ -33,6 +33,7 @@ const Calendario = lazy(() => import('./pages/Calendario'))
 const Perfil = lazy(() => import('./pages/Perfil'))
 const PerfilSecao = lazy(() => import('./pages/PerfilSecao'))
 const AdminBoneco = lazy(() => import('./pages/AdminBoneco'))
+const Admin = lazy(() => import('./pages/Admin'))
 const Jogos = lazy(() => import('./pages/Jogos'))
 
 function App() {
@@ -70,7 +71,7 @@ function App() {
 
           {/* consola do vini: não aparece em menu nenhum, abre-se pelo endereço */}
           <Route path="/admin/boneco" element={<NavBar><AdminBoneco /></NavBar>} />
-          <Route path="/admin" element={<Navigate to="/admin/boneco" replace />} />
+          <Route path="/admin" element={<NavBar><Admin /></NavBar>} />
 
           {/* endereço que não existe: volta ao início em vez de ficar em branco */}
           <Route path="*" element={<Navigate to="/" replace />} />

@@ -17,21 +17,27 @@ function CabeloDoVini({ estilo, cor }) {
 }
 
 function ViniDeToga({ falando }) {
-  const { pele, cabelo, estiloCabelo, oculos, barba } = APARENCIA_DO_VINI;
+  const { pele, cabelo, estiloCabelo, oculos, barba, toga } = APARENCIA_DO_VINI;
   return (
     <svg viewBox="0 0 64 64" role="img" aria-label="Boneco do Vini, de toga" className={falando ? 'boneco-avatar boneco-avatar--fala' : 'boneco-avatar'}>
-      <path className="boneco-toga" d="M6 64 Q8 46 22 43 L42 43 Q56 46 58 64Z" />
+      <path fill={toga} d="M6 64 Q8 46 22 43 L42 43 Q56 46 58 64Z" />
       <path className="boneco-peitilho" d="M26 43 L32 54 L38 43Z" />
       <path className="boneco-friso" d="M22 43 L32 58 L42 43" fill="none" />
       <rect x="28" y="38" width="8" height="7" rx="3" fill={pele} />
       <circle cx="32" cy="27" r="14" fill={pele} />
-      {barba && <path d="M19 30 Q20 44 32 44 Q44 44 45 30 Q42 38 32 38 Q22 38 19 30Z" fill={cabelo} opacity="0.85" />}
+      {barba === 'cheia' && <path d="M19 30 Q20 46 32 46 Q44 46 45 30 Q42 39 32 39 Q22 39 19 30Z" fill={cabelo} opacity="0.9" />}
+      {barba === 'curta' && <path d="M20 31 Q22 41 32 41 Q42 41 44 31 Q41 36 32 36 Q23 36 20 31Z" fill={cabelo} opacity="0.75" />}
       <CabeloDoVini estilo={estiloCabelo} cor={cabelo} />
       <circle cx="26.5" cy="28" r="1.7" fill="#2A1A12" />
       <circle cx="37.5" cy="28" r="1.7" fill="#2A1A12" />
-      {oculos && (
+      {oculos === 'redondos' && (
         <g fill="none" stroke="#2A1A12" strokeWidth="1.2">
           <circle cx="26.5" cy="28" r="4.2" /><circle cx="37.5" cy="28" r="4.2" /><path d="M30.7 28 H33.3" />
+        </g>
+      )}
+      {oculos === 'quadrados' && (
+        <g fill="none" stroke="#2A1A12" strokeWidth="1.3">
+          <rect x="22" y="24.5" width="9" height="7" rx="1.5" /><rect x="33" y="24.5" width="9" height="7" rx="1.5" /><path d="M31 28 H33" />
         </g>
       )}
       <path d="M27 34 Q32 38.5 37 34" fill="none" stroke="#2A1A12" strokeWidth="1.6" strokeLinecap="round" />

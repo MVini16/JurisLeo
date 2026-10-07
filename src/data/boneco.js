@@ -2,14 +2,15 @@
 // frases — cada lista pode crescer à vontade (o boneco nunca repete a última que disse).
 // duas vozes: "carinhosa" (quente) e "brincalhona" (tribunais, despachos e humor); a conversa mistura as duas
 
-// como o boneco "Vini de toga" se parece. muda aqui, é só ficheiro:
-// estiloCabelo: 'curto' | 'cacheado' | 'rapado'; oculos e barba: true ou false
+// como o boneco "Vini de toga" se parece (escolhido pelo vini). muda aqui, é só ficheiro:
+// estiloCabelo: 'curto' | 'cacheado' | 'rapado'; oculos: false | 'redondos' | 'quadrados'; barba: false | 'curta' | 'cheia'
 export const APARENCIA_DO_VINI = {
-  pele: '#A8714A',
+  pele: '#7A4A2E',
   cabelo: '#241810',
-  estiloCabelo: 'curto',
-  oculos: false,
+  estiloCabelo: 'cacheado',
+  oculos: 'quadrados',
   barba: false,
+  toga: '#1E1A1C',
 };
 
 export const ASPETOS = [

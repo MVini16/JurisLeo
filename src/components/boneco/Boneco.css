@@ -46,7 +46,6 @@ html.dark .boneco-botao { background: var(--bg-dark); }
   50% { transform: scale(1.06) rotate(-2deg); }
 }
 
-.boneco-toga { fill: var(--burgundy); }
 .boneco-peitilho { fill: #fff; }
 .boneco-friso { stroke: var(--gold); stroke-width: 2; }
 .boneco-barrete { fill: var(--bg-dark); }

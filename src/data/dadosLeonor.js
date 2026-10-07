@@ -130,6 +130,7 @@ export const calendarioS1 = {
 };
 
 // mapas derivados, para os sítios que só precisam de cor/nome por id
+export const idsCadeiras = cadeirasS1.map((c) => c.id);
 export const coresCadeiras = Object.fromEntries(cadeirasS1.map((c) => [c.id, c.cor]));
 export const abrevCadeiras = Object.fromEntries(cadeirasS1.map((c) => [c.id, c.abrev]));
 export const nomesCadeiras = Object.fromEntries(cadeirasS1.map((c) => [c.id, c.nome]));

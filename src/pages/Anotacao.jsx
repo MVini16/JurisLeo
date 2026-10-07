@@ -4,9 +4,11 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useAnotacao } from '../hooks/useAnotacao.js';
 import { useProvocacoes } from '../hooks/useProvocacoes.jsx';
+import { useAnotacoes } from '../hooks/useAnotacoes.js';
 import EditorRico from '../components/editor/EditorRico.jsx';
 import { abrirNota, serializarNota, estadoTamanho, folhaValida } from '../services/notaRica.js';
-import { cadeirasS1 } from '../data/dadosLeonor.js';
+import { cadernoDaNota, seccaoDaNota, seccoesDoCaderno, seccoesPadrao, mesmoNome, normalizarNomeSeccao, CADERNO_LIVRE } from '../services/cadernos.js';
+import { cadeirasS1, idsCadeiras } from '../data/dadosLeonor.js';
 import './Anotacao.css';
 
 export default function Anotacao() {
@@ -26,6 +28,7 @@ export default function Anotacao() {
         anotacao={anotacao}
         nova={nova}
         cadeiraInicial={location.state?.cadeiraId}
+        seccaoInicial={location.state?.seccao}
         criar={criar}
         guardar={guardar}
         apagar={apagar}
@@ -35,10 +38,16 @@ export default function Anotacao() {
   );
 }
 
-function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, onVoltar }) {
+function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guardar, apagar, onVoltar }) {
   const [titulo, setTitulo] = useState(anotacao?.titulo || '');
-  const [cadeiraId, setCadeiraId] = useState(anotacao?.cadeiraId || cadeiraInicial || cadeirasS1[0].id);
-  const [tipo, setTipo] = useState(anotacao?.tipo || 'teorica');
+  // o caderno é a cadeira, ou "livre" para o que não pertence a nenhuma
+  const [cadeiraId, setCadeiraId] = useState(() => (anotacao ? cadernoDaNota(anotacao, idsCadeiras) : (cadeiraInicial || cadeirasS1[0].id)));
+  const [seccao, setSeccao] = useState(() => (anotacao
+    ? seccaoDaNota(anotacao, cadernoDaNota(anotacao, idsCadeiras))
+    : (normalizarNomeSeccao(seccaoInicial) || seccoesPadrao(cadeiraInicial)[0])));
+  const [criandoSeccao, setCriandoSeccao] = useState(false);
+  const [nomeNovaSeccao, setNomeNovaSeccao] = useState('');
+  const { anotacoes: todasAsNotas } = useAnotacoes();
   // o conteúdo vive dentro do editor; aqui só guardamos a folha e o que é preciso para abrir a nota
   const editorRef = useRef(null);
   const [docInicial] = useState(() => abrirNota(anotacao));
@@ -53,13 +62,35 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
   const { elemento: provocacao, aoEscrever } = useProvocacoes();
 
   const cadeira = cadeirasS1.find((c) => c.id === cadeiraId);
+  const cor = cadeira?.cor || 'var(--gold)';
+
+  // secções do caderno escolhido; a que está escolhida entra sempre, mesmo que ainda não tenha páginas
+  const seccoesExistentes = seccoesDoCaderno(todasAsNotas, cadeiraId, idsCadeiras);
+  const seccoes = seccoesExistentes.some((s) => mesmoNome(s, seccao)) ? seccoesExistentes : [...seccoesExistentes, seccao];
+
+  function escolherCaderno(id) {
+    setCadeiraId(id);
+    // mantém a secção se também existir no outro caderno, senão volta à primeira
+    const doNovo = seccoesDoCaderno(todasAsNotas, id, idsCadeiras);
+    if (!doNovo.some((s) => mesmoNome(s, seccao))) setSeccao(seccoesPadrao(id)[0]);
+  }
+
+  function criarSeccao(evento) {
+    evento.preventDefault();
+    const nome = normalizarNomeSeccao(nomeNovaSeccao);
+    if (nome) setSeccao(seccoes.find((s) => mesmoNome(s, nome)) ?? nome);
+    setNomeNovaSeccao('');
+    setCriandoSeccao(false);
+  }
 
   function dadosAtuais() {
     const doc = editorRef.current?.obterDoc() ?? docInicial;
     return {
       titulo: titulo.trim(),
       cadeiraId,
-      tipo,
+      seccao,
+      // o tipo antigo continua a ser guardado, para o que ainda o lê
+      tipo: mesmoNome(seccao, 'Práticas') ? 'pratica' : 'teorica',
       ...serializarNota(doc),
       folha,
       tags: tagsTexto.split(',').map((t) => t.trim()).filter(Boolean),
@@ -118,16 +149,48 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
             key={c.id}
             className={`anotacao-editor__cadeira-btn ${cadeiraId === c.id ? 'ativo' : ''}`}
             style={{ '--cor': c.cor }}
-            onClick={() => setCadeiraId(c.id)}
+            onClick={() => escolherCaderno(c.id)}
           >
             {c.abrev}
           </button>
         ))}
+        <button
+          className={`anotacao-editor__cadeira-btn ${cadeiraId === CADERNO_LIVRE ? 'ativo' : ''}`}
+          style={{ '--cor': 'var(--gold)' }}
+          onClick={() => escolherCaderno(CADERNO_LIVRE)}
+        >
+          Livre
+        </button>
       </div>
 
-      <div className="anotacao-editor__tipos">
-        <button className={`anotacao-editor__tipo-btn ${tipo === 'teorica' ? 'ativo' : ''}`} onClick={() => setTipo('teorica')} style={{ '--cor': cadeira?.cor }}>Teórica</button>
-        <button className={`anotacao-editor__tipo-btn ${tipo === 'pratica' ? 'ativo' : ''}`} onClick={() => setTipo('pratica')} style={{ '--cor': cadeira?.cor }}>Prática</button>
+      <div className="anotacao-editor__seccoes" role="group" aria-label="Secção">
+        {seccoes.map((s) => (
+          <button
+            key={s}
+            className={`anotacao-editor__seccao-btn ${mesmoNome(s, seccao) ? 'ativo' : ''}`}
+            style={{ '--cor': cor }}
+            onClick={() => setSeccao(s)}
+          >
+            {s}
+          </button>
+        ))}
+        {criandoSeccao ? (
+          <form className="anotacao-editor__seccao-nova" onSubmit={criarSeccao}>
+            <input
+              autoFocus
+              maxLength={40}
+              placeholder="Nome da secção"
+              aria-label="Nome da nova secção"
+              value={nomeNovaSeccao}
+              onChange={(e) => setNomeNovaSeccao(e.target.value)}
+            />
+            <button type="submit">Criar</button>
+          </form>
+        ) : (
+          <button className="anotacao-editor__seccao-btn anotacao-editor__seccao-btn--nova" onClick={() => setCriandoSeccao(true)}>
+            + Nova secção
+          </button>
+        )}
       </div>
 
       <EditorRico

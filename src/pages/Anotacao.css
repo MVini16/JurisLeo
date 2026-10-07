@@ -63,7 +63,7 @@
 .anotacao-editor.dark .anotacao-editor__titulo { border-bottom-color: rgba(255, 255, 255, 0.15); }
 
 .anotacao-editor__cadeiras,
-.anotacao-editor__tipos {
+.anotacao-editor__seccoes {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -89,27 +89,6 @@
   color: #fff;
 }
 
-.anotacao-editor__tipo-btn {
-  flex: 1;
-  padding: 8px 0;
-  border-radius: 10px;
-  border: 1.5px solid rgba(120, 120, 120, 0.25);
-  background: none;
-  color: inherit;
-  opacity: 0.55;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.2s ease;
-}
-
-.anotacao-editor__tipo-btn.ativo {
-  opacity: 1;
-  border-color: var(--cor, var(--burgundy));
-  color: var(--cor, var(--burgundy));
-  background: color-mix(in srgb, var(--cor, var(--burgundy)) 12%, transparent);
-}
 
 .anotacao-editor__conteudo {
   flex: 1;
@@ -219,4 +198,65 @@
   border-radius: 8px;
   border: 1px solid var(--selo);
   background: color-mix(in srgb, var(--selo) 12%, transparent);
+}
+
+.anotacao-editor__seccoes { align-items: center; }
+
+.anotacao-editor__seccao-btn {
+  padding: 7px 14px;
+  border-radius: 10px;
+  border: 1.5px solid color-mix(in srgb, var(--cor, var(--burgundy)) 35%, transparent);
+  background: none;
+  color: inherit;
+  opacity: 0.65;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.anotacao-editor__seccao-btn:hover { opacity: 1; transform: translateY(-1px); }
+
+.anotacao-editor__seccao-btn.ativo {
+  opacity: 1;
+  border-color: var(--cor, var(--burgundy));
+  color: var(--cor, var(--burgundy));
+  background: color-mix(in srgb, var(--cor, var(--burgundy)) 12%, transparent);
+}
+
+.anotacao-editor__seccao-btn--nova { border-style: dashed; }
+
+.anotacao-editor__seccao-nova {
+  display: flex;
+  gap: 6px;
+  animation: seccaoEntra 0.2s ease;
+}
+
+.anotacao-editor__seccao-nova input {
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1.5px solid var(--gold);
+  background: none;
+  color: inherit;
+  font-size: 0.78rem;
+  font-family: inherit;
+  outline: none;
+  width: 150px;
+}
+
+.anotacao-editor__seccao-nova button {
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: none;
+  background: var(--burgundy);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+@keyframes seccaoEntra {
+  from { opacity: 0; transform: translateX(-6px); }
 }

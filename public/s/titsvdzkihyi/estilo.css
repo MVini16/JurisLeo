@@ -87,6 +87,46 @@ h1 { font-size: clamp(3.6rem, 19vw, 9rem); font-weight: 400; margin: 0; letter-s
   .quadro-legenda { text-align: left; justify-items: start; }
 }
 
+/* cena 3b: frases gigantes */
+.cena--frases { place-items: center; }
+.marquee { position: absolute; inset: 0; display: grid; align-content: center; gap: 1.2rem; overflow: hidden; pointer-events: none; }
+.marquee__linha { white-space: nowrap; font-size: clamp(5rem, 24vw, 15rem); line-height: .95; letter-spacing: .02em; color: transparent; -webkit-text-stroke: 1px rgba(216,180,95,.22); will-change: transform; font-style: italic; }
+.marquee__linha:nth-child(2) { -webkit-text-stroke-color: rgba(142,31,51,.55); }
+.frases-palco { position: relative; width: min(100%, 36rem); height: 64svh; z-index: 2; }
+.frase { position: absolute; inset: 0; display: grid; align-content: center; justify-items: center; gap: 1rem; text-align: center; opacity: 0; will-change: transform, opacity; }
+.frase__fonte { font-family: var(--sans); font-size: .72rem; letter-spacing: .3em; text-transform: uppercase; color: var(--ouro); margin: 0; }
+.frase__txt { font-size: clamp(2.2rem, 11vw, 4.6rem); font-style: italic; line-height: 1.08; margin: 0; text-wrap: balance; text-shadow: 0 6px 40px rgba(0,0,0,.7); }
+.frase__pt { margin: 0; color: var(--suave); font-size: clamp(1.05rem, 4.4vw, 1.4rem); }
+.frase__nosso { margin: .6rem 0 0; color: var(--ouro); font-size: clamp(1.1rem, 4.6vw, 1.5rem); max-width: 26rem; text-wrap: balance; }
+
+/* minijogo da memória */
+.cap--jogo { gap: 0; }
+.memo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: min(100%, 24rem); perspective: 900px; margin: 0 auto 1.4rem; }
+@media (min-width: 700px) { .memo { grid-template-columns: repeat(4, 1fr); width: min(100%, 32rem); } }
+.memo-carta { position: relative; aspect-ratio: 3 / 4; padding: 0; border: 0; background: none; cursor: pointer; border-radius: 10px; -webkit-tap-highlight-color: transparent; }
+.memo-carta__in { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform .6s cubic-bezier(.3,.9,.3,1); }
+.memo-carta.virada .memo-carta__in { transform: rotateY(180deg); }
+.memo-face { position: absolute; inset: 0; border-radius: 10px; overflow: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.memo-face--costas { display: grid; place-items: center; font-size: 1.9rem; color: var(--ouro); background: radial-gradient(circle at 30% 20%, #3a1522, #1b0b11 70%); border: 1px solid rgba(216,180,95,.45); }
+.memo-face--frente { transform: rotateY(180deg); background: #1b0b11; box-shadow: 0 0 0 1px rgba(216,180,95,.5); }
+.memo-face--frente img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.memo-carta.certa .memo-face--frente { box-shadow: 0 0 0 2px var(--ouro), 0 0 26px rgba(216,180,95,.45); }
+.memo-carta:focus-visible { outline: 3px solid var(--ouro); outline-offset: 3px; }
+.memo-msg { min-height: 3.2em; max-width: 26rem; margin: 0 0 .4rem; color: var(--ouro); font-size: 1.15rem; font-style: italic; text-wrap: balance; }
+.memo-final { display: grid; gap: .6rem; margin: 1rem 0 1.6rem; justify-items: center; }
+.memo-final__linha { margin: 0; color: var(--suave); font-size: 1.1rem; }
+.memo-final__grande { margin: 0; font-size: clamp(2.2rem, 11vw, 4.4rem); font-style: italic; color: var(--ouro); text-shadow: 0 0 40px rgba(216,180,95,.5); }
+
+/* efeitos de rato e de toque */
+.fx-coracao { position: fixed; left: 0; top: 0; z-index: 120; pointer-events: none; color: var(--ouro); line-height: 1; will-change: transform, opacity; user-select: none; }
+body.cursor-custom, body.cursor-custom * { cursor: none !important; }
+.cursor { position: fixed; left: 0; top: 0; z-index: 130; pointer-events: none; }
+.cursor__ponto { position: absolute; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: var(--ouro); }
+.cursor__anel { position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; border: 1px solid rgba(216,180,95,.75); display: grid; place-items: center; font-size: 1rem; color: var(--ouro); transition: width .3s, height .3s, margin .3s, background .3s, border-color .3s; }
+.cursor.sobre .cursor__anel { width: 76px; height: 76px; margin: -38px 0 0 -38px; background: rgba(142,31,51,.35); border-color: var(--ouro); }
+.cursor__anel::after { content: ''; }
+.cursor.sobre .cursor__anel::after { content: '♥'; }
+
 /* cena 4 */
 .texto-longo { max-width: 30rem; display: grid; gap: 1.2rem; font-size: clamp(1.25rem, 5.4vw, 1.9rem); text-wrap: balance; text-align: center; }
 .texto-longo--grande { font-size: clamp(2rem, 9vw, 3.8rem); max-width: 44rem; line-height: 1.2; }
@@ -131,14 +171,15 @@ h1 { font-size: clamp(3.6rem, 19vw, 9rem); font-weight: 400; margin: 0; letter-s
 
 /* sem animações (reduzir movimento): tudo aparece arrumado, em coluna, já legível */
 body.parado .cena { min-height: auto; padding-block: 14svh; }
-body.parado .linhas, body.parado .razoes-palco { height: auto; display: grid; gap: 2.4rem; }
-body.parado .linha, body.parado .razao, body.parado .final-linha, body.parado .assinatura, body.parado #topo { position: static; opacity: 1; }
+body.parado .linhas, body.parado .razoes-palco, body.parado .frases-palco { height: auto; display: grid; gap: 2.4rem; }
+body.parado .linha, body.parado .razao, body.parado .frase, body.parado .final-linha, body.parado .assinatura, body.parado #topo { position: static; opacity: 1; }
 body.parado .razao { display: grid; }
 body.parado .razao__n { display: none; }
 body.parado .razoes-titulo { position: static; margin-bottom: 2rem; }
 body.parado .tira { flex-direction: column; height: auto; width: 100%; }
 body.parado .quadro-cena { width: 100%; height: auto; padding-block: 8svh; }
-body.parado .tira-topo, body.parado .tira-progresso, body.parado .granulado, body.parado .luz-varrer { display: none; }
+body.parado .marquee, body.parado .tira-topo, body.parado .tira-progresso, body.parado .granulado, body.parado .luz-varrer { display: none; }
 body.parado .cena--tira { padding: 0; }
+body.parado .memo-carta__in { transition: none; }
 body.parado .barras i { height: 0 !important; }
 @media (prefers-reduced-motion: reduce) { .deslizar, .granulado, .luzes i { animation: none; } }

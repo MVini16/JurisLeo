@@ -43,6 +43,12 @@
     <!-- cena 3: as películas de fotos que deslizam na horizontal (construídas em app.js, uma por parte) -->
     <div id="tiras"></div>
 
+    <!-- cena 3b: frases de filmes e séries, em letra gigante que anda com o scroll -->
+    <section class="cena cena--frases" id="cenaFrases">
+      <div class="marquee" aria-hidden="true" id="marquee"></div>
+      <div class="frases-palco" id="frasesPalco"></div>
+    </section>
+
     <!-- cena 4: palavras grandes que sobem de dentro de uma máscara -->
     <section class="cena cena--mascara" id="cenaInterludio"><div class="texto-longo texto-longo--grande" id="interludioTexto"></div></section>
 
@@ -57,6 +63,20 @@
     <section class="cena cena--razoes" id="cenaRazoes">
       <h2 class="titulo-cap razoes-titulo">Pelo que eu te agradeço</h2>
       <div class="razoes-palco" id="razoesPalco"></div>
+    </section>
+
+    <!-- minijogo: memória com as nossas fotos -->
+    <section class="cap cap--jogo" id="jogo">
+      <h2 class="titulo-cap" id="jogoTitulo"></h2>
+      <p class="sub-cap" id="jogoSub"></p>
+      <div class="memo" id="memo"></div>
+      <p class="memo-msg" id="memoMsg" aria-live="polite"></p>
+      <p class="contador" id="memoContador"></p>
+      <div class="memo-final" id="memoFinal" hidden>
+        <p class="memo-final__linha" id="memoVitoria"></p>
+        <p class="memo-final__grande" id="memoGrande"></p>
+      </div>
+      <button class="botao botao--suave" id="memoRecomecar" type="button">Jogar outra vez</button>
     </section>
 
     <section class="cap cap--carta" id="carta">

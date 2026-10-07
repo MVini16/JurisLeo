@@ -76,6 +76,20 @@
     $('razoesPalco').appendChild(d);
   });
 
+  (C.marquee || []).forEach(function (t, i) {
+    var l = el('div', 'marquee__linha', (t + ' \u2665 ').repeat(6));
+    l.setAttribute('data-dir', i % 2 ? '1' : '-1');
+    $('marquee').appendChild(l);
+  });
+  C.frases.forEach(function (f) {
+    var d = el('div', 'frase');
+    d.appendChild(el('p', 'frase__fonte', f.fonte));
+    d.appendChild(el('p', 'frase__txt', f.texto));
+    d.appendChild(el('p', 'frase__pt', f.pt));
+    d.appendChild(el('p', 'frase__nosso', f.nosso));
+    $('frasesPalco').appendChild(d);
+  });
+
   $('cartaTitulo').textContent = C.cartaTitulo || '';
   (C.carta || []).forEach(function (par) { $('cartaLonga').appendChild(el('p', null, par)); });
 
@@ -170,6 +184,144 @@
   requestAnimationFrame(desenhar);
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && !parado) requestAnimationFrame(desenhar); });
 
+  // ---------- efeitos de rato e de toque: corações a nascer onde tocas ----------
+  var ativos = 0;
+  function coracoes(x, y, n, espalhar) {
+    if (parado || ativos > 140) return;
+    for (var i = 0; i < n; i++) {
+      var h = el('span', 'fx-coracao', '♥');
+      h.style.fontSize = (10 + Math.random() * 16) + 'px';
+      document.body.appendChild(h);
+      ativos++;
+      var ang = Math.random() * 6.2832;
+      var dist = 30 + Math.random() * (espalhar ? 170 : 70);
+      gsap.set(h, { x: x, y: y, opacity: 1, scale: 0.4, rotate: (Math.random() - 0.5) * 50 });
+      gsap.to(h, {
+        x: x + Math.cos(ang) * dist, y: y + Math.sin(ang) * dist - 40 - Math.random() * 60, scale: 1 + Math.random() * 0.5, opacity: 0,
+        duration: 1.1 + Math.random() * 0.9, ease: 'power2.out',
+        onComplete: function () { ativos--; this.targets()[0].remove(); },
+      });
+    }
+  }
+  if (!parado) {
+    // um toque (que não seja o gesto de deslizar) faz nascer corações
+    document.addEventListener('pointerup', function (e) {
+      if (e.target.closest && e.target.closest('#cortina')) return;
+      coracoes(e.clientX, e.clientY, 6, false);
+    }, { passive: true });
+
+    // com rato: cursor próprio, rasto de corações, botões magnéticos e fotos que inclinam
+    if (window.matchMedia('(pointer: fine)').matches) {
+      document.body.classList.add('cursor-custom');
+      var cur = el('div', 'cursor');
+      cur.appendChild(el('div', 'cursor__anel'));
+      cur.appendChild(el('div', 'cursor__ponto'));
+      cur.style.opacity = '0';
+      document.body.appendChild(cur);
+      var anel = cur.querySelector('.cursor__anel');
+      var ponto = cur.querySelector('.cursor__ponto');
+      var anelX = gsap.quickTo(anel, 'x', { duration: 0.45, ease: 'power3' });
+      var anelY = gsap.quickTo(anel, 'y', { duration: 0.45, ease: 'power3' });
+      var ultimo = 0; var ux = 0; var uy = 0;
+      window.addEventListener('pointermove', function (e) {
+        cur.style.opacity = '1';
+        gsap.set(ponto, { x: e.clientX, y: e.clientY });
+        anelX(e.clientX); anelY(e.clientY);
+        var agora = Date.now();
+        if (agora - ultimo > 90 && Math.hypot(e.clientX - ux, e.clientY - uy) > 28) { coracoes(e.clientX, e.clientY, 1, false); ultimo = agora; ux = e.clientX; uy = e.clientY; }
+        var alvo = e.target.closest && e.target.closest('button, a, .quadro-foto, .memo-carta');
+        cur.classList.toggle('sobre', !!alvo);
+        // fotos inclinam com o rato
+        var foto = e.target.closest && e.target.closest('.quadro-foto');
+        if (foto) {
+          var r = foto.getBoundingClientRect();
+          var px = (e.clientX - r.left) / r.width - 0.5; var py = (e.clientY - r.top) / r.height - 0.5;
+          gsap.to(foto, { rotateY: px * 14, rotateX: -py * 14, transformPerspective: 800, duration: 0.4, overwrite: 'auto' });
+        }
+        // botões puxam um pouco para o cursor
+        var bt = e.target.closest && e.target.closest('.botao');
+        if (bt) {
+          var b = bt.getBoundingClientRect();
+          gsap.to(bt, { x: (e.clientX - (b.left + b.width / 2)) * 0.25, y: (e.clientY - (b.top + b.height / 2)) * 0.35, duration: 0.3 });
+        }
+      }, { passive: true });
+      document.addEventListener('pointerout', function (e) {
+        var foto = e.target.closest && e.target.closest('.quadro-foto');
+        if (foto) gsap.to(foto, { rotateY: 0, rotateX: 0, duration: 0.6, ease: 'power3.out' });
+        var bt = e.target.closest && e.target.closest('.botao');
+        if (bt) gsap.to(bt, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.4)' });
+      });
+    }
+  }
+
+  // ---------- minijogo da memória ----------
+  var jogo = { aberta: [], bloqueio: false, certas: 0, jogadas: 0 };
+  function baralhar(v) { for (var k = v.length - 1; k > 0; k--) { var j = Math.floor(Math.random() * (k + 1)); var t = v[k]; v[k] = v[j]; v[j] = t; } return v; }
+  function montarJogo() {
+    var J = C.jogo;
+    $('jogoTitulo').textContent = J.titulo;
+    $('jogoSub').textContent = J.sub;
+    jogo = { aberta: [], bloqueio: false, certas: 0, jogadas: 0 };
+    $('memoFinal').hidden = true;
+    $('memoMsg').textContent = '';
+    $('memoContador').textContent = 'Jogadas: 0 · Pares: 0 de ' + J.pares.length;
+    var baralho = [];
+    J.pares.forEach(function (p, i) { baralho.push({ i: i, foto: p.foto }); baralho.push({ i: i, foto: p.foto }); });
+    baralhar(baralho);
+    var mesa = $('memo');
+    mesa.textContent = '';
+    baralho.forEach(function (c) {
+      var b = el('button', 'memo-carta');
+      b.type = 'button';
+      b.setAttribute('data-par', String(c.i));
+      b.setAttribute('aria-label', 'Carta virada para baixo');
+      var dentro = el('div', 'memo-carta__in');
+      dentro.appendChild(el('div', 'memo-face memo-face--costas', '♥'));
+      var frente = el('div', 'memo-face memo-face--frente');
+      var im = el('img'); im.src = c.foto; im.alt = ''; im.decoding = 'async';
+      frente.appendChild(im);
+      dentro.appendChild(frente);
+      b.appendChild(dentro);
+      b.addEventListener('click', function () { virar(b); });
+      mesa.appendChild(b);
+    });
+  }
+  function centroDe(elem) { var r = elem.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }
+  function virar(b) {
+    if (jogo.bloqueio || b.classList.contains('virada') || b.classList.contains('certa')) return;
+    b.classList.add('virada');
+    b.setAttribute('aria-label', 'Carta virada');
+    jogo.aberta.push(b);
+    if (jogo.aberta.length < 2) return;
+    jogo.jogadas++;
+    var a = jogo.aberta[0]; var c = jogo.aberta[1];
+    jogo.aberta = [];
+    if (a.getAttribute('data-par') === c.getAttribute('data-par')) {
+      a.classList.add('certa'); c.classList.add('certa');
+      jogo.certas++;
+      $('memoMsg').textContent = C.jogo.pares[Number(a.getAttribute('data-par'))].msg;
+      var ca = centroDe(a); var cc = centroDe(c);
+      coracoes(ca.x, ca.y, 9, true); coracoes(cc.x, cc.y, 9, true);
+      if (jogo.certas === C.jogo.pares.length) setTimeout(vitoria, 900);
+    } else {
+      jogo.bloqueio = true;
+      setTimeout(function () { a.classList.remove('virada'); c.classList.remove('virada'); jogo.bloqueio = false; }, 900);
+    }
+    $('memoContador').textContent = 'Jogadas: ' + jogo.jogadas + ' · Pares: ' + jogo.certas + ' de ' + C.jogo.pares.length;
+  }
+  function vitoria() {
+    $('memoMsg').textContent = '';
+    $('memoVitoria').textContent = C.jogo.vitoria.join(' ');
+    $('memoGrande').textContent = C.jogo.final;
+    $('memoFinal').hidden = false;
+    if (!parado) {
+      gsap.from('#memoFinal', { opacity: 0, y: 30, scale: 0.9, duration: 1.2, ease: 'power3.out' });
+      for (var k = 0; k < 6; k++) setTimeout(function () { coracoes(Math.random() * window.innerWidth, window.innerHeight * (0.3 + Math.random() * 0.5), 14, true); }, k * 350);
+    }
+  }
+  montarJogo();
+  $('memoRecomecar').addEventListener('click', montarJogo);
+
   // ---------- as cenas ----------
   // cena em que uma lista de elementos entra e sai, um de cada vez, sempre no mesmo sítio
   function sequencia(gatilho, itens, entrada, saida, fatia) {
@@ -227,6 +379,17 @@
       });
     });
 
+    // 3b. frases de filmes e séries: letra gigante que anda com o scroll, e uma frase de cada vez no centro
+    var dur;
+    var tlF = sequencia('#cenaFrases', gsap.utils.toArray('.frase'),
+      { de: { opacity: 0, y: 60, scale: 0.9, rotate: -1.5 }, para: { opacity: 1, y: 0, scale: 1, rotate: 0 } },
+      { opacity: 0, y: -60, scale: 1.07 }, 0.7);
+    dur = tlF.duration();
+    gsap.utils.toArray('.marquee__linha').forEach(function (r) {
+      var dir = Number(r.getAttribute('data-dir'));
+      tlF.fromTo(r, { xPercent: dir > 0 ? -26 : 0 }, { xPercent: dir > 0 ? 0 : -26, ease: 'none', duration: dur }, 0);
+    });
+
     // 4. palavras grandes que sobem de dentro de uma máscara
     gsap.timeline({ scrollTrigger: { trigger: '#cenaInterludio', start: 'top top', end: '+=160%', scrub: 0.8, pin: true } })
       .from('#interludioTexto .mascara__in', { yPercent: 118, rotate: 5, stagger: 0.14, duration: 0.5, ease: 'power3.out' })
@@ -237,6 +400,9 @@
     gsap.utils.toArray('.carta').forEach(function (c) {
       gsap.from(c, { opacity: 0, rotateX: -45, y: 50, duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: c, start: 'top 94%' } });
     });
+
+    // o jogo da memória entra com calma
+    gsap.from('#jogo .titulo-cap, #jogo .sub-cap, #memo', { opacity: 0, y: 40, duration: 1, stagger: 0.15, scrollTrigger: { trigger: '#jogo', start: 'top 70%' } });
 
     // 5. as razões, uma de cada vez, com o número gigante por trás
     var razoes = gsap.utils.toArray('.razao');

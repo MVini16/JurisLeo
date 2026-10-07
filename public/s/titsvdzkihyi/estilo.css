@@ -63,7 +63,7 @@ body.gl #estrelas { display: none; }
 .sublinhado { width: min(62vw, 22rem); height: auto; overflow: visible; margin-top: -.4rem; }
 .sublinhado path { stroke-width: 2; filter: drop-shadow(0 0 5px rgba(216,180,95,.6)); }
 
-body.bloqueado .titulo-bloco { opacity: 0; }
+body.bloqueado .titulo-bloco { visibility: hidden; }
 
 /* cena 1 */
 .titulo-bloco { display: grid; gap: 1.2rem; justify-items: center; text-align: center; will-change: transform, opacity; }

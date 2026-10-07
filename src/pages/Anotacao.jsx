@@ -8,6 +8,7 @@ import { useAnotacoes } from '../hooks/useAnotacoes.js';
 import EditorRico from '../components/editor/EditorRico.jsx';
 import ExportarNotas from '../components/exportar/ExportarNotas.jsx';
 import { paginasParaExportar } from '../services/exportarNotas.js';
+import { lerDesenho } from '../services/desenho.js';
 import { abrirNota, serializarNota, estadoTamanho, folhaValida, tamanhoEmBytes } from '../services/notaRica.js';
 import { cadernoDaNota, seccaoDaNota, seccoesDoCaderno, seccoesPadrao, mesmoNome, normalizarNomeSeccao, CADERNO_LIVRE } from '../services/cadernos.js';
 import { cadeirasS1, idsCadeiras, nomesCadernos } from '../data/dadosLeonor.js';
@@ -80,6 +81,7 @@ function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guar
       seccao,
       tags: tagsTexto.split(',').map((t) => t.trim()).filter(Boolean),
       doc: editorRef.current?.obterDoc() ?? docInicial,
+      tracos: lerDesenho(editorRef.current?.obterDesenho() ?? anotacao?.desenho),
     };
     const nomeCaderno = nomesCadernos[cadeiraId];
     const base = { cadernoId: cadeiraId, seccao, atual, idsConhecidos: idsCadeiras, nomesCadernos };

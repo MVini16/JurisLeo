@@ -1,7 +1,7 @@
 // gera o ficheiro word (.docx) das notas a partir do documento do editor.
 // este módulo importa a biblioteca `docx` (grande), por isso a app só o carrega quando se exporta
 import {
-  Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell,
+  Document, Packer, Paragraph, TextRun, ImageRun, HeadingLevel, Table, TableRow, TableCell,
   WidthType, AlignmentType, ShadingType, BorderStyle, LevelFormat, UnderlineType,
 } from 'docx';
 import { corSegura, tamanhoSeguro, rotuloDoBloco } from './exportarNotas.js';
@@ -167,8 +167,16 @@ function configuracaoDeLista(referencia, comeco = 1, formato = LevelFormat.DECIM
 
 // ---------- o documento ----------
 
+// o word mostra as imagens em pixels a 96 por polegada: ~600 de largura enche a folha, e a altura
+// também tem de caber numa página, senão o word corta a imagem
+export function dimensoesParaWord(largura, altura, maxLargura = 600, maxAltura = 880) {
+  const escala = Math.min(1, maxLargura / largura, maxAltura / altura);
+  return { width: Math.round(largura * escala), height: Math.round(altura * escala) };
+}
+
 // devolve o documento do word (sem o transformar em ficheiro); `cores` é lido do index.css pela interface
-export function criarDocx(paginas, tituloColecao, cores) {
+// `imagens[i]` é o desenho da página i como png ({ dados, largura, altura }), ou nada
+export function criarDocx(paginas, tituloColecao, cores, imagens = []) {
   const numeracoes = [];
   const varias = paginas.length > 1;
   const filhos = [];
@@ -184,6 +192,11 @@ export function criarDocx(paginas, tituloColecao, cores) {
       spacing: { after: 200 },
     }));
     filhos.push(...blocosDe(pagina.doc, { cores, deslocamento: 1, numeracoes, caixa: {} }));
+    const imagem = imagens[i];
+    if (imagem) {
+      filhos.push(new Paragraph({ children: [new TextRun({ text: 'Desenho à mão', italics: true, size: 18 })], spacing: { before: 240, after: 80 } }));
+      filhos.push(new Paragraph({ children: [new ImageRun({ type: 'png', data: imagem.dados, transformation: dimensoesParaWord(imagem.largura, imagem.altura) })] }));
+    }
     if (pagina.tags?.length) {
       filhos.push(new Paragraph({ children: [new TextRun({ text: pagina.tags.map((t) => `#${t.replace(/\s+/g, '-')}`).join('  '), size: 18, color: cores['cor-ouro'] })], spacing: { before: 200 } }));
     }
@@ -210,6 +223,6 @@ export function criarDocx(paginas, tituloColecao, cores) {
   });
 }
 
-export async function gerarDocxBlob(paginas, tituloColecao, cores) {
-  return Packer.toBlob(criarDocx(paginas, tituloColecao, cores));
+export async function gerarDocxBlob(paginas, tituloColecao, cores, imagens = []) {
+  return Packer.toBlob(criarDocx(paginas, tituloColecao, cores, imagens));
 }

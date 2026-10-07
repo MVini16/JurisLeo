@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   simplificarPontos, novoTraco, pontosDoTraco, larguraDoTraco, serializarDesenho, lerDesenho,
-  tamanhoDoDesenhoEmBytes, alturaDoDesenho, tracosTocados, historicoInicial, adicionarTraco,
+  tamanhoDoDesenhoEmBytes, alturaDoDesenho, caminhoSvg, comandosDoTraco, tracosTocados, historicoInicial, adicionarTraco,
   apagarTracos, limparTudo, desfazer, refazer, MAX_TRACOS, LARGURAS,
 } from './desenho.js';
 
@@ -88,6 +88,45 @@ describe('guardar e abrir', () => {
   it('corta o que passar do máximo de traços', () => {
     const muitos = Array.from({ length: MAX_TRACOS + 50 }, () => ({ f: 'c', k: 'tinta', l: 1, p: [0, 0, 1, 1] }));
     expect(lerDesenho(JSON.stringify({ v: 1, t: muitos }))).toHaveLength(MAX_TRACOS);
+  });
+});
+
+describe('caminho do traço', () => {
+  it('uma curva suave usa curvas, do primeiro ao último ponto', () => {
+    const curva = Array.from({ length: 40 }, (_, i) => ({ x: i * 10, y: 100 + Math.sin(i / 6) * 40 }));
+    const c = caminhoSvg(traco(curva));
+    expect(c.startsWith('M0 100')).toBe(true);
+    expect(c).toContain('Q');
+    expect(c.endsWith(`L${curva[39].x} ${Math.round(curva[39].y)}`)).toBe(true);
+  });
+
+  it('uma caixa fica com os cantos vivos (sem curvas) mesmo depois de simplificada', () => {
+    const lados = [[60, 120], [220, 120], [220, 190], [60, 190], [60, 120]];
+    const pontos = [];
+    for (let k = 0; k < lados.length - 1; k++) {
+      for (let s = 0; s < 20; s++) {
+        pontos.push({ x: lados[k][0] + ((lados[k + 1][0] - lados[k][0]) * s) / 20, y: lados[k][1] + ((lados[k + 1][1] - lados[k][1]) * s) / 20 });
+      }
+    }
+    pontos.push({ x: 60, y: 120 });
+    const caixa = traco(pontos);
+    expect(caminhoSvg(caixa)).toBe('M60 120L220 120L220 190L60 190L60 120');
+  });
+
+  it('um ângulo pequeno é curva e um grande é canto', () => {
+    const suave = comandosDoTraco([{ x: 0, y: 0 }, { x: 10, y: 2 }, { x: 20, y: 6 }]);
+    expect(suave.map((c) => c.t)).toEqual(['M', 'Q', 'L']);
+    const aguda = comandosDoTraco([{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 10, y: 10 }]);
+    expect(aguda.map((c) => c.t)).toEqual(['M', 'L', 'L']);
+  });
+
+  it('pontos repetidos não rebentam as contas', () => {
+    expect(() => comandosDoTraco([{ x: 5, y: 5 }, { x: 5, y: 5 }, { x: 5, y: 5 }])).not.toThrow();
+  });
+
+  it('uma linha reta é só duas pontas e um pontinho é uma linha de comprimento zero', () => {
+    expect(caminhoSvg(traco([{ x: 0, y: 0 }, { x: 100, y: 0 }]))).toBe('M0 0L100 0');
+    expect(caminhoSvg(traco([{ x: 7, y: 9 }]))).toBe('M7 9L7 9');
   });
 });
 

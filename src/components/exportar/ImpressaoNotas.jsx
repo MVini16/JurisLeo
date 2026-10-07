@@ -2,6 +2,7 @@
 // desenha o documento do editor com elementos react (sem innerHTML), e só aceita
 // as cores e os tamanhos da própria app (ver corSegura e tamanhoSeguro)
 import { corSegura, tamanhoSeguro } from '../../services/exportarNotas.js';
+import { caminhoSvg, alturaDoDesenho, larguraDoTraco, LARGURA_LOGICA } from '../../services/desenho.js';
 import '../editor/EditorRico.css';
 import './ImpressaoNotas.css';
 
@@ -53,6 +54,29 @@ function No({ no, deslocamento }) {
   }
 }
 
+// o desenho à mão como figura vetorial: sai nítido em qualquer tamanho de papel
+function Desenho({ tracos }) {
+  return (
+    <figure className="impressao-desenho">
+      <figcaption>Desenho à mão</figcaption>
+      <svg viewBox={`0 0 ${LARGURA_LOGICA} ${alturaDoDesenho(tracos)}`} role="img" aria-label="Desenho à mão">
+        {tracos.map((t, k) => (
+          <path
+            key={k}
+            d={caminhoSvg(t)}
+            fill="none"
+            strokeWidth={larguraDoTraco(t)}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeOpacity={t.f === 'm' ? 0.35 : 1}
+            style={{ stroke: `var(--nota-cor-${t.k})` }}
+          />
+        ))}
+      </svg>
+    </figure>
+  );
+}
+
 export default function ImpressaoNotas({ paginas, tituloColecao }) {
   const varias = paginas.length > 1;
   return (
@@ -65,6 +89,7 @@ export default function ImpressaoNotas({ paginas, tituloColecao }) {
           <div className="er-texto">
             <Filhos no={p.doc} deslocamento={1} />
           </div>
+          {p.tracos?.length > 0 && <Desenho tracos={p.tracos} />}
           {p.tags?.length > 0 && <p className="impressao-tags">{p.tags.map((t) => `#${t.replace(/\s+/g, '-')}`).join('  ')}</p>}
         </article>
       ))}

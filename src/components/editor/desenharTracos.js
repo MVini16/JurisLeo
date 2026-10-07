@@ -1,6 +1,6 @@
 // desenha traços num canvas. usado pela camada de desenho do editor e, na exportação, para
 // gerar a imagem do desenho que vai para o word
-import { pontosDoTraco, larguraDoTraco, alturaDoDesenho, LARGURA_LOGICA } from '../../services/desenho.js';
+import { pontosDoTraco, larguraDoTraco, alturaDoDesenho, comandosDoTraco, LARGURA_LOGICA } from '../../services/desenho.js';
 
 const OPACIDADE_MARCADOR = 0.35;
 
@@ -30,7 +30,7 @@ export function lerCoresDoPapel() {
   return cores;
 }
 
-// uma linha suave pelos pontos (curvas entre os pontos médios, para não ficar aos bicos)
+// uma linha pelos pontos: curvas suaves, mas os cantos ficam cantos (ver comandosDoTraco)
 export function desenharLinha(ctx, pontos, { marcador, cor, largura }, escala) {
   ctx.save();
   ctx.lineCap = 'round';
@@ -47,14 +47,11 @@ export function desenharLinha(ctx, pontos, { marcador, cor, largura }, escala) {
     ctx.arc(primeiro.x * escala, primeiro.y * escala, ctx.lineWidth / 2, 0, Math.PI * 2);
     ctx.fill();
   } else {
-    ctx.moveTo(primeiro.x * escala, primeiro.y * escala);
-    for (let i = 1; i < pontos.length - 1; i++) {
-      const meioX = (pontos[i].x + pontos[i + 1].x) / 2;
-      const meioY = (pontos[i].y + pontos[i + 1].y) / 2;
-      ctx.quadraticCurveTo(pontos[i].x * escala, pontos[i].y * escala, meioX * escala, meioY * escala);
+    for (const c of comandosDoTraco(pontos)) {
+      if (c.t === 'M') ctx.moveTo(c.x * escala, c.y * escala);
+      else if (c.t === 'L') ctx.lineTo(c.x * escala, c.y * escala);
+      else ctx.quadraticCurveTo(c.cx * escala, c.cy * escala, c.x * escala, c.y * escala);
     }
-    const ultimo = pontos[pontos.length - 1];
-    ctx.lineTo(ultimo.x * escala, ultimo.y * escala);
     ctx.stroke();
   }
   ctx.restore();

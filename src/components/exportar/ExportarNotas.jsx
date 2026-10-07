@@ -9,6 +9,7 @@ import { nomeFicheiro, paginasParaMarkdown, resumoExportacao } from '../../servi
 import { docParaTexto } from '../../services/notaRica.js';
 import { previewTexto } from '../../services/cadernos.js';
 import { partilharTexto, entregarFicheiro, lerCoresDoTema, MIME_DOCX } from '../../services/partilha.js';
+import { renderizarDesenhoPng, lerCoresDoPapel } from '../editor/desenharTracos.js';
 import './ExportarNotas.css';
 
 const ICONES = {
@@ -33,6 +34,7 @@ function Icone({ nome }) {
 
 const MENSAGENS = {
   partilhado: 'Enviado para o menu de partilha.',
+  partilhadoTexto: 'Enviado para o menu de partilha. Os desenhos não vão no texto: usa o PDF ou o Word para os levar.',
   copiado: 'Este aparelho não tem menu de partilha, por isso o texto ficou copiado. Cola onde quiseres.',
   impressao: 'Na janela que abriu, escolhe "Guardar como PDF". No iPhone: Partilhar e depois Guardar em Ficheiros.',
 };
@@ -46,7 +48,7 @@ export default function ExportarNotas({ opcoes, aoFechar }) {
   const [aImprimir, setAImprimir] = useState(false);
 
   const opcao = opcoes.find((o) => o.id === escopoId) ?? opcoes[0];
-  const { total, palavras } = resumoExportacao(opcao.paginas);
+  const { total, palavras, desenhos } = resumoExportacao(opcao.paginas);
   const primeira = opcao.paginas[0];
   const ocupado = estado?.fase === 'a-preparar';
 
@@ -79,7 +81,8 @@ export default function ExportarNotas({ opcoes, aoFechar }) {
       setEstado({ fase: 'erro', mensagem: 'Não consegui partilhar nem copiar o texto. Experimenta o Word ou o PDF.' });
       return;
     }
-    const mensagem = resultado === 'descarregado' ? `O ficheiro ${ficheiro} foi descarregado.` : MENSAGENS[resultado];
+    const chave = formato === 'partilhar' && resultado === 'partilhado' && desenhos > 0 ? 'partilhadoTexto' : resultado;
+    const mensagem = resultado === 'descarregado' ? `O ficheiro ${ficheiro} foi descarregado.` : MENSAGENS[chave];
     setEstado({ fase: 'pronto', formato, ficheiro, mensagem });
     dispararBarney('exportacao');
   }
@@ -93,7 +96,10 @@ export default function ExportarNotas({ opcoes, aoFechar }) {
         concluir(formato, await partilharTexto({ titulo: opcao.titulo, texto }), null);
       } else if (formato === 'word') {
         const { gerarDocxBlob } = await import('../../services/docxNotas.js');
-        const blob = await gerarDocxBlob(opcao.paginas, opcao.titulo, lerCoresDoTema());
+        // o desenho entra no word como imagem, desenhada com as cores do papel (tema claro)
+        const coresDoPapel = desenhos > 0 ? lerCoresDoPapel() : null;
+        const imagens = await Promise.all(opcao.paginas.map((p) => (p.tracos?.length > 0 ? renderizarDesenhoPng(p.tracos, coresDoPapel) : null)));
+        const blob = await gerarDocxBlob(opcao.paginas, opcao.titulo, lerCoresDoTema(), imagens);
         const nome = nomeFicheiro(opcao.nomeBase, 'docx');
         concluir(formato, await entregarFicheiro({ blob, nome, mime: MIME_DOCX }), nome);
       } else {
@@ -135,7 +141,7 @@ export default function ExportarNotas({ opcoes, aoFechar }) {
               <p className="exportar-mini__vazio">Não há páginas para exportar aqui.</p>
             ) : (
               <>
-                <span className="exportar-mini__meta">{total} {total === 1 ? 'página' : 'páginas'} · {palavras} {palavras === 1 ? 'palavra' : 'palavras'}</span>
+                <span className="exportar-mini__meta">{total} {total === 1 ? 'página' : 'páginas'} · {palavras} {palavras === 1 ? 'palavra' : 'palavras'}{desenhos > 0 ? ` · ${desenhos} com desenho` : ''}</span>
                 <strong className="exportar-mini__titulo">{total === 1 ? primeira.titulo : opcao.titulo}</strong>
                 <p className="exportar-mini__texto">{previewTexto({ conteudo: docParaTexto(primeira.doc) }, 150) || 'Página ainda vazia.'}</p>
               </>

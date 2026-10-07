@@ -1,6 +1,7 @@
 // lógica pura da exportação de notas (partilhar, pdf, word) — sem react, sem firebase e sem a
 // biblioteca do word, para testar com vitest sem mocks. trabalha sobre o documento do editor (json)
 import { abrirNota, docParaTexto, contarPalavras } from './notaRica.js';
+import { lerDesenho } from './desenho.js';
 import { agruparPorSeccao, cadernoDaNota, seccaoDaNota, mesmoNome, milissegundos, CADERNO_LIVRE } from './cadernos.js';
 
 // ---------- que páginas exportar ----------
@@ -31,6 +32,8 @@ export function paginasParaExportar(notas, { escopo, cadernoId, seccao, atual = 
       seccao: seccaoDaNota(nota, caderno),
       tags: nota.tags || [],
       doc: nota.doc ?? abrirNota(nota),
+      // a página aberta no editor já traz os traços; as guardadas trazem o texto do desenho
+      tracos: nota.tracos ?? lerDesenho(nota.desenho),
     };
   };
 
@@ -52,6 +55,7 @@ export function resumoExportacao(paginas) {
   return {
     total: paginas.length,
     palavras: paginas.reduce((soma, p) => soma + contarPalavras(docParaTexto(p.doc)), 0),
+    desenhos: paginas.filter((p) => p.tracos?.length > 0).length,
   };
 }
 
@@ -186,7 +190,9 @@ export function paginasParaMarkdown(paginas, tituloColecao = '') {
     const meta = `*${[p.caderno, p.seccao].filter(Boolean).join(' · ')}*`;
     const etiquetas = p.tags?.length ? `\n\n${p.tags.map((t) => `#${t.replace(/\s+/g, '-')}`).join(' ')}` : '';
     const corpo = docParaMarkdown(p.doc, varias ? 2 : 1);
-    return `${varias ? '##' : '#'} ${p.titulo}\n\n${meta}${corpo ? `\n\n${corpo}` : ''}${etiquetas}`;
+    // um desenho não cabe em texto: avisa em vez de o esconder em silêncio
+    const aviso = p.tracos?.length > 0 ? '\n\n*(Esta página tem um desenho à mão que não vai no texto. Exporta em PDF ou Word para o levar.)*' : '';
+    return `${varias ? '##' : '#'} ${p.titulo}\n\n${meta}${corpo ? `\n\n${corpo}` : ''}${aviso}${etiquetas}`;
   });
   const cabecalho = varias && tituloColecao ? `# ${tituloColecao}\n\n` : '';
   return `${cabecalho}${partes.join('\n\n---\n\n')}\n`;

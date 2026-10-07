@@ -102,6 +102,45 @@ function tracoValido(traco) {
     && traco.p.every((n) => Number.isInteger(n) && Math.abs(n) < 100000);
 }
 
+// a partir deste desvio de direção (em graus) um ponto passa a ser um canto e não uma curva
+const ANGULO_DO_CANTO = 35;
+const COSSENO_DO_CANTO = Math.cos((ANGULO_DO_CANTO * Math.PI) / 180);
+
+function eCanto(anterior, atual, seguinte) {
+  const ax = atual.x - anterior.x;
+  const ay = atual.y - anterior.y;
+  const bx = seguinte.x - atual.x;
+  const by = seguinte.y - atual.y;
+  const normas = Math.hypot(ax, ay) * Math.hypot(bx, by);
+  return normas > 0 && (ax * bx + ay * by) / normas < COSSENO_DO_CANTO;
+}
+
+// como se desenha o traço: curvas suaves entre os pontos médios, mas os cantos ficam cantos
+// (uma caixa ou uma seta não podem ficar arredondadas). é a mesma receita para o ecrã, o pdf e o word
+// devolve comandos { t: 'M' | 'L' | 'Q', x, y, cx?, cy? }
+export function comandosDoTraco(pontos) {
+  const comandos = [{ t: 'M', x: pontos[0].x, y: pontos[0].y }];
+  for (let i = 1; i < pontos.length - 1; i++) {
+    if (eCanto(pontos[i - 1], pontos[i], pontos[i + 1])) {
+      comandos.push({ t: 'L', x: pontos[i].x, y: pontos[i].y });
+    } else {
+      comandos.push({ t: 'Q', cx: pontos[i].x, cy: pontos[i].y, x: (pontos[i].x + pontos[i + 1].x) / 2, y: (pontos[i].y + pontos[i + 1].y) / 2 });
+    }
+  }
+  const ultimo = pontos[pontos.length - 1];
+  comandos.push({ t: 'L', x: ultimo.x, y: ultimo.y });
+  return comandos;
+}
+
+// o mesmo caminho em svg (para o pdf). um pontinho dá uma linha de comprimento zero que, com as
+// pontas redondas, aparece como um ponto
+export function caminhoSvg(traco) {
+  const arredondar = (n) => Math.round(n * 10) / 10;
+  return comandosDoTraco(pontosDoTraco(traco)).map((c) => (
+    c.t === 'Q' ? `Q${arredondar(c.cx)} ${arredondar(c.cy)} ${arredondar(c.x)} ${arredondar(c.y)}` : `${c.t}${arredondar(c.x)} ${arredondar(c.y)}`
+  )).join('');
+}
+
 // ---------- guardar e abrir ----------
 
 export function serializarDesenho(tracos) {

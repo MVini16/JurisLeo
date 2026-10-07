@@ -1,6 +1,3 @@
-/* margem só para estas páginas (o resto da app imprime com a margem normal) */
-@page notas { margin: 18mm; }
-
 /* só existe no papel: no ecrã fica escondido e, ao imprimir, a app inteira dá lugar a isto */
 .impressao-notas { display: none; }
 
@@ -12,7 +9,6 @@
     font-family: Georgia, 'Times New Roman', serif;
     font-size: 11pt;
     line-height: 1.5;
-    page: notas;
   }
 
   .impressao-pagina { break-after: page; }
@@ -30,6 +26,10 @@
   .impressao-notas .er-texto h3 { font-size: 13pt; }
   .impressao-notas .er-texto p { margin-bottom: 6pt; }
   .impressao-notas .er-texto table, .impressao-notas .er-texto [data-bloco] { break-inside: avoid; }
+
+  .impressao-desenho { margin: 14pt 0 0; break-inside: avoid; }
+  .impressao-desenho figcaption { font-size: 9pt; font-style: italic; opacity: 0.6; margin-bottom: 4pt; }
+  .impressao-desenho svg { display: block; width: 100%; height: auto; }
 
   .impressao-tarefas { list-style: none; padding-left: 0; }
   .impressao-tarefas li { display: flex; gap: 6pt; }

@@ -50,9 +50,19 @@ describe('paginasParaExportar', () => {
     expect(paginas[0]).toMatchObject({ titulo: 'Sem título', caderno: 'Caderno Livre', seccao: 'Ideias' });
   });
 
-  it('resumo conta páginas e palavras', () => {
+  it('resumo conta páginas, palavras e páginas com desenho', () => {
     const paginas = paginasParaExportar(notas, { ...base, escopo: 'caderno', cadernoId: 'do' });
-    expect(resumoExportacao(paginas)).toEqual({ total: 3, palavras: 6 });
+    expect(resumoExportacao(paginas)).toEqual({ total: 3, palavras: 6, desenhos: 0 });
+  });
+
+  it('o desenho guardado vai com a página, e o da página aberta ganha ao guardado', () => {
+    const guardado = JSON.stringify({ v: 1, t: [{ f: 'c', k: 'azul', l: 2, p: [0, 0, 5, 5] }] });
+    const comDesenho = [{ id: 'x', titulo: 'T', cadeiraId: 'do', conteudo: 'a', desenho: guardado }];
+    const paginas = paginasParaExportar(comDesenho, { ...base, escopo: 'caderno', cadernoId: 'do' });
+    expect(paginas[0].tracos).toHaveLength(1);
+    expect(resumoExportacao(paginas).desenhos).toBe(1);
+    const atual = { id: 'x', titulo: 'T', cadeiraId: 'do', doc: textoParaDoc('a'), tracos: [] };
+    expect(paginasParaExportar(comDesenho, { ...base, escopo: 'pagina', atual })[0].tracos).toHaveLength(0);
   });
 });
 
@@ -132,6 +142,12 @@ describe('markdown', () => {
       { type: 'tableRow', content: [celula('tableCell', '1'), celula('tableCell', '2')] },
     ] });
     expect(docParaMarkdown(d)).toBe('| A | B |\n| --- | --- |\n| 1 | 2 |');
+  });
+
+  it('avisa que o desenho não vai no texto', () => {
+    const pagina = { titulo: 'T', caderno: 'DO I', seccao: 'Teóricas', tags: [], doc: textoParaDoc('corpo'), tracos: [{ f: 'c', k: 'tinta', l: 1, p: [0, 0, 1, 1] }] };
+    expect(paginasParaMarkdown([pagina])).toContain('desenho à mão que não vai no texto');
+    expect(paginasParaMarkdown([{ ...pagina, tracos: [] }])).not.toContain('desenho');
   });
 
   it('uma página leva # título, a linha do caderno e as tags; várias levam a coleção em cima', () => {

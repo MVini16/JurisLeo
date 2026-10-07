@@ -6,6 +6,7 @@ import SplashScreen from './pages/SplashScreen'
 import Login from './pages/Login'
 // componente de navegação — vai envolver todas as páginas principais
 import NavBar from './components/NavBar'
+import BarneyCarregar from './components/BarneyCarregar'
 
 // restantes páginas — carregadas só quando a rota é aberta
 const Onboarding = lazy(() => import('./pages/Onboarding'))
@@ -31,7 +32,7 @@ const Perfil = lazy(() => import('./pages/Perfil'))
 function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<div className="rota-carregar">A carregar...</div>}>
+      <Suspense fallback={<BarneyCarregar />}>
         <Routes>
           {/* páginas sem navbar — entrada da app */}
           <Route path="/" element={<SplashScreen />} />

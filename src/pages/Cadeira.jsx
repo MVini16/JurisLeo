@@ -9,6 +9,7 @@ import { getCadeira } from '../data/dadosLeonor.js';
 import { escolherFrase } from '../hooks/useFrase.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import Celebracao from '../components/Celebracao.jsx';
+import { useBarney } from '../hooks/useBarney.jsx';
 import EcraConsolo from '../components/EcraConsolo.jsx';
 import MensagemCarinhosa from '../components/MensagemCarinhosa.jsx';
 import './Cadeira.css';
@@ -65,6 +66,9 @@ export default function Cadeira() {
   );
 }
 
+// a partir de que nota o barney aparece depois da celebração
+const NOTA_ALTA = 14;
+
 function SeccaoAvaliacao({ cadeira, infoBase, avaliacaoDados, guardarAvaliacao }) {
   const [form, setForm] = useState(() => ({
     provaEscrita: avaliacaoDados.provaEscrita ?? '',
@@ -78,6 +82,7 @@ function SeccaoAvaliacao({ cadeira, infoBase, avaliacaoDados, guardarAvaliacao }
   const [guardado, setGuardado] = useState(false);
   const [celebracaoAtiva, setCelebracaoAtiva] = useState(false);
   const [consolo, setConsolo] = useState(null);
+  const { elemento: barney, disparar: dispararBarney } = useBarney();
 
   const pesos = infoBase?.pesos || { provaEscrita: 0.5, outrosElementos: 0.5 };
   const provaEscritaNum = paraNumero(form.provaEscrita);
@@ -168,8 +173,16 @@ function SeccaoAvaliacao({ cadeira, infoBase, avaliacaoDados, guardarAvaliacao }
       </button>
 
       {celebracaoAtiva && (
-        <Celebracao nota={resultado.notaFinal} onTerminar={() => setCelebracaoAtiva(false)} />
+        <Celebracao
+          nota={resultado.notaFinal}
+          onTerminar={() => {
+            setCelebracaoAtiva(false);
+            // nota alta (14 ou mais): depois da celebração, o barney carimba por cima
+            if (resultado.notaFinal >= NOTA_ALTA) dispararBarney('notaAlta');
+          }}
+        />
       )}
+      {barney}
       {consolo && (
         <EcraConsolo proximoPasso={consolo.proximoPasso} mensagem={consolo.mensagem} onFechar={() => setConsolo(null)} />
       )}

@@ -4,6 +4,7 @@ import { useTheme } from '../context/useTheme.js';
 import { useFlashcards } from '../hooks/useFlashcards.js';
 import { estaPronto, ordenarPorPrioridade } from '../services/repeticaoEspacada.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
+import { useBarney } from '../hooks/useBarney.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Flashcards.css';
 
@@ -13,6 +14,7 @@ export default function Flashcards() {
   const [filtroCadeira, setFiltroCadeira] = useState('todas');
   const [formAberto, setFormAberto] = useState(false);
   const [emRevisao, setEmRevisao] = useState(false);
+  const { elemento: barney, disparar: dispararBarney } = useBarney();
 
   const prontos = flashcards.filter((f) => estaPronto(f));
   const filtrados = flashcards.filter((f) => filtroCadeira === 'todas' || f.cadeiraId === filtroCadeira);
@@ -21,6 +23,7 @@ export default function Flashcards() {
   return (
     <div className={`flashcards-pagina ${darkMode ? 'dark' : ''}`}>
       <BotaoVoltar />
+      {barney}
       <header className="flashcards-header">
         <div>
           <h1 className="flashcards-titulo">Flashcards</h1>
@@ -63,6 +66,7 @@ export default function Flashcards() {
           fila={filaRevisao}
           onResponder={registarResposta}
           onFechar={() => setEmRevisao(false)}
+          onConcluir={() => dispararBarney('flashcards')}
         />
       )}
     </div>
@@ -126,7 +130,7 @@ function FlashcardMini({ flashcard, onApagar }) {
   );
 }
 
-function SessaoRevisao({ fila, onResponder, onFechar }) {
+function SessaoRevisao({ fila, onResponder, onFechar, onConcluir }) {
   const [indice, setIndice] = useState(0);
   const [virado, setVirado] = useState(false);
   const atual = fila[indice];
@@ -135,6 +139,7 @@ function SessaoRevisao({ fila, onResponder, onFechar }) {
     await onResponder(atual, acertou);
     if (indice + 1 >= fila.length) {
       onFechar();
+      onConcluir();
     } else {
       setIndice((i) => i + 1);
       setVirado(false);

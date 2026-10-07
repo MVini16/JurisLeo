@@ -7,6 +7,7 @@ import { useTarefas } from '../hooks/useTarefas.js'
 import { coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js'
 import Tutorial from '../components/Tutorial.jsx'
 import { useFrase } from '../hooks/useFrase.js'
+import { useBarney } from '../hooks/useBarney.jsx'
 
 // cores por cadeira — usadas nos dots das aulas
 const CORES_CADEIRA = coresCadeiras;
@@ -46,6 +47,13 @@ function Dashboard() {
 
   const frase = useFrase(getContextoFrase());
 
+  // barney: salta de vez em quando à entrada, e sempre com 3 toques no logo
+  const { elemento: barney, disparar: dispararBarney, tocar: tocarLogo } = useBarney();
+  useEffect(() => {
+    const t = setTimeout(() => dispararBarney('abertura'), 1500);
+    return () => clearTimeout(t);
+  }, [dispararBarney]);
+
   const { tarefas } = useTarefas();
   const tarefasPendentes = tarefas
     .filter((t) => !t.concluida)
@@ -74,11 +82,12 @@ function Dashboard() {
 
       {/* fundo decorativo */}
       <div className="dashboard-bg" />
+      {barney}
 
       {/* barra do topo */}
       <header className="dashboard-header anim-entrada" style={{ '--delay': '0s' }}>
         <div className="header-esquerda">
-          <span className="dashboard-logo">JurisLeo</span>
+          <span className="dashboard-logo" onClick={tocarLogo}>JurisLeo</span>
           <span className="dashboard-subtitulo">Faculdade de Direito · UL</span>
         </div>
 

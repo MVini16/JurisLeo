@@ -5,6 +5,7 @@ import { useCronometro } from '../hooks/useCronometro.js';
 import { useSessoesEstudo } from '../hooks/useSessoesEstudo.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import MensagemCarinhosa from '../components/MensagemCarinhosa.jsx';
+import { useBarney } from '../hooks/useBarney.jsx';
 import { cadeirasS1, coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js';
 import './Estudo.css';
 
@@ -29,6 +30,7 @@ export default function Estudo() {
   const { sessoes, loading, registarSessao } = useSessoesEstudo();
   const [cadeiraId, setCadeiraId] = useState(null);
   const [ultimoResumo, setUltimoResumo] = useState(null);
+  const { elemento: barney, disparar: dispararBarney } = useBarney();
 
   const iniciado = segundos > 0 || aCorrer;
   const cor = cadeiraId ? coresCadeiras[cadeiraId] : '#b8963e';
@@ -38,12 +40,14 @@ export default function Estudo() {
     const resumo = terminar();
     await registarSessao({ cadeiraId, ...resumo });
     setUltimoResumo(resumo);
+    if (resumo.minutos >= MINUTOS_SESSAO_LONGA) dispararBarney('estudo25');
     setTimeout(() => setUltimoResumo(null), 3000);
   }
 
   return (
     <div className={`estudo-pagina ${darkMode ? 'dark' : ''}`}>
       <BotaoVoltar />
+      {barney}
       <header className="estudo-header">
         <h1 className="estudo-titulo">Estudo</h1>
         <span className="estudo-subtitulo">{totalRecente} min nas últimas {sessoes.length} sessões</span>

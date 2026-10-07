@@ -5,6 +5,7 @@ import { collection, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from '
 import { getAuth } from 'firebase/auth';
 import { useLocation } from 'react-router-dom';
 import { useTarefas } from '../hooks/useTarefas.js';
+import { useBarney } from '../hooks/useBarney.jsx';
 import { coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Tarefas.css';
 
@@ -48,6 +49,7 @@ function estaAtrasada(dataStr) {
 export default function Tarefas() {
   const { tarefas, loading } = useTarefas();
   const location = useLocation();
+  const { elemento: barney, disparar: dispararBarney } = useBarney();
   const [filtro, setFiltro] = useState('todas'); // 'todas' ou id da cadeira
   const [agrupamento, setAgrupamento] = useState('cadeira'); // 'cadeira' ou 'prazo'
   // abre logo o modal se vier do menu + com o pedido de nova tarefa
@@ -108,6 +110,8 @@ export default function Tarefas() {
     if (!userId) return;
     const ref = doc(db, 'users', userId, 'tarefas', tarefa.id);
     await updateDoc(ref, { concluida: !tarefa.concluida });
+    // só quando fica concluída (não quando se desfaz)
+    if (!tarefa.concluida) dispararBarney('tarefa');
   }
 
   async function apagarTarefa(tarefaId) {
@@ -119,6 +123,7 @@ export default function Tarefas() {
 
   return (
     <div className={`tarefas-wrapper ${visivel ? 'visivel' : ''}`}>
+      {barney}
 
       {/* cabeçalho */}
       <div className="tarefas-header anim-entrada" style={{ '--delay': '0s' }}>

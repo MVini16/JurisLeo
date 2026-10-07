@@ -8,6 +8,7 @@ import { logout } from '../services/auth.js';
 import { limparCadeirasAntigas, seedCadeiras } from '../services/initFirestore.js';
 import { exportarDadosComoFicheiro } from '../services/exportar.js';
 import { useTheme } from '../context/useTheme.js';
+import { useBarney } from '../hooks/useBarney.jsx';
 import './Perfil.css';
 
 export default function Perfil() {
@@ -18,6 +19,7 @@ export default function Perfil() {
   const [aRepor, setARepor] = useState(false);
   const [reposto, setReposto] = useState(false);
   const [aExportar, setAExportar] = useState(false);
+  const { elemento: barney, disparar: dispararBarney, tocar: tocarAvatar } = useBarney();
 
   useEffect(() => {
     const auth = getAuth();
@@ -62,6 +64,7 @@ export default function Perfil() {
     setAExportar(true);
     try {
       await exportarDadosComoFicheiro(userId);
+      dispararBarney('exportacao');
     } finally {
       setAExportar(false);
     }
@@ -71,8 +74,9 @@ export default function Perfil() {
 
   return (
     <div className={`perfil-pagina ${darkMode ? 'dark' : ''}`}>
+      {barney}
       <header className="perfil-header">
-        <div className="perfil-avatar">{(perfil?.nome || 'L').charAt(0).toUpperCase()}</div>
+        <div className="perfil-avatar" onClick={tocarAvatar}>{(perfil?.nome || 'L').charAt(0).toUpperCase()}</div>
         <h1 className="perfil-nome">{perfil?.nome || 'Leonor'}</h1>
         <p className="perfil-email">{email}</p>
       </header>

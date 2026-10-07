@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useCaso } from '../hooks/useCaso.js';
+import { useProvocacoes } from '../hooks/useProvocacoes.jsx';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { cadeirasS1 } from '../data/dadosLeonor.js';
 import './Caso.css';
@@ -50,6 +51,7 @@ function Formulario({ caso, novo, criar, guardar, apagar, onVoltar }) {
   const [guardando, setGuardando] = useState(false);
   const [guardado, setGuardado] = useState(false);
   const [confirmarApagar, setConfirmarApagar] = useState(false);
+  const { elemento: provocacao, aoEscrever } = useProvocacoes();
 
   function dadosAtuais() {
     return { titulo: titulo.trim(), cadeiraId, enunciado, estrutura, estado, notaDoProfessor, duvidas };
@@ -87,6 +89,7 @@ function Formulario({ caso, novo, criar, guardar, apagar, onVoltar }) {
 
   return (
     <>
+      {provocacao}
       <BotaoVoltar destino="/casos" texto="‹ Casos Práticos" />
 
       <input className="caso-editor__titulo" placeholder="Título do caso" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
@@ -101,7 +104,7 @@ function Formulario({ caso, novo, criar, guardar, apagar, onVoltar }) {
 
       <label className="caso-editor__campo">
         <span className="caso-editor__label">Enunciado</span>
-        <textarea className="caso-editor__textarea" rows={4} value={enunciado} onChange={(e) => setEnunciado(e.target.value)} placeholder="Cola aqui o enunciado do caso..." />
+        <textarea className="caso-editor__textarea" rows={4} value={enunciado} onChange={(e) => { setEnunciado(e.target.value); aoEscrever(); }} placeholder="Cola aqui o enunciado do caso..." />
       </label>
 
       {CAMPOS_ESTRUTURA.map((campo) => (
@@ -111,7 +114,7 @@ function Formulario({ caso, novo, criar, guardar, apagar, onVoltar }) {
             className="caso-editor__textarea"
             rows={3}
             value={estrutura[campo.chave] || ''}
-            onChange={(e) => setEstrutura((prev) => ({ ...prev, [campo.chave]: e.target.value }))}
+            onChange={(e) => { setEstrutura((prev) => ({ ...prev, [campo.chave]: e.target.value })); aoEscrever(); }}
             placeholder={campo.placeholder}
           />
         </label>
@@ -152,7 +155,7 @@ function Formulario({ caso, novo, criar, guardar, apagar, onVoltar }) {
 
       <label className="caso-editor__campo">
         <span className="caso-editor__label">Nota / feedback do professor</span>
-        <textarea className="caso-editor__textarea" rows={2} value={notaDoProfessor} onChange={(e) => setNotaDoProfessor(e.target.value)} placeholder="O que o professor disse na correção..." />
+        <textarea className="caso-editor__textarea" rows={2} value={notaDoProfessor} onChange={(e) => { setNotaDoProfessor(e.target.value); aoEscrever(); }} placeholder="O que o professor disse na correção..." />
       </label>
 
       <div className="caso-editor__acoes">

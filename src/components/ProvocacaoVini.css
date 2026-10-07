@@ -1,0 +1,176 @@
+/* fica por cima da página, acima da navbar, sem tapar o texto todo */
+.provocacao-area {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 96px;
+  z-index: 250;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.provocacao-area > * {
+  pointer-events: auto;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(20, 12, 15, 0.28);
+}
+
+/* balão de conversa */
+.provocacao-balao {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  background: transparent;
+  box-shadow: none !important;
+  animation: provocacaoSobe 0.5s cubic-bezier(0.2, 1.2, 0.4, 1) backwards;
+}
+
+.provocacao-avatar {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--burgundy);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.provocacao-balao__corpo {
+  background: var(--burgundy);
+  color: #fff;
+  border-radius: 16px 16px 16px 4px;
+  padding: 10px 14px;
+  box-shadow: 0 10px 30px rgba(20, 12, 15, 0.28);
+}
+
+.provocacao-balao__corpo b {
+  display: block;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.72rem;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+}
+
+.provocacao-balao__corpo p {
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+/* despacho de tribunal com selo */
+.provocacao-despacho {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg-light);
+  color: var(--text-light);
+  border: 1px solid var(--gold);
+  outline: 1px solid var(--gold);
+  outline-offset: -6px;
+  border-radius: 4px;
+  padding: 18px 18px 36px;
+  animation: provocacaoEntra 0.4s ease backwards;
+}
+
+html.dark .provocacao-despacho {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+.provocacao-despacho__tipo {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.provocacao-despacho p {
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.provocacao-despacho__ass {
+  font-style: italic;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.provocacao-despacho__selo {
+  position: absolute;
+  right: 14px;
+  bottom: 10px;
+  border: 3px double var(--selo);
+  color: var(--selo);
+  padding: 1px 10px;
+  font: 800 0.72rem 'Lato', sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transform: rotate(-8deg);
+  background: var(--bg-light);
+  animation: provocacaoCarimbo 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) 0.3s backwards;
+}
+
+html.dark .provocacao-despacho__selo { background: var(--bg-dark); }
+
+/* post-it */
+.provocacao-postit {
+  position: relative;
+  max-width: 340px;
+  margin-left: auto;
+  background: var(--postit);
+  color: var(--postit-texto);
+  padding: 22px 16px 14px;
+  transform: rotate(2.5deg);
+  font-style: italic;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  animation: provocacaoCai 0.6s cubic-bezier(0.2, 1.3, 0.4, 1) backwards;
+}
+
+.provocacao-postit::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 70px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.55);
+  transform: translateX(-50%) rotate(-3deg);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.provocacao-postit small {
+  display: block;
+  margin-top: 8px;
+  font: 600 0.72rem 'Lato', sans-serif;
+  font-style: normal;
+  opacity: 0.7;
+}
+
+@keyframes provocacaoSobe {
+  from { transform: translateY(26px) scale(0.9); opacity: 0; }
+}
+
+@keyframes provocacaoEntra {
+  from { transform: translateY(14px); opacity: 0; }
+}
+
+@keyframes provocacaoCarimbo {
+  from { transform: rotate(-8deg) scale(2.6); opacity: 0; }
+  60% { opacity: 1; }
+}
+
+@keyframes provocacaoCai {
+  from { transform: translateY(-80px) rotate(-12deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .provocacao-area * { animation-duration: 0.01ms !important; animation-delay: 0s !important; }
+}

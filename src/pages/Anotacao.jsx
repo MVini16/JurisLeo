@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useAnotacao } from '../hooks/useAnotacao.js';
+import { useProvocacoes } from '../hooks/useProvocacoes.jsx';
 import { cadeirasS1 } from '../data/dadosLeonor.js';
 import './Anotacao.css';
 
@@ -43,6 +44,7 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
   const [guardando, setGuardando] = useState(false);
   const [guardado, setGuardado] = useState(false);
   const [confirmarApagar, setConfirmarApagar] = useState(false);
+  const { elemento: provocacao, aoEscrever } = useProvocacoes();
 
   const cadeira = cadeirasS1.find((c) => c.id === cadeiraId);
 
@@ -80,6 +82,7 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
 
   return (
     <>
+      {provocacao}
       <div className="anotacao-editor__header">
         <button className="anotacao-editor__voltar" onClick={onVoltar}>‹ Anotações</button>
         <button className={`anotacao-editor__estrela ${favorita ? 'ativa' : ''}`} onClick={() => setFavorita((f) => !f)}>
@@ -91,7 +94,7 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
         className="anotacao-editor__titulo"
         placeholder="Título da anotação"
         value={titulo}
-        onChange={(e) => setTitulo(e.target.value)}
+        onChange={(e) => { setTitulo(e.target.value); aoEscrever(); }}
       />
 
       <div className="anotacao-editor__cadeiras">
@@ -116,7 +119,7 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
         className="anotacao-editor__conteudo"
         placeholder="Escreve aqui o que deu na aula..."
         value={conteudo}
-        onChange={(e) => setConteudo(e.target.value)}
+        onChange={(e) => { setConteudo(e.target.value); aoEscrever(); }}
         rows={14}
       />
 

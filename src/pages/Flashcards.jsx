@@ -5,6 +5,8 @@ import { useFlashcards } from '../hooks/useFlashcards.js';
 import { estaPronto, ordenarPorPrioridade } from '../services/repeticaoEspacada.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { useBarney } from '../hooks/useBarney.jsx';
+import { usePreferencias } from '../hooks/usePreferencias.js';
+import SessaoVertical from '../components/estudo/SessaoVertical.jsx';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Flashcards.css';
 
@@ -13,8 +15,10 @@ export default function Flashcards() {
   const { flashcards, loading, adicionar, apagar, registarResposta } = useFlashcards();
   const [filtroCadeira, setFiltroCadeira] = useState('todas');
   const [formAberto, setFormAberto] = useState(false);
-  const [emRevisao, setEmRevisao] = useState(false);
+  // a fila fica congelada quando a revisão começa (as respostas mudam os cartões prontos a meio da sessão)
+  const [filaSessao, setFilaSessao] = useState(null);
   const { elemento: barney, disparar: dispararBarney } = useBarney();
+  const prefs = usePreferencias();
 
   const prontos = flashcards.filter((f) => estaPronto(f));
   const filtrados = flashcards.filter((f) => filtroCadeira === 'todas' || f.cadeiraId === filtroCadeira);
@@ -36,7 +40,7 @@ export default function Flashcards() {
         <div>
           <strong>{prontos.length}</strong> pronto{prontos.length === 1 ? '' : 's'} para rever hoje
         </div>
-        <button className="flashcards-btn-revisao" onClick={() => setEmRevisao(true)} disabled={filaRevisao.length === 0}>
+        <button className="flashcards-btn-revisao" onClick={() => setFilaSessao(filaRevisao)} disabled={filaRevisao.length === 0}>
           ▶ Começar revisão
         </button>
       </div>
@@ -61,11 +65,12 @@ export default function Flashcards() {
         ))}
       </div>
 
-      {emRevisao && (
-        <SessaoRevisao
-          fila={filaRevisao}
+      {filaSessao && (
+        <SessaoVertical
+          fila={filaSessao}
+          variante={prefs.estudoVisual}
           onResponder={registarResposta}
-          onFechar={() => setEmRevisao(false)}
+          onFechar={() => setFilaSessao(null)}
           onConcluir={() => dispararBarney('flashcards')}
         />
       )}
@@ -126,49 +131,6 @@ function FlashcardMini({ flashcard, onApagar }) {
           <span className="flashcard-mini__confirmar">Apagar? <button className="flashcard-mini__link" onClick={onApagar}>Sim</button> / <button className="flashcard-mini__link" onClick={() => setConfirmarApagar(false)}>Não</button></span>
         )}
       </div>
-    </div>
-  );
-}
-
-function SessaoRevisao({ fila, onResponder, onFechar, onConcluir }) {
-  const [indice, setIndice] = useState(0);
-  const [virado, setVirado] = useState(false);
-  const atual = fila[indice];
-
-  async function responder(acertou) {
-    await onResponder(atual, acertou);
-    if (indice + 1 >= fila.length) {
-      onFechar();
-      onConcluir();
-    } else {
-      setIndice((i) => i + 1);
-      setVirado(false);
-    }
-  }
-
-  if (!atual) return null;
-
-  return (
-    <div className="revisao-overlay no-print">
-      <button className="revisao-fechar" onClick={onFechar}>✕</button>
-      <span className="revisao-progresso">{indice + 1} / {fila.length}</span>
-
-      <div className={`revisao-carta ${virado ? 'virada' : ''}`} onClick={() => setVirado((v) => !v)}>
-        <div className="revisao-carta__face revisao-carta__frente">
-          <p>{atual.frente}</p>
-          <span className="revisao-carta__dica">Toca para veres a resposta</span>
-        </div>
-        <div className="revisao-carta__face revisao-carta__tras">
-          <p>{atual.tras}</p>
-        </div>
-      </div>
-
-      {virado && (
-        <div className="revisao-acoes">
-          <button className="revisao-btn-errei" onClick={() => responder(false)}>✕ Não sabia</button>
-          <button className="revisao-btn-acertei" onClick={() => responder(true)}>✓ Acertei</button>
-        </div>
-      )}
     </div>
   );
 }

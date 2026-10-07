@@ -7,6 +7,7 @@ import { useBarney } from '../hooks/useBarney.jsx';
 import { usePerfil } from '../hooks/usePerfil.js';
 import { usePreferencias } from '../hooks/usePreferencias.js';
 import { ASPETOS } from '../data/boneco.js';
+import { VARIANTES_ESTUDO, varianteValida } from '../services/modoEstudo.js';
 import { telefoneValido } from '../services/boneco.js';
 import AvatarBoneco from '../components/boneco/AvatarBoneco.jsx';
 import { lerPreferencias, guardarPreferencias } from '../services/preferenciasBrincadeiras.js';
@@ -50,6 +51,19 @@ function Aparencia() {
             rotulo={NOMES_FOLHA[folha]}
             marcada={prefs.folhaNotas === folha}
             aoClicar={() => setPrefs(guardarPreferencias({ folhaNotas: folha }))}
+          />
+        ))}
+      </GrupoDefinicoes>
+
+      <GrupoDefinicoes titulo="Modo de estudo" indice={2} nota="É o aspeto da revisão de flashcards em ecrã inteiro.">
+        {VARIANTES_ESTUDO.map((v) => (
+          <LinhaDefinicao
+            key={v.id}
+            tipo="opcao"
+            rotulo={v.nome}
+            descricao={v.descricao}
+            marcada={varianteValida(prefs.estudoVisual) === v.id}
+            aoClicar={() => setPrefs(guardarPreferencias({ estudoVisual: v.id }))}
           />
         ))}
       </GrupoDefinicoes>

@@ -7,6 +7,7 @@ const PADRAO = {
   provocacoes: true,
   frequenciaMin: 10,
   folhaNotas: 'pautado',
+  estudoVisual: 'feed',
   // boneco do vini: aparece por omissão, "as vezes" puxa conversa, e o contacto do vini fica só neste telemóvel
   boneco: true,
   bonecoAspeto: 'A',

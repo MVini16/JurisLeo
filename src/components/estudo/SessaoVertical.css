@@ -1,0 +1,178 @@
+/* revisão vertical: as quatro variantes partilham a estrutura. cores da app via var(--...);
+   os fundos escuros e os carimbos são cores próprias deste ecrã (fica sempre escuro, como um feed) */
+.sv {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+  font-family: Georgia, 'Times New Roman', serif;
+  color: #F5EFE6;
+  --sv-ok: #2E6F5E;
+  --sv-mal: #B3402F;
+}
+.sv--feed { background: linear-gradient(180deg, #2A0B13, #120A0E); }
+.sv--pilha { background: radial-gradient(circle at 50% 30%, #3B1A24, #120A0E); }
+.sv--story { background: #0F1B2D; }
+.sv--processo { background: #E9DFCF; color: #2C1810; }
+
+.sv-topo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 14px 16px;
+  padding-top: max(14px, env(safe-area-inset-top));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: system-ui, sans-serif;
+  font-size: 0.8rem;
+  z-index: 6;
+}
+.sv--story .sv-topo { top: 10px; }
+.sv-serie { background: rgba(255, 255, 255, 0.12); border-radius: 999px; padding: 4px 10px; }
+.sv--processo .sv-serie { background: rgba(0, 0, 0, 0.08); }
+.sv-contador { margin-left: auto; opacity: 0.8; font-variant-numeric: tabular-nums; }
+.sv-fechar { background: none; border: 0; color: inherit; font-size: 1.1rem; cursor: pointer; padding: 6px 8px; }
+
+/* cartão */
+.sv-cartao {
+  position: relative;
+  width: min(420px, calc(100vw - 36px));
+  height: min(60vh, 460px);
+  perspective: 1000px;
+  cursor: pointer;
+  animation: sv-entra 0.5s cubic-bezier(0.2, 0.9, 0.3, 1);
+  touch-action: none;
+}
+.sv-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 26px 22px;
+  border-radius: 22px;
+  backface-visibility: hidden;
+  transition: transform 0.55s cubic-bezier(0.3, 0.8, 0.3, 1);
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+.sv-face p { margin: 0; text-wrap: balance; }
+.sv-face--tras { transform: rotateY(180deg); }
+.sv-cartao.virado .sv-face--frente { transform: rotateY(-180deg); }
+.sv-cartao.virado .sv-face--tras { transform: rotateY(0deg); }
+.sv-etiqueta { position: absolute; top: 16px; left: 18px; font-family: system-ui, sans-serif; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.75; }
+
+.sv--feed .sv-face { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(201, 168, 76, 0.4); }
+.sv--pilha .sv-face { background: #FAF8F5; color: #2C1810; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45); }
+.sv--story .sv-face { background: linear-gradient(160deg, #1F3A5F, #6B0F1A); }
+.sv--story .sv-cartao { width: 100vw; height: 100%; }
+.sv--story .sv-face { border-radius: 0; padding-top: 80px; padding-bottom: 120px; }
+.sv--processo .sv-face {
+  background: #FFFDF8;
+  border: 1px solid #D9CDBE;
+  border-radius: 4px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+  background-image: repeating-linear-gradient(transparent 0 27px, #EADFCE 27px 28px);
+}
+
+/* pilha: cartas por trás */
+.sv-atras { position: absolute; width: min(380px, calc(100vw - 56px)); height: min(60vh, 460px); border-radius: 22px; background: rgba(255, 255, 255, 0.08); transform: rotate(-3deg); }
+.sv-atras--2 { transform: rotate(3deg); background: rgba(201, 168, 76, 0.14); }
+
+/* animações de entrada e saída */
+@keyframes sv-entra { from { transform: translateY(70%); opacity: 0; } }
+.sv--pilha .sv-cartao { animation-name: sv-pop; }
+.sv--story .sv-cartao { animation-name: sv-fade; animation-duration: 0.3s; }
+@keyframes sv-pop { from { transform: scale(0.9); opacity: 0; } }
+@keyframes sv-fade { from { opacity: 0; } }
+.sv-cartao.sai-cima { animation: sv-sai-cima 0.4s ease-in forwards; }
+.sv-cartao.sai-direita { animation: sv-sai-dir 0.42s ease-in forwards; }
+.sv-cartao.sai-esquerda { animation: sv-sai-esq 0.42s ease-in forwards; }
+@keyframes sv-sai-cima { to { transform: translateY(-80%); opacity: 0; } }
+@keyframes sv-sai-dir { to { transform: translateX(130%) rotate(18deg); opacity: 0; } }
+@keyframes sv-sai-esq { to { transform: translateX(-130%) rotate(-18deg); opacity: 0; } }
+
+/* story */
+.sv-barras { position: absolute; top: max(8px, env(safe-area-inset-top)); left: 10px; right: 10px; display: flex; gap: 4px; z-index: 7; }
+.sv-barras i { flex: 1; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.25); overflow: hidden; }
+.sv-barras b { display: block; height: 100%; width: 0; background: #fff; }
+.sv-barras .feito b { width: 100%; }
+.sv-barras .agora b { width: 100%; animation: sv-enche 0.6s ease-out; }
+@keyframes sv-enche { from { width: 0; } }
+.sv-zona { position: absolute; top: 70px; bottom: 120px; width: 28%; background: none; border: 0; z-index: 4; cursor: pointer; }
+.sv-zona--esq { left: 0; }
+.sv-zona--dir { right: 0; }
+
+/* processo: carimbos */
+.sv-carimbo {
+  position: absolute;
+  z-index: 8;
+  top: 46%;
+  left: 50%;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 1.7rem;
+  border: 4px solid;
+  padding: 4px 14px;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(-12deg) scale(2);
+}
+.sv-carimbo--ok { color: var(--sv-ok); }
+.sv-carimbo--mal { color: var(--sv-mal); }
+.sv-carimbo.bate { animation: sv-bate 0.85s ease-out; }
+@keyframes sv-bate {
+  0% { opacity: 0; transform: translate(-50%, -50%) rotate(-12deg) scale(2); }
+  30% { opacity: 1; transform: translate(-50%, -50%) rotate(-12deg) scale(1); }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* botões e dica */
+.sv-dica { position: absolute; left: 0; right: 0; bottom: max(40px, env(safe-area-inset-bottom)); text-align: center; font-family: system-ui, sans-serif; font-size: 0.78rem; opacity: 0.7; margin: 0; z-index: 6; }
+.sv-acoes { position: absolute; left: 0; right: 0; bottom: max(28px, env(safe-area-inset-bottom)); display: flex; justify-content: center; gap: 12px; z-index: 6; }
+.sv-botao { border: 0; border-radius: 999px; padding: 12px 20px; font-family: system-ui, sans-serif; font-size: 0.95rem; font-weight: 600; color: #fff; cursor: pointer; transition: transform 0.15s; }
+.sv-botao:active { transform: scale(0.95); }
+.sv-botao:focus-visible, .sv-fechar:focus-visible, .sv-cartao:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.sv-botao--certa { background: var(--sv-ok); }
+.sv-botao--errada { background: var(--sv-mal); }
+.sv-escondido { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+/* fim da sessão */
+.sv-fim { z-index: 3; text-align: center; padding: 24px; display: grid; gap: 8px; justify-items: center; animation: sv-entra 0.5s ease-out; }
+.sv-fim h2 { margin: 0; font-size: 1.5rem; }
+.sv-fim p { margin: 0; }
+.sv-fim__numero { font-size: 2.6rem; font-weight: 700; color: var(--gold); }
+.sv--processo .sv-fim__numero { color: var(--burgundy); }
+.sv-fim__serie.sobe { animation: sv-serie 0.7s ease-out 0.3s; }
+@keyframes sv-serie { 40% { transform: scale(1.25); } }
+.sv-confetis { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.sv-confetis i {
+  position: absolute;
+  top: -14px;
+  left: calc(var(--i) * 3.6%);
+  width: 8px;
+  height: 12px;
+  background: var(--gold);
+  animation: sv-cai 1.8s ease-in forwards;
+  animation-delay: calc(var(--i) * 0.03s);
+}
+.sv-confetis i:nth-child(3n) { background: #fff; }
+.sv-confetis i:nth-child(3n + 1) { background: var(--burgundy); }
+@keyframes sv-cai { to { transform: translateY(105vh) rotate(540deg); opacity: 0.3; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .sv *, .sv { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+.sv--story .sv-etiqueta { top: 84px; }

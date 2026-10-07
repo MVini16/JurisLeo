@@ -23,6 +23,7 @@ export const DEFINICOES = [
   { id: 'tema', rotulo: 'Tema escuro', destino: { tipo: 'secao', secao: 'aparencia' }, palavras: ['claro', 'escuro', 'noite', 'modo escuro', 'cores', 'aparencia'] },
   { id: 'folha', rotulo: 'Folha das notas novas', destino: { tipo: 'secao', secao: 'aparencia' }, palavras: ['pautado', 'quadriculado', 'pontos', 'branco', 'papel', 'caderno', 'notas'] },
   { id: 'barney', rotulo: 'Piadas do Barney', destino: { tipo: 'secao', secao: 'brincadeiras' }, palavras: ['legendary', 'how i met your mother', 'himym', 'animacao', 'piada', 'legen'] },
+  { id: 'modo-estudo', rotulo: 'Modo de estudo', destino: { tipo: 'secao', secao: 'aparencia' }, palavras: ['flashcards', 'revisao', 'feed', 'pilha', 'story', 'processo', 'tiktok', 'cartas', 'vertical'] },
   { id: 'vini', rotulo: 'Mensagens do Vini ao escrever', destino: { tipo: 'secao', secao: 'brincadeiras' }, palavras: ['provocacoes', 'despacho', 'balao', 'post-it', 'mensagens', 'vini', 'tribunal'] },
   { id: 'boneco', rotulo: 'Boneco do Vini', destino: { tipo: 'secao', secao: 'brincadeiras' }, palavras: ['mascote', 'chat', 'conversa', 'esconder', 'aspeto', 'toga', 'balanca', 'posicao', 'contacto', 'telefone', 'numero', 'falar'] },
   { id: 'frequencia-vini', rotulo: 'Frequência das mensagens do Vini', destino: { tipo: 'secao', secao: 'brincadeiras' }, palavras: ['minutos', 'de quanto em quanto tempo', 'com que frequencia'] },

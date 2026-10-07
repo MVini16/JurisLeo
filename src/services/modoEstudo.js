@@ -1,13 +1,15 @@
 // lógica pura do modo estudo vertical: gestos, resumo da sessão e série de dias seguidos.
 // sem react nem firebase, para testar com vitest sem mocks. a série fica só em localstorage, no componente
 
+import { ordenarPorPrioridade } from './repeticaoEspacada.js';
+
 export const VARIANTES_ESTUDO = [
   { id: 'feed', nome: 'Feed', descricao: 'Um cartão por ecrã, sobe para o seguinte.' },
   { id: 'pilha', nome: 'Pilha de cartas', descricao: 'Atira para a direita se acertaste, para a esquerda se erraste.' },
-  { id: 'story', nome: 'Story', descricao: 'Barra de progresso no topo e toque nas laterais.' },
+  { id: 'story', nome: 'Story', descricao: 'Como um story: barras no topo, toque nas laterais e combos.' },
   { id: 'processo', nome: 'Processo', descricao: 'Folha pautada com carimbos de procedente e improcedente.' },
 ];
-export const VARIANTE_INICIAL = 'feed';
+export const VARIANTE_INICIAL = 'story';
 
 export function varianteValida(id) {
   return VARIANTES_ESTUDO.some((v) => v.id === id) ? id : VARIANTE_INICIAL;
@@ -77,4 +79,38 @@ export function serieDeDias(dias, hoje) {
     dia = diaAnterior(dia);
   }
   return serie;
+}
+
+// ---------- extras do modo story ----------
+
+// quantas respostas certas seguidas, a contar do fim (o "combo" que aparece no topo)
+export function comboAtual(respostasPorOrdem) {
+  let combo = 0;
+  for (let i = respostasPorOrdem.length - 1; i >= 0 && respostasPorOrdem[i]; i -= 1) combo += 1;
+  return combo;
+}
+
+// o próximo cartão por responder, a partir de `desde` e dando a volta ao princípio. -1 se já respondeu a todos
+export function proximoPorResponder(lista, respostas, desde = 0) {
+  for (let passo = 0; passo < lista.length; passo += 1) {
+    const i = (desde + passo) % lista.length;
+    if (!(lista[i].id in respostas)) return i;
+  }
+  return -1;
+}
+
+// mais `n` cartões para continuar a estudar: os que ainda não saíram, com os prontos e os mais difíceis primeiro
+export function maisCartoes(todos, usados, n = 5) {
+  const ids = new Set(usados.map((c) => c.id));
+  const restantes = todos.filter((c) => !ids.has(c.id));
+  return ordenarPorPrioridade(restantes).slice(0, n);
+}
+
+// as barras de progresso do topo: uma por cartão, ou uma só (contínua) quando são muitos
+export const MAX_SEGMENTOS = 20;
+export function barrasDeProgresso(total, indice) {
+  if (total <= MAX_SEGMENTOS) {
+    return { tipo: 'segmentos', estados: Array.from({ length: total }, (_, i) => (i < indice ? 'feito' : i === indice ? 'agora' : 'falta')) };
+  }
+  return { tipo: 'continua', fracao: total === 0 ? 0 : Math.min(1, (indice + 1) / total) };
 }

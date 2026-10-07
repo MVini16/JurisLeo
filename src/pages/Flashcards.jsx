@@ -7,6 +7,8 @@ import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import { useBarney } from '../hooks/useBarney.jsx';
 import { usePreferencias } from '../hooks/usePreferencias.js';
 import SessaoVertical from '../components/estudo/SessaoVertical.jsx';
+import SessaoStory from '../components/estudo/SessaoStory.jsx';
+import { varianteValida } from '../services/modoEstudo.js';
 import { cadeirasS1, coresCadeiras, abrevCadeiras } from '../data/dadosLeonor.js';
 import './Flashcards.css';
 
@@ -65,7 +67,15 @@ export default function Flashcards() {
         ))}
       </div>
 
-      {filaSessao && (
+      {filaSessao && (varianteValida(prefs.estudoVisual) === 'story' ? (
+        <SessaoStory
+          fila={filaSessao}
+          todos={flashcards}
+          onResponder={registarResposta}
+          onFechar={() => setFilaSessao(null)}
+          onConcluir={() => dispararBarney('flashcards')}
+        />
+      ) : (
         <SessaoVertical
           fila={filaSessao}
           variante={prefs.estudoVisual}
@@ -73,7 +83,7 @@ export default function Flashcards() {
           onFechar={() => setFilaSessao(null)}
           onConcluir={() => dispararBarney('flashcards')}
         />
-      )}
+      ))}
     </div>
   );
 }

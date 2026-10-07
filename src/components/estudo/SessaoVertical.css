@@ -17,7 +17,6 @@
 }
 .sv--feed { background: linear-gradient(180deg, #2A0B13, #120A0E); }
 .sv--pilha { background: radial-gradient(circle at 50% 30%, #3B1A24, #120A0E); }
-.sv--story { background: #0F1B2D; }
 .sv--processo { background: #E9DFCF; color: #2C1810; }
 
 .sv-topo {
@@ -34,7 +33,6 @@
   font-size: 0.8rem;
   z-index: 6;
 }
-.sv--story .sv-topo { top: 10px; }
 .sv-serie { background: rgba(255, 255, 255, 0.12); border-radius: 999px; padding: 4px 10px; }
 .sv--processo .sv-serie { background: rgba(0, 0, 0, 0.08); }
 .sv-contador { margin-left: auto; opacity: 0.8; font-variant-numeric: tabular-nums; }
@@ -73,9 +71,6 @@
 
 .sv--feed .sv-face { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(201, 168, 76, 0.4); }
 .sv--pilha .sv-face { background: #FAF8F5; color: #2C1810; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45); }
-.sv--story .sv-face { background: linear-gradient(160deg, #1F3A5F, #6B0F1A); }
-.sv--story .sv-cartao { width: 100vw; height: 100%; }
-.sv--story .sv-face { border-radius: 0; padding-top: 80px; padding-bottom: 120px; }
 .sv--processo .sv-face {
   background: #FFFDF8;
   border: 1px solid #D9CDBE;
@@ -91,7 +86,6 @@
 /* animações de entrada e saída */
 @keyframes sv-entra { from { transform: translateY(70%); opacity: 0; } }
 .sv--pilha .sv-cartao { animation-name: sv-pop; }
-.sv--story .sv-cartao { animation-name: sv-fade; animation-duration: 0.3s; }
 @keyframes sv-pop { from { transform: scale(0.9); opacity: 0; } }
 @keyframes sv-fade { from { opacity: 0; } }
 .sv-cartao.sai-cima { animation: sv-sai-cima 0.4s ease-in forwards; }
@@ -100,17 +94,6 @@
 @keyframes sv-sai-cima { to { transform: translateY(-80%); opacity: 0; } }
 @keyframes sv-sai-dir { to { transform: translateX(130%) rotate(18deg); opacity: 0; } }
 @keyframes sv-sai-esq { to { transform: translateX(-130%) rotate(-18deg); opacity: 0; } }
-
-/* story */
-.sv-barras { position: absolute; top: max(8px, env(safe-area-inset-top)); left: 10px; right: 10px; display: flex; gap: 4px; z-index: 7; }
-.sv-barras i { flex: 1; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.25); overflow: hidden; }
-.sv-barras b { display: block; height: 100%; width: 0; background: #fff; }
-.sv-barras .feito b { width: 100%; }
-.sv-barras .agora b { width: 100%; animation: sv-enche 0.6s ease-out; }
-@keyframes sv-enche { from { width: 0; } }
-.sv-zona { position: absolute; top: 70px; bottom: 120px; width: 28%; background: none; border: 0; z-index: 4; cursor: pointer; }
-.sv-zona--esq { left: 0; }
-.sv-zona--dir { right: 0; }
 
 /* processo: carimbos */
 .sv-carimbo {
@@ -175,4 +158,3 @@
 @media (prefers-reduced-motion: reduce) {
   .sv *, .sv { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
-.sv--story .sv-etiqueta { top: 84px; }

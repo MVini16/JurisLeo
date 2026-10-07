@@ -1,11 +1,11 @@
 // revisão de flashcards em ecrã inteiro, à maneira de um feed: um cartão de cada vez, gestos para virar e responder.
-// quatro aspetos (feed, pilha, story, processo) partilham a mesma lógica; só muda o desenho (SessaoVertical.css)
+// três aspetos (feed, pilha, processo) partilham a mesma lógica; só muda o desenho (SessaoVertical.css)
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { abrevCadeiras } from '../../data/dadosLeonor.js';
 import {
-  acaoDoGesto, diaDe, direcaoDoGesto, mensagemFinal, registarDia, resumoDaSessao, serieDeDias, varianteValida,
+  acaoDoGesto, diaDe, direcaoDoGesto, mensagemFinal, resumoDaSessao, serieDeDias, varianteValida,
 } from '../../services/modoEstudo.js';
-import { contarRespostaDeHoje, guardarDiasDeEstudo, lerDiasDeEstudo } from '../../services/estudoLocal.js';
+import { contarRespostaDeHoje, lerDiasDeEstudo, registarEstudoDeHoje } from '../../services/estudoLocal.js';
 import './SessaoVertical.css';
 
 const SAIDA_MS = 420;
@@ -29,10 +29,7 @@ export default function SessaoVertical({ fila, variante: varianteBruta, onRespon
   const respondidas = Object.keys(respostas).length;
 
   const terminar = useCallback((resultado) => {
-    const hoje = diaDe(Date.now());
-    const dias = registarDia(lerDiasDeEstudo(), hoje);
-    guardarDiasDeEstudo(dias);
-    setSerie(serieDeDias(dias, hoje));
+    setSerie(registarEstudoDeHoje());
     setSubiuSerie(true);
     setTerminou(true);
     onConcluir?.(resultado);
@@ -55,6 +52,7 @@ export default function SessaoVertical({ fila, variante: varianteBruta, onRespon
       novas[atual.id] = acertou;
       setRespostas(novas);
       contarRespostaDeHoje(diaDe(Date.now()));
+      setSerie(registarEstudoDeHoje());
       Promise.resolve(onResponder(atual, acertou)).catch(() => { /* a resposta fica por guardar, o cartão volta amanhã */ });
     }
     if (variante === 'processo') setSaida(acertou ? 'carimbo-ok' : 'carimbo-mal');
@@ -68,16 +66,6 @@ export default function SessaoVertical({ fila, variante: varianteBruta, onRespon
     vibrar(8);
     setVirado((v) => !v);
   }, []);
-
-  // story: toque nas laterais passa para o cartão anterior ou seguinte sem responder
-  const irPara = useCallback((delta) => {
-    if (ocupado.current) return;
-    const novo = indice + delta;
-    if (novo < 0) return;
-    if (novo >= fila.length) { terminar(respostas); return; }
-    setVirado(false);
-    setIndice(novo);
-  }, [fila.length, indice, respostas, terminar]);
 
   const aoSoltar = (e) => {
     const inicio = inicioGesto.current;
@@ -136,12 +124,6 @@ export default function SessaoVertical({ fila, variante: varianteBruta, onRespon
 
   return (
     <div className={`sv sv--${variante}`} role="dialog" aria-label="Revisão de flashcards">
-      {variante === 'story' && (
-        <div className="sv-barras" aria-hidden="true">
-          {fila.map((f, n) => <i key={f.id} className={n < indice ? 'feito' : n === indice ? 'agora' : ''}><b /></i>)}
-        </div>
-      )}
-
       <div className="sv-topo">
         <span className="sv-serie">Série: {serie} {serie === 1 ? 'dia' : 'dias'}</span>
         <span className="sv-contador">{indice + 1} / {fila.length}</span>
@@ -169,13 +151,6 @@ export default function SessaoVertical({ fila, variante: varianteBruta, onRespon
           <p>{atual.tras}</p>
         </div>
       </div>
-
-      {variante === 'story' && (
-        <>
-          <button type="button" className="sv-zona sv-zona--esq" onClick={() => irPara(-1)} aria-label="Cartão anterior" />
-          <button type="button" className="sv-zona sv-zona--dir" onClick={() => irPara(1)} aria-label="Cartão seguinte" />
-        </>
-      )}
 
       {variante === 'processo' && (
         <>

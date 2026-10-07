@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   direcaoDoGesto, acaoDoGesto, resumoDaSessao, mensagemFinal, serieDeDias, registarDia, varianteValida, diaDe,
+  comboAtual, proximoPorResponder, maisCartoes, barrasDeProgresso,
 } from './modoEstudo.js';
 
 describe('direcaoDoGesto', () => {
@@ -66,8 +67,32 @@ describe('série de dias', () => {
 });
 
 describe('varianteValida', () => {
-  it('cai no feed se desconhecida', () => {
-    expect(varianteValida('story')).toBe('story');
-    expect(varianteValida('xpto')).toBe('feed');
+  it('cai no story se desconhecida', () => {
+    expect(varianteValida('feed')).toBe('feed');
+    expect(varianteValida('xpto')).toBe('story');
+  });
+});
+
+describe('extras do story', () => {
+  it('combo conta as certas seguidas no fim', () => {
+    expect(comboAtual([true, false, true, true, true])).toBe(3);
+    expect(comboAtual([true, true, false])).toBe(0);
+    expect(comboAtual([])).toBe(0);
+  });
+  it('proximoPorResponder dá a volta e devolve -1 quando acabou', () => {
+    const lista = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
+    expect(proximoPorResponder(lista, { a: true }, 1)).toBe(1);
+    expect(proximoPorResponder(lista, { b: true, c: false }, 1)).toBe(0);
+    expect(proximoPorResponder(lista, { a: true, b: true, c: true }, 0)).toBe(-1);
+  });
+  it('maisCartoes não repete os usados e dá no máximo n', () => {
+    const todos = ['a', 'b', 'c', 'd'].map((id) => ({ id, nivel: 0, proximaRevisao: null }));
+    const r = maisCartoes(todos, [{ id: 'a' }], 2);
+    expect(r).toHaveLength(2);
+    expect(r.map((c) => c.id)).not.toContain('a');
+  });
+  it('barras: segmentos até 20, contínua acima', () => {
+    expect(barrasDeProgresso(3, 1).estados).toEqual(['feito', 'agora', 'falta']);
+    expect(barrasDeProgresso(40, 19)).toEqual({ tipo: 'continua', fracao: 0.5 });
   });
 });

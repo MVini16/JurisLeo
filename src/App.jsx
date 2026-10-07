@@ -10,6 +10,7 @@ import BarneyCarregar from './components/BarneyCarregar'
 import { usePreferencias } from './hooks/usePreferencias.js'
 import BonecoDoVini from './components/boneco/BonecoDoVini'
 import AvisoNovaVersao from './components/atualizacao/AvisoNovaVersao'
+import GuardarConta from './components/GuardarConta'
 
 // restantes páginas — carregadas só quando a rota é aberta
 const Onboarding = lazy(() => import('./pages/Onboarding'))
@@ -52,6 +53,8 @@ function InicioPorModo({ children }) {
 function App() {
   return (
     <BrowserRouter>
+      {/* guarda os dados dela na conta: cópia do telemóvel e cofre diário (uma vez, para a app inteira) */}
+      <GuardarConta />
       <Suspense fallback={<BarneyCarregar />}>
         <Routes>
           {/* páginas sem navbar — entrada da app */}

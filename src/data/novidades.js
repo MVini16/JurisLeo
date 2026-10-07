@@ -4,6 +4,18 @@
 // (o build escreve-a em /versao.json). deploys só de correções, sem novidades, não mexem aqui e não fazem aparecer o aviso.
 export const NOVIDADES = [
   {
+    versao: '2026-10-11',
+    titulo: 'Modo Feed, sumário das aulas e guia completo',
+    itens: [
+      'Modo Feed: um feed vertical de cartas de estudo (flashcards, perguntas, glossário, aulas por marcar e avisos). Ligas e desligas quando quiseres no botão "Modo Feed" do Dashboard. A app normal fica como estava.',
+      'Ícones novos, com animações, na barra e nas cartas.',
+      'Sumário das aulas de volta: abre uma aula no Calendário e escreve os tópicos do que se deu, uma nota, o trabalho para casa e uma dúvida.',
+      'No Calendário, as aulas práticas aparecem realçadas, as teóricas com o contorno tracejado e a aula em curso a brilhar. Tudo ficou maior.',
+      'As tuas escolhas e o teu progresso (série, recordes, selos, cartas guardadas) passam a ficar guardados na tua conta, para não os perderes numa versão nova.',
+      'Na Ajuda há agora um guia com tudo o que podes fazer, função a função.',
+    ],
+  },
+  {
     versao: '2026-10-10',
     titulo: 'Marca as tuas aulas no calendário',
     itens: [

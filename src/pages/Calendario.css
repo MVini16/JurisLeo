@@ -1090,3 +1090,14 @@
   .cal-modal__corpo { padding: 20px 20px 40px; max-height: 70vh; overflow-y: auto; }
 
 } /* fim @media mobile */
+/* ── práticas realçadas, teóricas tracejadas, aula em curso a brilhar, e tudo maior ── */
+[data-aula="pratica"] { background-color: var(--cor-aula) !important; color: var(--text-dark); font-weight: 700; box-shadow: 0 6px 18px color-mix(in srgb, var(--cor-aula) 40%, transparent); }
+[data-aula="teorica"] { background-color: color-mix(in srgb, var(--cor-aula) 14%, transparent) !important; border: 2px dashed var(--cor-aula) !important; box-shadow: none; }
+[data-curso="sim"] { outline: 2px solid var(--gold); outline-offset: 2px; animation: cal-em-curso 2s ease-in-out infinite; }
+@keyframes cal-em-curso { 50% { outline-color: transparent; } }
+.cal-diaria__sidebar-item, .cal-painel__evento, .cal-bottom-sheet__evento, .cal-lista__evento { padding: 16px 16px; font-size: 16px; border-radius: 14px; }
+.cal-diaria__sidebar-item-nome, .cal-painel__evento-titulo, .cal-bottom-sheet__evento-titulo, .cal-lista__evento-titulo { font-size: 16px; }
+.cal-diaria__evento, .cal-semanal-mobile__evento { padding: 14px 16px; min-height: 64px; border-radius: 14px; }
+.cal-diaria__evento-titulo, .cal-semanal-mobile__evento-titulo { font-size: 16px; }
+.cal-semanal__evento { padding: 8px 10px; font-size: 13px; border-radius: 10px; }
+@media (prefers-reduced-motion: reduce) { [data-curso="sim"] { animation: none; } }

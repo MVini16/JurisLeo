@@ -4,10 +4,11 @@ import { db } from '../services/firebase.js';
 import { doc, onSnapshot, setDoc, deleteField } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { idsCadeiras } from '../data/dadosLeonor.js';
-import { chaveAula, normalizarMarca, dataParaChave } from '../services/presencas.js';
+import { chaveAula, normalizarMarca, normalizarNotasAula, dataParaChave } from '../services/presencas.js';
 
 export function usePresencas() {
   const [porCadeira, setPorCadeira] = useState({});
+  const [notasPorCadeira, setNotasPorCadeira] = useState({});
 
   useEffect(() => {
     const userId = getAuth().currentUser?.uid;
@@ -15,6 +16,7 @@ export function usePresencas() {
     const unsubs = idsCadeiras.map((id) =>
       onSnapshot(doc(db, 'users', userId, 'cadeiras', id, 'presencas', 'dados'), (snap) => {
         setPorCadeira((prev) => ({ ...prev, [id]: snap.data()?.marcas || {} }));
+        setNotasPorCadeira((prev) => ({ ...prev, [id]: snap.data()?.notasAulas || {} }));
       })
     );
     return () => unsubs.forEach((u) => u());
@@ -22,6 +24,18 @@ export function usePresencas() {
 
   // todas as marcas juntas por chave (as chaves não se repetem entre cadeiras)
   const marcas = Object.assign({}, ...Object.values(porCadeira));
+
+  // sumário, nota, trabalho para casa e dúvida de cada aula (ficam na conta, ao lado das marcas)
+  const notasAulas = Object.assign({}, ...Object.values(notasPorCadeira));
+
+  async function guardarNotasAula(ev, campos) {
+    const userId = getAuth().currentUser?.uid;
+    const chave = chaveAula(ev);
+    if (!userId || !chave) return;
+    const notas = normalizarNotasAula(campos);
+    const valor = notas ? { ...notas, em: Date.now() } : deleteField();
+    await setDoc(doc(db, 'users', userId, 'cadeiras', ev.cadeira, 'presencas', 'dados'), { notasAulas: { [chave]: valor } }, { merge: true });
+  }
 
   async function marcar(ev, dados) {
     const userId = getAuth().currentUser?.uid;
@@ -48,5 +62,5 @@ export function usePresencas() {
 
   const carregado = Object.keys(porCadeira).length === idsCadeiras.length;
 
-  return { marcas, porCadeira, carregado, marcar, limpar, atualizarMarca };
+  return { marcas, porCadeira, notasAulas, carregado, marcar, limpar, atualizarMarca, guardarNotasAula };
 }

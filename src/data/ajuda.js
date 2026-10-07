@@ -58,6 +58,29 @@ export const ajudaPorRota = {
       'Alterna entre Dia, Semana, Mês e Lista no topo.',
       'O botão + cria um evento novo.',
       'Toca num evento para o veres, editares ou apagares.',
+      'Nas aulas, marca como correu: fui, faltei, faltei com justificação, o professor faltou ou não houve aula. As práticas contam para as faltas.',
+      'Na mesma aula escreves o sumário em tópicos, uma nota, o trabalho para casa e uma dúvida.',
+      'As práticas aparecem realçadas e as teóricas com o contorno tracejado. A aula em curso pisca a dourado.',
+    ],
+  },
+  '/faltas': {
+    titulo: 'Faltas',
+    texto: 'O estado de faltas de cada cadeira, calculado a partir do que marcaste no calendário.',
+    pontos: [
+      'O anel mostra quanto já gastaste do limite total, e o selo diz se estás tranquila, com atenção ou em risco.',
+      'O simulador mostra o que aconteceria se faltasses a mais algumas aulas. É só uma simulação, não muda nada.',
+      '"Já entreguei" tira uma falta justificada da lista de comprovativos por entregar.',
+      'O histórico leva-te ao dia certo no calendário, para corrigires uma marca.',
+    ],
+  },
+  '/feed': {
+    titulo: 'Modo Feed',
+    texto: 'Cartas de estudo em ecrã inteiro. Desliza para cima para passar à seguinte.',
+    pontos: [
+      'Toca num flashcard para o virar e diz se sabias.',
+      'O coração (ou duplo toque) guarda a carta; "Abrir" leva à página de origem.',
+      'O anel do topo conta as cartas de hoje até à meta.',
+      'O botão do canto volta à app normal.',
     ],
   },
   '/perfil': {

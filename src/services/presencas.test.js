@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { chaveAula, jaPodeMarcar, normalizarMarca, contarMarcas, faltasEfetivas, aulasPorMarcar } from './presencas.js';
+import { chaveAula, jaPodeMarcar, normalizarMarca, contarMarcas, faltasEfetivas, aulasPorMarcar, normalizarNotasAula, aulaEmCurso } from './presencas.js';
 
 const aula = (extra = {}) => ({ id: 'a1-x', aulaId: 'a1', tipo: 'aula', cadeira: 'familia', data: new Date(2026, 9, 5), horaInicio: '16:10', contaFalta: true, ...extra });
 
@@ -74,5 +74,23 @@ describe('aulasPorMarcar', () => {
     const feita = { [chaveAula(e2)]: { estado: 'presente' } };
     const r = aulasPorMarcar([e1, e2, e3, e4], feita, new Date(2026, 9, 7));
     expect(r).toEqual([e1]);
+  });
+});
+
+describe('normalizarNotasAula', () => {
+  it('devolve null se está tudo vazio', () => {
+    expect(normalizarNotasAula({ sumario: '  ', nota: '' })).toBeNull();
+  });
+  it('limpa e guarda só os campos conhecidos', () => {
+    expect(normalizarNotasAula({ sumario: ' Ato administrativo ', outro: 'x' })).toEqual({ sumario: 'Ato administrativo', nota: '', tpc: '', duvida: '' });
+  });
+});
+
+describe('aulaEmCurso', () => {
+  const ev = { tipo: 'aula', data: new Date(2026, 9, 7), horaInicio: '16:10', horaFim: '17:00' };
+  it('só está em curso entre o início e o fim, no próprio dia', () => {
+    expect(aulaEmCurso(ev, new Date(2026, 9, 7, 16, 30))).toBe(true);
+    expect(aulaEmCurso(ev, new Date(2026, 9, 7, 17, 0))).toBe(false);
+    expect(aulaEmCurso(ev, new Date(2026, 9, 8, 16, 30))).toBe(false);
   });
 });

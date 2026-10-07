@@ -85,3 +85,21 @@ export function aulasPorMarcar(eventos, marcasPorChave, agora = new Date()) {
     .filter((ev) => !marcasPorChave[chaveAula(ev)])
     .sort((a, b) => (a.data - b.data) || (a.horaInicio || '').localeCompare(b.horaInicio || ''));
 }
+
+// o que ela escreve sobre cada aula, à parte da presença: sumário, nota, trabalho para casa e dúvida
+export const CAMPOS_NOTAS_AULA = ['sumario', 'nota', 'tpc', 'duvida'];
+export function normalizarNotasAula(campos = {}) {
+  const limpo = {};
+  CAMPOS_NOTAS_AULA.forEach((c) => { limpo[c] = String(campos[c] ?? '').trim().slice(0, 1500); });
+  return CAMPOS_NOTAS_AULA.some((c) => limpo[c]) ? limpo : null;
+}
+
+// se a aula está a decorrer agora (hoje, entre a hora de início e a de fim)
+export function aulaEmCurso(ev, agora = new Date()) {
+  const data = ev.data instanceof Date ? ev.data : ev.data?.toDate?.();
+  if (!data || ev.tipo !== 'aula' || !ev.horaInicio || !ev.horaFim) return false;
+  if (data.getDate() !== agora.getDate() || data.getMonth() !== agora.getMonth() || data.getFullYear() !== agora.getFullYear()) return false;
+  const minutos = (hhmm) => { const [h, m] = hhmm.split(':').map(Number); return h * 60 + (m || 0); };
+  const agoraMin = agora.getHours() * 60 + agora.getMinutes();
+  return agoraMin >= minutos(ev.horaInicio) && agoraMin < minutos(ev.horaFim);
+}

@@ -48,3 +48,14 @@
 @media (prefers-reduced-motion: reduce) {
   .aula-chip, .marcar-aula__op.ativo, .aulas-por-marcar { animation: none; }
 }
+.notas-aula__campo { display: flex; flex-direction: column; gap: 4px; }
+
+.notas-aula__topicos { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.notas-aula__topicos li { display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.06); font-size: 13px; }
+.notas-aula__topicos li::before { content: ''; flex-shrink: 0; width: 6px; height: 6px; margin-top: 6px; border-radius: 50%; background: var(--gold); }
+.notas-aula__topicos li span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.notas-aula__topicos li button { border: none; background: transparent; color: inherit; opacity: 0.6; font-size: 16px; line-height: 1; cursor: pointer; }
+.notas-aula__novo { display: flex; gap: 8px; }
+.notas-aula__novo input { flex: 1; min-width: 0; }
+.notas-aula__mais { padding: 0 14px; border-radius: 10px; border: 1px solid var(--gold); background: transparent; color: inherit; font: inherit; font-size: 12px; cursor: pointer; }
+.notas-aula__mais:disabled { opacity: 0.4; }

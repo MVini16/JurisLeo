@@ -49,7 +49,7 @@ export function cartasDeAbertura({ aulasPorMarcar = [], alertasFaltas = [], freq
     cartas.push({ tipo: 'frequencia', chave: `freq-${frequencia.cadeiraId || frequencia.titulo}`, frequencia, cadeiraId: frequencia.cadeiraId });
   }
   const aVencer = hoje ? tarefasAVencer(tarefas, hoje) : [];
-  aVencer.slice(0, 2).forEach((t) => cartas.push({ tipo: 'tarefa', chave: `tarefa-${t.id}`, tarefa: t, cadeiraId: t.cadeiraId }));
+  aVencer.slice(0, 2).forEach((t) => cartas.push({ tipo: 'tarefa', chave: `tarefa-${t.id}`, tarefa: t, cadeiraId: t.cadeira }));
   return cartas;
 }
 

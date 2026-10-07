@@ -4,6 +4,10 @@ import ModalCriarEvento from './ModalCriarEvento.jsx'
 import DicaPrimeiraVez from './DicaPrimeiraVez.jsx'
 import BotaoAjuda from './BotaoAjuda.jsx'
 import { resolverAjuda } from '../data/ajuda.js'
+import BarraSocial from './feed/BarraSocial.jsx'
+import AlternarModo from './feed/AlternarModo.jsx'
+import { usePreferencias } from '../hooks/usePreferencias.js'
+import { useSincronizarLocal } from '../hooks/useSincronizarLocal.js'
 import './NavBar.css'
 
 // itens da navegação principal
@@ -96,6 +100,9 @@ const itensMais = [
 function NavBar({ children }) {
   const navigate = useNavigate()
   const location = useLocation()
+  const social = usePreferencias().modoApp === 'social'
+  // guarda na conta dela as escolhas e o progresso que vivem no telemóvel, para não se perderem
+  useSincronizarLocal()
   const [menuAberto, setMenuAberto] = useState(false)
   const [modalFrequenciaAberto, setModalFrequenciaAberto] = useState(false)
   const [avisoEmBreve, setAvisoEmBreve] = useState(null)
@@ -123,7 +130,7 @@ function NavBar({ children }) {
   }
 
   return (
-    <div className="navbar-layout">
+    <div className={`navbar-layout ${social ? 'navbar-layout--social' : ''}`}>
 
       {/* sidebar — só visível no desktop */}
       <aside className="sidebar no-print">
@@ -144,6 +151,8 @@ function NavBar({ children }) {
             </button>
           ))}
         </nav>
+
+        <AlternarModo className="sidebar-modo" />
 
         {/* botão + na sidebar */}
         <button
@@ -200,7 +209,11 @@ function NavBar({ children }) {
         </div>
       )}
 
+      {/* modo social: a barra do feed no lugar da tab bar */}
+      {social && <BarraSocial />}
+
       {/* tab bar — só visível no mobile */}
+      {!social && (
       <nav className="tabbar no-print">
         <div className="tabbar-wrapper">
 
@@ -230,6 +243,7 @@ function NavBar({ children }) {
           </button>
         </div>
       </nav>
+      )}
 
       {/* modal de nova frequência, aberto a partir do menu + */}
       {modalFrequenciaAberto && (

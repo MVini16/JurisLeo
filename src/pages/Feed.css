@@ -1,0 +1,25 @@
+/* o feed ocupa o ecrã todo (no desktop, uma coluna ao lado da barra lateral) */
+.feed-pagina { position: fixed; inset: 0; z-index: 10; background: var(--bg-dark); color: var(--text-dark); }
+@media (min-width: 768px) {
+  .feed-pagina { left: 220px; display: flex; justify-content: center; }
+  .feed-rolo, .feed-topo { width: min(460px, 100%); }
+  .feed-pagina::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--burgundy) 40%, var(--bg-dark)), var(--bg-dark) 70%); }
+}
+.feed-rolo { position: relative; height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; overscroll-behavior: contain; scrollbar-width: none; }
+.feed-rolo::-webkit-scrollbar { display: none; }
+.feed-slot { height: 100%; scroll-snap-align: start; scroll-snap-stop: always; }
+@media (min-width: 768px) { .feed-rolo { border-left: 1px solid var(--border-dark); border-right: 1px solid var(--border-dark); } }
+
+.feed-topo { position: absolute; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: calc(12px + env(safe-area-inset-top, 0px)) 14px 0; pointer-events: none; font-family: system-ui, sans-serif; font-size: 13px; }
+.feed-topo > * { pointer-events: auto; }
+.feed-topo .alt-modo { background: rgba(0, 0, 0, 0.3); border-color: transparent; color: var(--text-dark); }
+.feed-topo__meta, .feed-topo__serie { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(6px); }
+.feed-anel__fundo { fill: none; stroke: rgba(255, 255, 255, 0.25); stroke-width: 3; }
+.feed-anel__valor { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 14px 14px; transition: stroke-dashoffset 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+.feed-topo__serie .ic { color: var(--gold); }
+
+.feed-vazio { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px 24px 120px; text-align: center; }
+.feed-vazio h2 { font-size: 22px; font-weight: normal; }
+.feed-vazio p { opacity: 0.75; max-width: 28ch; }
+.feed-vazio button { padding: 12px 22px; border-radius: 999px; border: none; background: var(--gold); color: var(--bg-dark); font: inherit; font-weight: 700; cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .feed-anel__valor { transition: none; } }

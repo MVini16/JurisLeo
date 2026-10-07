@@ -1,0 +1,15 @@
+.fim-meta { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 24px; background: color-mix(in srgb, var(--bg-dark) 92%, transparent); backdrop-filter: blur(8px); color: var(--text-dark); animation: fim-entra 0.35s ease both; }
+.fim-meta__miolo { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; max-width: 340px; width: 100%; }
+.fim-meta__anel { width: 128px; height: 128px; border-radius: 50%; display: grid; place-items: center; color: var(--gold); background: conic-gradient(var(--gold) 0 100%, var(--border-dark) 0); position: relative; animation: fim-brilha 2.4s ease-in-out infinite; }
+.fim-meta__anel::before { content: ''; position: absolute; inset: 8px; border-radius: 50%; background: var(--bg-dark); }
+.fim-meta__anel > * { position: relative; }
+.fim-meta h2 { font-size: 26px; font-weight: normal; }
+.fim-meta p { opacity: 0.8; font-size: 15px; }
+.fim-meta__mini { display: flex; gap: 14px; font-family: system-ui, sans-serif; font-size: 13px; }
+.fim-meta__mini span { display: inline-flex; align-items: center; gap: 6px; }
+.fim-meta__bt { display: flex; flex-direction: column; gap: 9px; width: 100%; margin-top: 10px; }
+.fim-meta__bt button { padding: 13px; border-radius: 14px; border: 1px solid var(--gold); background: transparent; color: inherit; font: inherit; font-size: 15px; cursor: pointer; }
+.fim-meta__bt button.p { background: var(--gold); color: var(--bg-dark); font-weight: 700; }
+@keyframes fim-entra { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fim-brilha { 50% { box-shadow: 0 0 36px rgba(201, 168, 76, 0.55); } }
+@media (prefers-reduced-motion: reduce) { .fim-meta, .fim-meta__anel { animation: none; } }

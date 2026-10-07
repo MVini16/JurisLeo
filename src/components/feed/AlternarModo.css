@@ -1,0 +1,4 @@
+.alt-modo { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--gold); background: transparent; color: inherit; font: inherit; font-size: 13px; cursor: pointer; transition: transform 0.15s ease, background 0.2s ease; }
+.alt-modo:active { transform: scale(0.95); }
+.alt-modo.social { background: var(--gold); color: var(--bg-dark); font-weight: 700; }
+.alt-modo.compacto { padding: 7px; }

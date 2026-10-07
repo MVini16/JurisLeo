@@ -8,6 +8,7 @@ import { coresCadeiras, nomeCurtoCadeira } from '../data/dadosLeonor.js'
 import Tutorial from '../components/Tutorial.jsx'
 import { useFrase } from '../hooks/useFrase.js'
 import { useBarney } from '../hooks/useBarney.jsx'
+import AlternarModo from '../components/feed/AlternarModo.jsx'
 import CartaoHoje from '../components/hoje/CartaoHoje.jsx'
 import AulasDeHoje from '../components/hoje/AulasDeHoje.jsx'
 
@@ -130,6 +131,7 @@ function Dashboard() {
             {getPrimeiroNome(nome)} <span className="saudacao-emoji">👋</span>
           </h1>
           {frase && <p className="frase-do-dia">"{frase}"</p>}
+          <AlternarModo />
         </section>
 
         {/* o que ela tem para hoje (série, flashcards prontos, desafio) */}

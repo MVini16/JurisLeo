@@ -14,6 +14,10 @@
   padding-bottom: 80px;
 }
 
+/* o modo social usa a barra própria no telemóvel: sem espaço extra para a tab bar */
+.navbar-layout--social .navbar-conteudo { padding-bottom: 0; }
+.sidebar-modo { margin-bottom: 10px; align-self: stretch; justify-content: center; }
+
 /* ─── sidebar — desktop ────────────────────────────────────────────────────── */
 .sidebar {
   display: none;

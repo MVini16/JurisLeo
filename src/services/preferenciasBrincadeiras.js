@@ -3,6 +3,8 @@
 
 const CHAVE = 'jurisleo-brincadeiras';
 const PADRAO = {
+  // 'normal' é a app de sempre; 'social' abre no feed vertical e troca a barra de baixo (ela alterna quando quiser)
+  modoApp: 'normal',
   barney: true,
   provocacoes: true,
   frequenciaMin: 10,
@@ -31,6 +33,11 @@ const ouvintes = new Set();
 export function subscrever(ouvinte) {
   ouvintes.add(ouvinte);
   return () => ouvintes.delete(ouvinte);
+}
+
+// avisa quem está a ouvir que as preferências mudaram por fora (ex.: vieram da nuvem)
+export function avisarMudancaDePreferencias() {
+  ouvintes.forEach((o) => o());
 }
 
 // o mesmo objeto enquanto o texto guardado não mudar, para o useSyncExternalStore não entrar em ciclo

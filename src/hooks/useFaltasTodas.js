@@ -26,6 +26,7 @@ export function useFaltasTodas(ativo) {
   return cadeirasS1.map((c) => {
     const { efetivas, resultado } = situacaoDaCadeira(c, dados[c.id]?.faltas, dados[c.id]?.marcas);
     return {
+      cadeiraId: c.id,
       abrev: c.abrev,
       dadas: efetivas.aulasPraticasLecionadas,
       injustificadas: efetivas.faltasInjustificadas,

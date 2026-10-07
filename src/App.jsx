@@ -1,5 +1,5 @@
 import './App.css'
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 // arranque — carregadas logo, para o splash e o login aparecerem sem espera
 import SplashScreen from './pages/SplashScreen'
@@ -7,6 +7,7 @@ import Login from './pages/Login'
 // componente de navegação — vai envolver todas as páginas principais
 import NavBar from './components/NavBar'
 import BarneyCarregar from './components/BarneyCarregar'
+import { usePreferencias } from './hooks/usePreferencias.js'
 import BonecoDoVini from './components/boneco/BonecoDoVini'
 import AvisoNovaVersao from './components/atualizacao/AvisoNovaVersao'
 
@@ -36,6 +37,16 @@ const AdminBoneco = lazy(() => import('./pages/AdminBoneco'))
 const Admin = lazy(() => import('./pages/Admin'))
 const Jogos = lazy(() => import('./pages/Jogos'))
 const Faltas = lazy(() => import('./pages/Faltas'))
+const Feed = lazy(() => import('./pages/Feed'))
+
+// no modo social a app abre no feed (uma vez por sessão); o botão Início continua a levar ao dashboard
+function InicioPorModo({ children }) {
+  const prefs = usePreferencias()
+  const [jaAbriu] = useState(() => { try { return sessionStorage.getItem('jurisleo-inicio-feito') === '1' } catch { return true } })
+  useEffect(() => { try { sessionStorage.setItem('jurisleo-inicio-feito', '1') } catch { /* sem sessionStorage */ } }, [])
+  if (prefs.modoApp === 'social' && !jaAbriu) return <Navigate to="/feed" replace />
+  return children
+}
 
 function App() {
   return (
@@ -48,7 +59,7 @@ function App() {
           <Route path="/onboarding" element={<Onboarding />} />
 
           {/* páginas principais — com navbar */}
-          <Route path="/dashboard" element={<NavBar><Dashboard /></NavBar>} />
+          <Route path="/dashboard" element={<NavBar><InicioPorModo><Dashboard /></InicioPorModo></NavBar>} />
           <Route path="/horario" element={<NavBar><Horario /></NavBar>} />
           <Route path="/cadeiras" element={<NavBar><Cadeiras /></NavBar>} />
           <Route path="/cadeiras/:id" element={<NavBar><Cadeira /></NavBar>} />
@@ -66,6 +77,7 @@ function App() {
           <Route path="/ajuda" element={<NavBar><Ajuda /></NavBar>} />
           <Route path="/tarefas" element={<NavBar><Tarefas /></NavBar>} />
           <Route path="/jogos" element={<NavBar><Jogos /></NavBar>} />
+          <Route path="/feed" element={<NavBar><Feed /></NavBar>} />
           <Route path="/faltas" element={<NavBar><Faltas /></NavBar>} />
           <Route path="/calendario" element={<NavBar><Calendario /></NavBar>} />
           <Route path="/perfil" element={<NavBar><Perfil /></NavBar>} />

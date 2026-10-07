@@ -1,0 +1,138 @@
+/* boneco do vini: botão flutuante, balão de fala e painel de conversa. só variáveis do index.css */
+.boneco {
+  position: fixed;
+  z-index: 45;
+  bottom: 138px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.boneco > * { pointer-events: auto; }
+.boneco--esquerda { left: 12px; align-items: flex-start; }
+.boneco--direita { right: 12px; align-items: flex-end; bottom: 160px; }
+
+@media (min-width: 768px) {
+  .boneco { bottom: 76px; }
+  .boneco--esquerda { left: 238px; }
+  .boneco--direita { right: 24px; bottom: 150px; }
+}
+
+.boneco-botao {
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  background: var(--bg-light);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  overflow: hidden;
+}
+.boneco-botao .boneco-avatar { animation: boneco-respirar 4s ease-in-out infinite; }
+html.dark .boneco-botao { background: var(--bg-dark); }
+.boneco--discreto .boneco-botao { width: 40px; height: 40px; opacity: 0.7; }
+.boneco--discreto .boneco-botao .boneco-avatar { animation: none; }
+.boneco-botao:focus-visible, .boneco-chip:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+@keyframes boneco-respirar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.boneco-avatar { width: 100%; height: 100%; display: block; }
+.boneco-avatar--fala { animation: boneco-falar 0.4s ease-in-out 3; }
+@keyframes boneco-falar {
+  50% { transform: scale(1.06) rotate(-2deg); }
+}
+
+.boneco-toga { fill: var(--burgundy); }
+.boneco-peitilho { fill: #fff; }
+.boneco-friso { stroke: var(--gold); stroke-width: 2; }
+.boneco-barrete { fill: var(--bg-dark); }
+.boneco-barrete-fio { stroke: var(--gold); stroke-width: 1.5; }
+.boneco-balanca-traco { stroke: var(--burgundy); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.boneco-balanca-prato { fill: var(--gold); }
+.boneco-balanca-cara { fill: var(--gold); stroke: var(--burgundy); stroke-width: 1.5; }
+.boneco-balao { fill: var(--burgundy); }
+.boneco-balao-v { fill: var(--gold); font-family: Georgia, serif; font-size: 28px; font-weight: 700; }
+html.dark .boneco-balanca-traco { stroke: var(--gold); }
+
+/* balão de fala (quando ele puxa conversa) */
+.boneco-balao-fala {
+  max-width: min(280px, calc(100vw - 32px));
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--bg-light);
+  color: var(--text-light);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  animation: boneco-entrar 0.3s ease;
+}
+html.dark .boneco-balao-fala { background: var(--bg-dark); color: var(--text-dark); border-color: var(--border-dark); }
+.boneco-balao-fala p { margin: 0 0 10px; font-size: 0.92rem; line-height: 1.4; }
+.boneco-balao-fala__botoes { display: flex; flex-wrap: wrap; gap: 6px; }
+@keyframes boneco-entrar { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* painel de conversa */
+.boneco-painel {
+  width: min(340px, calc(100vw - 24px));
+  max-height: min(520px, 70vh);
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  background: var(--bg-light);
+  color: var(--text-light);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  animation: boneco-entrar 0.25s ease;
+}
+html.dark .boneco-painel { background: var(--bg-dark); color: var(--text-dark); border-color: var(--border-dark); }
+.boneco-painel__topo { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--burgundy); color: #fff; }
+.boneco-painel__avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-light); border: 2px solid var(--gold); overflow: hidden; flex: none; }
+.boneco-painel__titulo { flex: 1; display: flex; flex-direction: column; line-height: 1.2; }
+.boneco-painel__titulo small { opacity: 0.8; font-size: 0.72rem; }
+.boneco-painel__menu, .boneco-painel__fechar { background: none; border: none; color: inherit; cursor: pointer; font-size: 0.78rem; padding: 6px; opacity: 0.85; }
+.boneco-painel__fechar { font-size: 1rem; }
+
+.boneco-conversa { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.boneco-msg { max-width: 88%; padding: 9px 12px; border-radius: 14px; font-size: 0.92rem; line-height: 1.4; }
+.boneco-msg p { margin: 0; }
+.boneco-msg--boneco { align-self: flex-start; background: var(--border-light); }
+.boneco-msg--ela { align-self: flex-end; background: var(--burgundy); color: #fff; }
+html.dark .boneco-msg--boneco { background: var(--border-dark); }
+.boneco-msg p + .boneco-lista, .boneco-msg p + .boneco-linhas, .boneco-msg p + .boneco-contacto { margin-top: 8px; }
+
+.boneco-lista { margin: 0; padding-left: 20px; }
+.boneco-lista small { opacity: 0.75; }
+.boneco-lista__vazia { margin: 0; }
+.boneco-linhas { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.boneco-linhas a { color: inherit; text-decoration: underline; }
+.boneco-linhas small { display: block; opacity: 0.75; font-size: 0.78rem; }
+.boneco-contacto { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.boneco-escolhas { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 12px; border-top: 1px solid var(--border-light); }
+html.dark .boneco-escolhas { border-color: var(--border-dark); }
+
+.boneco-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--burgundy);
+  background: transparent;
+  color: var(--burgundy);
+  font: inherit;
+  font-size: 0.85rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+html.dark .boneco-chip { border-color: var(--gold); color: var(--gold); }
+.boneco-chip--forte { background: var(--burgundy); color: #fff; }
+html.dark .boneco-chip--forte { background: var(--gold); color: var(--bg-dark); }
+.boneco-chip--cuidado { border-style: dashed; }
+
+@media (prefers-reduced-motion: reduce) {
+  .boneco-botao .boneco-avatar, .boneco-avatar--fala, .boneco-painel, .boneco-balao-fala { animation: none; }
+}

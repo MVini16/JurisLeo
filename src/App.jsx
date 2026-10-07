@@ -7,6 +7,7 @@ import Login from './pages/Login'
 // componente de navegação — vai envolver todas as páginas principais
 import NavBar from './components/NavBar'
 import BarneyCarregar from './components/BarneyCarregar'
+import BonecoDoVini from './components/boneco/BonecoDoVini'
 
 // restantes páginas — carregadas só quando a rota é aberta
 const Onboarding = lazy(() => import('./pages/Onboarding'))
@@ -64,6 +65,7 @@ function App() {
           <Route path="/perfil/:secao" element={<NavBar><PerfilSecao /></NavBar>} />
         </Routes>
       </Suspense>
+      <BonecoDoVini />
     </BrowserRouter>
   )
 }

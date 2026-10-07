@@ -4,14 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow, noarchive" />
-  <meta name="theme-color" content="#14090d" />
+  <meta name="theme-color" content="#0d0609" />
   <title>Para ti</title>
   <link rel="icon" href="data:," />
   <link rel="stylesheet" href="estilo.css" />
 </head>
 <body class="bloqueado">
-  <div class="progresso" aria-hidden="true"><i id="barra"></i></div>
   <canvas id="estrelas" aria-hidden="true"></canvas>
+  <div class="luzes" aria-hidden="true"><i></i><i></i></div>
+  <div class="granulado" aria-hidden="true"></div>
+  <div class="barras" aria-hidden="true"><i id="barraCima"></i><i id="barraBaixo"></i></div>
+  <div class="progresso" aria-hidden="true"><i id="barra"></i></div>
 
   <!-- cortina: um toque para começar (no iphone o som só arranca depois de um toque) -->
   <div class="cortina" id="cortina">
@@ -24,17 +27,24 @@
   <button class="som" id="som" type="button" aria-pressed="false" aria-label="Ligar ou desligar a música" hidden>♪</button>
 
   <main id="conteudo">
-    <section class="cap cap--titulo" id="inicio">
-      <p class="pequeno">Uma coisa só para ti</p>
-      <h1 id="nome" aria-label="Para a Necas"></h1>
-      <p class="deslizar">desliza devagar</p>
+    <!-- cena 1: o título, que cresce até engolir o ecrã -->
+    <section class="cena cena--titulo" id="cenaTitulo">
+      <div class="titulo-bloco" id="tituloBloco">
+        <p class="pequeno" id="subtitulo">Uma coisa só para ti</p>
+        <h1 id="nome"></h1>
+        <p class="deslizar">desliza devagar</p>
+      </div>
+      <div class="luz-varrer" aria-hidden="true"></div>
     </section>
 
-    <section class="cap cap--texto" id="dificil"><div class="texto-longo" id="dificilTexto"></div></section>
+    <!-- cena 2: as frases do dia difícil, uma a uma, no mesmo sítio -->
+    <section class="cena cena--linhas" id="cenaDificil"><div class="linhas" id="linhasDificil"></div></section>
 
-    <div id="momentos"></div>
+    <!-- cena 3: as películas de fotos que deslizam na horizontal (construídas em app.js, uma por parte) -->
+    <div id="tiras"></div>
 
-    <section class="cap cap--texto" id="interludio"><div class="texto-longo texto-longo--grande" id="interludioTexto"></div></section>
+    <!-- cena 4: palavras grandes que sobem de dentro de uma máscara -->
+    <section class="cena cena--mascara" id="cenaInterludio"><div class="texto-longo texto-longo--grande" id="interludioTexto"></div></section>
 
     <section class="cap cap--cartas" id="cartas">
       <h2 class="titulo-cap">Abre quando...</h2>
@@ -43,9 +53,10 @@
       <p class="contador" id="contadorCartas" aria-live="polite"></p>
     </section>
 
-    <section class="cap cap--razoes" id="razoes">
-      <h2 class="titulo-cap">Pelo que eu te agradeço</h2>
-      <ol class="razoes" id="listaRazoes"></ol>
+    <!-- cena 5: as razões, uma de cada vez, com um número gigante por trás -->
+    <section class="cena cena--razoes" id="cenaRazoes">
+      <h2 class="titulo-cap razoes-titulo">Pelo que eu te agradeço</h2>
+      <div class="razoes-palco" id="razoesPalco"></div>
     </section>
 
     <section class="cap cap--carta" id="carta">
@@ -53,10 +64,13 @@
       <div class="carta-longa" id="cartaLonga"></div>
     </section>
 
-    <section class="cap cap--final" id="final">
-      <div class="texto-longo texto-longo--grande" id="finalTexto"></div>
-      <p class="assinatura" id="assinatura"></p>
-      <button class="botao botao--suave" id="topo" type="button">Voltar ao início</button>
+    <!-- cena final: as estrelas juntam-se num coração -->
+    <section class="cena cena--final" id="cenaFinal">
+      <div class="final-bloco">
+        <div class="texto-longo texto-longo--grande" id="finalTexto"></div>
+        <p class="assinatura" id="assinatura"></p>
+        <button class="botao botao--suave" id="topo" type="button">Voltar ao início</button>
+      </div>
     </section>
   </main>
 

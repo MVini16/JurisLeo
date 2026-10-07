@@ -36,6 +36,8 @@ export default function Calendario() {
     const chave = chaveAula(ev);
     return chave && marcas[chave] ? { ...ev, marca: marcas[chave] } : ev;
   });
+  const [confirmarLote, setConfirmarLote] = useState(false);
+  const [aMarcarLote, setAMarcarLote] = useState(false);
   const porMarcar = marcasCarregadas ? aulasPorMarcar(eventosBase, marcas) : [];
   const hoje = new Date();
   // vem de outra página (ex.: histórico das faltas) com uma data AAAA-MM-DD para abrir
@@ -81,6 +83,17 @@ export default function Calendario() {
       if (novoMes < 0)  { novoMes = 11; novoAno--; }
       setMesAtual(novoMes);
       setAnoAtual(novoAno);
+    }
+  }
+
+  // quem foi a tudo não precisa de marcar uma a uma: marca as que faltam como 'fui' (e corrige as exceções depois)
+  async function marcarTodasComoFui() {
+    setAMarcarLote(true);
+    try {
+      for (const ev of porMarcar) await marcar(ev, { estado: 'presente' });
+    } finally {
+      setAMarcarLote(false);
+      setConfirmarLote(false);
     }
   }
 
@@ -159,7 +172,20 @@ export default function Calendario() {
       {porMarcar.length > 0 && (
         <div className="aulas-por-marcar">
           <span>{porMarcar.length === 1 ? 'Tens 1 aula prática por marcar.' : `Tens ${porMarcar.length} aulas práticas por marcar.`}</span>
-          <button type="button" onClick={() => irParaVistaDiaria(porMarcar[0].data)}>Marcar</button>
+          <div className="aulas-por-marcar__botoes">
+            <button type="button" onClick={() => irParaVistaDiaria(porMarcar[0].data)}>Marcar</button>
+            <button type="button" className="aulas-por-marcar__lote" onClick={() => setConfirmarLote(true)}>Fui a todas</button>
+          </div>
+        </div>
+      )}
+
+      {confirmarLote && (
+        <div className="aulas-por-marcar aulas-por-marcar--confirmar" role="alertdialog" aria-label="Confirmar marcação em lote">
+          <span>Marcar as {porMarcar.length} aulas como "Fui"? Podes corrigir uma a uma depois.</span>
+          <div className="aulas-por-marcar__botoes">
+            <button type="button" onClick={marcarTodasComoFui} disabled={aMarcarLote}>{aMarcarLote ? 'A marcar...' : 'Confirmar'}</button>
+            <button type="button" className="aulas-por-marcar__lote" onClick={() => setConfirmarLote(false)}>Cancelar</button>
+          </div>
         </div>
       )}
 

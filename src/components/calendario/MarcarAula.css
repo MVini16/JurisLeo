@@ -34,3 +34,17 @@
 /* lembrete de aulas por marcar, no topo do calendário */
 .aulas-por-marcar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 8px 12px 0; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--gold); background: rgba(201, 168, 76, 0.1); color: var(--text-dark); font-size: 13px; }
 .aulas-por-marcar button { flex-shrink: 0; padding: 7px 12px; border-radius: 999px; border: none; background: var(--gold); color: var(--bg-dark); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+.aulas-por-marcar { animation: aula-entra 0.35s ease both; }
+.aulas-por-marcar__botoes { display: flex; gap: 6px; flex-shrink: 0; }
+.aulas-por-marcar button.aulas-por-marcar__lote { background: transparent; border: 1px solid var(--gold); color: inherit; }
+.aulas-por-marcar button:disabled { opacity: 0.5; }
+
+/* o chip e as opções "saltam" quando mudam, para dar a sensação de marcado */
+.aula-chip { animation: aula-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.marcar-aula__op.ativo { animation: aula-pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+@keyframes aula-pop { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes aula-entra { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .aula-chip, .marcar-aula__op.ativo, .aulas-por-marcar { animation: none; }
+}

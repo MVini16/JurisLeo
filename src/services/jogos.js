@@ -2,7 +2,7 @@
 // sem react nem firebase, para testar com vitest sem mocks. as perguntas do banco estão em data/jogos.js
 
 // o jurista pede 11: dez degraus e uma pergunta de reserva para a ajuda "saltar"
-export const PERGUNTAS_POR_JOGO = { vf: 15, jurista: 11, caso: 5, pares: 6 };
+export const PERGUNTAS_POR_JOGO = { vf: 40, jurista: 11, caso: 6, pares: 18 };
 export const TAMANHO_MAX_PAR = 70; // pares com texto maior ficam de fora (não cabem nos botões)
 
 // ---------- baralhar e escolher ----------

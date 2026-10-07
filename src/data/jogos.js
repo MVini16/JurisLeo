@@ -142,8 +142,8 @@ export const PARES = [
 ];
 
 export const JOGOS = [
-  { id: 'vf', nome: 'Verdadeiro ou Falso', curta: 'Relâmpago', descricao: 'Decide em segundos. Quanto mais seguidas acertares, mais pontos ganhas.', cor: '#2E6F5E' },
-  { id: 'jurista', nome: 'Quem Quer Ser Jurista?', curta: 'Escada', descricao: 'Dez perguntas, três ajudas. Sobe a escada sem falhar.', cor: '#6B0F1A' },
-  { id: 'caso', nome: 'Caso Prático', curta: 'Detetive', descricao: 'Lê os factos, aplica a lei e escolhe a solução certa.', cor: '#1F3A5F' },
-  { id: 'pares', nome: 'Liga os Pares', curta: 'Memória', descricao: 'Liga cada artigo ou data ao seu conceito, contra o relógio.', cor: '#8A6D1F' },
+  { id: 'vf', nome: 'Verdadeiro ou Falso', curta: 'Relâmpago', descricao: 'Resiste ao relógio: cada certa dá tempo, cada erro tira. Arrasta o cartão e acumula combos.', cor: '#2E6F5E' },
+  { id: 'jurista', nome: 'Quem Quer Ser Jurista?', curta: 'Escada', descricao: 'Dez degraus, três ajudas e o dilema de desistir ou arriscar tudo.', cor: '#6B0F1A' },
+  { id: 'caso', nome: 'Caso Prático', curta: 'Detetive', descricao: 'Aposta na tua convicção e aplica a lei aos factos.', cor: '#1F3A5F' },
+  { id: 'pares', nome: 'Liga os Pares', curta: 'Memória', descricao: 'Três rondas contra o relógio, com combos de pares seguidos.', cor: '#8A6D1F' },
 ];

@@ -11,6 +11,7 @@ const PADRAO = {
   animacoes: 'elegante',
   hojeVisual: 'stories',
   jogosSkin: 'tribunal',
+  jogosSom: true,
   // boneco do vini: aparece por omissão, "as vezes" puxa conversa, e o contacto do vini fica só neste telemóvel
   boneco: true,
   bonecoAspeto: 'A',

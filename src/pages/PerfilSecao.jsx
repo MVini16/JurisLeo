@@ -122,11 +122,15 @@ function Brincadeiras() {
   return (
     <>
       {barney}
-      <GrupoDefinicoes titulo="Boneco do Vini" indice={0} nota="Um boneco que anda contigo pelas páginas, pergunta como estás e leva-te a algo útil. Não é o Vini a sério: fala com frases que ele escreveu. Fica tudo só neste telemóvel.">
+      <GrupoDefinicoes titulo="Jogos" indice={0} nota="Sons curtos nos jogos (acertos, erros, combos e prémios). Se o telemóvel estiver em silêncio, não se ouve nada.">
+        <LinhaDefinicao tipo="interruptor" rotulo="Sons dos jogos" ligado={prefs.jogosSom} aoClicar={() => mudar({ jogosSom: !prefs.jogosSom })} />
+      </GrupoDefinicoes>
+
+      <GrupoDefinicoes titulo="Boneco do Vini" indice={1} nota="Um boneco que anda contigo pelas páginas, pergunta como estás e leva-te a algo útil. Não é o Vini a sério: fala com frases que ele escreveu. Fica tudo só neste telemóvel.">
         <LinhaDefinicao tipo="interruptor" rotulo="Mostrar o boneco" ligado={prefs.boneco} aoClicar={() => mudar({ boneco: !prefs.boneco })} />
       </GrupoDefinicoes>
 
-      <GrupoDefinicoes titulo="Como se parece" indice={1}>
+      <GrupoDefinicoes titulo="Como se parece" indice={2}>
         {ASPETOS.map((a) => (
           <button key={a.id} type="button" role="radio" aria-checked={prefs.bonecoAspeto === a.id} className="def-linha" disabled={!prefs.boneco} onClick={() => mudar({ bonecoAspeto: a.id })}>
             <span className="def-linha__icone" style={{ width: 36, height: 36 }}><AvatarBoneco aspeto={a.id} /></span>
@@ -136,19 +140,19 @@ function Brincadeiras() {
         ))}
       </GrupoDefinicoes>
 
-      <GrupoDefinicoes titulo="Onde fica" indice={2}>
+      <GrupoDefinicoes titulo="Onde fica" indice={3}>
         {[['esquerda', 'Em baixo, à esquerda'], ['direita', 'Em baixo, à direita']].map(([id, rotulo]) => (
           <LinhaDefinicao key={id} tipo="opcao" rotulo={rotulo} desativado={!prefs.boneco} marcada={prefs.bonecoPosicao === id} aoClicar={() => mudar({ bonecoPosicao: id })} />
         ))}
       </GrupoDefinicoes>
 
-      <GrupoDefinicoes titulo="Puxar conversa" indice={3} nota="Nunca aparece quando estás a escrever, a estudar ou nos flashcards. «Hoje não» no balão cala-o até ao fim do dia.">
+      <GrupoDefinicoes titulo="Puxar conversa" indice={4} nota="Nunca aparece quando estás a escrever, a estudar ou nos flashcards. «Hoje não» no balão cala-o até ao fim do dia.">
         {[['nunca', 'Nunca, só quando eu tocar'], ['as-vezes', 'De vez em quando (1 por dia)'], ['mais', 'Mais vezes (até 3 por dia)']].map(([id, rotulo]) => (
           <LinhaDefinicao key={id} tipo="opcao" rotulo={rotulo} desativado={!prefs.boneco} marcada={prefs.bonecoConversa === id} aoClicar={() => mudar({ bonecoConversa: id })} />
         ))}
       </GrupoDefinicoes>
 
-      <GrupoDefinicoes titulo="Contacto do Vini" indice={4} nota={contactoOk ? 'O número fica só guardado neste telemóvel e serve ao botão «Falar com o Vini a sério» (ligar, mensagem ou WhatsApp).' : 'Esse número não parece válido. Usa só dígitos, com ou sem +351.'}>
+      <GrupoDefinicoes titulo="Contacto do Vini" indice={5} nota={contactoOk ? 'O número fica só guardado neste telemóvel e serve ao botão «Falar com o Vini a sério» (ligar, mensagem ou WhatsApp).' : 'Esse número não parece válido. Usa só dígitos, com ou sem +351.'}>
         <label className="def-linha def-linha--info">
           <span className="def-linha__texto"><span className="def-linha__rotulo">Número do Vini</span></span>
           <input
@@ -162,16 +166,16 @@ function Brincadeiras() {
         </label>
       </GrupoDefinicoes>
 
-      <GrupoDefinicoes titulo="Barney" indice={5} nota="A piada do «Legen... wait for it... dary» salta de vez em quando e sempre que algo corre bem.">
+      <GrupoDefinicoes titulo="Barney" indice={6} nota="A piada do «Legen... wait for it... dary» salta de vez em quando e sempre que algo corre bem.">
         <LinhaDefinicao tipo="interruptor" rotulo="Piadas do Barney" ligado={prefs.barney} aoClicar={() => mudar({ barney: !prefs.barney })} />
         <LinhaDefinicao tipo="acao" rotulo="Ver a piada outra vez" desativado={!prefs.barney} aoClicar={() => disparar('segredo')} />
       </GrupoDefinicoes>
 
-      <GrupoDefinicoes titulo="Vini" indice={6} nota="As mensagens só aparecem enquanto escreves notas e casos, e só contam o tempo em que estás mesmo a escrever.">
+      <GrupoDefinicoes titulo="Vini" indice={7} nota="As mensagens só aparecem enquanto escreves notas e casos, e só contam o tempo em que estás mesmo a escrever.">
         <LinhaDefinicao tipo="interruptor" rotulo="Mensagens do Vini ao escrever" ligado={prefs.provocacoes} aoClicar={() => mudar({ provocacoes: !prefs.provocacoes })} />
       </GrupoDefinicoes>
 
-      <GrupoDefinicoes titulo="De quanto em quanto tempo" indice={7}>
+      <GrupoDefinicoes titulo="De quanto em quanto tempo" indice={8}>
         {[5, 10, 20].map((min) => (
           <LinhaDefinicao
             key={min}

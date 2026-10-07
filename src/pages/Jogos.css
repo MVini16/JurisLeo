@@ -51,3 +51,34 @@ html.dark .jogos-modal textarea, html.dark .jogos-modal input { border-color: va
 .jogos-modal__botoes { display: flex; justify-content: flex-end; gap: 8px; }
 
 @media (prefers-reduced-motion: reduce) { .jogos-fundo, .jogos-modal { animation: none; } }
+
+/* nível, audiência do dia e coleção */
+.jogos-nivel { display: grid; gap: 6px; padding: 14px 16px; border-radius: 18px; background: linear-gradient(135deg, var(--burgundy), #3a0c15); color: #F5EFE6; }
+.jogos-nivel__topo { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.jogos-nivel__topo b { font-family: Georgia, serif; font-size: 1.15rem; }
+.jogos-nivel__topo small { opacity: 0.75; font-size: 0.76rem; }
+.jogos-nivel__barra { height: 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.18); overflow: hidden; }
+.jogos-nivel__barra i { display: block; height: 100%; border-radius: 999px; background: var(--gold); transition: width 0.8s cubic-bezier(0.2, 0.9, 0.3, 1); }
+.jogos-nivel__colecao { justify-self: start; margin-top: 4px; padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(245, 239, 230, 0.5); background: transparent; color: inherit; font: inherit; font-size: 0.8rem; cursor: pointer; }
+.jogos-audiencia { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-radius: 18px; border: 2px solid var(--gold); background: rgba(201, 168, 76, 0.12); animation: jogos-brilha 2.4s ease-in-out infinite; }
+.jogos-audiencia.feita { animation: none; border-style: dashed; opacity: 0.85; }
+@keyframes jogos-brilha { 50% { box-shadow: 0 0 0 5px rgba(201, 168, 76, 0.22); } }
+.jogos-audiencia h2 { margin: 0; font-family: Georgia, serif; font-size: 1.05rem; }
+.jogos-audiencia p { margin: 2px 0 0; font-size: 0.82rem; opacity: 0.8; line-height: 1.4; }
+.jogos-audiencia .jogos-botao { flex: none; }
+.jogos-colecao { max-height: 88vh; }
+.jogos-selos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+.jogos-selo { width: 100%; min-height: 64px; padding: 8px 6px; border-radius: 12px; border: 2px dashed var(--border-light); background: transparent; color: inherit; font: inherit; font-size: 0.72rem; line-height: 1.25; opacity: 0.55; cursor: default; }
+html.dark .jogos-selo { border-color: var(--border-dark); }
+.jogos-selo.tem { opacity: 1; border-style: solid; cursor: pointer; font-weight: 700; animation: jogos-entra 0.3s both; }
+.jogos-selo--comum.tem { border-color: #8d9aa6; }
+.jogos-selo--raro.tem { border-color: #5aa0e6; background: rgba(90, 160, 230, 0.12); }
+.jogos-selo--lendario.tem { border-color: var(--gold); background: rgba(201, 168, 76, 0.18); }
+@keyframes jogos-entra { from { opacity: 0; transform: scale(0.85); } }
+.jogos-selo-detalhe { margin: 0; padding: 10px 12px; border-radius: 12px; background: rgba(201, 168, 76, 0.16); font-size: 0.88rem; display: grid; gap: 2px; }
+.jogos-conquistas { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.jogos-conquistas li { display: grid; gap: 1px; padding: 10px 12px; border-radius: 12px; border: 1px dashed var(--border-light); opacity: 0.55; }
+html.dark .jogos-conquistas li { border-color: var(--border-dark); }
+.jogos-conquistas li.tem { opacity: 1; border-style: solid; border-color: var(--gold); }
+.jogos-conquistas small { opacity: 0.75; }
+@media (prefers-reduced-motion: reduce) { .jogos-audiencia, .jogos-selo.tem { animation: none; } }

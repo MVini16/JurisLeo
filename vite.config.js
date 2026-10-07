@@ -16,13 +16,19 @@ function versaoDaApp() {
   }
 }
 
-// a página-surpresa (public/s/) usa gsap, three e anime.js: copia-os do node_modules para a pasta dela no build, para não os guardar no repositório
+// a página-surpresa (public/s/) usa gsap (e plugins), three, anime.js e lenis: copia-os do node_modules para a pasta dela no build, para não os guardar no repositório
 function copiarBibliotecasDaSurpresa() {
   const ficheiros = [
     ['gsap.min.js', 'node_modules/gsap/dist/gsap.min.js'],
     ['ScrollTrigger.min.js', 'node_modules/gsap/dist/ScrollTrigger.min.js'],
     ['three.module.min.js', 'node_modules/three/build/three.module.min.js'],
     ['anime.min.js', 'node_modules/animejs/lib/anime.min.js'],
+    ['SplitText.min.js', 'node_modules/gsap/dist/SplitText.min.js'],
+    ['ScrambleTextPlugin.min.js', 'node_modules/gsap/dist/ScrambleTextPlugin.min.js'],
+    ['DrawSVGPlugin.min.js', 'node_modules/gsap/dist/DrawSVGPlugin.min.js'],
+    ['MotionPathPlugin.min.js', 'node_modules/gsap/dist/MotionPathPlugin.min.js'],
+    ['Physics2DPlugin.min.js', 'node_modules/gsap/dist/Physics2DPlugin.min.js'],
+    ['lenis.min.js', 'node_modules/lenis/dist/lenis.min.js'],
   ]
   return {
     name: 'copiar-bibliotecas-surpresa',

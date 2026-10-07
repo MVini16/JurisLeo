@@ -5,9 +5,25 @@ window.CONTEUDO = {
   subtitulo: 'Para a minha Necas',
   apelidos: ['Necas', 'Nô', 'bebé', 'princesa', 'meu bem', 'Leonor'],
   // o genérico de abertura, como num filme
-  intro: ['Vini apresenta', 'Um filme de amor', 'Com a Leonor no papel principal'],
+  intro: ['Vini apresenta', 'Um filme que não cabia numa carta', 'Com a Leonor no papel principal'],
   // os cartões de capítulo
-  capitulos: { nos: ['Capítulo I', 'Nós'], tu: ['Capítulo II', 'Tu'], frases: ['Capítulo III', 'As nossas frases'], jogo: ['Capítulo IV', 'O jogo'], carta: ['Capítulo V', 'A carta'] },
+  capitulos: { nos: ['Capítulo I', 'Nós'], tu: ['Capítulo II', 'Tu'], frases: ['Capítulo III', 'As nossas frases'], jogo: ['Capítulo IV', 'Os jogos'], codigo: ['Capítulo V', 'O nosso código'], carta: ['Capítulo VI', 'A carta'] },
+  // o prólogo: a carta que eu tentei escrever, antes do filme começar
+  prologo: {
+    antes: 'Antes de começarmos',
+    saudacao: 'Leonor,',
+    pedido: 'Sei que me pediste uma carta.',
+    // tentativas que ficam riscadas, cada uma com um comentário meu na margem
+    tentativas: [
+      { texto: 'Querida Leonor, espero que esta carta te encontre bem.', nota: 'pareço o banco a escrever-te' },
+      { texto: 'Desde o primeiro dia em que te vi...', nota: 'muito filme. mereces melhor' },
+      { texto: 'Amo-te mais do que todas as estrelas do céu.', nota: 'nem sei quantas são. vou contar' },
+    ],
+    depois: ['Escrevi e apaguei isto umas vinte vezes.', 'Nenhuma versão chegava para ti.'],
+    // a frase grande, no meio do ecrã, quando a folha levanta voo
+    grande: ['Sei que me pediste uma carta,', 'mas acho que isto devia ser', 'algo mais especial.'],
+    porque: ['Uma carta lê-se em cinco minutos.', 'E eu queria ficar contigo muito mais tempo do que isso.', 'Por isso fiz-te um filme.'],
+  },
   // os créditos finais
   creditos: [
     ['Realizado por', 'Vini'],
@@ -91,6 +107,8 @@ window.CONTEUDO = {
     vitoria: ['Encontraste todos os nossos momentos.', 'E o melhor ainda está por vir.'],
     final: 'Always and forever.',
   },
+  // a promessa cumprida: a carta que ela pediu, no fim de tudo
+  cartaIntro: ['Prometido é devido.', 'Pediste uma carta e eu não ia deixar de ta dar.', 'Só que vinha com um filme à volta.'],
   cartaTitulo: 'Para leres quando quiseres',
   carta: [
     'Leonor, Necas, Nô, bebé, princesa,',
@@ -107,6 +125,83 @@ window.CONTEUDO = {
     'Eu escolho-te hoje, e escolho-te amanhã. E no dia a seguir, outra vez.',
     'Amo-te, Nô. Mais do que consigo escrever.',
   ],
+  // frases minhas, que não vêm de filme nenhum. cada uma entra com uma animação diferente
+  minhasTitulo: ['Frases que não vêm de filme nenhum.', 'Vêm de mim.'],
+  minhas: [
+    { texto: 'Se fores advogada como discutes comigo, coitada da outra parte.', efeito: 'baralhar' },
+    { texto: 'Não percebo nada de Direito. Mas de ti percebo, e chega-me.', efeito: 'onda' },
+    { texto: 'Passo o dia a corrigir bugs. Tu és a única coisa na minha vida que não quero corrigir.', efeito: 'maquina' },
+    { texto: 'Podes ter dias maus. Não os podes é ter sozinha.', efeito: 'cair' },
+    { texto: 'Gosto mais de ti do que tu gostas de açaí. E tu sabes o que isso quer dizer.', efeito: 'virar' },
+    { texto: 'Um dia vais ser a Dra. Leonor. E eu vou continuar a chamar-te Necas.', efeito: 'foco' },
+    { texto: 'Def que a sorte é minha.', efeito: 'grande' },
+  ],
+  // nível 2: perguntas sobre nós (só factos que já estão nas fotos e legendas)
+  quiz: {
+    titulo: 'Quanto sabes de nós?',
+    sub: 'Cinco perguntas. Não vale perguntar a ninguém.',
+    perguntas: [
+      { p: 'Onde é que quase perdeste o desenho?', opcoes: ['No aeroporto de Málaga', 'Em Belém', 'Na praia, no Algarve'], certa: 0, sim: 'Isso. E eu nunca vi ninguém tão aliviado na vida.', nao: 'Foi em Málaga, no aeroporto. Tu a chorar e eu a correr atrás de ti.' },
+      { p: 'Quantas vezes perdemos o acender das luzes de Natal?', opcoes: ['Uma', 'Duas', 'Nenhuma, somos super pontuais'], certa: 1, sim: 'Duas. A terceira vai ser de vez, prometido.', nao: 'Foram duas, Necas. Pontuais nós? Nunca.' },
+      { p: 'O que é que tu nunca, mas nunca, recusas?', opcoes: ['Acordar cedo', 'Um açaí', 'Mais uma frequência'], certa: 1, sim: 'Óbvio. Às vezes acho que tenho concorrência.', nao: 'Tens a certeza? Eu apostava tudo no açaí.' },
+      { p: 'Onde foi o beijo nas escadas de madeira?', opcoes: ['Em Lisboa', 'Em Málaga', 'No Algarve'], certa: 2, sim: 'Praia, bola, sol e tu. Lembras-te bem.', nao: 'No Algarve, bebé. Escadas de madeira, praia, e nós.' },
+      { p: 'Quem é a minha pessoa favorita?', opcoes: ['A Leonor', 'A Necas', 'A Nô'], certa: -1, sim: 'Era impossível errar esta. Fiz batota de propósito.', nao: '' },
+    ],
+    // {n} e {t} trocam-se pelo número de certas e de perguntas
+    resultado: 'Acertaste {n} de {t}.',
+    nota: 'Para mim tens 20 valores. Sempre.',
+  },
+  // nível 3: ligar as estrelas pela ordem, até aparecer o desenho
+  constelacao: {
+    titulo: 'Liga as estrelas',
+    sub: 'Toca nelas pela ordem. Desenhei uma coisa no céu para ti.',
+    errado: 'Essa ainda não. Procura a {n}.',
+    feito: ['É uma balança.', 'Um dia vais ser tu a segurá-la. E eu vou estar na primeira fila a ver.'],
+  },
+  // nível 4: raspadinhas com vales verdadeiros
+  vales: {
+    titulo: 'Raspadinhas',
+    sub: 'Raspa com o dedo. Todos os prémios são verdadeiros e não têm validade.',
+    lista: [
+      'Vale um jantar no sítio que tu escolheres. E eu não me queixo do preço.',
+      'Vale uma maratona de Gossip Girl, sem eu adormecer a meio.',
+      'Vale um açaí. Sem perguntas e sem partilhar.',
+      'Vale ganhar uma discussão. Só uma, usa com sabedoria.',
+    ],
+    tudo: 'Ganhaste tudo. Guarda isto, que eu vou cumprir.',
+  },
+  // capítulo V: o nosso código, com artigos a sério (a brincar)
+  codigo: {
+    titulo: 'Código da Leonor e do Vini',
+    sub: 'Aprovado por unanimidade. Dos dois.',
+    artigos: [
+      { n: 'Artigo 1.º', epigrafe: 'Princípio geral', texto: 'A Leonor tem sempre razão.' },
+      { n: 'Artigo 2.º', epigrafe: 'Exceções', texto: 'Quando a Leonor não tiver razão, aplica-se o artigo 1.º.' },
+      { n: 'Artigo 3.º', epigrafe: 'Do açaí', texto: 'O açaí da Leonor não se partilha, salvo autorização expressa da própria, que até hoje nunca foi dada.' },
+      { n: 'Artigo 4.º', epigrafe: 'Dever de abraço', texto: 'No fim de cada frequência é devido um abraço, independentemente da nota.' },
+      { n: 'Artigo 5.º', epigrafe: 'Prescrição', texto: 'As saudades prescrevem no exato momento em que nos voltamos a ver.' },
+      { n: 'Artigo 6.º', epigrafe: 'In dubio pro beijo', texto: 'Em caso de dúvida, decide-se sempre a favor do beijo.' },
+      { n: 'Artigo 7.º', epigrafe: 'Vigência', texto: 'O presente código entra hoje em vigor e não admite revogação.' },
+    ],
+    assinar: 'Assina aqui com o dedo',
+    botao: 'Assinar',
+    limpar: 'Apagar',
+    carimbo: 'Em vigor',
+    feito: 'Contrato celebrado. Sem direito a arrependimento.',
+    assinaturaVini: 'Vini',
+  },
+  // um abraço à distância: carregar e não largar
+  abraco: {
+    titulo: 'Abraço à distância',
+    sub: 'Carrega no coração e não largues.',
+    cedo: 'Largaste cedo demais. Os meus abraços são mais compridos.',
+    feito: ['Isto foi um abraço à distância.', 'O verdadeiro fico a dever-te. Cobra quando quiseres.'],
+  },
+  // a promessa da margem do prólogo: contar as estrelas
+  contagem: {
+    antes: 'Lembras-te de eu ter dito que ia contar as estrelas?',
+    depois: ['São as que voaram contigo até aqui.', 'Contei-as todas. E continuas a ganhar tu.'],
+  },
   interludio: [
     'Tu fazes o mundo parecer mais pequeno,',
     'e a minha vida muito maior.',

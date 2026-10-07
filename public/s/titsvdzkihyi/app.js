@@ -1,6 +1,6 @@
 // a experiência, em cenas de cinema: monta tudo a partir de conteudo.js e anima com gsap + scrolltrigger.
 // só se animam transform e opacity (leves no iphone). com "reduzir movimento" ligado, tudo aparece arrumado e legível
-/* global gsap, ScrollTrigger */
+/* global gsap, ScrollTrigger, SplitText, ScrambleTextPlugin, DrawSVGPlugin, MotionPathPlugin, Physics2DPlugin, Lenis */
 (function () {
   var C = window.CONTEUDO;
   var parado = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -13,7 +13,7 @@
     return e;
   }
   function dois(n) { return (n < 10 ? '0' : '') + n; }
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin, DrawSVGPlugin, MotionPathPlugin, Physics2DPlugin);
   ScrollTrigger.config({ ignoreMobileResize: true });
 
   // ---------- montar o conteúdo ----------
@@ -62,6 +62,7 @@
   ['nos', 'tu'].forEach(function (k, i) { if (peliculas[i]) antesDe(peliculas[i].sec, C.capitulos[k]); });
   antesDe($('cenaFrases'), C.capitulos.frases);
   antesDe($('jogo'), C.capitulos.jogo);
+  antesDe($('codigo'), C.capitulos.codigo);
   antesDe($('carta'), C.capitulos.carta);
 
   C.interludio.forEach(function (linha) {
@@ -118,7 +119,14 @@
     sec.appendChild(el('p', 'cap-num', par[0]));
     var t = el('h2', 'cap-titulo');
     t.setAttribute('aria-label', par[1]);
-    par[1].split('').forEach(function (ch) { var l = el('span', 'cap-letra', ch === ' ' ? '\u00a0' : ch); l.setAttribute('aria-hidden', 'true'); t.appendChild(l); });
+    // letra a letra, mas cada palavra inteira na mesma linha (para não partir "frases" a meio)
+    par[1].split(' ').forEach(function (w, i, todas) {
+      var pal = el('span', 'cap-palavra');
+      pal.setAttribute('aria-hidden', 'true');
+      w.split('').forEach(function (ch) { pal.appendChild(el('span', 'cap-letra', ch)); });
+      t.appendChild(pal);
+      if (i < todas.length - 1) t.appendChild(document.createTextNode(' '));
+    });
     sec.appendChild(t);
     sec.appendChild(el('i', 'cap-linha'));
     return sec;
@@ -161,7 +169,8 @@
   var estrelas = [];
   var rolar = 0;
   var coracao = { p: 0 };
-  window.CINEMA = { coracao: coracao, pulso: 0 }; // a camada 3D (cinema.js) lê daqui o quanto as estrelas já são um coração
+  // a camada 3D (cinema.js) lê daqui o quanto as estrelas já são um coração, o soco de câmara e o quanto o céu está aceso
+  window.CINEMA = { coracao: coracao, pulso: 0, acender: 1 };
   var NUM_CORACAO = 120;
   function medir() {
     var d = Math.min(window.devicePixelRatio || 1, 2);
@@ -169,6 +178,7 @@
     tela.width = w * d; tela.height = h * d;
     ctx.setTransform(d, 0, 0, d, 0, 0);
     var n = w < 700 ? 130 : 190;
+    window.CINEMA.estrelas2d = n;
     var k = Math.min(w * 0.84 / 34, h * 0.30 / 30);
     estrelas = [];
     for (var i = 0; i < n; i++) {
@@ -192,7 +202,7 @@
       var s = estrelas[i];
       var y = (s.y - rolar * s.p * 0.15 + h * 10) % h;
       var x = s.x;
-      var brilho = parado ? 0.6 : 0.35 + 0.35 * Math.sin(t / 1100 + s.f);
+      var brilho = (parado ? 0.6 : 0.35 + 0.35 * Math.sin(t / 1100 + s.f)) * Math.min(1.6, window.CINEMA.acender);
       var raio = s.r;
       if (p > 0) {
         if (s.coracao) {
@@ -204,7 +214,7 @@
           brilho = brilho * (1 - 0.8 * p);
         }
       }
-      ctx.fillStyle = 'rgba(' + (s.coracao && p > 0.5 ? '255,214,170' : '243,233,223') + ',' + brilho.toFixed(2) + ')';
+      ctx.fillStyle = 'rgba(' + (s.coracao && p > 0.5 ? '255,214,170' : '243,233,223') + ',' + Math.min(1, brilho).toFixed(2) + ')';
       ctx.beginPath(); ctx.arc(x, y, raio, 0, 6.2832); ctx.fill();
     }
     if (!parado && document.visibilityState === 'visible') requestAnimationFrame(desenhar);
@@ -285,6 +295,10 @@
     }
   }
 
+  // ---------- as partes novas (extra.js) ----------
+  window.FX = { coracoes: coracoes };
+  window.EXTRA.montar({ parado: parado, coracoes: function (x, y, n, e) { coracoes(x, y, n, e); }, pulso: function (f) { pulso(f); } });
+
   // ---------- minijogo da memória ----------
   var jogo = { aberta: [], bloqueio: false, certas: 0, jogadas: 0 };
   function baralhar(v) { for (var k = v.length - 1; k > 0; k--) { var j = Math.floor(Math.random() * (k + 1)); var t = v[k]; v[k] = v[j]; v[j] = t; } return v; }
@@ -357,7 +371,7 @@
   // um "soco de câmara": a lente 3D dá um zoom curto, usado a cada cena nova
   function pulso(f) {
     if (parado || !window.CINEMA) return;
-    gsap.fromTo(window.CINEMA, { pulso: f || 1 }, { pulso: 0, duration: 1.8, ease: 'power3.out', overwrite: true });
+    gsap.fromTo(window.CINEMA, { pulso: f || 1 }, { pulso: 0, duration: 1.8, ease: 'power3.out', overwrite: 'auto' }); // 'auto' só corta o pulso anterior, não o acender do céu
   }
 
   // um cometa que atravessa o céu de vez em quando
@@ -465,19 +479,15 @@
       tlF.fromTo(r, { xPercent: dir > 0 ? -26 : 0 }, { xPercent: dir > 0 ? 0 : -26, ease: 'none', duration: dur }, 0);
     });
 
+    // 3c. as minhas frases, cada uma com a sua animação
+    window.EXTRA.animarMinhas();
+
     // 4. palavras grandes que sobem de dentro de uma máscara
     gsap.timeline({ scrollTrigger: { trigger: '#cenaInterludio', start: 'top top', end: '+=160%', scrub: 0.8, pin: true } })
       .from('#interludioTexto .mascara__in', { yPercent: 118, rotate: 5, stagger: 0.14, duration: 0.5, ease: 'power3.out' })
       .to({}, { duration: 0.7 });
 
-    // as cartas entram em perspetiva
-    gsap.from('#cartas .titulo-cap, #cartas .sub-cap', { opacity: 0, y: 30, duration: 0.9, stagger: 0.15, scrollTrigger: { trigger: '#cartas', start: 'top 70%' } });
-    gsap.utils.toArray('.carta').forEach(function (c) {
-      gsap.from(c, { opacity: 0, rotateX: -45, y: 50, duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: c, start: 'top 94%' } });
-    });
-
-    // o jogo da memória entra com calma
-    gsap.from('#jogo .titulo-cap, #jogo .sub-cap, #memo', { opacity: 0, y: 40, duration: 1, stagger: 0.15, scrollTrigger: { trigger: '#jogo', start: 'top 70%' } });
+    // (as cartas, os jogos e os títulos entram e saem com os efeitos globais de extra.js, no fim)
 
     // 5. as razões, uma de cada vez, com o número gigante por trás
     var razoes = gsap.utils.toArray('.razao');
@@ -492,14 +502,12 @@
     });
     tr.to({}, { duration: 0.35 });
 
-    animarCapitulo(capitulos[3]); // IV O jogo
-    animarCapitulo(capitulos[4]); // V A carta
+    animarCapitulo(capitulos[3]); // IV Os jogos
+    animarCapitulo(capitulos[4]); // V O nosso código
+    animarCapitulo(capitulos[5]); // VI A carta
 
-    // a carta longa: cada parágrafo aparece com calma
-    gsap.utils.toArray('#cartaLonga p').forEach(function (p) {
-      gsap.from(p, { opacity: 0, y: 28, duration: 1.1, ease: 'power2.out', scrollTrigger: { trigger: p, start: 'top 90%' } });
-    });
-    gsap.from('#cartaTitulo', { opacity: 0, y: 30, duration: 1, scrollTrigger: { trigger: '#cartaTitulo', start: 'top 85%' } });
+    // a contagem das estrelas, presa ao scroll, logo antes do coração
+    window.EXTRA.animarContagem();
 
     // final: as estrelas voam e juntam-se num coração, e só depois chegam as palavras
     var linhasF = gsap.utils.toArray('.final-linha');
@@ -518,12 +526,24 @@
     tc.to({}, { duration: 0.7 });
 
     // um soco de câmara a cada cena nova
-    ['#cenaDificil', '#cenaFrases', '#cenaInterludio', '#cenaRazoes', '#cenaFinal', '#cenaCreditos', '.cena--tira', '.cena--capitulo'].forEach(function (sel) {
+    ['#cenaDificil', '#cenaFrases', '#cenaMinhas', '#contagem', '#cenaInterludio', '#cenaRazoes', '#cenaFinal', '#cenaCreditos', '.cena--tira', '.cena--capitulo'].forEach(function (sel) {
       gsap.utils.toArray(sel).forEach(function (el2) { ScrollTrigger.create({ trigger: el2, start: 'top 65%', onEnter: function () { pulso(1); } }); });
     });
     setTimeout(cometa, 5000);
   }
   animar();
+  // os efeitos globais (letras que se formam, blocos que entram e saem) vêm depois de todas as cenas fixas
+  window.EXTRA.animarResto();
+
+  // scroll suave com o rato (lenis); no telemóvel fica o scroll nativo, que é o mais fiável no safari
+  var lenis = null;
+  if (!parado && window.Lenis && window.matchMedia('(pointer: fine)').matches) {
+    lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 0.9 });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+    lenis.stop();
+  }
   window.addEventListener('load', function () { ScrollTrigger.refresh(); });
 
   // ---------- desenhos de traço com anime.js ----------
@@ -561,6 +581,7 @@
   // depois do genericoDeAbertura: liberta o scroll e o título aparece
   function entrar() {
     document.body.classList.remove('bloqueado');
+    if (lenis) lenis.start();
     if (!parado) {
       gsap.from('.titulo-bloco .pequeno', { opacity: 0, y: 16, duration: 1.2, delay: 0.4 });
       if (temAnime) {
@@ -615,13 +636,16 @@
   botaoComecar.addEventListener('click', function () {
     tocarMusica();
     gsap.to('#cortina', { opacity: 0, duration: parado ? 0 : 1.4, ease: 'power1.inOut', onComplete: function () { $('cortina').remove(); } });
-    if (parado) { entrar(); return; }
-    genericoDeAbertura(entrar);
+    // primeiro o prólogo (a carta que eu tentei escrever), depois o genérico e o filme
+    window.PROLOGO({ parado: parado, pulso: pulso, depois: function () { if (parado) entrar(); else genericoDeAbertura(entrar); } });
   });
   botaoSom.addEventListener('click', function () {
     var ligado = botaoSom.getAttribute('aria-pressed') === 'true';
     if (ligado) musica.pause(); else musica.play();
     botaoSom.setAttribute('aria-pressed', ligado ? 'false' : 'true');
   });
-  $('topo').addEventListener('click', function () { window.scrollTo({ top: 0, behavior: parado ? 'auto' : 'smooth' }); });
+  $('topo').addEventListener('click', function () {
+    if (lenis) lenis.scrollTo(0, { duration: 5 });
+    else window.scrollTo({ top: 0, behavior: parado ? 'auto' : 'smooth' });
+  });
 })();

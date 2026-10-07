@@ -84,7 +84,7 @@ IA do boneco: só desenho em `docs/IA-DO-BONECO.md` (servidor à parte, sem Fire
 
 - **Lê primeiro `docs/handoff-07-10-2026-final.md`**: estado, como publicar, pendências e decisões.
 - Depois lê `docs/handoff-07-10-2026-sessao-2.md`: presenças, feed, sumários, cadernos, desktop, cópia automática (versão 2026-10-11).
-- Páginas novas: `Admin` (`/admin`, resumos que a Leonor decide partilhar) e `AdminBoneco`. Página-surpresa estática em `public/s/titsvdzkihyi/` (fora da app, sem login; texto em `conteudo.js`).
+- Páginas novas: `Admin` (`/admin`, resumos que a Leonor decide partilhar) e `AdminBoneco`. Página-surpresa estática em `public/s/titsvdzkihyi/` (fora da app, sem login; texto em `conteudo.js`; prólogo em `prologo.js`, jogos e partes novas em `extra.js`, cenas em `app.js`, 3D e aurora em `cinema.js`; as bibliotecas são copiadas do `node_modules` no build, ver `vite.config.js`).
 - Serviços novos: `resumoParaVini`, `armazemResumos`, `notificacoes`, `sessao`, `destinoLogin`, `frequenciaProxima`.
 - **Privacidade:** a consola do Vini só mostra o que a Leonor manda. Não criar recolha escondida de dados dela.
 

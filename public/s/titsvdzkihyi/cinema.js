@@ -1,6 +1,7 @@
 // a camada 3D, por baixo de tudo: milhares de estrelas por onde a câmara voa enquanto desces,
 // e no fim todas se juntam num coração 3D que bate e roda. a transformação é feita na placa gráfica (shader),
-// com duas posições por ponto (a de estrela e a de coração). se o telemóvel não aguentar, fica o céu 2D de app.js
+// com duas posições por ponto (a de estrela e a de coração). por trás, uma aurora que se mexe e muda de cor ao longo do filme,
+// desenhada em baixa resolução (fica suave e quase não custa nada). se o telemóvel não aguentar, fica o céu 2D de app.js
 import * as THREE from './three.module.min.js';
 
 (function () {
@@ -17,6 +18,7 @@ import * as THREE from './three.module.min.js';
     return; // sem webgl: continua o céu 2D
   }
   var estado = window.CINEMA || { coracao: { p: 0 } };
+  estado.estrelas = 0; // preenchido abaixo, para a contagem das estrelas
 
   var fraco = (navigator.hardwareConcurrency || 4) <= 2 || (navigator.deviceMemory && navigator.deviceMemory <= 2);
   var pequeno = window.innerWidth < 700;
@@ -24,6 +26,7 @@ import * as THREE from './three.module.min.js';
   var COMPRIMENTO = 320; // quanto a câmara viaja do início ao fim do scroll
   var LONGE = 85; // a partir daqui as estrelas desvanecem
   var pixelMax = fraco ? 1 : 2;
+  estado.estrelas = N;
 
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, pixelMax));
   renderer.setClearColor(0x000000, 0);
@@ -89,10 +92,11 @@ import * as THREE from './three.module.min.js';
       uBater: { value: 1 },
       uRodar: { value: 0 },
       uAlto: { value: 4 },
+      uAcender: { value: 1 },
     },
     vertexShader: [
       'attribute vec3 aEstrela; attribute vec3 aCoracao; attribute vec4 aRnd;',
-      'uniform float uTempo; uniform float uMorph; uniform vec3 uCam; uniform float uLonge; uniform float uTam; uniform float uBater; uniform float uRodar; uniform float uAlto;',
+      'uniform float uTempo; uniform float uMorph; uniform vec3 uCam; uniform float uLonge; uniform float uTam; uniform float uBater; uniform float uRodar; uniform float uAlto; uniform float uAcender;',
       'varying float vAlfa; varying vec3 vCor;',
       'mat2 rot(float a){ float s = sin(a); float c = cos(a); return mat2(c, -s, s, c); }',
       'void main(){',
@@ -109,7 +113,7 @@ import * as THREE from './three.module.min.js';
       '  float brilho = 0.68 + 0.32 * sin(uTempo * 1.7 + aRnd.x * 40.0);',
       '  gl_PointSize = clamp(uTam * aRnd.y * (70.0 / max(dist, 1.0)) * (1.0 + t * 1.1), 1.0, 30.0);',
       '  float fade = smoothstep(uLonge, uLonge * 0.5, dist) * smoothstep(0.4, 3.5, dist);',
-      '  vAlfa = fade * brilho * mix(0.85, 1.0, t);',
+      '  vAlfa = fade * brilho * mix(0.85, 1.0, t) * uAcender;',
       '  vec3 base = mix(vec3(1.0, 0.94, 0.86), vec3(0.88, 0.72, 0.38), aRnd.z);',
       '  vCor = mix(base, vec3(1.0, 0.42, 0.52), t * 0.85);',
       '}',
@@ -124,6 +128,54 @@ import * as THREE from './three.module.min.js';
       '}',
     ].join('\n'),
   });
+  // ---- a aurora: um fundo de cor que flui (ruído fractal), noutra tela, a 1/6 da resolução ----
+  var telaAurora = document.getElementById('aurora');
+  var aurora = null;
+  if (telaAurora) {
+    try {
+      var rendA = new THREE.WebGLRenderer({ canvas: telaAurora, antialias: false, alpha: false, powerPreference: 'low-power' });
+      rendA.setPixelRatio(1);
+      var cenaA = new THREE.Scene();
+      var camA = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+      var matA = new THREE.ShaderMaterial({
+        uniforms: { uT: { value: 0 }, uP: { value: 0 }, uAsp: { value: 1 }, uRato: { value: new THREE.Vector2() }, uAcender: { value: 1 }, uMorph: { value: 0 } },
+        vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+        fragmentShader: [
+          'precision mediump float;',
+          'uniform float uT; uniform float uP; uniform float uAsp; uniform vec2 uRato; uniform float uAcender; uniform float uMorph;',
+          'varying vec2 vUv;',
+          'float h(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }',
+          'float n(vec2 p){ vec2 i = floor(p); vec2 f = fract(p); f = f * f * (3.0 - 2.0 * f);',
+          '  return mix(mix(h(i), h(i + vec2(1.0, 0.0)), f.x), mix(h(i + vec2(0.0, 1.0)), h(i + vec2(1.0, 1.0)), f.x), f.y); }',
+          'float fbm(vec2 p){ float v = 0.0; float a = 0.5; for (int i = 0; i < 4; i++){ v += a * n(p); p = p * 2.03 + 7.1; a *= 0.5; } return v; }',
+          'void main(){',
+          '  vec2 uv = vUv; uv.x *= uAsp; uv += uRato * 0.12;',
+          '  float t = uT * 0.045;',
+          '  vec2 q = vec2(fbm(uv * 1.3 + vec2(t, -t * 0.6) + uP * 1.6), fbm(uv * 1.3 + vec2(-t * 0.8, t) + 3.7));',
+          '  float m = fbm(uv * 1.1 + q * 2.0 + vec2(0.0, uP * 3.0 - t));',
+          // as cores mudam com o scroll: vinho, depois noite violeta, depois ouro e rosa no coração
+          '  vec3 a1 = vec3(0.42, 0.06, 0.14); vec3 a2 = vec3(0.20, 0.07, 0.32); vec3 a3 = vec3(0.55, 0.16, 0.30);',
+          '  vec3 b1 = vec3(0.70, 0.50, 0.20); vec3 b2 = vec3(0.35, 0.22, 0.60); vec3 b3 = vec3(0.95, 0.55, 0.45);',
+          '  vec3 c1 = mix(mix(a1, a2, smoothstep(0.25, 0.55, uP)), a3, smoothstep(0.7, 0.95, uP));',
+          '  vec3 c2 = mix(mix(b1, b2, smoothstep(0.25, 0.55, uP)), b3, smoothstep(0.7, 0.95, uP));',
+          '  vec3 cor = mix(c1, c2, smoothstep(0.45, 0.85, m));',
+          // cortinas verticais, como uma aurora, a ondular devagar
+          '  float cortina = pow(0.5 + 0.5 * sin(vUv.x * 5.0 + q.x * 3.0 + t * 3.0), 3.0) * smoothstep(1.05, 0.25, vUv.y) * smoothstep(-0.1, 0.5, vUv.y);',
+          '  float forca = (0.4 * m + 0.5 * cortina * m + 0.15 * uMorph) * clamp(uAcender, 0.2, 1.6);',
+          '  float vinheta = smoothstep(1.25, 0.25, length((vUv - 0.5) * vec2(1.3, 1.0)));',
+          '  vec3 fundo = vec3(0.051, 0.024, 0.035);',
+          '  gl_FragColor = vec4(fundo + cor * forca * vinheta, 1.0);',
+          '}',
+        ].join('\n'),
+        depthTest: false, depthWrite: false,
+      });
+      cenaA.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), matA));
+      aurora = { r: rendA, cena: cenaA, cam: camA, mat: matA, div: 6 };
+    } catch {
+      aurora = null; // sem aurora, fica o fundo escuro e as luzes em css
+    }
+  }
+
   var pontos = new THREE.Points(geo, mat);
   pontos.frustumCulled = false;
   cena.add(pontos);
@@ -138,6 +190,10 @@ import * as THREE from './three.module.min.js';
     tamBase = Math.min(1.35, Math.max(0.85, h / 800));
     mat.uniforms.uTam.value = tamBase;
     mat.uniforms.uAlto.value = w < h ? 4.6 : 6.4; // em pé o coração fica mais alto, por cima das palavras
+    if (aurora) {
+      aurora.r.setSize(Math.max(32, Math.round(w / aurora.div)), Math.max(32, Math.round(h / aurora.div)), false);
+      aurora.mat.uniforms.uAsp.value = w / h;
+    }
   }
   medir();
   window.addEventListener('resize', medir);
@@ -159,6 +215,7 @@ import * as THREE from './three.module.min.js';
       nivel++; lentos = 0;
       renderer.setPixelRatio(nivel === 1 ? 1.25 : 1);
       geo.setDrawRange(0, Math.floor(N * (nivel === 1 ? 0.75 : 0.5)));
+      if (aurora) aurora.div = nivel === 1 ? 8 : 11;
       medir();
     }
   }
@@ -199,10 +256,19 @@ import * as THREE from './three.module.min.js';
     mat.uniforms.uRodar.value = t * 0.35;
     mat.uniforms.uBater.value = morph > 0.9 ? 1 + 0.05 * Math.max(0, Math.sin(t * 4.2)) + 0.012 * Math.sin(t * 1.3) : 1;
 
+    var aceso = estado.acender == null ? 1 : estado.acender;
+    mat.uniforms.uAcender.value = aceso;
+    if (aurora) {
+      var ua = aurora.mat.uniforms;
+      ua.uT.value = t; ua.uP.value = p; ua.uAcender.value = aceso; ua.uMorph.value = morph;
+      ua.uRato.value.set(sx, -sy);
+      aurora.r.render(aurora.cena, aurora.cam);
+    }
     renderer.render(cena, camara);
     requestAnimationFrame(frame);
   }
   document.body.classList.add('gl');
+  if (aurora) document.body.classList.add('aurora');
   requestAnimationFrame(frame);
   window.CINEMA_ATIVO = true;
 })();

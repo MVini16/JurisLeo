@@ -7,9 +7,13 @@
   <meta name="theme-color" content="#0d0609" />
   <title>Para ti</title>
   <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap" />
   <link rel="stylesheet" href="estilo.css" />
 </head>
 <body class="bloqueado">
+  <canvas id="aurora" aria-hidden="true"></canvas>
   <canvas id="gl" aria-hidden="true"></canvas>
   <canvas id="estrelas" aria-hidden="true"></canvas>
   <div class="luzes" aria-hidden="true"><i></i><i></i></div>
@@ -24,6 +28,21 @@
       <p class="cortina__texto" id="abertura"></p>
       <button class="botao" id="comecar" type="button" disabled>A preparar as nossas fotos...</button>
     </div>
+  </div>
+
+  <!-- prólogo: a carta que eu tentei escrever, riscada, que levanta voo e vira filme -->
+  <div class="prologo" id="prologo" hidden>
+    <p class="prologo__antes" id="prologoAntes"></p>
+    <div class="folha" id="folha">
+      <div class="folha__texto" id="folhaTexto"></div>
+      <svg class="caneta" id="caneta" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21 L6 14 L17 3 L21 7 L10 18 Z M6 14 L10 18"/></svg>
+    </div>
+    <svg class="voo" id="voo" aria-hidden="true">
+      <path class="voo__rasto" id="vooRasto" d="M0 0" />
+      <g id="aviao"><path class="aviao" d="M-18 -10 L20 0 L-18 10 L-10 0 Z M-10 0 L20 0" /></g>
+    </svg>
+    <div class="prologo__palco" id="prologoPalco"></div>
+    <button class="intro__passar" id="prologoPassar" type="button">passar &rsaquo;</button>
   </div>
 
   <!-- genérico de abertura, como num filme -->
@@ -58,6 +77,12 @@
       <div class="frases-palco" id="frasesPalco"></div>
     </section>
 
+    <!-- cena 3c: frases minhas, cada uma com a sua animação -->
+    <section class="cena cena--minhas" id="cenaMinhas">
+      <p class="minhas-titulo" id="minhasTitulo"></p>
+      <div class="minhas-palco" id="minhasPalco"></div>
+    </section>
+
     <!-- cena 4: palavras grandes que sobem de dentro de uma máscara -->
     <section class="cena cena--mascara" id="cenaInterludio"><div class="texto-longo texto-longo--grande" id="interludioTexto"></div></section>
 
@@ -76,6 +101,7 @@
 
     <!-- minijogo: memória com as nossas fotos -->
     <section class="cap cap--jogo" id="jogo">
+      <p class="nivel">Nível 1</p>
       <h2 class="titulo-cap" id="jogoTitulo"></h2>
       <p class="sub-cap" id="jogoSub"></p>
       <div class="memo" id="memo"></div>
@@ -88,9 +114,82 @@
       <button class="botao botao--suave" id="memoRecomecar" type="button">Jogar outra vez</button>
     </section>
 
+    <!-- nível 2: quanto sabes de nós -->
+    <section class="cap cap--quiz" id="quiz">
+      <p class="nivel">Nível 2</p>
+      <h2 class="titulo-cap" id="quizTitulo"></h2>
+      <p class="sub-cap" id="quizSub"></p>
+      <div class="quiz" id="quizCaixa" aria-live="polite"></div>
+    </section>
+
+    <!-- nível 3: ligar as estrelas -->
+    <section class="cap cap--constelacao" id="constelacao">
+      <p class="nivel">Nível 3</p>
+      <h2 class="titulo-cap" id="constTitulo"></h2>
+      <p class="sub-cap" id="constSub"></p>
+      <svg class="ceu" id="ceu" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Estrelas para ligar pela ordem"></svg>
+      <p class="memo-msg" id="constMsg" aria-live="polite"></p>
+    </section>
+
+    <!-- nível 4: raspadinhas -->
+    <section class="cap cap--vales" id="vales">
+      <p class="nivel">Nível 4</p>
+      <h2 class="titulo-cap" id="valesTitulo"></h2>
+      <p class="sub-cap" id="valesSub"></p>
+      <div class="vales" id="listaVales"></div>
+      <p class="memo-msg" id="valesMsg" aria-live="polite"></p>
+    </section>
+
+    <!-- capítulo v: o nosso código -->
+    <section class="cap cap--codigo" id="codigo">
+      <div class="diploma" id="diploma">
+        <p class="diploma__topo">República dos Dois</p>
+        <h2 class="diploma__titulo" id="codigoTitulo"></h2>
+        <p class="diploma__sub" id="codigoSub"></p>
+        <div class="artigos" id="artigos"></div>
+        <div class="assinaturas">
+          <div class="assinatura-caixa">
+            <canvas class="assinar" id="assinar" aria-label="Espaço para assinar com o dedo"></canvas>
+            <p class="assinatura-legenda" id="assinarLegenda"></p>
+          </div>
+          <div class="assinatura-caixa assinatura-caixa--vini">
+            <p class="assinatura-vini" id="assinaturaVini"></p>
+            <p class="assinatura-legenda">O Vini</p>
+          </div>
+        </div>
+        <div class="assinar-botoes">
+          <button class="botao botao--suave" id="assinarLimpar" type="button"></button>
+          <button class="botao" id="assinarOk" type="button" disabled></button>
+        </div>
+        <p class="carimbo" id="carimbo" aria-hidden="true"></p>
+        <p class="codigo-feito" id="codigoFeito" aria-live="polite"></p>
+      </div>
+    </section>
+
     <section class="cap cap--carta" id="carta">
+      <div class="carta-intro" id="cartaIntro"></div>
       <h2 class="titulo-cap" id="cartaTitulo"></h2>
       <div class="carta-longa" id="cartaLonga"></div>
+    </section>
+
+    <!-- abraço à distância: carregar e não largar -->
+    <section class="cap cap--abraco" id="abraco">
+      <h2 class="titulo-cap" id="abracoTitulo"></h2>
+      <p class="sub-cap" id="abracoSub"></p>
+      <button class="abraco-botao" id="abracoBotao" type="button" aria-label="Carrega e não largues">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="abraco-fundo" cx="60" cy="60" r="54"/><circle class="abraco-anel" id="abracoAnel" cx="60" cy="60" r="54"/></svg>
+        <span class="abraco-coracao" id="abracoCoracao">♥</span>
+      </button>
+      <div class="abraco-msg" id="abracoMsg" aria-live="polite"></div>
+    </section>
+
+    <!-- a promessa da margem: contar as estrelas -->
+    <section class="cena cena--contagem" id="contagem">
+      <div class="contagem">
+        <p class="contagem__antes" id="contagemAntes"></p>
+        <p class="contagem__numero" id="contagemNumero">0</p>
+        <div class="contagem__depois" id="contagemDepois"></div>
+      </div>
     </section>
 
     <!-- cena final: as estrelas juntam-se num coração -->
@@ -115,8 +214,16 @@
   <audio id="musica" loop preload="none"></audio>
   <script src="gsap.min.js"></script>
   <script src="ScrollTrigger.min.js"></script>
+  <script src="SplitText.min.js"></script>
+  <script src="ScrambleTextPlugin.min.js"></script>
+  <script src="DrawSVGPlugin.min.js"></script>
+  <script src="MotionPathPlugin.min.js"></script>
+  <script src="Physics2DPlugin.min.js"></script>
+  <script src="lenis.min.js"></script>
   <script src="anime.min.js"></script>
   <script src="conteudo.js"></script>
+  <script src="prologo.js"></script>
+  <script src="extra.js"></script>
   <script src="app.js"></script>
   <script type="module" src="cinema.js"></script>
 </body>

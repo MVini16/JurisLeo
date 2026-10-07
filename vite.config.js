@@ -1,4 +1,5 @@
-import { defineConfig } from 'vite'
+/* global process */
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import { NOVIDADES, VERSAO_ATUAL } from './src/data/novidades.js'
@@ -14,11 +15,27 @@ function versaoDaApp() {
   }
 }
 
+// sem as chaves do firebase no .env o build sai com a app em branco: melhor falhar já aqui, com a explicação
+function exigirChavesDoFirebase() {
+  return {
+    name: 'exigir-chaves-do-firebase',
+    configResolved(config) {
+      if (config.command !== 'build') return
+      const env = { ...loadEnv(config.mode, config.root, 'VITE_'), ...process.env }
+      const em_falta = ['VITE_FIREBASE_API_KEY', 'VITE_FIREBASE_AUTH_DOMAIN', 'VITE_FIREBASE_PROJECT_ID', 'VITE_FIREBASE_APP_ID'].filter((k) => !env[k])
+      if (em_falta.length > 0) {
+        throw new Error(`Faltam no ficheiro .env: ${em_falta.join(', ')}. Sem isto a app publicada fica em branco. Copia o .env do outro computador (modelo em .env.example).`)
+      }
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
     versaoDaApp(),
+    exigirChavesDoFirebase(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],

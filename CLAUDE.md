@@ -70,11 +70,11 @@ Componentes (`src/components/`): `NavBar`, `ModalCriarEvento`, `Barney`, `Provoc
 
 Hooks (`src/hooks/`): dados (`useDashboard`, `useCalendario`, `useTarefas`, `useFlashcards`, ...) e `useBarney`, `useProvocacoes`, `usePreferencias`.
 
-Serviços (`src/services/`): Firebase (`firebase.js`, `auth.js`, `initFirestore.js`, `initCalendario.js`, `flashcards.js`) e lógica pura testada (`avaliacao`, `faltas`, `notaRica`, `notaFerramentas`, `cadernos`, `desenho`, `exportarNotas`, `docxNotas`, `partilha`, `modoEstudo`, `hoje`, `jogos`, `jogosSkins`, `frasesExtra`, `boneco`, `brincadeiras`, `animacoes`, `definicoes`, `repeticaoEspacada`).
+Serviços (`src/services/`): Firebase (`firebase.js`, `auth.js`, `initFirestore.js`, `initCalendario.js`, `flashcards.js`) e lógica pura testada (`avaliacao`, `faltas`, `notaRica`, `notaFerramentas`, `cadernos`, `desenho`, `exportarNotas`, `docxNotas`, `partilha`, `modoEstudo`, `hoje`, `jogos`, `jogosMeta` (XP, nível, selos, caixa, audiência do dia), `jogosLocal`, `jogosSkins`, `som`, `frasesExtra`, `boneco`, `brincadeiras`, `animacoes`, `definicoes`, `repeticaoEspacada`).
 
-Dados (`src/data/`): `dadosLeonor.js`, `motivosFalta.js`, `boneco.js` (frases e aparência do boneco, editáveis), `jogos.js` (banco de perguntas dos jogos, cada uma com a fonte), `provocacoes.js`, `easterEggs.js`, `modelosPagina.js`, `ajuda.js`.
+Dados (`src/data/`): `dadosLeonor.js`, `motivosFalta.js`, `boneco.js` (frases e aparência do boneco, editáveis), `jogos.js` (banco de perguntas dos jogos, cada uma com a fonte), `selos.js` (coleção de máximas latinas), `provocacoes.js`, `easterEggs.js`, `modelosPagina.js`, `ajuda.js`.
 
-**Preferências da Leonor** (`jurisleo-brincadeiras` em localStorage, nunca no Firebase): brincadeiras, folha das notas, modo de estudo, pacote de animações, cartão de hoje, estilo dos jogos e tudo do boneco. Também em localStorage: série de dias de estudo, recordes dos jogos e frases extra do boneco. As perguntas dela para os jogos são flashcards com campos opcionais (`tipo`, `opcoes`, `verdade`, `explicacao`), na coleção que já existia. Ver `services/preferenciasBrincadeiras.js`.
+**Preferências da Leonor** (`jurisleo-brincadeiras` em localStorage, nunca no Firebase): brincadeiras, folha das notas, modo de estudo, pacote de animações, cartão de hoje, estilo dos jogos e tudo do boneco. Também em localStorage: série de dias de estudo, recordes e perfil dos jogos (`jurisleo-jogos`, `jurisleo-jogos-perfil`) e frases extra do boneco. As perguntas dela para os jogos são flashcards com campos opcionais (`tipo`, `opcoes`, `verdade`, `explicacao`), na coleção que já existia. Ver `services/preferenciasBrincadeiras.js`.
 
 IA do boneco: só desenho em `docs/IA-DO-BONECO.md` (servidor à parte, sem Firebase, sem chave no cliente).
 

@@ -2,6 +2,7 @@
 import { registarRecorde } from './jogos.js';
 import { aplicarJogada, perfilVazio } from './jogosMeta.js';
 import { diaDe } from './modoEstudo.js';
+import { registarEstudoDeHoje } from './estudoLocal.js';
 
 const CHAVE = 'jurisleo-jogos';
 const CHAVE_PERFIL = 'jurisleo-jogos-perfil';
@@ -26,6 +27,8 @@ export function terminarJogada(jogo, { pontos, perfeita = false, diario = false 
   const melhorAntes = antes[chave]?.melhor ?? 0;
   const { registo, novoRecorde } = registarRecorde(antes, chave, pontos);
   guardar(CHAVE, registo);
+  // jogar conta como estudar: mantém a série de dias seguidos
+  registarEstudoDeHoje();
   const meta = aplicarJogada(lerPerfilJogos(), { pontos, perfeita, novoRecorde, diario, hoje: diaDe(Date.now()) });
   guardar(CHAVE_PERFIL, meta.perfil);
   return { ...meta, pontos, perfeita, novoRecorde, melhor: registo[chave].melhor, melhorAntes };

@@ -6,6 +6,7 @@ import { useFlashcards } from '../../hooks/useFlashcards.js';
 import { usePreferencias } from '../../hooks/usePreferencias.js';
 import { cadeirasS1 } from '../../data/dadosLeonor.js';
 import { lerDiasDeEstudo, lerRespondidasDeHoje } from '../../services/estudoLocal.js';
+import { lerPerfilJogos } from '../../services/jogosLocal.js';
 import { diaDe, serieDeDias } from '../../services/modoEstudo.js';
 import {
   META_DIARIA, desafioDoDia, progressoDaMeta, prontosPorCadeira, tarefasAVencer, totalProntos, varianteHojeValida,
@@ -33,6 +34,7 @@ export default function CartaoHoje({ tarefas }) {
   const porCadeira = useMemo(() => prontosPorCadeira(flashcards, agora), [flashcards, agora]);
   const aVencer = useMemo(() => tarefasAVencer(tarefas, hoje).length, [tarefas, hoje]);
   const desafio = useMemo(() => desafioDoDia(flashcards, hoje), [flashcards, hoje]);
+  const audienciaFeita = useMemo(() => lerPerfilJogos().ultimaAudiencia === hoje, [hoje]);
 
   if (variante === 'nenhum') return null;
 
@@ -68,6 +70,10 @@ export default function CartaoHoje({ tarefas }) {
       <section className="hoje cartao-hoje" aria-label="Para rever">
         <h2 className="hoje-titulo">Para rever</h2>
         <div className="hoje-stories">
+          <button type="button" className={`hoje-story ${audienciaFeita ? '' : 'novo'}`} style={{ '--c': '#C9A84C' }} onClick={() => navigate('/jogos')} aria-label={`Audiência do dia: ${audienciaFeita ? 'cumprida' : 'por cumprir'}`}>
+            <i>Hoje{!audienciaFeita && <em>1</em>}</i>
+            <span>{audienciaFeita ? 'Jogos' : 'Audiência'}</span>
+          </button>
           <button type="button" className={`hoje-story ${prontos > 0 ? 'novo' : ''}`} style={{ '--c': '#C9A84C' }} onClick={() => irRever()} aria-label={`Tudo: ${prontos > 0 ? `${prontos} para rever` : 'em dia'}`}>
             <i>Tudo{prontos > 0 && <em>{prontos}</em>}</i>
             <span>{prontos > 0 ? 'Começar' : 'Em dia'}</span>

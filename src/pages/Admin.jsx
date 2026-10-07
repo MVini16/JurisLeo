@@ -1,9 +1,10 @@
-// consola do vini (/admin): os resumos que a leonor decidiu mandar-lhe. nada é lido da conta dela:
-// ela manda o texto (Definições, Os meus dados, Partilhar com o Vini) e o vini cola-o aqui
+// consola do vini (/admin): os dados da conta da leonor, lidos diretamente (só leitura, decidido a 07-10-2026,
+// e ela é avisada nas definições), e os resumos que ela decidiu mandar-lhe (texto colado à mão)
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CABECALHO_NOTIFICACOES, lerSubscricao } from '../services/notificacoes.js';
 import { apagarResumo, colarResumo, lerResumos } from '../services/armazemResumos.js';
+import DadosDaLeonor from '../components/admin/DadosDaLeonor.jsx';
 import './Admin.css';
 
 const CAMPOS = [['Estudo', 'estudo'], ['Jogos', 'jogos'], ['Recordes', 'recordes'], ['Tarefas', 'tarefas'], ['Faltas', 'faltas'], ['Como estava', 'estado']];
@@ -57,13 +58,16 @@ export default function Admin() {
       <button type="button" className="admin-voltar" onClick={() => navigate('/dashboard')}>‹ Voltar</button>
       <header className="admin-topo">
         <h1>Consola do Vini</h1>
-        <p>Aqui aparece só o que a Leonor decidir mandar-te. Ela escolhe o que partilha e quando.</p>
+        <p>Os dados da conta da Nô (aulas, faltas, sumários, jogos, escolhas e o cofre das cópias), só para ver. Ela sabe: está escrito nas Definições dela.</p>
       </header>
 
       <nav className="admin-atalhos" aria-label="Outras consolas">
         <button type="button" onClick={() => navigate('/admin/boneco')}>Frases do boneco</button>
       </nav>
 
+      <DadosDaLeonor />
+
+      <h2 className="admin-subtitulo">Resumos que ela te mandou</h2>
       <section className="admin-cartoes" aria-label="Último resumo">
         <div className="admin-cartao"><small>Última partilha</small><b>{recente ? recente.quando : 'ainda nenhuma'}</b></div>
         <div className="admin-cartao"><small>Estudo</small><b>{recente?.estudo ?? 'não partilhado'}</b></div>

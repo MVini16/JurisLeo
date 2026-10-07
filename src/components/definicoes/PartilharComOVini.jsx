@@ -70,7 +70,7 @@ export default function PartilharComOVini({ indice = 0 }) {
   return (
     <GrupoDefinicoes
       titulo="Partilhar com o Vini" indice={indice}
-      nota="Está tudo desligado. O Vini só fica a saber o que tu escolheres e só quando carregares em enviar. Podes ver o texto antes de sair. Nada é enviado sozinho."
+      nota="Isto é um resumo que mandas tu, com o que escolheres (por exemplo, como estás). À parte disto, o Vini consegue ver os dados da tua conta (aulas, faltas, sumários, jogos e escolhas) para te ajudar se alguma coisa desaparecer, como diz em cima."
     >
       {interruptor('partilhaEstudo', 'O meu estudo', 'Dias seguidos, melhor série, dias da semana e flashcards de hoje')}
       {interruptor('partilhaJogos', 'Os meus jogos', 'Nível, XP, selos, jogadas e recordes')}

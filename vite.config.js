@@ -1,4 +1,5 @@
 /* global process */
+import { readFileSync } from 'node:fs'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -11,6 +12,18 @@ function versaoDaApp() {
     generateBundle() {
       const { titulo, itens } = NOVIDADES[0]
       this.emitFile({ type: 'asset', fileName: 'versao.json', source: JSON.stringify({ versao: VERSAO_ATUAL, titulo, itens }) })
+    },
+  }
+}
+
+// a página-surpresa (public/s/) usa o gsap: copia-o do node_modules para a pasta dela no build, para não o guardar no repositório
+function copiarGsapParaASurpresa() {
+  return {
+    name: 'copiar-gsap-surpresa',
+    generateBundle() {
+      for (const f of ['gsap.min.js', 'ScrollTrigger.min.js']) {
+        this.emitFile({ type: 'asset', fileName: `s/titsvdzkihyi/${f}`, source: readFileSync(`node_modules/gsap/dist/${f}`) })
+      }
     },
   }
 }
@@ -36,6 +49,7 @@ export default defineConfig({
     react(),
     versaoDaApp(),
     exigirChavesDoFirebase(),
+    copiarGsapParaASurpresa(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
@@ -57,7 +71,10 @@ export default defineConfig({
         // cacheia o essencial da app para abrir mesmo sem rede;
         // os dados em si (firestore) ficam a cargo da cache do próprio sdk
         globPatterns: ['**/*.{js,css,html,svg}'],
+        // a página-surpresa (public/s/) não entra na cache da app nem é apanhada pelo fallback das rotas
+        globIgnores: ['s/**'],
         navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/s\//],
         // as notificações push (public/push-sw.js)
         importScripts: ['push-sw.js'],
         runtimeCaching: [

@@ -21,6 +21,7 @@ Projeto Firebase: `jurisleo-67124` (ver `.firebaserc`).
    npm run build && firebase deploy --only firestore,hosting
    ```
    `firestore` inclui as regras (`firestore.rules`) e os índices (`firestore.indexes.json`) — nunca fazer deploy só do hosting quando as regras ou os índices mudarem.
+9. **Todo o deploy que acrescenta funcionalidades leva um aviso de versão nova para a Leonor.** Antes do `npm run build`, acrescentar uma entrada NO TOPO de `src/data/novidades.js` (nova `versao`, `titulo` e `itens` com o que há de novo, em linguagem simples). O build escreve `dist/versao.json` com essa entrada e a app instalada, ao ver uma versão diferente da que corre, mostra o aviso "há uma versão nova" com o tutorial de como a ir buscar e pôr outra vez no ecrã principal; depois de atualizar, mostra as novidades uma vez. Deploys só de correções, sem novidades, não mexem neste ficheiro (e não fazem aparecer o aviso). Confirmar depois do deploy que `versao.json` publicado tem a versão nova.
 
 ---
 
@@ -66,13 +67,13 @@ Entrada: `index.html` → `src/main.jsx` → `src/App.jsx` (rotas). `main.jsx` l
 
 Páginas (`src/pages/`): `SplashScreen`, `Login`, `Onboarding` (sem NavBar) · `Dashboard`, `Horario`, `Cadeiras`, `Cadeira`, `Anotacoes`, `Caderno`, `Anotacao`, `Casos`, `Caso`, `Estudo`, `Glossario`, `Artigos`, `Leituras`, `Pesquisa`, `Flashcards`, `Jogos`, `Ajuda`, `Tarefas`, `Calendario`, `Perfil` (Definições), `PerfilSecao` e `AdminBoneco` (consola de frases do boneco, em `/admin/boneco`, sem menu) (com `NavBar`).
 
-Componentes (`src/components/`): `NavBar`, `ModalCriarEvento`, `Barney`, `ProvocacaoVini`, `Estante`, `boneco/` (botão flutuante, conversa e avatares), `editor/` (editor rico das notas: barra, desenho à mão, modelos, procurar, índice, flashcard da seleção), `estudo/SessaoStory` (revisão de flashcards em modo story, o principal) e `estudo/SessaoVertical` (feed, pilha, processo), `jogos/` (4 minijogos e 4 estilos), `hoje/CartaoHoje` (bloco do Dashboard), `exportar/`, `definicoes/`.
+Componentes (`src/components/`): `NavBar`, `ModalCriarEvento`, `Barney`, `ProvocacaoVini`, `Estante`, `boneco/` (botão flutuante, conversa e avatares), `editor/` (editor rico das notas: barra, desenho à mão, modelos, procurar, índice, flashcard da seleção), `atualizacao/AvisoNovaVersao` (aviso de versão nova e tutorial), `estudo/SessaoStory` (revisão de flashcards em modo story, o principal) e `estudo/SessaoVertical` (feed, pilha, processo), `jogos/` (4 minijogos e 4 estilos), `hoje/CartaoHoje` (bloco do Dashboard), `exportar/`, `definicoes/`.
 
 Hooks (`src/hooks/`): dados (`useDashboard`, `useCalendario`, `useTarefas`, `useFlashcards`, ...) e `useBarney`, `useProvocacoes`, `usePreferencias`.
 
-Serviços (`src/services/`): Firebase (`firebase.js`, `auth.js`, `initFirestore.js`, `initCalendario.js`, `flashcards.js`) e lógica pura testada (`avaliacao`, `faltas`, `notaRica`, `notaFerramentas`, `cadernos`, `desenho`, `exportarNotas`, `docxNotas`, `partilha`, `modoEstudo`, `hoje`, `jogos`, `jogosMeta` (XP, nível, selos, caixa, audiência do dia), `jogosLocal`, `jogosSkins`, `som`, `frasesExtra`, `boneco`, `brincadeiras`, `animacoes`, `definicoes`, `repeticaoEspacada`).
+Serviços (`src/services/`): Firebase (`firebase.js`, `auth.js`, `initFirestore.js`, `initCalendario.js`, `flashcards.js`) e lógica pura testada (`avaliacao`, `faltas`, `notaRica`, `notaFerramentas`, `cadernos`, `desenho`, `exportarNotas`, `docxNotas`, `partilha`, `modoEstudo`, `hoje`, `jogos`, `jogosMeta` (XP, nível, selos, caixa, audiência do dia), `jogosLocal`, `jogosSkins`, `som`, `frasesExtra`, `boneco`, `brincadeiras`, `animacoes`, `atualizacao`, `copiaLocal`, `definicoes`, `repeticaoEspacada`).
 
-Dados (`src/data/`): `dadosLeonor.js`, `motivosFalta.js`, `boneco.js` (frases e aparência do boneco, editáveis), `jogos.js` (banco de perguntas dos jogos, cada uma com a fonte), `selos.js` (coleção de máximas latinas), `provocacoes.js`, `easterEggs.js`, `modelosPagina.js`, `ajuda.js`.
+Dados (`src/data/`): `dadosLeonor.js`, `motivosFalta.js`, `boneco.js` (frases e aparência do boneco, editáveis), `novidades.js` (o que há de novo em cada versão: ver regra 9 do deploy), `jogos.js` (banco de perguntas dos jogos, cada uma com a fonte), `selos.js` (coleção de máximas latinas), `provocacoes.js`, `easterEggs.js`, `modelosPagina.js`, `ajuda.js`.
 
 **Preferências da Leonor** (`jurisleo-brincadeiras` em localStorage, nunca no Firebase): brincadeiras, folha das notas, modo de estudo, pacote de animações, cartão de hoje, estilo dos jogos e tudo do boneco. Também em localStorage: série de dias de estudo, recordes e perfil dos jogos (`jurisleo-jogos`, `jurisleo-jogos-perfil`) e frases extra do boneco. As perguntas dela para os jogos são flashcards com campos opcionais (`tipo`, `opcoes`, `verdade`, `explicacao`), na coleção que já existia. Ver `services/preferenciasBrincadeiras.js`.
 

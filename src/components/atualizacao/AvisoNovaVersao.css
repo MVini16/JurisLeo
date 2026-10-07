@@ -1,0 +1,45 @@
+/* aviso de versão nova. só variáveis do index.css */
+.anv-fundo { position: fixed; inset: 0; z-index: 350; display: flex; align-items: flex-end; justify-content: center; background: rgba(0, 0, 0, 0.55); animation: anv-fade 0.25s ease; }
+@keyframes anv-fade { from { opacity: 0; } }
+.anv-folha {
+  width: min(520px, 100%);
+  max-height: 92vh;
+  overflow-y: auto;
+  display: grid;
+  gap: 10px;
+  padding: 20px 18px calc(20px + env(safe-area-inset-bottom));
+  border-radius: 24px 24px 0 0;
+  background: var(--bg-light);
+  color: var(--text-light);
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.35);
+  animation: anv-sobe 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+html.dark .anv-folha { background: var(--bg-dark); color: var(--text-dark); }
+@keyframes anv-sobe { from { transform: translateY(100%); } }
+.anv-etiqueta { justify-self: start; padding: 4px 12px; border-radius: 999px; background: var(--burgundy); color: #fff; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+html.dark .anv-etiqueta { background: var(--gold); color: var(--bg-dark); }
+.anv-folha h2 { margin: 0; font-family: Georgia, serif; font-size: 1.35rem; color: var(--burgundy); text-wrap: balance; }
+html.dark .anv-folha h2 { color: var(--gold); }
+.anv-itens { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 0.92rem; line-height: 1.45; }
+.anv-nota { margin: 0; font-size: 0.85rem; opacity: 0.8; line-height: 1.45; }
+.anv-aviso { margin: 0; padding: 10px 12px; border-radius: 12px; background: rgba(201, 168, 76, 0.18); font-size: 0.85rem; line-height: 1.45; }
+.anv-bloco { border: 1px solid var(--border-light); border-radius: 14px; overflow: hidden; display: grid; }
+html.dark .anv-bloco { border-color: var(--border-dark); }
+.anv-cab { display: grid; gap: 1px; text-align: left; padding: 12px 14px; background: transparent; border: 0; color: inherit; font: inherit; cursor: pointer; }
+.anv-cab small { opacity: 0.65; }
+.anv-bloco > *:not(.anv-cab) { margin: 0 14px 12px; animation: anv-entra 0.3s ease-out; }
+@keyframes anv-entra { from { opacity: 0; transform: translateY(-6px); } }
+.anv-passos { list-style: none; padding: 0; display: grid; gap: 10px; }
+.anv-passos li { display: flex; gap: 12px; align-items: flex-start; animation: anv-entra 0.35s both; animation-delay: calc(var(--i) * 70ms); }
+.anv-passos li > span:last-child { display: grid; gap: 2px; font-size: 0.92rem; }
+.anv-passos small { font-size: 0.82rem; opacity: 0.8; line-height: 1.4; }
+.anv-passos__n { flex: none; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: var(--burgundy); color: #fff; font-weight: 700; font-size: 0.85rem; }
+html.dark .anv-passos__n { background: var(--gold); color: var(--bg-dark); }
+.anv-botoes { display: grid; gap: 8px; }
+.anv-botao { padding: 12px 18px; border-radius: 999px; border: 1px solid var(--burgundy); background: transparent; color: var(--burgundy); font: inherit; font-weight: 700; cursor: pointer; transition: transform 0.15s; }
+.anv-botao:active { transform: scale(0.96); }
+.anv-botao--forte { background: var(--burgundy); color: #fff; }
+html.dark .anv-botao { border-color: var(--gold); color: var(--gold); }
+html.dark .anv-botao--forte { background: var(--gold); color: var(--bg-dark); }
+.anv-fundo button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .anv-fundo, .anv-folha, .anv-passos li, .anv-bloco > * { animation: none; } }

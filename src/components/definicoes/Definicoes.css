@@ -396,3 +396,6 @@ button.def-linha:hover:not(:disabled) .def-linha__seta { transform: translateX(3
   text-align: right;
 }
 html.dark .def-campo { border-color: var(--border-dark); }
+
+.def-campo-grande { width: 100%; box-sizing: border-box; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border-light); background: transparent; color: inherit; font: inherit; font-size: 0.85rem; resize: vertical; }
+html.dark .def-campo-grande { border-color: var(--border-dark); }

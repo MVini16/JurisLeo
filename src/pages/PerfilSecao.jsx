@@ -9,6 +9,7 @@ import { usePreferencias } from '../hooks/usePreferencias.js';
 import { ASPETOS } from '../data/boneco.js';
 import { SKINS_JOGOS, skinValida } from '../services/jogosSkins.js';
 import { VARIANTES_HOJE, varianteHojeValida } from '../services/hoje.js';
+import { recolherCopia, restaurarCopia } from '../services/copiaLocal.js';
 import { PACOTES_ANIMACAO, pacoteValido } from '../services/animacoes.js';
 import { VARIANTES_ESTUDO, varianteValida } from '../services/modoEstudo.js';
 import { telefoneValido } from '../services/boneco.js';
@@ -196,6 +197,28 @@ function OsMeusDados() {
   const [aExportar, setAExportar] = useState(false);
   const [confirmarReposicao, setConfirmarReposicao] = useState(false);
   const [reposicao, setReposicao] = useState('parado'); // parado | a-repor | feito | erro
+  const [copiaAberta, setCopiaAberta] = useState(false);
+  const [textoCopia, setTextoCopia] = useState('');
+  const [avisoCopia, setAvisoCopia] = useState('');
+
+  // copia para a área de transferência o que só está neste telemóvel (jogos, aparência, série de estudo)
+  async function copiarDadosDoTelemovel() {
+    const texto = recolherCopia(localStorage);
+    try {
+      await navigator.clipboard.writeText(texto);
+      setAvisoCopia('Copiado. Cola numa mensagem para ti, para guardares num sítio seguro.');
+    } catch {
+      setTextoCopia(texto);
+      setCopiaAberta(true);
+      setAvisoCopia('Não consegui copiar sozinho. Seleciona o texto da caixa e copia-o à mão.');
+    }
+  }
+
+  function restaurarDadosDoTelemovel() {
+    const r = restaurarCopia(localStorage, textoCopia);
+    if (r.ok) { setAvisoCopia(`Cópia reposta (${r.repostas} grupos de dados). Fecha e abre a app para veres tudo.`); setTextoCopia(''); setCopiaAberta(false); }
+    else setAvisoCopia(r.erro);
+  }
 
   async function exportarDados() {
     const userId = getAuth().currentUser?.uid;
@@ -231,7 +254,19 @@ function OsMeusDados() {
         <LinhaDefinicao icone="base" rotulo="Exportar os meus dados" descricao="Descarrega um ficheiro .json" ocupado={aExportar} aoClicar={exportarDados} tipo="acao" />
       </GrupoDefinicoes>
 
-      <GrupoDefinicoes titulo="Zona de perigo" indice={1} nota="Só serve para arranjar uma conta antiga, criada antes de as cadeiras do 2.º ano estarem certas. Se está tudo bem contigo, não precisas disto.">
+      <GrupoDefinicoes titulo="Cópia do que está só neste telemóvel" indice={1} nota="Os recordes e selos dos jogos, a aparência e a série de estudo ficam guardados só neste telemóvel. Faz uma cópia antes de instalares a app de novo e repõe-na depois.">
+        <LinhaDefinicao icone="base" tipo="acao" rotulo="Copiar os dados deste telemóvel" descricao="Copia um texto para guardares" aoClicar={copiarDadosDoTelemovel} />
+        <LinhaDefinicao icone="base" tipo="acao" rotulo="Repor uma cópia" descricao="Cola aqui o texto que guardaste" aoClicar={() => setCopiaAberta((a) => !a)} />
+      </GrupoDefinicoes>
+      {copiaAberta && (
+        <div className="def-grupo">
+          <textarea className="def-campo-grande" rows={4} value={textoCopia} onChange={(e) => setTextoCopia(e.target.value)} placeholder="Cola aqui a cópia" aria-label="Texto da cópia" />
+          <button type="button" className="def-botao def-botao--principal" disabled={!textoCopia.trim()} onClick={restaurarDadosDoTelemovel}>Repor</button>
+        </div>
+      )}
+      {avisoCopia && <p className="def-grupo__nota" role="status">{avisoCopia}</p>}
+
+      <GrupoDefinicoes titulo="Zona de perigo" indice={2} nota="Só serve para arranjar uma conta antiga, criada antes de as cadeiras do 2.º ano estarem certas. Se está tudo bem contigo, não precisas disto.">
         <LinhaDefinicao
           icone="aviso"
           perigo

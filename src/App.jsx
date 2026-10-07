@@ -8,6 +8,7 @@ import Login from './pages/Login'
 import NavBar from './components/NavBar'
 import BarneyCarregar from './components/BarneyCarregar'
 import BonecoDoVini from './components/boneco/BonecoDoVini'
+import AvisoNovaVersao from './components/atualizacao/AvisoNovaVersao'
 
 // restantes páginas — carregadas só quando a rota é aberta
 const Onboarding = lazy(() => import('./pages/Onboarding'))
@@ -72,6 +73,7 @@ function App() {
         </Routes>
       </Suspense>
       <BonecoDoVini />
+      <AvisoNovaVersao />
     </BrowserRouter>
   )
 }

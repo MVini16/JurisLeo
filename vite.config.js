@@ -1,11 +1,24 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import { NOVIDADES, VERSAO_ATUAL } from './src/data/novidades.js'
+
+// escreve /versao.json no build, para a app instalada saber que há uma versão nova (ver src/services/atualizacao.js)
+function versaoDaApp() {
+  return {
+    name: 'versao-da-app',
+    generateBundle() {
+      const { titulo, itens } = NOVIDADES[0]
+      this.emitFile({ type: 'asset', fileName: 'versao.json', source: JSON.stringify({ versao: VERSAO_ATUAL, titulo, itens }) })
+    },
+  }
+}
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
+    versaoDaApp(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],

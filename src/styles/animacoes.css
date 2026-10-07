@@ -19,7 +19,7 @@
 
 /* a página inteira entra quando se muda de rota (o NavBar renova o <main> a cada rota) */
 [data-anim]:not([data-anim='nenhum']) .navbar-conteudo {
-  animation: anim-entra var(--anim-dur) var(--anim-ease) both;
+  animation: anim-entra var(--anim-dur) var(--anim-ease) backwards;
 }
 
 /* os cartões das listas entram em desfile, um a seguir ao outro */
@@ -27,7 +27,7 @@
   .cadeiras-grid, .anotacoes-lista, .glossario-lista, .artigos-lista, .leituras-lista,
   .flashcards-lista, .lista-tarefas, .lista-aulas, .ajuda-lista, .dashboard-grid
 ) > * {
-  animation: anim-entra var(--anim-dur) var(--anim-ease) both;
+  animation: anim-entra var(--anim-dur) var(--anim-ease) backwards;
   animation-delay: calc(var(--i, 0) * var(--anim-stagger));
 }
 :is(.cadeiras-grid, .anotacoes-lista, .glossario-lista, .artigos-lista, .leituras-lista, .flashcards-lista, .lista-tarefas, .lista-aulas, .ajuda-lista, .dashboard-grid) > :nth-child(1) { --i: 1; }

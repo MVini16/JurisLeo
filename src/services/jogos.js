@@ -184,3 +184,22 @@ export function registarRecorde(registo, jogo, pontos) {
   const novoRecorde = pontos > anterior;
   return { registo: { ...registo, [jogo]: { melhor: Math.max(anterior, pontos), jogadas } }, novoRecorde };
 }
+
+// ---------- criar uma pergunta para os jogos ----------
+
+// o formulário da Leonor vira os campos de um flashcard (mesma coleção; os campos a mais são opcionais):
+// escolha: frente=pergunta, tras=resposta certa, opcoes=3 erradas, explicacao. vf: frente=afirmação, tras=explicação, verdade
+export function construirPerguntaDela({ tipo, cadeiraId, texto, certa, erradas = [], verdade = true, explicacao = '' }) {
+  const enunciado = SO_TEXTO(texto);
+  const explica = SO_TEXTO(explicacao);
+  if (!enunciado) return { ok: false, erro: tipo === 'vf' ? 'Escreve a afirmação.' : 'Escreve a pergunta.' };
+  if (tipo === 'vf') {
+    return { ok: true, dados: { frente: enunciado, tras: explica || (verdade ? 'Verdadeiro.' : 'Falso.'), cadeiraId, tipo: 'vf', verdade: !!verdade } };
+  }
+  const resposta = SO_TEXTO(certa);
+  if (!resposta) return { ok: false, erro: 'Escreve a resposta certa.' };
+  const limpas = erradas.map(SO_TEXTO).filter(Boolean);
+  if (limpas.length < 3) return { ok: false, erro: 'Escreve as três respostas erradas.' };
+  if (new Set([resposta, ...limpas]).size < 4) return { ok: false, erro: 'As quatro respostas têm de ser diferentes.' };
+  return { ok: true, dados: { frente: enunciado, tras: resposta, cadeiraId, tipo: 'escolha', opcoes: limpas.slice(0, 3), ...(explica ? { explicacao: explica } : {}) } };
+}

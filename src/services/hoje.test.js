@@ -55,8 +55,8 @@ describe('o que ela respondeu hoje', () => {
 });
 
 describe('varianteHojeValida', () => {
-  it('cai na série se desconhecida', () => {
+  it('cai nos stories se desconhecida', () => {
     expect(varianteHojeValida('barra')).toBe('barra');
-    expect(varianteHojeValida('xpto')).toBe('serie');
+    expect(varianteHojeValida('xpto')).toBe('stories');
   });
 });

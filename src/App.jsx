@@ -32,6 +32,7 @@ const Calendario = lazy(() => import('./pages/Calendario'))
 const Perfil = lazy(() => import('./pages/Perfil'))
 const PerfilSecao = lazy(() => import('./pages/PerfilSecao'))
 const AdminBoneco = lazy(() => import('./pages/AdminBoneco'))
+const Jogos = lazy(() => import('./pages/Jogos'))
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
           <Route path="/flashcards" element={<NavBar><Flashcards /></NavBar>} />
           <Route path="/ajuda" element={<NavBar><Ajuda /></NavBar>} />
           <Route path="/tarefas" element={<NavBar><Tarefas /></NavBar>} />
+          <Route path="/jogos" element={<NavBar><Jogos /></NavBar>} />
           <Route path="/calendario" element={<NavBar><Calendario /></NavBar>} />
           <Route path="/perfil" element={<NavBar><Perfil /></NavBar>} />
           <Route path="/perfil/:secao" element={<NavBar><PerfilSecao /></NavBar>} />

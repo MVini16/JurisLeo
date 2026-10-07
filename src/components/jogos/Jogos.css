@@ -1,0 +1,151 @@
+/* os quatro minijogos. cada estilo (data-skin) só muda variáveis; o resto é partilhado.
+   fica sempre em ecrã inteiro, com cores próprias (como o modo story), por isso não usa o tema da app */
+.jg {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  color: var(--jg-ink);
+  background: var(--jg-bg);
+  font-family: var(--jg-fonte);
+  --jg-ok: #2E8F6E;
+  --jg-mal: #C0503C;
+}
+[data-skin='tribunal'] {
+  --jg-bg: linear-gradient(165deg, #3a0c15, #14090d 70%);
+  --jg-ink: #F5EFE6; --jg-muted: rgba(245, 239, 230, 0.7);
+  --jg-card: rgba(255, 255, 255, 0.07); --jg-borda: rgba(201, 168, 76, 0.4);
+  --jg-accent: #C9A84C; --jg-accent-ink: #1a1014;
+  --jg-fonte: Georgia, 'Times New Roman', serif; --jg-raio: 20px; --jg-brilho: none;
+}
+[data-skin='arcade'] {
+  --jg-bg: radial-gradient(circle at 50% -10%, #2b1060, #0b0a1f 60%);
+  --jg-ink: #eaf7ff; --jg-muted: rgba(234, 247, 255, 0.7);
+  --jg-card: rgba(0, 229, 255, 0.07); --jg-borda: #00e5ff;
+  --jg-accent: #ff3d9a; --jg-accent-ink: #fff;
+  --jg-fonte: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; --jg-raio: 6px; --jg-brilho: 0 0 14px rgba(0, 229, 255, 0.55);
+}
+[data-skin='papel'] {
+  --jg-bg: #E9DFCF;
+  --jg-ink: #2C1810; --jg-muted: rgba(44, 24, 16, 0.7);
+  --jg-card: #FFFDF8; --jg-borda: #D9CDBE;
+  --jg-accent: #6B0F1A; --jg-accent-ink: #fff;
+  --jg-fonte: Georgia, 'Times New Roman', serif; --jg-raio: 6px; --jg-brilho: none;
+}
+[data-skin='story'] {
+  --jg-bg: linear-gradient(165deg, color-mix(in srgb, var(--jg-cor) 62%, #0b0608), #0b0608 78%);
+  --jg-ink: #F5EFE6; --jg-muted: rgba(245, 239, 230, 0.72);
+  --jg-card: rgba(255, 255, 255, 0.08); --jg-borda: rgba(255, 255, 255, 0.2);
+  --jg-accent: #C9A84C; --jg-accent-ink: #1a1014;
+  --jg-fonte: system-ui, -apple-system, 'Segoe UI', sans-serif; --jg-raio: 26px; --jg-brilho: none;
+}
+
+/* cabeçalho */
+.jg-cab { display: flex; align-items: center; gap: 10px; padding: 12px 14px; padding-top: max(12px, env(safe-area-inset-top)); position: sticky; top: 0; z-index: 3; background: var(--jg-bg); }
+.jg-sair { background: none; border: 0; color: inherit; font-size: 1.2rem; padding: 8px 10px; cursor: pointer; }
+.jg-cab__texto { flex: 1; min-width: 0; display: grid; line-height: 1.2; }
+.jg-cab__texto b { font-size: 0.95rem; }
+.jg-cab__texto small { font-size: 0.74rem; color: var(--jg-muted); }
+.jg-pontos { font-weight: 800; font-size: 1.15rem; color: var(--jg-accent); text-shadow: var(--jg-brilho); animation: jg-pop 0.35s cubic-bezier(0.3, 1.6, 0.5, 1); font-variant-numeric: tabular-nums; }
+.jg-pontos small { font-size: 0.7rem; opacity: 0.8; }
+@keyframes jg-pop { from { transform: scale(1.4); } }
+
+.jg-corpo { flex: 1; display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 560px; margin: 0 auto; padding: 4px 16px 28px; box-sizing: border-box; }
+
+/* cartão da pergunta */
+.jg-cartao, .jg-processo { position: relative; padding: 38px 20px 22px; border-radius: var(--jg-raio); background: var(--jg-card); border: 1.5px solid var(--jg-borda); box-shadow: var(--jg-brilho), 0 14px 36px rgba(0, 0, 0, 0.25); transition: border-color 0.3s, background 0.3s; }
+[data-skin='papel'] .jg-cartao, [data-skin='papel'] .jg-processo { background-image: repeating-linear-gradient(transparent 0 27px, #EADFCE 27px 28px); }
+.jg-etiqueta { position: absolute; top: 12px; left: 16px; padding: 3px 12px; border-radius: 999px; background: var(--jg-accent); color: var(--jg-accent-ink); font-family: system-ui, sans-serif; font-size: 0.64rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+.jg-texto { margin: 0; font-size: clamp(1.15rem, 4.6vw, 1.45rem); line-height: 1.45; text-wrap: balance; }
+.jg-texto--factos { font-size: 1.02rem; }
+.jg-texto--pergunta { font-weight: 700; }
+.jg-processo h3 { margin: 12px 0 4px; font-family: system-ui, sans-serif; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--jg-muted); }
+.jg-processo h3:first-of-type { margin-top: 0; }
+.jg-cartao.certa { border-color: var(--jg-ok); background: color-mix(in srgb, var(--jg-ok) 22%, var(--jg-card)); }
+.jg-cartao.errada { border-color: var(--jg-mal); background: color-mix(in srgb, var(--jg-mal) 22%, var(--jg-card)); animation: jg-treme 0.4s; }
+.jg-entra { animation: jg-entra 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); }
+@keyframes jg-entra { from { opacity: 0; transform: translateY(26px) scale(0.97); } }
+@keyframes jg-treme { 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+
+/* botões */
+.jg-botao { padding: 14px 18px; border-radius: var(--jg-raio); border: 1.5px solid var(--jg-borda); background: transparent; color: inherit; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, background 0.2s; }
+.jg-botao:active { transform: scale(0.95); }
+.jg-botao--forte { background: var(--jg-accent); color: var(--jg-accent-ink); border-color: transparent; box-shadow: var(--jg-brilho); }
+.jg-botao--verdadeiro { background: var(--jg-ok); color: #fff; border-color: transparent; }
+.jg-botao--falso { background: var(--jg-mal); color: #fff; border-color: transparent; }
+.jg button:focus-visible { outline: 3px solid var(--jg-accent); outline-offset: 2px; }
+.jg-duplo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+.jg-duplo .jg-botao { padding: 20px 10px; font-size: 1.1rem; }
+
+/* feedback */
+.jg-feedback { display: grid; gap: 8px; padding: 14px 16px; border-radius: var(--jg-raio); border: 1.5px solid; animation: jg-entra 0.3s ease-out; }
+.jg-feedback.certa { border-color: var(--jg-ok); background: color-mix(in srgb, var(--jg-ok) 18%, transparent); }
+.jg-feedback.errada { border-color: var(--jg-mal); background: color-mix(in srgb, var(--jg-mal) 18%, transparent); }
+.jg-feedback b { font-size: 1.05rem; }
+.jg-feedback p { margin: 0; line-height: 1.5; }
+.jg-feedback small { color: var(--jg-muted); font-family: system-ui, sans-serif; }
+.jg-feedback .jg-botao { justify-self: stretch; margin-top: 4px; }
+
+/* relógio e combo */
+.jg-relogio { position: relative; height: 10px; border-radius: 999px; background: var(--jg-card); border: 1px solid var(--jg-borda); overflow: hidden; }
+.jg-relogio i { position: absolute; inset: 0 auto 0 0; background: var(--jg-accent); border-radius: 999px; transition: width 0.1s linear; box-shadow: var(--jg-brilho); }
+.jg-relogio i.urgente { background: var(--jg-mal); animation: jg-pisca 0.6s infinite; }
+.jg-relogio span { position: absolute; right: 8px; top: -2px; font-size: 0.62rem; font-family: system-ui, sans-serif; }
+@keyframes jg-pisca { 50% { opacity: 0.55; } }
+.jg-combo { align-self: flex-start; margin: 0; padding: 4px 12px; border-radius: 999px; background: linear-gradient(135deg, #C9A84C, #E0554F); color: #1a1014; font-family: system-ui, sans-serif; font-size: 0.78rem; font-weight: 800; animation: jg-pop 0.4s cubic-bezier(0.3, 1.6, 0.5, 1); }
+
+/* jurista */
+.jg-escada { list-style: none; margin: 0; padding: 0; display: flex; gap: 5px; }
+.jg-escada li { flex: 1; height: 8px; border-radius: 4px; background: var(--jg-card); border: 1px solid var(--jg-borda); transition: background 0.4s; }
+.jg-escada li.patamar { border-color: var(--jg-accent); }
+.jg-escada li.feito { background: var(--jg-accent); }
+.jg-escada li.agora { background: var(--jg-ok); animation: jg-pisca 1.2s infinite; }
+.jg-ajudas { display: flex; gap: 8px; flex-wrap: wrap; }
+.jg-ajuda { flex: 1; padding: 9px 10px; border-radius: 999px; border: 1.5px solid var(--jg-accent); background: transparent; color: var(--jg-accent); font-family: system-ui, sans-serif; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+.jg-ajuda:disabled { opacity: 0.3; text-decoration: line-through; cursor: default; }
+.jg-pista { margin: 0; padding: 10px 14px; border-radius: var(--jg-raio); background: color-mix(in srgb, var(--jg-accent) 20%, transparent); font-size: 0.92rem; animation: jg-entra 0.3s; }
+.jg-opcoes { display: grid; gap: 10px; }
+.jg-opcao { display: flex; align-items: center; gap: 12px; padding: 14px 14px; border-radius: var(--jg-raio); border: 1.5px solid var(--jg-borda); background: var(--jg-card); color: inherit; font-family: inherit; font-size: 1rem; line-height: 1.35; text-align: left; cursor: pointer; transition: transform 0.15s, background 0.3s, border-color 0.3s, opacity 0.3s; }
+.jg-opcao:active:not(:disabled) { transform: scale(0.98); }
+.jg-opcao b { flex: none; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: var(--jg-accent); color: var(--jg-accent-ink); font-family: system-ui, sans-serif; font-size: 0.8rem; }
+.jg-opcao.certa { background: color-mix(in srgb, var(--jg-ok) 30%, var(--jg-card)); border-color: var(--jg-ok); animation: jg-brilha 0.6s; }
+.jg-opcao.errada { background: color-mix(in srgb, var(--jg-mal) 30%, var(--jg-card)); border-color: var(--jg-mal); animation: jg-treme 0.4s; }
+.jg-opcao.escondida { opacity: 0.12; pointer-events: none; }
+@keyframes jg-brilha { 50% { transform: scale(1.03); } }
+
+/* pares */
+.jg-dica { margin: 0; text-align: center; font-size: 0.82rem; color: var(--jg-muted); font-family: system-ui, sans-serif; }
+.jg-pares { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.jg-coluna { display: grid; gap: 8px; align-content: start; }
+.jg-par { min-height: 58px; padding: 10px 8px; border-radius: var(--jg-raio); border: 1.5px solid var(--jg-borda); background: var(--jg-card); color: inherit; font-family: inherit; font-size: 0.88rem; line-height: 1.3; cursor: pointer; transition: transform 0.15s, background 0.3s, opacity 0.5s; }
+.jg-par.sel { background: var(--jg-accent); color: var(--jg-accent-ink); transform: scale(1.04); box-shadow: var(--jg-brilho); }
+.jg-par.mal { background: var(--jg-mal); color: #fff; animation: jg-treme 0.4s; }
+.jg-par.ligado { background: color-mix(in srgb, var(--jg-ok) 35%, transparent); border-color: var(--jg-ok); opacity: 0.45; transform: scale(0.96); }
+
+/* fim */
+.jg-fim { z-index: 2; width: 100%; max-width: 520px; margin: auto; padding: 28px 18px max(28px, env(safe-area-inset-bottom)); box-sizing: border-box; display: grid; gap: 8px; justify-items: center; text-align: center; animation: jg-entra 0.5s cubic-bezier(0.2, 0.9, 0.3, 1); }
+.jg-fim p { margin: 0; }
+.jg-fim__jogo { font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--jg-muted); font-family: system-ui, sans-serif; }
+.jg-fim__destaque { margin: 4px 0 0; font-size: 1.6rem; text-wrap: balance; }
+.jg-fim__pontos { font-size: 3.2rem; font-weight: 800; color: var(--jg-accent); text-shadow: var(--jg-brilho); animation: jg-pop 0.6s 0.2s cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+.jg-fim__pontos small { font-size: 1rem; opacity: 0.8; }
+.jg-fim__recorde { padding: 5px 16px; border-radius: 999px; background: linear-gradient(135deg, #C9A84C, #E0554F); color: #1a1014; font-weight: 800; font-family: system-ui, sans-serif; animation: jg-pop 0.6s 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+.jg-fim__melhor, .jg-fim__resumo { color: var(--jg-muted); font-family: system-ui, sans-serif; font-size: 0.9rem; }
+.jg-revisao { width: 100%; text-align: left; margin-top: 10px; padding: 14px; border-radius: var(--jg-raio); background: var(--jg-card); border: 1px solid var(--jg-borda); }
+.jg-revisao h3 { margin: 0 0 8px; font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--jg-muted); font-family: system-ui, sans-serif; }
+.jg-revisao ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.jg-revisao li { display: grid; gap: 2px; font-size: 0.9rem; line-height: 1.4; }
+.jg-revisao li span { color: var(--jg-ok); }
+.jg-revisao li small { color: var(--jg-muted); font-family: system-ui, sans-serif; }
+.jg-fim__botoes { width: 100%; display: grid; gap: 10px; margin-top: 12px; }
+.jg-confetis { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.jg-confetis i { position: absolute; top: -14px; left: calc(var(--i) * 3%); width: 8px; height: 12px; background: var(--jg-accent); animation: jg-cai 2s ease-in forwards; animation-delay: calc(var(--i) * 0.03s); }
+.jg-confetis i:nth-child(3n) { background: #fff; }
+.jg-confetis i:nth-child(3n + 1) { background: var(--jg-cor); }
+@keyframes jg-cai { to { transform: translateY(105vh) rotate(540deg); opacity: 0.3; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .jg *, .jg { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

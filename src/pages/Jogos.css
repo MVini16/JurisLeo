@@ -1,0 +1,53 @@
+/* ecrã dos jogos (fora do jogo). só variáveis do index.css */
+.jogos-pagina { max-width: 720px; margin: 0 auto; padding: 20px 16px 110px; display: grid; gap: 14px; color: var(--text-light); }
+html.dark .jogos-pagina { color: var(--text-dark); }
+.jogos-cab h1 { margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 1.7rem; color: var(--burgundy); }
+html.dark .jogos-cab h1 { color: var(--gold); }
+.jogos-cab p { margin: 2px 0 0; opacity: 0.7; font-size: 0.9rem; }
+.jogos-rotulo { margin: 8px 0 6px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.6; }
+.jogos-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.jogos-chip { padding: 7px 13px; border-radius: 999px; border: 1px solid var(--cor, var(--burgundy)); background: transparent; color: inherit; font: inherit; font-size: 0.82rem; cursor: pointer; transition: transform 0.15s, background 0.2s; }
+.jogos-chip:active { transform: scale(0.95); }
+.jogos-chip.ativo { background: var(--cor, var(--burgundy)); color: #fff; }
+html.dark .jogos-chip:not([style]) { border-color: var(--gold); }
+html.dark .jogos-chip.ativo:not([style]) { background: var(--gold); color: var(--bg-dark); }
+.jogos-aviso { margin: 0; padding: 10px 14px; border-radius: 12px; background: rgba(201, 168, 76, 0.18); font-size: 0.88rem; }
+
+.jogos-grelha { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 560px) { .jogos-grelha { grid-template-columns: 1fr 1fr; } }
+.jogos-cartao { position: relative; display: grid; gap: 6px; padding: 16px 16px 14px; border-radius: 18px; background: var(--bg-light); border: 1px solid var(--border-light); border-top: 5px solid var(--cor); overflow: hidden; }
+html.dark .jogos-cartao { background: var(--bg-dark); border-color: var(--border-dark); border-top-color: var(--cor); }
+.jogos-cartao h2 { margin: 0; font-family: Georgia, serif; font-size: 1.1rem; }
+.jogos-cartao p { margin: 0; font-size: 0.86rem; line-height: 1.4; opacity: 0.8; }
+.jogos-cartao__tag { position: absolute; top: 12px; right: 12px; padding: 2px 10px; border-radius: 999px; background: var(--cor); color: #fff; font-size: 0.64rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.jogos-cartao__recorde { font-size: 0.76rem !important; opacity: 0.6 !important; }
+
+.jogos-botao { padding: 11px 18px; border-radius: 999px; border: 1px solid var(--burgundy); background: transparent; color: var(--burgundy); font: inherit; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: transform 0.15s; }
+.jogos-botao:active:not(:disabled) { transform: scale(0.95); }
+.jogos-botao--forte { background: var(--burgundy); color: #fff; }
+.jogos-botao:disabled { opacity: 0.45; cursor: default; }
+html.dark .jogos-botao { border-color: var(--gold); color: var(--gold); }
+html.dark .jogos-botao--forte { background: var(--gold); color: var(--bg-dark); }
+.jogos-pagina button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+.jogos-minhas { display: grid; gap: 8px; justify-items: start; padding: 14px 16px; border-radius: 16px; border: 1px dashed var(--burgundy); }
+html.dark .jogos-minhas { border-color: var(--gold); }
+.jogos-minhas h2 { margin: 0; font-family: Georgia, serif; font-size: 1rem; }
+.jogos-minhas p { margin: 0; font-size: 0.86rem; opacity: 0.8; line-height: 1.45; }
+
+/* criar pergunta */
+.jogos-fundo { position: fixed; inset: 0; z-index: 320; background: rgba(0, 0, 0, 0.55); display: flex; align-items: flex-end; justify-content: center; animation: jogos-fade 0.2s; }
+@keyframes jogos-fade { from { opacity: 0; } }
+.jogos-modal { width: min(520px, 100%); max-height: 92vh; overflow-y: auto; display: grid; gap: 10px; padding: 18px 18px calc(18px + env(safe-area-inset-bottom)); border-radius: 22px 22px 0 0; background: var(--bg-light); color: var(--text-light); animation: jogos-sobe 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); }
+html.dark .jogos-modal { background: var(--bg-dark); color: var(--text-dark); }
+@keyframes jogos-sobe { from { transform: translateY(100%); } }
+.jogos-modal h2 { margin: 0; font-size: 1.15rem; }
+.jogos-modal__nota { margin: 0; font-size: 0.8rem; opacity: 0.7; }
+.jogos-modal__tipos { display: flex; flex-wrap: wrap; gap: 6px; }
+.jogos-modal label { display: grid; gap: 4px; font-size: 0.78rem; }
+.jogos-modal textarea, .jogos-modal input { width: 100%; box-sizing: border-box; padding: 9px 11px; border-radius: 10px; border: 1px solid var(--border-light); background: transparent; color: inherit; font: inherit; font-size: 0.95rem; }
+html.dark .jogos-modal textarea, html.dark .jogos-modal input { border-color: var(--border-dark); }
+.jogos-modal__erro { margin: 0; color: var(--selo); font-size: 0.85rem; }
+.jogos-modal__botoes { display: flex; justify-content: flex-end; gap: 8px; }
+
+@media (prefers-reduced-motion: reduce) { .jogos-fundo, .jogos-modal { animation: none; } }

@@ -11,7 +11,7 @@ export const VARIANTES_HOJE = [
   { id: 'barra', nome: 'Barra de hoje', descricao: 'Três números simples, bem compactos.' },
   { id: 'nenhum', nome: 'Sem cartão', descricao: 'O dashboard fica como era.' },
 ];
-export const VARIANTE_HOJE_INICIAL = 'serie';
+export const VARIANTE_HOJE_INICIAL = 'stories';
 
 export function varianteHojeValida(id) {
   return VARIANTES_HOJE.some((v) => v.id === id) ? id : VARIANTE_HOJE_INICIAL;

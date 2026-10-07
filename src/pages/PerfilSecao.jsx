@@ -7,6 +7,7 @@ import { useBarney } from '../hooks/useBarney.jsx';
 import { usePerfil } from '../hooks/usePerfil.js';
 import { usePreferencias } from '../hooks/usePreferencias.js';
 import { ASPETOS } from '../data/boneco.js';
+import { SKINS_JOGOS, skinValida } from '../services/jogosSkins.js';
 import { VARIANTES_HOJE, varianteHojeValida } from '../services/hoje.js';
 import { PACOTES_ANIMACAO, pacoteValido } from '../services/animacoes.js';
 import { VARIANTES_ESTUDO, varianteValida } from '../services/modoEstudo.js';
@@ -83,7 +84,20 @@ function Aparencia() {
         ))}
       </GrupoDefinicoes>
 
-      <GrupoDefinicoes titulo="Modo de estudo" indice={4} nota="É o aspeto da revisão de flashcards em ecrã inteiro.">
+      <GrupoDefinicoes titulo="Estilo dos jogos" indice={4}>
+        {SKINS_JOGOS.map((sk) => (
+          <LinhaDefinicao
+            key={sk.id}
+            tipo="opcao"
+            rotulo={sk.nome}
+            descricao={sk.descricao}
+            marcada={skinValida(prefs.jogosSkin) === sk.id}
+            aoClicar={() => setPrefs(guardarPreferencias({ jogosSkin: sk.id }))}
+          />
+        ))}
+      </GrupoDefinicoes>
+
+      <GrupoDefinicoes titulo="Modo de estudo" indice={5} nota="É o aspeto da revisão de flashcards em ecrã inteiro.">
         {VARIANTES_ESTUDO.map((v) => (
           <LinhaDefinicao
             key={v.id}

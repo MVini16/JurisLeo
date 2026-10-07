@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   misturar, escolherN, filtrarPorCadeira, flashcardsParaVF, flashcardParaEscolha, flashcardsParaEscolha, flashcardsParaPares, montarRonda,
   baralharOpcoes, pontosVF, resultadoVF, tituloGarantido, meiaMeia, pistaDoVini, prepararTabuleiro, eParCerto, pontosPares, registarRecorde,
-  PERGUNTAS_POR_JOGO, ESCADA,
+  PERGUNTAS_POR_JOGO, ESCADA, construirPerguntaDela,
 } from './jogos.js';
 import { VERDADEIRO_FALSO, ESCOLHA_MULTIPLA, CASOS, PARES } from '../data/jogos.js';
 
@@ -153,5 +153,27 @@ describe('recordes', () => {
     r = registarRecorde(r.registo, 'vf', 80);
     expect(r.novoRecorde).toBe(false);
     expect(r.registo.vf).toEqual({ melhor: 100, jogadas: 2 });
+  });
+});
+
+describe('construirPerguntaDela', () => {
+  it('escolha válida vira flashcard com opções', () => {
+    const r = construirPerguntaDela({ tipo: 'escolha', cadeiraId: 'familia', texto: ' Regime supletivo? ', certa: 'Adquiridos', erradas: ['Geral', 'Separação', 'Outro'], explicacao: 'art. 1717.º' });
+    expect(r.ok).toBe(true);
+    expect(r.dados).toEqual({ frente: 'Regime supletivo?', tras: 'Adquiridos', cadeiraId: 'familia', tipo: 'escolha', opcoes: ['Geral', 'Separação', 'Outro'], explicacao: 'art. 1717.º' });
+  });
+  it('recusa respostas em falta ou repetidas', () => {
+    expect(construirPerguntaDela({ tipo: 'escolha', texto: 'P?', certa: 'A', erradas: ['B', 'C'] }).ok).toBe(false);
+    expect(construirPerguntaDela({ tipo: 'escolha', texto: 'P?', certa: 'A', erradas: ['A', 'B', 'C'] }).ok).toBe(false);
+    expect(construirPerguntaDela({ tipo: 'escolha', texto: '', certa: 'A', erradas: ['B', 'C', 'D'] }).ok).toBe(false);
+  });
+  it('verdadeiro ou falso guarda a afirmação e a verdade', () => {
+    const r = construirPerguntaDela({ tipo: 'vf', cadeiraId: 'dip-1', texto: 'A ONU nasceu em 1945.', verdade: true });
+    expect(r.dados).toMatchObject({ frente: 'A ONU nasceu em 1945.', tipo: 'vf', verdade: true, tras: 'Verdadeiro.' });
+  });
+  it('o que ela cria entra nos jogos', () => {
+    const r = construirPerguntaDela({ tipo: 'vf', cadeiraId: 'dip-1', texto: 'A ONU nasceu em 1945.', verdade: true });
+    const lista = flashcardsParaVF([{ id: 'x', ...r.dados }]);
+    expect(lista[0]).toMatchObject({ afirmacao: 'A ONU nasceu em 1945.', verdade: true, dela: true });
   });
 });

@@ -58,6 +58,8 @@ export default defineConfig({
         // os dados em si (firestore) ficam a cargo da cache do próprio sdk
         globPatterns: ['**/*.{js,css,html,svg}'],
         navigateFallback: '/index.html',
+        // as notificações push (public/push-sw.js)
+        importScripts: ['push-sw.js'],
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.origin.includes('fonts.googleapis.com') || url.origin.includes('fonts.gstatic.com'),

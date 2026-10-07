@@ -13,6 +13,7 @@ import { recolherCopia, restaurarCopia } from '../services/copiaLocal.js';
 import { PACOTES_ANIMACAO, pacoteValido } from '../services/animacoes.js';
 import { VARIANTES_ESTUDO, varianteValida } from '../services/modoEstudo.js';
 import { telefoneValido } from '../services/boneco.js';
+import AvisosDeVersao from '../components/definicoes/AvisosDeVersao.jsx';
 import PartilharComOVini from '../components/definicoes/PartilharComOVini.jsx';
 import AvatarBoneco from '../components/boneco/AvatarBoneco.jsx';
 import { lerPreferencias, guardarPreferencias } from '../services/preferenciasBrincadeiras.js';
@@ -268,6 +269,7 @@ function OsMeusDados() {
       {avisoCopia && <p className="def-grupo__nota" role="status">{avisoCopia}</p>}
 
       <PartilharComOVini indice={2} />
+      <AvisosDeVersao indice={3} />
 
       <GrupoDefinicoes titulo="Zona de perigo" indice={2} nota="Só serve para arranjar uma conta antiga, criada antes de as cadeiras do 2.º ano estarem certas. Se está tudo bem contigo, não precisas disto.">
         <LinhaDefinicao

@@ -2,6 +2,7 @@
 // ela manda o texto (Definições, Os meus dados, Partilhar com o Vini) e o vini cola-o aqui
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CABECALHO_NOTIFICACOES, lerSubscricao } from '../services/notificacoes.js';
 import { apagarResumo, colarResumo, lerResumos } from '../services/armazemResumos.js';
 import './Admin.css';
 
@@ -22,12 +23,22 @@ export default function Admin() {
   const [escolhido, setEscolhido] = useState(0);
   const [texto, setTexto] = useState('');
   const [mensagem, setMensagem] = useState('');
+  const [codigoPush, setCodigoPush] = useState('');
 
   const recente = resumos[0];
   const aberto = resumos[Math.min(escolhido, resumos.length - 1)];
 
   function colar(e) {
     e.preventDefault();
+    // o código das notificações dela não é um resumo: mostra-se para copiares para o segredo do github
+    if (texto.includes(CABECALHO_NOTIFICACOES)) {
+      const sub = lerSubscricao(texto);
+      if (!sub) { setMensagem('Este código das notificações está incompleto. Pede-lhe que o mande outra vez.'); return; }
+      setCodigoPush(JSON.stringify(sub));
+      setTexto('');
+      setMensagem('Código das notificações lido. Copia-o para o segredo PUSH_SUBSCRIPTION no GitHub.');
+      return;
+    }
     const r = colarResumo(texto);
     if (!r.ok) { setMensagem('Isto não parece um resumo do JurisLeo. Cola o texto todo, começa em "Resumo do JurisLeo".'); return; }
     setResumos(r.lista);
@@ -69,6 +80,14 @@ export default function Admin() {
           {mensagem && <span role="status">{mensagem}</span>}
         </div>
       </form>
+
+      {codigoPush && (
+        <section className="admin-colar" aria-label="Código das notificações">
+          <label htmlFor="admin-push">Código das notificações dela</label>
+          <textarea id="admin-push" rows={3} readOnly value={codigoPush} onFocus={(e) => e.target.select()} />
+          <small>No GitHub, em Settings, Secrets and variables, Actions, cria o segredo PUSH_SUBSCRIPTION com este texto.</small>
+        </section>
+      )}
 
       {resumos.length === 0 ? (
         <p className="admin-vazio">Ainda não recebeste nenhum resumo. Ela decide quando e o que partilha, nas Definições dela.</p>

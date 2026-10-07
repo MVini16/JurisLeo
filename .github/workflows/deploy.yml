@@ -32,9 +32,29 @@ jobs:
       - name: confirmar que a chave foi embebida
         run: |
           grep -q 'AIza' dist/assets/*.js
+      - name: guardar a versão que está no ar agora (para saber se há versão nova)
+        run: curl -fsS "https://jurisleo-67124.web.app/versao.json?t=$(date +%s)" | jq -r .versao > "$RUNNER_TEMP/versao-antes.txt" || echo none > "$RUNNER_TEMP/versao-antes.txt"
       - name: deploy (regras, índices e hosting)
         run: |
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > "$RUNNER_TEMP/sa.json"
           export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
           npx --yes firebase-tools@latest deploy --only firestore,hosting --project jurisleo-67124
           rm -f "$RUNNER_TEMP/sa.json"
+      - name: avisar o telemóvel da Leonor (só se houver versão nova e ela tiver ligado as notificações)
+        continue-on-error: true
+        env:
+          PUSH_SUBSCRIPTION: ${{ secrets.PUSH_SUBSCRIPTION }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+        run: |
+          NOVA=$(jq -r .versao dist/versao.json)
+          ANTES=$(cat "$RUNNER_TEMP/versao-antes.txt")
+          PUBLICA=$(sed -n "s/.*CHAVE_PUBLICA_PUSH = '\(.*\)';/\1/p" src/data/push.js)
+          if [ -z "$PUSH_SUBSCRIPTION" ] || [ -z "$VAPID_PRIVATE_KEY" ] || [ -z "$PUBLICA" ]; then echo "notificações não configuradas, sem aviso"; exit 0; fi
+          if [ "$NOVA" = "$ANTES" ]; then echo "mesma versão ($NOVA), sem aviso"; exit 0; fi
+          ENDPOINT=$(echo "$PUSH_SUBSCRIPTION" | jq -r .endpoint)
+          CHAVE=$(echo "$PUSH_SUBSCRIPTION" | jq -r .keys.p256dh)
+          AUTH=$(echo "$PUSH_SUBSCRIPTION" | jq -r .keys.auth)
+          npx --yes web-push send-notification \
+            --endpoint="$ENDPOINT" --key="$CHAVE" --auth="$AUTH" \
+            --payload='{"titulo":"JurisLeo","corpo":"Há uma versão nova do JurisLeo. Abre a app para a atualizares."}' \
+            --vapid-subject="https://jurisleo-67124.web.app" --vapid-pubkey="$PUBLICA" --vapid-pvtkey="$VAPID_PRIVATE_KEY"

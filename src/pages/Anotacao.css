@@ -278,3 +278,20 @@
 
 .anotacao-editor__exportar:hover { background: color-mix(in srgb, var(--burgundy) 10%, transparent); transform: translateY(-1px); }
 .anotacao-editor.dark .anotacao-editor__exportar { color: var(--gold); border-color: color-mix(in srgb, var(--gold) 45%, transparent); }
+
+.anotacao-editor__modelos-btn {
+  align-self: flex-start;
+  padding: 7px 14px;
+  border-radius: 10px;
+  border: 1.5px dashed color-mix(in srgb, var(--burgundy) 40%, transparent);
+  background: none;
+  color: var(--burgundy);
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.anotacao-editor__modelos-btn:hover { background: color-mix(in srgb, var(--burgundy) 8%, transparent); transform: translateY(-1px); }
+.anotacao-editor.dark .anotacao-editor__modelos-btn { color: var(--gold); border-color: color-mix(in srgb, var(--gold) 45%, transparent); }

@@ -95,6 +95,7 @@ export const ajudaPorRota = {
     texto: 'Escreve à vontade, marca como favorita, e assinala se ainda é rascunho.',
     pontos: [
       'As tags (separadas por vírgula) ajudam a encontrar isto mais tarde na pesquisa.',
+      '"Modelo de página" começa a nota com uma estrutura pronta (resumo de aula, caso prático, ficha de acórdão, Cornell...). Numa nota que já tem texto, o modelo entra no fim.',
       'No separador "Desenhar" podes riscar à mão por cima do texto, com o dedo ou a Apple Pencil. "Só Apple Pencil" deixa o dedo para fazer scroll.',
       '"Exportar" leva esta página, a secção ou o caderno para o menu de partilha do telemóvel, para PDF ou para Word. O desenho vai no PDF e no Word, mas não no texto partilhado.',
       '"Guardar" grava as alterações.',

@@ -45,7 +45,18 @@ export default function EditorRico({ ref, valorInicial, folhaInicial, desenhoIni
   useImperativeHandle(ref, () => ({
     obterDoc: () => editor?.getJSON(),
     obterDesenho: () => serializarDesenho(tracos),
-  }), [editor, tracos]);
+    estaVazio: () => !editor || (editor.isEmpty && tracos.length === 0),
+    // numa nota vazia o modelo ocupa o lugar do texto; numa nota com conteúdo entra no fim, sem apagar nada
+    inserirModelo: (doc, folhaDoModelo) => {
+      if (!editor) return;
+      if (editor.isEmpty) {
+        editor.commands.setContent(doc, { emitUpdate: true });
+        if (folhaDoModelo && tracos.length === 0) { setFolha(folhaDoModelo); aoMudarFolha?.(folhaDoModelo); }
+      } else {
+        editor.chain().focus('end').insertContent(doc.content).run();
+      }
+    },
+  }), [editor, tracos, aoMudarFolha]);
 
   function mudarFolha(nova) {
     setFolha(nova);

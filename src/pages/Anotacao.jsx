@@ -7,6 +7,7 @@ import { useProvocacoes } from '../hooks/useProvocacoes.jsx';
 import { useAnotacoes } from '../hooks/useAnotacoes.js';
 import EditorRico from '../components/editor/EditorRico.jsx';
 import ExportarNotas from '../components/exportar/ExportarNotas.jsx';
+import SeletorModelos from '../components/editor/SeletorModelos.jsx';
 import { paginasParaExportar } from '../services/exportarNotas.js';
 import { lerDesenho } from '../services/desenho.js';
 import { abrirNota, serializarNota, estadoTamanho, folhaValida, tamanhoEmBytes } from '../services/notaRica.js';
@@ -52,6 +53,10 @@ function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guar
   const [nomeNovaSeccao, setNomeNovaSeccao] = useState('');
   const { anotacoes: todasAsNotas } = useAnotacoes();
   const [exportacao, setExportacao] = useState(null);
+  // numa nota nova a escolha de modelos aparece logo (pode fechar-se e escrever à vontade)
+  const [modelosAbertos, setModelosAbertos] = useState(nova);
+  // o texto do painel depende de a nota estar vazia na altura em que ele abre
+  const [modelosEmNotaVazia, setModelosEmNotaVazia] = useState(nova);
   // o conteúdo vive dentro do editor; aqui só guardamos a folha e o que é preciso para abrir a nota
   const editorRef = useRef(null);
   const [docInicial] = useState(() => abrirNota(anotacao));
@@ -91,6 +96,18 @@ function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guar
       { id: 'seccao', rotulo: `Secção ${seccao}`, titulo: `${nomeCaderno} · ${seccao}`, nomeBase: `${nomeCaderno} - ${seccao}`, paginas: paginasDe('seccao') },
       { id: 'caderno', rotulo: 'Caderno inteiro', titulo: nomeCaderno, nomeBase: nomeCaderno, paginas: paginasDe('caderno') },
     ]);
+  }
+
+  // aplica um modelo: o texto vai para o editor e, numa nota nova e vazia, ajusta também o título e a secção
+  function usarModelo(modelo) {
+    const vazio = editorRef.current?.estaVazio() ?? true;
+    if (vazio) {
+      if (!titulo.trim()) setTitulo(modelo.titulo(new Date()));
+      const daSeccao = seccoesDoCaderno(todasAsNotas, cadeiraId, idsCadeiras).find((s) => mesmoNome(s, modelo.seccao));
+      if (daSeccao) setSeccao(daSeccao);
+    }
+    editorRef.current?.inserirModelo(modelo.doc(), modelo.folha);
+    setModelosAbertos(false);
   }
 
   function escolherCaderno(id) {
@@ -220,6 +237,17 @@ function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guar
           </button>
         )}
       </div>
+
+      {modelosAbertos ? (
+        <SeletorModelos aoEscolher={usarModelo} aoFechar={() => setModelosAbertos(false)} notaVazia={modelosEmNotaVazia} />
+      ) : (
+        <button
+          className="anotacao-editor__modelos-btn"
+          onClick={() => { setModelosEmNotaVazia(editorRef.current?.estaVazio() ?? true); setModelosAbertos(true); }}
+        >
+          + Modelo de página
+        </button>
+      )}
 
       <EditorRico
         ref={editorRef}

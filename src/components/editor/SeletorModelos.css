@@ -1,0 +1,107 @@
+.modelos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--folha-regua);
+  border-top: 4px solid var(--gold);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--burgundy) 4%, var(--folha-fundo));
+  animation: modelosEntra 0.3s ease;
+}
+
+.modelos__topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: 'Lato', sans-serif;
+}
+
+.modelos__topo div { display: flex; flex-direction: column; gap: 2px; }
+.modelos__topo strong { font-family: 'Playfair Display', serif; font-size: 1.05rem; }
+.modelos__topo span { font-size: 0.75rem; opacity: 0.65; line-height: 1.4; }
+
+.modelos__fechar {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: color-mix(in srgb, var(--burgundy) 12%, transparent);
+  color: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modelos__grelha {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (min-width: 560px) { .modelos__grelha { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.modelo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+  min-width: 0;
+  text-align: left;
+  border: 1px solid var(--folha-regua);
+  border-radius: 8px;
+  background: var(--folha-fundo);
+  color: inherit;
+  font-family: 'Lato', sans-serif;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.2, 1.2, 0.4, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+  animation: modeloSobe 0.4s ease backwards;
+  animation-delay: calc(var(--i) * 55ms);
+}
+
+.modelo:hover,
+.modelo:focus-visible {
+  transform: translateY(-4px) rotate(-0.6deg);
+  border-color: var(--gold);
+  box-shadow: 0 8px 18px rgba(20, 12, 15, 0.16);
+}
+
+.modelo:active { transform: scale(0.97); }
+
+/* o esboço: uma folha pequena com as peças do modelo */
+.modelo__esboco {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 66px;
+  padding: 7px 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--folha-regua) 35%, transparent);
+  overflow: hidden;
+}
+
+.modelo__peca {
+  display: block;
+  flex: none;
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, currentColor 30%, transparent);
+}
+
+.modelo__peca--titulo { width: 55%; height: 6px; background: var(--nota-cor-vinho); }
+.modelo__peca--curta { width: 40%; }
+.modelo__peca--bloco { height: 11px; border-left: 3px solid var(--nota-cor-azul); border-radius: 2px; background: color-mix(in srgb, var(--nota-cor-azul) 18%, transparent); }
+.modelo__peca--checks { width: 70%; height: 6px; border-left: 6px solid color-mix(in srgb, currentColor 40%, transparent); background: color-mix(in srgb, currentColor 22%, transparent); }
+.modelo__peca--tabela { height: 12px; border: 1px solid color-mix(in srgb, currentColor 35%, transparent); background: transparent; }
+
+.modelo__nome { font-size: 0.84rem; line-height: 1.25; }
+.modelo__descricao { font-size: 0.7rem; line-height: 1.35; opacity: 0.65; }
+
+@keyframes modelosEntra { from { opacity: 0; transform: translateY(-8px); } }
+@keyframes modeloSobe { from { opacity: 0; transform: translateY(14px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .modelos, .modelos * { animation-duration: 0.01ms !important; animation-delay: 0s !important; transition-duration: 0.01ms !important; }
+}

@@ -77,6 +77,8 @@ const ArtigoDeLei = Mark.create({
   },
 });
 
+import { Pesquisa } from './pesquisa.js';
+
 export const extensoes = [
   StarterKit.configure({
     heading: { levels: [1, 2, 3] },
@@ -94,4 +96,5 @@ export const extensoes = [
   CharacterCount,
   BlocoEstudo,
   ArtigoDeLei,
+  Pesquisa,
 ];

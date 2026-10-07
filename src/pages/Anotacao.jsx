@@ -252,6 +252,7 @@ function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guar
       )}
 
       <EditorRico
+        cadeiraId={cadeiraId}
         ref={editorRef}
         valorInicial={docInicial}
         folhaInicial={folha}

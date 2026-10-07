@@ -33,7 +33,7 @@ function Botao({ ativo, desativado, titulo, onClick, children, className = '' })
   );
 }
 
-export default function BarraEditor({ editor, folha, aoMudarFolha, aoFoco, desenho, aoMudarAba }) {
+export default function BarraEditor({ editor, folha, aoMudarFolha, aoFoco, desenho, aoMudarAba, ferramentas }) {
   const [aba, setAba] = useState('Base');
   const [confirmarLimpar, setConfirmarLimpar] = useState(false);
   const noDesenho = aba === 'Desenhar';
@@ -69,6 +69,7 @@ export default function BarraEditor({ editor, folha, aoMudarFolha, aoFoco, desen
         // na primeira renderização o armazenamento da extensão ainda pode não existir
         palavras: ed.storage.characterCount?.words?.() ?? 0,
         carateres: ed.storage.characterCount?.characters?.() ?? 0,
+        temSelecao: !ed.state.selection.empty && ed.state.doc.textBetween(ed.state.selection.from, ed.state.selection.to, ' ').trim().length > 2,
       };
     },
   });
@@ -221,6 +222,10 @@ export default function BarraEditor({ editor, folha, aoMudarFolha, aoFoco, desen
             {FOLHAS.map(([id, nome]) => (
               <Botao key={id} ativo={folha === id} titulo={`Folha ${nome.toLowerCase()}`} onClick={() => aoMudarFolha(id)}>{nome}</Botao>
             ))}
+            <span className="er-sep" />
+            <Botao titulo="Procurar nesta nota (Ctrl+F)" ativo={ferramentas.painel === 'procurar'} onClick={ferramentas.procurar}>Procurar</Botao>
+            <Botao titulo="Ver os títulos desta nota" ativo={ferramentas.painel === 'indice'} onClick={ferramentas.indice}>Índice</Botao>
+            <Botao titulo="Criar um flashcard com o texto selecionado" desativado={!e.temSelecao} onClick={ferramentas.flashcard}>Flashcard</Botao>
             <span className="er-sep" />
             <Botao titulo="Esconder tudo menos o texto" onClick={() => aoFoco(true)}>Modo foco</Botao>
             <span className="er-contagem">{e.palavras} palavras · {e.carateres} carateres</span>

@@ -38,6 +38,7 @@ const Admin = lazy(() => import('./pages/Admin'))
 const Jogos = lazy(() => import('./pages/Jogos'))
 const Faltas = lazy(() => import('./pages/Faltas'))
 const Feed = lazy(() => import('./pages/Feed'))
+const Sumarios = lazy(() => import('./pages/Sumarios'))
 
 // no modo social a app abre no feed (uma vez por sessão); o botão Início continua a levar ao dashboard
 function InicioPorModo({ children }) {
@@ -78,6 +79,7 @@ function App() {
           <Route path="/tarefas" element={<NavBar><Tarefas /></NavBar>} />
           <Route path="/jogos" element={<NavBar><Jogos /></NavBar>} />
           <Route path="/feed" element={<NavBar><Feed /></NavBar>} />
+          <Route path="/sumarios" element={<NavBar><Sumarios /></NavBar>} />
           <Route path="/faltas" element={<NavBar><Faltas /></NavBar>} />
           <Route path="/calendario" element={<NavBar><Calendario /></NavBar>} />
           <Route path="/perfil" element={<NavBar><Perfil /></NavBar>} />

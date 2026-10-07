@@ -33,7 +33,8 @@ export function usePresencas() {
     const chave = chaveAula(ev);
     if (!userId || !chave) return;
     const notas = normalizarNotasAula(campos);
-    const valor = notas ? { ...notas, em: Date.now() } : deleteField();
+    const dataEv = ev.data instanceof Date ? ev.data : ev.data?.toDate?.();
+    const valor = notas ? { ...notas, em: Date.now(), data: dataEv ? dataParaChave(dataEv) : '', titulo: String(ev.titulo || '').slice(0, 80), cadeiraId: ev.cadeira } : deleteField();
     await setDoc(doc(db, 'users', userId, 'cadeiras', ev.cadeira, 'presencas', 'dados'), { notasAulas: { [chave]: valor } }, { merge: true });
   }
 
@@ -62,5 +63,5 @@ export function usePresencas() {
 
   const carregado = Object.keys(porCadeira).length === idsCadeiras.length;
 
-  return { marcas, porCadeira, notasAulas, carregado, marcar, limpar, atualizarMarca, guardarNotasAula };
+  return { marcas, porCadeira, notasAulas, notasAulasPorCadeira: notasPorCadeira, carregado, marcar, limpar, atualizarMarca, guardarNotasAula };
 }

@@ -63,6 +63,15 @@ export const ajudaPorRota = {
       'As práticas aparecem realçadas e as teóricas com o contorno tracejado. A aula em curso pisca a dourado.',
     ],
   },
+  '/sumarios': {
+    titulo: 'Sumários',
+    texto: 'Os sumários das aulas que escreveste no calendário, juntos por cadeira.',
+    pontos: [
+      'Filtra por cadeira ou procura uma palavra.',
+      '"Flashcard da aula" cria um cartão com os tópicos; "+ cartão" num tópico cria um cartão com a resposta que escreveres.',
+      '"Partilhar texto" envia ou copia tudo o que está à vista; "Imprimir ou PDF" abre a impressão do telemóvel ou do computador.',
+    ],
+  },
   '/faltas': {
     titulo: 'Faltas',
     texto: 'O estado de faltas de cada cadeira, calculado a partir do que marcaste no calendário.',

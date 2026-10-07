@@ -14,7 +14,7 @@ const SEPARADORES = [
 
 const GRUPOS = [
   { titulo: 'Hoje', itens: [['/horario', 'relogio', 'Horário'], ['/tarefas', 'sabia', 'Tarefas'], ['/faltas', 'escudo', 'Faltas']] },
-  { titulo: 'Estudar', itens: [['/anotacoes', 'pena', 'Cadernos'], ['/casos', 'balanca', 'Casos'], ['/glossario', 'livro', 'Glossário'], ['/jogos', 'dado', 'Jogos'], ['/estudo', 'chama', 'Estudo'], ['/pesquisa', 'alvo', 'Pesquisa']] },
+  { titulo: 'Estudar', itens: [['/anotacoes', 'pena', 'Cadernos'], ['/sumarios', 'livro', 'Sumários'], ['/casos', 'balanca', 'Casos'], ['/glossario', 'livro', 'Glossário'], ['/jogos', 'dado', 'Jogos'], ['/estudo', 'chama', 'Estudo'], ['/pesquisa', 'alvo', 'Pesquisa']] },
   { titulo: 'Faculdade', itens: [['/cadeiras', 'livro', 'Cadeiras'], ['/artigos', 'pena', 'Artigos'], ['/leituras', 'livro', 'Leituras']] },
   { titulo: 'Eu', itens: [['/perfil', 'modo', 'Definições'], ['/ajuda', 'alvo', 'Ajuda']] },
 ];

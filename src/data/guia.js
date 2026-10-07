@@ -20,6 +20,7 @@ export const GUIA = [
       { nome: 'Práticas e teóricas', texto: 'As aulas práticas aparecem cheias e realçadas, porque são as que contam para as faltas. As teóricas têm o contorno tracejado. A aula que está a decorrer pisca com um contorno dourado.' },
       { nome: 'Marcar a presença', texto: 'Abre uma aula e diz como correu: Fui, Faltei, Faltei com justificação (escolhes o motivo e se já entregaste o comprovativo), O professor faltou, Não houve aula, ou o atalho Estive doente. As aulas em que o professor faltou ou não houve aula não contam como falta nem como aula dada.' },
       { nome: 'Sumário e notas da aula', texto: 'Na mesma aula escreves o sumário em tópicos (o que se deu), uma nota, o trabalho para casa e uma dúvida para o docente. Fica tudo guardado na tua conta.' },
+      { nome: 'Página Sumários', texto: 'Todos os sumários juntos, por cadeira, para estudar para a frequência. Daqui crias um flashcard de cada aula (ou de um tópico, com a resposta que escreveres), partilhas o texto ou imprimes em PDF. Está em Cadeiras, em Recursos.' },
       { nome: 'Lembrete de aulas por marcar', texto: 'No topo do Calendário aparece quantas aulas práticas já passadas ainda não marcaste. "Fui a todas" marca-as de uma vez, com confirmação, e corriges depois as exceções.' },
     ],
   },

@@ -63,36 +63,6 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
-.anotacoes-filtros {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.anotacoes-filtro-btn {
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1px solid rgba(107, 15, 26, 0.15);
-  background: none;
-  color: inherit;
-  opacity: 0.6;
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.2s ease;
-}
-
-.anotacoes-pagina.dark .anotacoes-filtro-btn { border-color: rgba(255, 255, 255, 0.15); }
-
-.anotacoes-filtro-btn.ativo {
-  opacity: 1;
-  background: var(--cor, var(--burgundy));
-  border-color: transparent;
-  color: #fff;
-}
-
 .anotacoes-vazio {
   text-align: center;
   padding: 48px 0;
@@ -113,6 +83,8 @@
 }
 
 .anotacao-card {
+  animation: notaEntra 0.35s ease backwards;
+  animation-delay: calc(var(--i, 0) * 40ms);
   text-align: left;
   border: none;
   border-left: 3px solid var(--cor);
@@ -185,4 +157,64 @@
 .anotacao-card__data {
   font-size: 0.68rem;
   opacity: 0.4;
+}
+
+.anotacoes-etiqueta {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin-bottom: 2px;
+}
+
+/* separadores por vista, com um traço que desliza */
+.notas-abas {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 16px;
+}
+
+.anotacoes-pagina.dark .notas-abas { border-bottom-color: var(--border-dark); }
+
+.notas-aba {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 10px 2px;
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.55;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.notas-aba small { font-size: 0.68rem; font-weight: 600; opacity: 0.75; }
+.notas-aba[aria-selected='true'] { opacity: 1; }
+
+.notas-abas__ind {
+  position: absolute;
+  bottom: -1px;
+  width: 25%;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--burgundy);
+  transition: left 0.35s cubic-bezier(0.3, 1.2, 0.4, 1);
+}
+
+.anotacoes-pagina.dark .notas-abas__ind { background: var(--gold); }
+
+@keyframes notaEntra {
+  from { opacity: 0; transform: translateY(10px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anotacao-card, .notas-abas__ind { animation-duration: 0.01ms; animation-delay: 0s; transition-duration: 0.01ms; }
 }

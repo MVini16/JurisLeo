@@ -71,12 +71,13 @@ export const ajudaPorRota = {
     ],
   },
   '/anotacoes': {
-    titulo: 'Anotações',
-    texto: 'As tuas notas de cada aula, para não teres de decorar tudo.',
+    titulo: 'Notas',
+    texto: 'As tuas notas de cada aula, arrumadas por caderno.',
     pontos: [
-      '"+ Nova" cria uma anotação, já a perguntar a cadeira e o tipo de aula.',
-      'Os filtros por cadeira e a pesquisa ajudam a encontrar depois.',
-      'A estrela marca uma anotação como favorita.',
+      'Cada lombada da estante é um caderno. Toca para ver as secções e as páginas lá dentro.',
+      'O caderno Livre é para tudo o que não é de nenhuma cadeira.',
+      'Os separadores mostram só as favoritas, os rascunhos ou as perguntas para a frequência.',
+      '"+ Nova" cria uma página e a pesquisa encontra por título, texto ou tag.',
     ],
   },
   '/cadernos/:id': {

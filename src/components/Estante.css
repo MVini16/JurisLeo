@@ -1,0 +1,95 @@
+.estante-bloco { margin-bottom: 20px; }
+
+.estante {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 210px;
+  padding: 14px 4px 0;
+  overflow-x: auto;
+}
+
+.lombada {
+  --c: var(--burgundy);
+  position: relative;
+  flex: none;
+  width: 46px;
+  padding: 22px 0 30px;
+  border: none;
+  border-radius: 4px 4px 2px 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.16), transparent 30%, rgba(0, 0, 0, 0.2)), var(--c);
+  color: #fff;
+  writing-mode: vertical-rl;
+  font: 700 0.8rem 'Playfair Display', Georgia, serif;
+  letter-spacing: 0.08em;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transform-origin: bottom center;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1.25), box-shadow 0.3s ease;
+  animation: lombadaSobe 0.6s backwards;
+  animation-delay: calc(var(--i) * 70ms);
+}
+
+.lombada::before,
+.lombada::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gold);
+}
+
+.lombada::before { top: 10px; }
+.lombada::after { bottom: 10px; }
+
+.lombada:hover,
+.lombada:focus-visible {
+  transform: translateY(-14px) rotate(-3deg);
+  box-shadow: 0 10px 18px rgba(20, 12, 15, 0.3);
+}
+
+.lombada:active { transform: translateY(-6px) scale(0.97); }
+
+.lombada__total {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  writing-mode: horizontal-tb;
+  min-width: 20px;
+  padding: 1px 4px;
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.28);
+  font: 700 0.64rem 'Lato', sans-serif;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.lombada--livre {
+  background: transparent;
+  border: 2px dashed var(--gold);
+  color: var(--gold);
+  text-shadow: none;
+}
+
+.lombada--livre::before,
+.lombada--livre::after { display: none; }
+
+.lombada--livre .lombada__total { background: color-mix(in srgb, var(--gold) 20%, transparent); }
+
+.prateleira {
+  height: 12px;
+  border-radius: 3px;
+  background: linear-gradient(var(--gold), var(--burgundy));
+  opacity: 0.85;
+}
+
+@keyframes lombadaSobe {
+  from { transform: translateY(46px); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lombada { animation-duration: 0.01ms; animation-delay: 0s; transition-duration: 0.01ms; }
+}

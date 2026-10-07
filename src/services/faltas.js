@@ -13,7 +13,9 @@ export function estadoFaltas({
   const limiteInjustificadas = aulasPraticasLecionadas / 4;
   const limiteTotal = aulasPraticasPrevistas / 2;
 
-  const excluidaPorInjustificadas = faltasInjustificadas >= limiteInjustificadas;
+  // sem aulas já dadas não há base de cálculo: 0 >= 0 não pode contar como exclusão
+  const semAulasDadas = aulasPraticasLecionadas <= 0;
+  const excluidaPorInjustificadas = !semAulasDadas && faltasInjustificadas >= limiteInjustificadas;
   const excluidaPorTotal = (faltasInjustificadas + faltasJustificadas) >= limiteTotal;
   const excluida = excluidaPorInjustificadas || excluidaPorTotal;
 
@@ -29,7 +31,9 @@ export function estadoFaltas({
   const faltasRestantes = Math.min(faltasRestantesInjustificadas, faltasRestantesTotal);
 
   let semaforo;
-  if (excluida || faltasRestantes === 0) semaforo = 'vermelho';
+  if (excluida) semaforo = 'vermelho';
+  else if (semAulasDadas) semaforo = 'verde';
+  else if (faltasRestantes === 0) semaforo = 'vermelho';
   else if (faltasRestantes <= 2) semaforo = 'amarelo';
   else semaforo = 'verde';
 
@@ -37,7 +41,9 @@ export function estadoFaltas({
     ? (motivoExclusao === 'injustificadas'
       ? `Excluída — ${faltasInjustificadas} faltas injustificadas é um quarto ou mais das ${aulasPraticasLecionadas} aulas práticas já dadas.`
       : `Excluída — o total de faltas já chega a metade das ${aulasPraticasPrevistas} aulas práticas previstas para o semestre.`)
-    : `Podes dar mais ${faltasRestantes} falta${faltasRestantes === 1 ? '' : 's'} injustificada${faltasRestantes === 1 ? '' : 's'} sem risco de exclusão.`;
+    : semAulasDadas
+      ? 'Ainda não há aulas práticas dadas, por isso ainda não há faltas a contar.'
+      : `Podes dar mais ${faltasRestantes} falta${faltasRestantes === 1 ? '' : 's'} injustificada${faltasRestantes === 1 ? '' : 's'} sem risco de exclusão.`;
 
   const aviso = aulasPraticasLecionadas < aulasPraticasPrevistas / 2
     ? 'No início do semestre cada falta pesa mais, porque a conta é feita sobre as aulas que já foram dadas.'

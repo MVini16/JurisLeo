@@ -42,4 +42,10 @@ describe('estadoFaltas', () => {
   it('dá semáforo verde com folga confortável, mais a meio do semestre', () => {
     expect(estadoFaltas({ aulasPraticasPrevistas: 30, aulasPraticasLecionadas: 16, faltasInjustificadas: 0, faltasJustificadas: 0 }).semaforo).toBe('verde');
   });
+
+  it('não dá exclusão quando ainda não há aulas práticas dadas (0 faltas em 0 aulas)', () => {
+    const r = estadoFaltas({ aulasPraticasPrevistas: 26, aulasPraticasLecionadas: 0, faltasInjustificadas: 0, faltasJustificadas: 0 });
+    expect(r.excluida).toBe(false);
+    expect(r.semaforo).toBe('verde');
+  });
 });

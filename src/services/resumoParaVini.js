@@ -38,6 +38,13 @@ export function melhorSerie(dias) {
   return melhor;
 }
 
+// uma cadeira na linha das faltas: 'DA I 5 aulas dadas, 1 injustificada, 0 justificadas (Tranquila)'
+const SELO_FALTAS = { verde: 'Tranquila', amarelo: 'Atenção', vermelho: 'Em risco' };
+function textoFaltas(f) {
+  const estado = f.excluida ? 'Excluída' : (SELO_FALTAS[f.semaforo] ?? '');
+  return `${f.abrev} ${f.dadas} dadas, ${f.injustificadas} injust., ${f.justificadas} just.${estado ? ` (${estado})` : ''}`;
+}
+
 const NOMES_JOGOS = { vf: 'Verdadeiro ou Falso', jurista: 'Quem Quer Ser Jurista', caso: 'Caso Prático', pares: 'Liga os Pares', diario: 'Audiência do dia' };
 
 export function montarResumo({ quando, escolhas, dados }) {
@@ -62,6 +69,9 @@ export function montarResumo({ quando, escolhas, dados }) {
     const t = dados.tarefas;
     linhas.push(`Tarefas: ${t.porFazer} por fazer, ${t.atrasadas} atrasadas, ${t.feitas} feitas`);
   }
+  if (escolhas.faltas && dados.faltas?.length) {
+    linhas.push(`Faltas: ${dados.faltas.map(textoFaltas).join('; ')}`);
+  }
   if (escolhas.estado && dados.estado) linhas.push(`Como estou: ${dados.estado}`);
   return linhas.join('\n');
 }
@@ -85,13 +95,14 @@ export function lerResumo(texto) {
     estado: campos['Como estou'] ?? null,
     recordes: campos.Recordes ?? null,
     tarefas: campos.Tarefas ?? null,
+    faltas: campos.Faltas ?? null,
   };
 }
 
 // junta um resumo à lista (o mais recente primeiro), sem repetir o mesmo e sem a lista crescer sem fim
 export function juntarResumo(lista, resumo) {
   if (!resumo) return lista;
-  if (lista.some((r) => r.quando === resumo.quando && r.estudo === resumo.estudo && r.jogos === resumo.jogos && r.estado === resumo.estado && r.tarefas === resumo.tarefas && r.recordes === resumo.recordes)) return lista;
+  if (lista.some((r) => r.quando === resumo.quando && r.estudo === resumo.estudo && r.jogos === resumo.jogos && r.estado === resumo.estado && r.tarefas === resumo.tarefas && r.faltas === resumo.faltas && r.recordes === resumo.recordes)) return lista;
   return [{ id: `${Date.now()}-${lista.length}`, ...resumo }, ...lista].slice(0, MAX_RESUMOS);
 }
 

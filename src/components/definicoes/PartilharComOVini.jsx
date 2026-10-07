@@ -8,6 +8,7 @@ import { useTarefas } from '../../hooks/useTarefas.js';
 import { lerPerfilJogos, lerRecordes } from '../../services/jogosLocal.js';
 import { diaDe, serieDeDias } from '../../services/modoEstudo.js';
 import { partilharTexto } from '../../services/partilha.js';
+import { useFaltasTodas } from '../../hooks/useFaltasTodas.js';
 import { contarTarefas, estudoDaSemana, melhorSerie, montarResumo } from '../../services/resumoParaVini.js';
 import { ESTADOS } from '../../data/boneco.js';
 import { GrupoDefinicoes, LinhaDefinicao } from './PecasDefinicoes.jsx';
@@ -22,12 +23,13 @@ const AVISOS = {
 export default function PartilharComOVini({ indice = 0 }) {
   const prefs = usePreferencias();
   const { tarefas } = useTarefas();
+  const faltas = useFaltasTodas(!!prefs.partilhaFaltas);
   const [estado, setEstado] = useState('');
   const [aviso, setAviso] = useState('');
   const [previa, setPrevia] = useState('');
 
-  const escolhas = { estudo: prefs.partilhaEstudo, jogos: prefs.partilhaJogos, estado: prefs.partilhaEstado, tarefas: prefs.partilhaTarefas };
-  const algumLigado = escolhas.estudo || escolhas.jogos || escolhas.estado || escolhas.tarefas;
+  const escolhas = { estudo: prefs.partilhaEstudo, jogos: prefs.partilhaJogos, estado: prefs.partilhaEstado, tarefas: prefs.partilhaTarefas, faltas: prefs.partilhaFaltas };
+  const algumLigado = escolhas.estudo || escolhas.jogos || escolhas.estado || escolhas.tarefas || escolhas.faltas;
 
   // o texto vê-se antes de sair, para ela saber exatamente o que o Vini vai receber
   function prepararTexto() {
@@ -44,6 +46,7 @@ export default function PartilharComOVini({ indice = 0 }) {
         perfilJogos: lerPerfilJogos(),
         recordes: lerRecordes(),
         tarefas: contarTarefas(tarefas, hoje),
+        faltas,
         estado: ESTADOS.find((e) => e.id === estado)?.rotulo ?? '',
       },
     });
@@ -72,6 +75,7 @@ export default function PartilharComOVini({ indice = 0 }) {
       {interruptor('partilhaEstudo', 'O meu estudo', 'Dias seguidos, melhor série, dias da semana e flashcards de hoje')}
       {interruptor('partilhaJogos', 'Os meus jogos', 'Nível, XP, selos, jogadas e recordes')}
       {interruptor('partilhaTarefas', 'As minhas tarefas', 'Quantas tenho por fazer, atrasadas e feitas')}
+      {interruptor('partilhaFaltas', 'As minhas faltas', 'Por cadeira: aulas dadas, faltas injustificadas e justificadas e o estado')}
       {interruptor('partilhaEstado', 'Como estou', 'Escolho eu como me sinto')}
       {prefs.partilhaEstado && ESTADOS.map((e) => (
         <LinhaDefinicao

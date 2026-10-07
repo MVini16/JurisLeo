@@ -70,3 +70,15 @@ describe('mais detalhe, sempre por escolha dela', () => {
     expect(lerResumo(tudo)).toMatchObject({ tarefas: '2 por fazer, 1 atrasadas, 4 feitas' });
   });
 });
+
+describe('faltas no resumo', () => {
+  const faltas = [{ abrev: 'DA I', dadas: 5, injustificadas: 1, justificadas: 0, semaforo: 'amarelo', excluida: false }, { abrev: 'FAM', dadas: 4, injustificadas: 2, justificadas: 1, semaforo: 'vermelho', excluida: true }];
+  it('só entra se ela ligar', () => {
+    expect(montarResumo({ quando: 0, escolhas: { faltas: false }, dados: { faltas } })).not.toContain('Faltas:');
+  });
+  it('escreve uma entrada por cadeira e volta a ler-se', () => {
+    const texto = montarResumo({ quando: 0, escolhas: { faltas: true }, dados: { faltas } });
+    expect(texto).toContain('Faltas: DA I 5 dadas, 1 injust., 0 just. (Atenção); FAM 4 dadas, 2 injust., 1 just. (Excluída)');
+    expect(lerResumo(texto).faltas).toContain('FAM 4 dadas');
+  });
+});

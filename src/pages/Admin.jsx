@@ -6,7 +6,7 @@ import { CABECALHO_NOTIFICACOES, lerSubscricao } from '../services/notificacoes.
 import { apagarResumo, colarResumo, lerResumos } from '../services/armazemResumos.js';
 import './Admin.css';
 
-const CAMPOS = [['Estudo', 'estudo'], ['Jogos', 'jogos'], ['Recordes', 'recordes'], ['Tarefas', 'tarefas'], ['Como estava', 'estado']];
+const CAMPOS = [['Estudo', 'estudo'], ['Jogos', 'jogos'], ['Recordes', 'recordes'], ['Tarefas', 'tarefas'], ['Faltas', 'faltas'], ['Como estava', 'estado']];
 
 function Campo({ rotulo, valor }) {
   return (
@@ -69,6 +69,7 @@ export default function Admin() {
         <div className="admin-cartao"><small>Estudo</small><b>{recente?.estudo ?? 'não partilhado'}</b></div>
         <div className="admin-cartao"><small>Jogos</small><b>{recente?.jogos ?? 'não partilhado'}</b></div>
         <div className="admin-cartao"><small>Tarefas</small><b>{recente?.tarefas ?? 'não partilhado'}</b></div>
+        <div className="admin-cartao"><small>Faltas</small><b>{recente?.faltas ?? 'não partilhado'}</b></div>
         <div className="admin-cartao"><small>Como estava</small><b>{recente?.estado ?? 'não partilhado'}</b></div>
       </section>
 

@@ -382,3 +382,17 @@ button.def-linha:hover:not(:disabled) .def-linha__seta { transform: translateX(3
 @media (prefers-reduced-motion: reduce) {
   .def-pagina, .def-pagina *, .def-fundo, .def-fundo * { animation-duration: 0.01ms !important; animation-delay: 0s !important; transition-duration: 0.01ms !important; }
 }
+
+.def-campo {
+  width: 9.5rem;
+  min-height: 36px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+  text-align: right;
+}
+html.dark .def-campo { border-color: var(--border-dark); }

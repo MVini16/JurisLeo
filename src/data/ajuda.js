@@ -66,7 +66,7 @@ export const ajudaPorRota = {
     pontos: [
       'A pesquisa no topo encontra qualquer definição, mesmo que não saibas onde está.',
       'Em Aparência mudas o tema e a folha com que as notas novas começam.',
-      'Em Brincadeiras ligas ou desligas o Barney e as mensagens do Vini.',
+      'Em Brincadeiras ligas ou desligas o Barney, as mensagens do Vini e o boneco do Vini (aspeto, sítio, quando puxa conversa e o número do Vini).',
       'Em Os meus dados tiras uma cópia de segurança de tudo.',
       '"Terminar sessão" pede confirmação antes de sair.',
     ],

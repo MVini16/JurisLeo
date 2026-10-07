@@ -24,6 +24,7 @@ export const DEFINICOES = [
   { id: 'folha', rotulo: 'Folha das notas novas', destino: { tipo: 'secao', secao: 'aparencia' }, palavras: ['pautado', 'quadriculado', 'pontos', 'branco', 'papel', 'caderno', 'notas'] },
   { id: 'barney', rotulo: 'Piadas do Barney', destino: { tipo: 'secao', secao: 'brincadeiras' }, palavras: ['legendary', 'how i met your mother', 'himym', 'animacao', 'piada', 'legen'] },
   { id: 'vini', rotulo: 'Mensagens do Vini ao escrever', destino: { tipo: 'secao', secao: 'brincadeiras' }, palavras: ['provocacoes', 'despacho', 'balao', 'post-it', 'mensagens', 'vini', 'tribunal'] },
+  { id: 'boneco', rotulo: 'Boneco do Vini', destino: { tipo: 'secao', secao: 'brincadeiras' }, palavras: ['mascote', 'chat', 'conversa', 'esconder', 'aspeto', 'toga', 'balanca', 'posicao', 'contacto', 'telefone', 'numero', 'falar'] },
   { id: 'frequencia-vini', rotulo: 'Frequência das mensagens do Vini', destino: { tipo: 'secao', secao: 'brincadeiras' }, palavras: ['minutos', 'de quanto em quanto tempo', 'com que frequencia'] },
   { id: 'exportar-dados', rotulo: 'Exportar os meus dados', destino: { tipo: 'secao', secao: 'os-meus-dados' }, palavras: ['copia de seguranca', 'backup', 'json', 'descarregar', 'guardar tudo'] },
   { id: 'repor-cadeiras', rotulo: 'Repor as cadeiras do 2.º ano', destino: { tipo: 'secao', secao: 'os-meus-dados' }, palavras: ['apagar', 'notas', 'faltas', 'reset', 'repor', 'manutencao', 'arranjar'] },

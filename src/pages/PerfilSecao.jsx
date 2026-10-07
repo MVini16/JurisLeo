@@ -5,6 +5,10 @@ import { getAuth } from 'firebase/auth';
 import { useTheme } from '../context/useTheme.js';
 import { useBarney } from '../hooks/useBarney.jsx';
 import { usePerfil } from '../hooks/usePerfil.js';
+import { usePreferencias } from '../hooks/usePreferencias.js';
+import { ASPETOS } from '../data/boneco.js';
+import { telefoneValido } from '../services/boneco.js';
+import AvatarBoneco from '../components/boneco/AvatarBoneco.jsx';
 import { lerPreferencias, guardarPreferencias } from '../services/preferenciasBrincadeiras.js';
 import { exportarDadosComoFicheiro } from '../services/exportar.js';
 import { limparCadeirasAntigas, seedCadeiras } from '../services/initFirestore.js';
@@ -55,21 +59,63 @@ function Aparencia() {
 
 function Brincadeiras() {
   const { elemento: barney, disparar } = useBarney();
-  const [prefs, setPrefs] = useState(() => lerPreferencias());
-  const mudar = (parcial) => setPrefs(guardarPreferencias(parcial));
+  const prefs = usePreferencias();
+  const mudar = (parcial) => guardarPreferencias(parcial);
+  const [contacto, setContacto] = useState(prefs.bonecoContacto);
+  const contactoOk = contacto === '' || telefoneValido(contacto);
   return (
     <>
       {barney}
-      <GrupoDefinicoes titulo="Barney" indice={0} nota="A piada do «Legen... wait for it... dary» salta de vez em quando e sempre que algo corre bem.">
+      <GrupoDefinicoes titulo="Boneco do Vini" indice={0} nota="Um boneco que anda contigo pelas páginas, pergunta como estás e leva-te a algo útil. Não é o Vini a sério: fala com frases que ele escreveu. Fica tudo só neste telemóvel.">
+        <LinhaDefinicao tipo="interruptor" rotulo="Mostrar o boneco" ligado={prefs.boneco} aoClicar={() => mudar({ boneco: !prefs.boneco })} />
+      </GrupoDefinicoes>
+
+      <GrupoDefinicoes titulo="Como se parece" indice={1}>
+        {ASPETOS.map((a) => (
+          <button key={a.id} type="button" role="radio" aria-checked={prefs.bonecoAspeto === a.id} className="def-linha" disabled={!prefs.boneco} onClick={() => mudar({ bonecoAspeto: a.id })}>
+            <span className="def-linha__icone" style={{ width: 36, height: 36 }}><AvatarBoneco aspeto={a.id} /></span>
+            <span className="def-linha__texto"><span className="def-linha__rotulo">{a.nome}</span></span>
+            <span className={`def-visto ${prefs.bonecoAspeto === a.id ? 'marcada' : ''}`} aria-hidden="true">✓</span>
+          </button>
+        ))}
+      </GrupoDefinicoes>
+
+      <GrupoDefinicoes titulo="Onde fica" indice={2}>
+        {[['esquerda', 'Em baixo, à esquerda'], ['direita', 'Em baixo, à direita']].map(([id, rotulo]) => (
+          <LinhaDefinicao key={id} tipo="opcao" rotulo={rotulo} desativado={!prefs.boneco} marcada={prefs.bonecoPosicao === id} aoClicar={() => mudar({ bonecoPosicao: id })} />
+        ))}
+      </GrupoDefinicoes>
+
+      <GrupoDefinicoes titulo="Puxar conversa" indice={3} nota="Nunca aparece quando estás a escrever, a estudar ou nos flashcards. «Hoje não» no balão cala-o até ao fim do dia.">
+        {[['nunca', 'Nunca, só quando eu tocar'], ['as-vezes', 'De vez em quando (1 por dia)'], ['mais', 'Mais vezes (até 3 por dia)']].map(([id, rotulo]) => (
+          <LinhaDefinicao key={id} tipo="opcao" rotulo={rotulo} desativado={!prefs.boneco} marcada={prefs.bonecoConversa === id} aoClicar={() => mudar({ bonecoConversa: id })} />
+        ))}
+      </GrupoDefinicoes>
+
+      <GrupoDefinicoes titulo="Contacto do Vini" indice={4} nota={contactoOk ? 'O número fica só guardado neste telemóvel e serve ao botão «Falar com o Vini a sério» (ligar, mensagem ou WhatsApp).' : 'Esse número não parece válido. Usa só dígitos, com ou sem +351.'}>
+        <label className="def-linha def-linha--info">
+          <span className="def-linha__texto"><span className="def-linha__rotulo">Número do Vini</span></span>
+          <input
+            type="tel"
+            inputMode="tel"
+            className="def-campo"
+            value={contacto}
+            placeholder="+351 ..."
+            onChange={(e) => { setContacto(e.target.value); if (e.target.value === '' || telefoneValido(e.target.value)) mudar({ bonecoContacto: e.target.value.trim() }); }}
+          />
+        </label>
+      </GrupoDefinicoes>
+
+      <GrupoDefinicoes titulo="Barney" indice={5} nota="A piada do «Legen... wait for it... dary» salta de vez em quando e sempre que algo corre bem.">
         <LinhaDefinicao tipo="interruptor" rotulo="Piadas do Barney" ligado={prefs.barney} aoClicar={() => mudar({ barney: !prefs.barney })} />
         <LinhaDefinicao tipo="acao" rotulo="Ver a piada outra vez" desativado={!prefs.barney} aoClicar={() => disparar('segredo')} />
       </GrupoDefinicoes>
 
-      <GrupoDefinicoes titulo="Vini" indice={1} nota="As mensagens só aparecem enquanto escreves notas e casos, e só contam o tempo em que estás mesmo a escrever.">
+      <GrupoDefinicoes titulo="Vini" indice={6} nota="As mensagens só aparecem enquanto escreves notas e casos, e só contam o tempo em que estás mesmo a escrever.">
         <LinhaDefinicao tipo="interruptor" rotulo="Mensagens do Vini ao escrever" ligado={prefs.provocacoes} aoClicar={() => mudar({ provocacoes: !prefs.provocacoes })} />
       </GrupoDefinicoes>
 
-      <GrupoDefinicoes titulo="De quanto em quanto tempo" indice={2}>
+      <GrupoDefinicoes titulo="De quanto em quanto tempo" indice={7}>
         {[5, 10, 20].map((min) => (
           <LinhaDefinicao
             key={min}

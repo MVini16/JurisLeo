@@ -16,8 +16,8 @@ import { GrupoDefinicoes, LinhaDefinicao, ConfirmarDefinicao } from '../componen
 import '../components/definicoes/Definicoes.css';
 
 function resumoDasBrincadeiras(prefs) {
-  const ligadas = [prefs.barney, prefs.provocacoes].filter(Boolean).length;
-  if (ligadas === 2) return 'Ligadas';
+  const ligadas = [prefs.barney, prefs.provocacoes, prefs.boneco].filter(Boolean).length;
+  if (ligadas === 3) return 'Ligadas';
   return ligadas === 0 ? 'Desligadas' : 'Algumas';
 }
 

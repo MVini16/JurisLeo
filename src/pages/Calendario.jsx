@@ -1,5 +1,6 @@
 // página principal do calendário
 import { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { db } from '../services/firebase.js';
 import { getAuth } from 'firebase/auth';
 import { useCalendario } from '../hooks/useCalendario.js';
@@ -37,10 +38,12 @@ export default function Calendario() {
   });
   const porMarcar = marcasCarregadas ? aulasPorMarcar(eventosBase, marcas) : [];
   const hoje = new Date();
-  const [dataSelecionada, setDataSelecionada] = useState(new Date());
+  // vem de outra página (ex.: histórico das faltas) com uma data AAAA-MM-DD para abrir
+  const dataPedida = useLocation().state?.data;
+  const [dataSelecionada, setDataSelecionada] = useState(() => (dataPedida ? new Date(`${dataPedida}T12:00:00`) : new Date()));
   const [vista, setVista] = useState('diaria');
-  const [mesAtual, setMesAtual] = useState(new Date().getMonth());
-  const [anoAtual, setAnoAtual] = useState(new Date().getFullYear());
+  const [mesAtual, setMesAtual] = useState(dataSelecionada.getMonth());
+  const [anoAtual, setAnoAtual] = useState(dataSelecionada.getFullYear());
   const [painelDia, setPainelDia] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
   const [eventoDetalhe, setEventoDetalhe] = useState(null);

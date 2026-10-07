@@ -35,6 +35,7 @@ const PerfilSecao = lazy(() => import('./pages/PerfilSecao'))
 const AdminBoneco = lazy(() => import('./pages/AdminBoneco'))
 const Admin = lazy(() => import('./pages/Admin'))
 const Jogos = lazy(() => import('./pages/Jogos'))
+const Faltas = lazy(() => import('./pages/Faltas'))
 
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
           <Route path="/ajuda" element={<NavBar><Ajuda /></NavBar>} />
           <Route path="/tarefas" element={<NavBar><Tarefas /></NavBar>} />
           <Route path="/jogos" element={<NavBar><Jogos /></NavBar>} />
+          <Route path="/faltas" element={<NavBar><Faltas /></NavBar>} />
           <Route path="/calendario" element={<NavBar><Calendario /></NavBar>} />
           <Route path="/perfil" element={<NavBar><Perfil /></NavBar>} />
           <Route path="/perfil/:secao" element={<NavBar><PerfilSecao /></NavBar>} />

@@ -1,0 +1,64 @@
+/* página das faltas: cartões por cadeira com anel, simulador e histórico */
+.faltas-pagina { max-width: 760px; margin: 0 auto; padding: 16px 16px 96px; }
+.faltas-header { margin: 8px 0 16px; }
+.faltas-titulo { font-size: 26px; color: var(--burgundy); }
+.faltas-subtitulo { font-size: 13px; opacity: 0.7; }
+.faltas-ajuda { font-size: 12px; opacity: 0.75; margin-bottom: 8px; }
+.faltas-vazio { font-size: 13px; opacity: 0.7; }
+.faltas-pagina.dark .faltas-titulo { color: var(--gold); }
+
+.faltas-comprovativos { padding: 14px; border-radius: 14px; border: 1px solid var(--gold); background: rgba(201, 168, 76, 0.1); margin-bottom: 16px; animation: faltas-entra 0.4s ease both; }
+.faltas-comprovativos h2 { font-size: 15px; margin-bottom: 4px; }
+.faltas-comprovativos ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.faltas-comprovativo { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; }
+.faltas-comprovativo small { display: block; opacity: 0.7; }
+.faltas-comprovativo button { flex-shrink: 0; padding: 7px 12px; border-radius: 999px; border: none; background: var(--gold); color: var(--bg-dark); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+.faltas-lista { display: flex; flex-direction: column; gap: 14px; }
+.faltas-cartao { padding: 16px; border-radius: 16px; border: 1px solid var(--border-light); border-left: 5px solid var(--c); background: var(--bg-light); animation: faltas-entra 0.45s ease both; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.faltas-cartao:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); }
+.faltas-pagina.dark .faltas-cartao { background: rgba(255, 255, 255, 0.04); border-color: var(--border-dark); border-left-color: var(--c); }
+.faltas-cartao--carregar { opacity: 0.6; animation: faltas-pulsa 1.2s ease infinite; }
+.faltas-cartao__topo { display: flex; align-items: center; gap: 14px; }
+.faltas-cartao__topo h2 { font-size: 16px; margin-bottom: 4px; }
+
+.faltas-anel { width: 72px; height: 72px; flex-shrink: 0; transform: rotate(-90deg); }
+.faltas-anel__fundo { fill: none; stroke: var(--border-light); stroke-width: 7; }
+.faltas-pagina.dark .faltas-anel__fundo { stroke: var(--border-dark); }
+.faltas-anel__valor { fill: none; stroke: var(--aula-fui); stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.3s ease; }
+.faltas-cartao--amarelo .faltas-anel__valor { stroke: var(--aula-justificada); }
+.faltas-cartao--vermelho .faltas-anel__valor { stroke: var(--aula-faltei); }
+.faltas-anel text { transform: rotate(90deg); transform-origin: 36px 36px; text-anchor: middle; font-size: 15px; font-weight: 700; fill: currentColor; }
+
+.faltas-selo { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; color: var(--bg-dark); }
+.faltas-selo--verde { background: var(--aula-fui); }
+.faltas-selo--amarelo { background: var(--aula-justificada); }
+.faltas-selo--vermelho { background: var(--aula-faltei); }
+
+.faltas-numeros { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 14px 0 10px; text-align: center; }
+.faltas-numeros b { display: block; font-size: 20px; }
+.faltas-numeros small { font-size: 11px; opacity: 0.7; }
+.faltas-explicacao { font-size: 13px; line-height: 1.45; }
+.faltas-margem { font-size: 12px; opacity: 0.8; margin-top: 4px; }
+
+.faltas-simulador { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: rgba(201, 168, 76, 0.08); }
+.faltas-simulador label { display: block; font-size: 13px; margin-bottom: 6px; }
+.faltas-simulador input[type="range"] { width: 100%; accent-color: var(--gold); }
+.faltas-simulador__res { font-size: 12px; margin-top: 6px; animation: faltas-entra 0.25s ease both; }
+.faltas-simulador__res--vermelho { color: var(--aula-faltei); font-weight: 700; }
+
+.faltas-cartao__acoes { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.faltas-cartao__acoes button { padding: 7px 14px; border-radius: 999px; border: 1px solid var(--gold); background: transparent; color: inherit; font: inherit; font-size: 12px; cursor: pointer; }
+
+.faltas-historico { list-style: none; margin-top: 10px; display: flex; flex-direction: column; gap: 4px; animation: faltas-entra 0.3s ease both; }
+.faltas-historico button { width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border-light); background: transparent; color: inherit; font: inherit; font-size: 13px; text-align: left; cursor: pointer; }
+.faltas-pagina.dark .faltas-historico button { border-color: var(--border-dark); }
+.faltas-historico small { flex-basis: 100%; opacity: 0.7; font-size: 12px; }
+.aula-chip--presente, .aula-chip--faltei, .aula-chip--faltei-justificada, .aula-chip--prof-faltou, .aula-chip--sem-aula { margin-left: 0; }
+
+@keyframes faltas-entra { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes faltas-pulsa { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.8; } }
+@media (prefers-reduced-motion: reduce) {
+  .faltas-cartao, .faltas-comprovativos, .faltas-historico, .faltas-simulador__res, .faltas-cartao--carregar { animation: none; }
+  .faltas-anel__valor, .faltas-cartao { transition: none; }
+}

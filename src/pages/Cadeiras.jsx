@@ -58,6 +58,10 @@ export default function Cadeiras() {
             <span className="cadeiras-recurso__icon">⚖️</span>
             <span>Artigos</span>
           </button>
+          <button className="cadeiras-recurso" onClick={() => navigate('/faltas')}>
+            <span className="cadeiras-recurso__icon">📋</span>
+            <span>Faltas</span>
+          </button>
           <button className="cadeiras-recurso" onClick={() => navigate('/leituras')}>
             <span className="cadeiras-recurso__icon">📖</span>
             <span>Leituras</span>

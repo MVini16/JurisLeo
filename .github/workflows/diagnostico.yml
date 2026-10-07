@@ -1,0 +1,25 @@
+# diagnóstico só de leitura dos dados no firestore (contagens e datas, nunca o conteúdo).
+# corre quando .github/diagnostico-trigger.txt muda. usa a mesma conta de serviço do deploy
+name: diagnostico
+
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/diagnostico-trigger.txt']
+
+jobs:
+  diagnostico:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: instalar só o firebase-admin (fora do projeto)
+        run: mkdir -p "$RUNNER_TEMP/diag" && cp scripts/diagnostico.mjs "$RUNNER_TEMP/diag/" && cd "$RUNNER_TEMP/diag" && npm init -y >/dev/null && npm i firebase-admin@13 --no-audit --no-fund
+      - name: contar os documentos de cada conta
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > "$RUNNER_TEMP/sa.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
+          cd "$RUNNER_TEMP/diag" && node diagnostico.mjs
+          rm -f "$RUNNER_TEMP/sa.json"

@@ -18,6 +18,15 @@
 .navbar-layout--social .navbar-conteudo { padding-bottom: 0; }
 .sidebar-modo { margin-bottom: 10px; align-self: stretch; justify-content: center; }
 
+/* a barra lateral do computador tem todas as páginas, em grupos */
+.sidebar-logo-icone { border-radius: 9px; box-shadow: 0 2px 8px rgba(107, 15, 26, 0.3); }
+.sidebar-grupo { display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; }
+.sidebar-grupo-titulo { font-family: system-ui, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.5; padding: 10px 16px 4px; }
+.sidebar-item { padding-block: 9px; }
+.sidebar-item .ic { --ic-acento: var(--gold); }
+.sidebar-atalho { font-family: system-ui, sans-serif; font-size: 11px; opacity: 0.45; padding: 4px 16px 10px; }
+@media (min-width: 768px) { .sidebar { overflow-y: auto; max-height: 100vh; } }
+
 /* ─── sidebar — desktop ────────────────────────────────────────────────────── */
 .sidebar {
   display: none;

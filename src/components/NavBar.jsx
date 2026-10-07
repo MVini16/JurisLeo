@@ -5,6 +5,9 @@ import DicaPrimeiraVez from './DicaPrimeiraVez.jsx'
 import BotaoAjuda from './BotaoAjuda.jsx'
 import { resolverAjuda } from '../data/ajuda.js'
 import BarraSocial from './feed/BarraSocial.jsx'
+import PaletaComandos from './PaletaComandos.jsx'
+import Icone from './icones/Icone.jsx'
+import { GRUPOS_DESTINOS } from '../data/destinos.js'
 import AlternarModo from './feed/AlternarModo.jsx'
 import { usePreferencias } from '../hooks/usePreferencias.js'
 import { useSincronizarLocal } from '../hooks/useSincronizarLocal.js'
@@ -135,21 +138,28 @@ function NavBar({ children }) {
       {/* sidebar — só visível no desktop */}
       <aside className="sidebar no-print">
         <div className="sidebar-logo">
-          <span>⚖️</span>
+          <img className="sidebar-logo-icone" src="/icon-192.png" alt="" width="34" height="34" />
           <span className="sidebar-logo-texto">JurisLeo</span>
         </div>
 
         <nav className="sidebar-nav">
-          {itens.map((item) => (
-            <button
-              key={item.path}
-              className={`sidebar-item ${estaActivo(item.path) ? 'activo' : ''}`}
-              onClick={() => navigate(item.path)}
-            >
-              <span className="sidebar-item-icon">{item.icon}</span>
-              <span className="sidebar-item-label">{item.label}</span>
-            </button>
+          {GRUPOS_DESTINOS.map((grupo) => (
+            <div key={grupo.titulo} className="sidebar-grupo">
+              <p className="sidebar-grupo-titulo">{grupo.titulo}</p>
+              {grupo.itens.map((item) => (
+                <button
+                  key={item.rota}
+                  className={`sidebar-item ${estaActivo(item.rota) ? 'activo' : ''}`}
+                  onClick={() => navigate(item.rota)}
+                  aria-current={estaActivo(item.rota) ? 'page' : undefined}
+                >
+                  <span className="sidebar-item-icon"><Icone nome={item.icone} tamanho={20} ativo={estaActivo(item.rota)} /></span>
+                  <span className="sidebar-item-label">{item.rotulo}</span>
+                </button>
+              ))}
+            </div>
           ))}
+          <p className="sidebar-atalho">Ctrl+K para ir a qualquer página</p>
         </nav>
 
         <AlternarModo className="sidebar-modo" />
@@ -163,6 +173,8 @@ function NavBar({ children }) {
           <span>Adicionar</span>
         </button>
       </aside>
+
+      <PaletaComandos />
 
       {/* conteúdo da página */}
       <main className="navbar-conteudo" key={location.pathname}>

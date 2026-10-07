@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Icone from '../icones/Icone.jsx';
 import AlternarModo from './AlternarModo.jsx';
+import { GRUPOS_DESTINOS } from '../../data/destinos.js';
 import './BarraSocial.css';
 
 const SEPARADORES = [
@@ -12,12 +13,12 @@ const SEPARADORES = [
   { caminho: '/calendario', nome: 'calendario', rotulo: 'Calendário' },
 ];
 
-const GRUPOS = [
-  { titulo: 'Hoje', itens: [['/horario', 'relogio', 'Horário'], ['/tarefas', 'sabia', 'Tarefas'], ['/faltas', 'escudo', 'Faltas']] },
-  { titulo: 'Estudar', itens: [['/anotacoes', 'pena', 'Cadernos'], ['/sumarios', 'livro', 'Sumários'], ['/casos', 'balanca', 'Casos'], ['/glossario', 'livro', 'Glossário'], ['/jogos', 'dado', 'Jogos'], ['/estudo', 'chama', 'Estudo'], ['/pesquisa', 'alvo', 'Pesquisa']] },
-  { titulo: 'Faculdade', itens: [['/cadeiras', 'livro', 'Cadeiras'], ['/artigos', 'pena', 'Artigos'], ['/leituras', 'livro', 'Leituras']] },
-  { titulo: 'Eu', itens: [['/perfil', 'modo', 'Definições'], ['/ajuda', 'alvo', 'Ajuda']] },
-];
+
+// o que já está na barra de baixo não se repete no menu Mais
+const NA_BARRA = new Set(SEPARADORES.map((s) => s.caminho));
+const GRUPOS_NO_MAIS = GRUPOS_DESTINOS
+  .map((g) => ({ ...g, itens: g.itens.filter((d) => !NA_BARRA.has(d.rota)) }))
+  .filter((g) => g.itens.length > 0);
 
 export default function BarraSocial() {
   const navigate = useNavigate();
@@ -36,13 +37,13 @@ export default function BarraSocial() {
         <div className="bs-folha-fundo" onClick={() => setMais(false)}>
           <div className="bs-folha" role="dialog" aria-label="Todas as páginas" onClick={(e) => e.stopPropagation()}>
             <div className="bs-folha__pega" aria-hidden="true" />
-            {GRUPOS.map((g) => (
+            {GRUPOS_NO_MAIS.map((g) => (
               <div key={g.titulo} className="bs-grupo">
                 <h3>{g.titulo}</h3>
                 <div className="bs-grelha">
-                  {g.itens.map(([caminho, icone, rotulo]) => (
-                    <button key={caminho} type="button" className="bs-item" onClick={() => ir(caminho)}>
-                      <Icone nome={icone} tamanho={26} /><span>{rotulo}</span>
+                  {g.itens.map((d) => (
+                    <button key={d.rota} type="button" className="bs-item" onClick={() => ir(d.rota)}>
+                      <Icone nome={d.icone} tamanho={26} /><span>{d.rotulo}</span>
                     </button>
                   ))}
                 </div>

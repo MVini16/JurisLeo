@@ -31,6 +31,7 @@ const Tarefas = lazy(() => import('./pages/Tarefas'))
 const Calendario = lazy(() => import('./pages/Calendario'))
 const Perfil = lazy(() => import('./pages/Perfil'))
 const PerfilSecao = lazy(() => import('./pages/PerfilSecao'))
+const AdminBoneco = lazy(() => import('./pages/AdminBoneco'))
 
 function App() {
   return (
@@ -63,6 +64,9 @@ function App() {
           <Route path="/calendario" element={<NavBar><Calendario /></NavBar>} />
           <Route path="/perfil" element={<NavBar><Perfil /></NavBar>} />
           <Route path="/perfil/:secao" element={<NavBar><PerfilSecao /></NavBar>} />
+
+          {/* consola do vini: não aparece em menu nenhum, abre-se pelo endereço */}
+          <Route path="/admin/boneco" element={<NavBar><AdminBoneco /></NavBar>} />
         </Routes>
       </Suspense>
       <BonecoDoVini />

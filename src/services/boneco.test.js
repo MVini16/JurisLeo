@@ -184,3 +184,10 @@ describe('o contacto do vini', () => {
     expect(ligacaoDaLinha('112')).toBe('tel:112');
   });
 });
+
+describe('whatsapp com indicativo', () => {
+  it('um número português de 9 dígitos leva 351 à frente', () => {
+    expect(ligacoesDoContacto('931143554').whatsapp).toBe('https://wa.me/351931143554');
+    expect(ligacoesDoContacto('+351 931 143 554').whatsapp).toBe('https://wa.me/351931143554');
+  });
+});

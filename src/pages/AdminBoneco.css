@@ -1,0 +1,22 @@
+.admin-boneco { max-width: 640px; margin: 0 auto; padding: 20px 16px 100px; display: grid; gap: 14px; color: var(--text-light); }
+html.dark .admin-boneco { color: var(--text-dark); }
+.admin-boneco h1 { margin: 0; font-family: Georgia, serif; color: var(--burgundy); }
+html.dark .admin-boneco h1 { color: var(--gold); }
+.admin-boneco h2 { margin: 0 0 6px; font-size: 1rem; font-family: Georgia, serif; }
+.admin-boneco h2 small { opacity: 0.6; font-weight: 400; }
+.admin-boneco__nota { margin: 0; font-size: 0.88rem; opacity: 0.75; line-height: 1.5; }
+.admin-boneco__voltar { justify-self: start; background: none; border: 0; color: inherit; font: inherit; cursor: pointer; padding: 4px 0; }
+.admin-boneco__form, .admin-boneco__exportar, .admin-boneco__lista { display: grid; gap: 8px; padding: 14px; border-radius: 14px; border: 1px solid var(--border-light); background: var(--bg-light); }
+html.dark .admin-boneco__form, html.dark .admin-boneco__exportar, html.dark .admin-boneco__lista { background: var(--bg-dark); border-color: var(--border-dark); }
+.admin-boneco label { display: grid; gap: 4px; font-size: 0.8rem; }
+.admin-boneco select, .admin-boneco textarea { width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border-light); background: transparent; color: inherit; font: inherit; font-size: 0.92rem; }
+html.dark .admin-boneco select, html.dark .admin-boneco textarea { border-color: var(--border-dark); }
+.admin-boneco__botao { justify-self: start; padding: 10px 18px; border: 0; border-radius: 999px; background: var(--burgundy); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+.admin-boneco__botao:disabled { opacity: 0.5; cursor: default; }
+html.dark .admin-boneco__botao { background: var(--gold); color: var(--bg-dark); }
+.admin-boneco__mensagem { margin: 0; font-size: 0.85rem; color: var(--burgundy); }
+html.dark .admin-boneco__mensagem { color: var(--gold); }
+.admin-boneco__lista ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.admin-boneco__lista li { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; font-size: 0.9rem; line-height: 1.4; padding: 6px 0; border-bottom: 1px solid var(--border-light); }
+html.dark .admin-boneco__lista li { border-color: var(--border-dark); }
+.admin-boneco__lista li button { flex: none; background: none; border: 0; color: var(--selo); font: inherit; font-size: 0.8rem; cursor: pointer; }

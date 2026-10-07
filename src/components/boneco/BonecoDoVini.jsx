@@ -8,6 +8,7 @@ import Barney from '../Barney.jsx';
 import { useTarefas } from '../../hooks/useTarefas.js';
 import { usePreferencias } from '../../hooks/usePreferencias.js';
 import { guardarPreferencias, lerPreferencias } from '../../services/preferenciasBrincadeiras.js';
+import { lerExtras } from '../../services/armazemFrases.js';
 import {
   ABERTURAS, ACOES, ESTADOS, RESPOSTAS, LINHAS_DE_APOIO,
 } from '../../data/boneco.js';
@@ -160,7 +161,7 @@ export default function BonecoDoVini() {
       });
       if (!pode) return;
       guardarJson(CHAVE_HISTORICO, acrescentarAoHistorico(lerJson(CHAVE_HISTORICO, []), agora));
-      setBalao({ tipo: 'proativa', texto: escolherProativa(new Date(agora).getHours()).texto });
+      setBalao({ tipo: 'proativa', texto: escolherProativa(new Date(agora).getHours(), Math.random, lerExtras()).texto });
     }, PASSO_MS);
     return () => clearInterval(id);
   }, []);
@@ -172,7 +173,7 @@ export default function BonecoDoVini() {
   const escolherEstado = (estado) => {
     const { rotulo } = ESTADOS.find((e) => e.id === estado);
     dizer('ela', rotulo);
-    const resposta = escolherResposta(estado, { ultima: ultimas.current.resposta });
+    const resposta = escolherResposta(estado, { ultima: ultimas.current.resposta, extra: lerExtras() });
     ultimas.current.resposta = resposta?.texto ?? null;
     dizer('boneco', resposta?.texto);
     const banco = RESPOSTAS[estado];
@@ -195,13 +196,13 @@ export default function BonecoDoVini() {
       case 'estudar25': fechar(); navigate('/estudo'); break;
       case 'urgentes': dizer('boneco', 'Estas são as mais urgentes. Uma de cada vez.', 'urgentes'); break;
       case 'piada': {
-        const piada = escolherPiada(ultimas.current.piada);
+        const piada = escolherPiada(ultimas.current.piada, Math.random, lerExtras());
         ultimas.current.piada = piada;
         dizer('boneco', piada);
         break;
       }
       case 'elogio': {
-        const elogio = escolherElogio(ultimas.current.elogio);
+        const elogio = escolherElogio(ultimas.current.elogio, Math.random, lerExtras());
         ultimas.current.elogio = elogio;
         dizer('boneco', elogio);
         break;

@@ -18,21 +18,24 @@ export function escolherDe(lista, ultima, aleatorio = Math.random) {
 }
 
 // a resposta a um estado: sorteia a voz (mais carinhosa quando ela está em baixo) e depois a frase
-export function escolherResposta(estado, { ultima = null, aleatorio = Math.random } = {}) {
+// `extra` são as frases que o vini acrescentou na consola (services/frasesExtra.js). em "estou mesmo mal" nunca entram
+export function escolherResposta(estado, { ultima = null, aleatorio = Math.random, extra = {} } = {}) {
   const banco = RESPOSTAS[estado];
   if (!banco) return null;
+  const extras = estado === 'mal' ? [] : (extra.respostas?.[estado] ?? []);
+  const brincalhonas = [...banco.brincalhona, ...extras];
   const peso = PESO_DA_VOZ_BRINCALHONA[estado] ?? 0;
-  const brincalhona = banco.brincalhona.length > 0 && aleatorio() < peso;
+  const brincalhona = brincalhonas.length > 0 && aleatorio() < peso;
   const voz = brincalhona ? 'brincalhona' : 'carinhosa';
-  return { texto: escolherDe(banco[voz], ultima, aleatorio), voz };
+  return { texto: escolherDe(brincalhona ? brincalhonas : banco.carinhosa, ultima, aleatorio), voz };
 }
 
-export function escolherElogio(ultimo, aleatorio = Math.random) {
-  return escolherDe(ELOGIOS, ultimo, aleatorio);
+export function escolherElogio(ultimo, aleatorio = Math.random, extra = {}) {
+  return escolherDe([...ELOGIOS, ...(extra.elogios ?? [])], ultimo, aleatorio);
 }
 
-export function escolherPiada(ultima, aleatorio = Math.random) {
-  return escolherDe(PIADAS, ultima, aleatorio);
+export function escolherPiada(ultima, aleatorio = Math.random, extra = {}) {
+  return escolherDe([...PIADAS, ...(extra.piadas ?? [])], ultima, aleatorio);
 }
 
 // ---------- quando ele puxa conversa ----------
@@ -43,10 +46,10 @@ export function motivoPorHora(hora) {
   return 'tarde';
 }
 
-export function escolherProativa(hora, aleatorio = Math.random) {
+export function escolherProativa(hora, aleatorio = Math.random, extra = {}) {
   const motivo = motivoPorHora(hora);
   const voz = aleatorio() < 0.5 ? 'brincalhona' : 'carinhosa';
-  return { motivo, voz, texto: escolherDe(PROATIVAS[motivo][voz], null, aleatorio) };
+  return { motivo, voz, texto: escolherDe([...PROATIVAS[motivo][voz], ...(extra.proativas ?? [])], null, aleatorio) };
 }
 
 // páginas onde ele aparece mas fica quieto (ela está a escrever, a estudar ou a rever)
@@ -118,9 +121,19 @@ export function telefoneValido(texto) {
 export function ligacoesDoContacto(texto) {
   if (!telefoneValido(texto)) return null;
   const numero = limparTelefone(texto);
-  return { ligar: `tel:${numero}`, mensagem: `sms:${numero}`, whatsapp: `https://wa.me/${numero.replace(/^\+/, '')}` };
+  // o WhatsApp precisa do indicativo: um número de 9 dígitos é português, por isso leva 351 à frente
+  const digitos = numero.replace(/^\+/, '');
+  const comIndicativo = digitos.length === 9 ? `351${digitos}` : digitos;
+  return { ligar: `tel:${numero}`, mensagem: `sms:${numero}`, whatsapp: `https://wa.me/${comIndicativo}` };
 }
 
 export function ligacaoDaLinha(numero) {
   return `tel:${limparTelefone(numero)}`;
+}
+
+// o contacto do vini pode chegar por um link (jurisleo.../?vini=931143554): guarda-se só no telemóvel dela e o número
+// não fica escrito em lado nenhum do código. devolve o número ou null
+export function contactoDoLink(textoDaUrl) {
+  const valor = new URLSearchParams(String(textoDaUrl ?? '')).get('vini');
+  return valor && telefoneValido(valor) ? limparTelefone(valor) : null;
 }

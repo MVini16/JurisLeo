@@ -4,6 +4,7 @@
 import * as THREE from './three.module.min.js';
 
 (function () {
+  var baseFov = 62; var ultPul = 0; var tamBase = 1;
   var parado = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (parado || /[?&]semgl\b/.test(window.location.search)) return;
 
@@ -131,9 +132,11 @@ import * as THREE from './three.module.min.js';
     var w = window.innerWidth; var h = window.innerHeight;
     renderer.setSize(w, h, false);
     camara.aspect = w / h;
-    camara.fov = w < h ? 70 : 58; // mais aberta no telemóvel em pé
+    baseFov = w < h ? 70 : 58; // mais aberta no telemóvel em pé
+    camara.fov = baseFov + ultPul * 9;
     camara.updateProjectionMatrix();
-    mat.uniforms.uTam.value = Math.min(1.35, Math.max(0.85, h / 800));
+    tamBase = Math.min(1.35, Math.max(0.85, h / 800));
+    mat.uniforms.uTam.value = tamBase;
     mat.uniforms.uAlto.value = w < h ? 4.6 : 6.4; // em pé o coração fica mais alto, por cima das palavras
   }
   medir();
@@ -181,6 +184,14 @@ import * as THREE from './three.module.min.js';
     camara.rotation.set(-sy * 0.05, -sx * 0.08, roll);
     camara.updateMatrixWorld();
 
+    // o "soco de câmara": a lente abre e as estrelas crescem um instante a cada cena nova
+    var pul = estado.pulso || 0;
+    if (Math.abs(pul - ultPul) > 0.002) {
+      ultPul = pul;
+      camara.fov = baseFov + pul * 9;
+      camara.updateProjectionMatrix();
+      mat.uniforms.uTam.value = tamBase * (1 + pul * 0.45);
+    }
     var morph = estado.coracao ? estado.coracao.p : 0;
     mat.uniforms.uMorph.value = morph;
     mat.uniforms.uTempo.value = t;

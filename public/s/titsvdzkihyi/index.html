@@ -22,8 +22,14 @@
     <div class="cortina__miolo">
       <svg class="cortina__coracao" viewBox="-26 -22 52 46" aria-hidden="true"><path d="M0 -6 C -9 -20 -25 -9 -17 5 C -12 13 -4 18 0 22 C 4 18 12 13 17 5 C 25 -9 9 -20 0 -6 Z"/></svg>
       <p class="cortina__texto" id="abertura"></p>
-      <button class="botao" id="comecar" type="button">Toca para começar</button>
+      <button class="botao" id="comecar" type="button" disabled>A preparar as nossas fotos...</button>
     </div>
+  </div>
+
+  <!-- genérico de abertura, como num filme -->
+  <div class="intro" id="intro" hidden>
+    <p class="intro__linha" id="introLinha"></p>
+    <button class="intro__passar" id="introPassar" type="button">passar &rsaquo;</button>
   </div>
 
   <button class="som" id="som" type="button" aria-pressed="false" aria-label="Ligar ou desligar a música" hidden>♪</button>
@@ -32,7 +38,7 @@
     <!-- cena 1: o título, que cresce até engolir o ecrã -->
     <section class="cena cena--titulo" id="cenaTitulo">
       <div class="titulo-bloco" id="tituloBloco">
-        <p class="pequeno" id="subtitulo">Uma coisa só para ti</p>
+        <p class="pequeno" id="subtitulo"><span id="subFixo">Para a minha</span> <span class="rodante" id="subRoda">Necas</span></p>
         <h1 id="nome"></h1>
         <svg class="sublinhado" viewBox="0 0 320 34" aria-hidden="true"><path d="M6 22 C 50 4, 100 32, 160 14 S 270 6, 314 20"/></svg>
         <p class="deslizar">desliza devagar</p>
@@ -92,6 +98,15 @@
       <div class="final-bloco">
         <div class="texto-longo texto-longo--grande" id="finalTexto"></div>
         <p class="assinatura" id="assinatura"></p>
+      </div>
+    </section>
+
+    <!-- créditos finais, a subir por cima do coração -->
+    <section class="cena cena--creditos" id="cenaCreditos">
+      <div class="creditos" id="creditos"></div>
+      <div class="creditos-fim" id="creditosFim">
+        <p class="creditos-fim__grande" id="fimGrande"></p>
+        <p class="creditos-fim__sub" id="fimSub"></p>
         <button class="botao botao--suave" id="topo" type="button">Voltar ao início</button>
       </div>
     </section>

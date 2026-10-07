@@ -3,6 +3,24 @@
 window.CONTEUDO = {
   nome: 'Leonor',
   subtitulo: 'Para a minha Necas',
+  apelidos: ['Necas', 'Nô', 'bebé', 'princesa', 'meu bem', 'Leonor'],
+  // o genérico de abertura, como num filme
+  intro: ['Vini apresenta', 'Um filme de amor', 'Com a Leonor no papel principal'],
+  // os cartões de capítulo
+  capitulos: { nos: ['Capítulo I', 'Nós'], tu: ['Capítulo II', 'Tu'], frases: ['Capítulo III', 'As nossas frases'], jogo: ['Capítulo IV', 'O jogo'], carta: ['Capítulo V', 'A carta'] },
+  // os créditos finais
+  creditos: [
+    ['Realizado por', 'Vini'],
+    ['Protagonista', 'Leonor'],
+    ['Também conhecida por', 'Necas, Nô, bebé, princesa, meu bem'],
+    ['Local das filmagens', 'Onde nós estivermos'],
+    ['Banda sonora', 'O nosso riso'],
+    ['Direção de arte', 'O teu sorriso'],
+    ['Efeitos especiais', 'Nenhum, é tudo a sério'],
+    ['Duração', 'Sempre e para sempre'],
+    ['Nenhum coração foi magoado durante as filmagens', ''],
+  ],
+  fim: ['FIM', '(mas só deste capítulo)'],
   abertura: 'Põe os auscultadores, apaga a luz e fica com tempo, Leonor. Isto é para ti, e não tem pressa.',
   dificil: [
     'Necas, se estás a ler isto num dia mau,',

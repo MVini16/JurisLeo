@@ -89,3 +89,16 @@ A conta de serviço precisou dos papéis: Firebase Admin, Service Usage Consumer
 ## 8. Mensagens de commit relevantes (resumo)
 
 Jogos e story, boneco e frases, aviso de versão nova, cópia local, `/admin` e partilha com o Vini, notificações push (base), login automático, tutorial por aparelho, GitHub Action de deploy, página-surpresa (cenas de cinema e fotos). A história completa está em `git log` desta branch.
+
+
+## 9. Atualização: página-surpresa em modo cinema (07-10-2026, fim de sessão)
+
+- **Endereço do QR:** `https://jurisleo-67124.firebaseapp.com/s/titsvdzkihyi/` (domínio `firebaseapp.com`, não `web.app`). Motivo: quem já abriu o site `web.app` no Safari tem lá guardada a versão antiga da app, que apanhava este endereço e mostrava a dashboard. Noutro domínio isso não acontece. O cartão de impressão v2 já aponta para este endereço.
+- **Camadas:** `cinema.js` (Three.js 0.160.1, módulo ES): milhares de estrelas num túnel por onde a câmara voa com o scroll, e no fim juntam-se num coração 3D (morph feito no shader com duas posições por ponto). Qualidade ajusta-se sozinha; sem WebGL ou com `?semgl` cai no céu 2D de `app.js`. GSAP/ScrollTrigger fazem as cenas; anime.js 3.2.2 faz os traços SVG e as entradas elásticas.
+- **Bibliotecas** (`gsap`, `ScrollTrigger`, `three.module.min.js`, `anime.min.js`) **não estão no repositório**: o plugin `copiarBibliotecasDaSurpresa` em `vite.config.js` copia-as do `node_modules` no build. `three` e `animejs` estão em `devDependencies`.
+- **Ordem das cenas fixas:** o GSAP calcula o espaço das cenas fixas pela ordem em que os ScrollTriggers são criados. Criar sempre na ordem em que as cenas aparecem na página (os cartões de capítulo têm de ser criados junto à cena que antecedem), senão as cenas sobrepõem-se.
+- **Conteúdo** todo em `conteudo.js`: legendas, frases (TVD, HIMYM, Gossip Girl, Sex and the City, todas confirmadas online), jogo da memória, cartas "Abre quando", razões, texto longo, genérico de abertura, capítulos e créditos finais.
+- **Fluxo:** cortina "Toca para começar" (espera pelas fotos) > genérico de abertura (com "passar") > título com apelidos a rodar > Dia difícil > Cap. I Nós (película) > Cap. II Tu (película) > Cap. III Frases > palavras em máscara > cartas > razões > Cap. IV Jogo > Cap. V Carta > final com coração 3D > créditos > FIM. Cerca de 61 ecrãs de scroll.
+- **Sem avisos:** a versão da app continua `2026-10-09`; as atualizações desta página não mexem em `novidades.js`.
+- **Testado** em Chromium (telemóvel e computador) com WebGL por software; **não testado num iPhone real** (a Leonor tem iPhone 14). Se alguma cena engasgar, reduzir `N` e o `pixelMax` em `cinema.js`.
+- Pendente: data de início da relação para um contador de "dias juntos" (opcional).

@@ -20,7 +20,8 @@
   $('abertura').textContent = C.abertura;
   var h1 = $('nome');
   h1.setAttribute('aria-label', C.nome);
-  if (C.subtitulo) $('subtitulo').textContent = C.subtitulo;
+  $('subFixo').textContent = 'Para a minha';
+  $('subRoda').textContent = (C.apelidos && C.apelidos[0]) || 'Necas';
   C.nome.split('').forEach(function (l) { var s = el('span', 'letra', l); s.setAttribute('aria-hidden', 'true'); h1.appendChild(s); });
 
   C.dificil.forEach(function (linha) { $('linhasDificil').appendChild(el('p', 'linha', linha)); });
@@ -57,6 +58,11 @@
     $('tiras').appendChild(sec);
     return { sec: sec, tira: tira, contador: contador, barra: barra, total: t.momentos.length };
   });
+
+  ['nos', 'tu'].forEach(function (k, i) { if (peliculas[i]) antesDe(peliculas[i].sec, C.capitulos[k]); });
+  antesDe($('cenaFrases'), C.capitulos.frases);
+  antesDe($('jogo'), C.capitulos.jogo);
+  antesDe($('carta'), C.capitulos.carta);
 
   C.interludio.forEach(function (linha) {
     var p = el('p');
@@ -96,6 +102,29 @@
   C.final.forEach(function (linha) { $('finalTexto').appendChild(el('p', 'final-linha', linha)); });
   $('assinatura').textContent = C.assinatura;
 
+  // créditos finais
+  C.creditos.forEach(function (c) {
+    var d = el('div', 'credito' + (c[1] ? '' : ' credito--solto'));
+    d.appendChild(el('p', 'credito__papel', c[0]));
+    if (c[1]) d.appendChild(el('p', 'credito__nome', c[1]));
+    $('creditos').appendChild(d);
+  });
+  $('fimGrande').textContent = C.fim[0];
+  $('fimSub').textContent = C.fim[1];
+
+  // cartões de capítulo: um título grande antes de cada parte
+  function criarCapitulo(par) {
+    var sec = el('section', 'cena cena--capitulo');
+    sec.appendChild(el('p', 'cap-num', par[0]));
+    var t = el('h2', 'cap-titulo');
+    t.setAttribute('aria-label', par[1]);
+    par[1].split('').forEach(function (ch) { var l = el('span', 'cap-letra', ch === ' ' ? '\u00a0' : ch); l.setAttribute('aria-hidden', 'true'); t.appendChild(l); });
+    sec.appendChild(t);
+    sec.appendChild(el('i', 'cap-linha'));
+    return sec;
+  }
+  function antesDe(alvo, par) { alvo.parentNode.insertBefore(criarCapitulo(par), alvo); }
+
   // ---------- cartas "abre quando" ----------
   var CHAVE = 'surpresa-cartas';
   var abertas = [];
@@ -132,7 +161,7 @@
   var estrelas = [];
   var rolar = 0;
   var coracao = { p: 0 };
-  window.CINEMA = { coracao: coracao }; // a camada 3D (cinema.js) lê daqui o quanto as estrelas já são um coração
+  window.CINEMA = { coracao: coracao, pulso: 0 }; // a camada 3D (cinema.js) lê daqui o quanto as estrelas já são um coração
   var NUM_CORACAO = 120;
   function medir() {
     var d = Math.min(window.devicePixelRatio || 1, 2);
@@ -325,6 +354,30 @@
   montarJogo();
   $('memoRecomecar').addEventListener('click', montarJogo);
 
+  // um "soco de câmara": a lente 3D dá um zoom curto, usado a cada cena nova
+  function pulso(f) {
+    if (parado || !window.CINEMA) return;
+    gsap.fromTo(window.CINEMA, { pulso: f || 1 }, { pulso: 0, duration: 1.8, ease: 'power3.out', overwrite: true });
+  }
+
+  // um cometa que atravessa o céu de vez em quando
+  function cometa() {
+    if (document.visibilityState === 'visible' && !document.body.classList.contains('bloqueado')) {
+      var c = el('div', 'cometa');
+      document.body.appendChild(c);
+      var w = window.innerWidth; var h = window.innerHeight;
+      var x0 = Math.random() * w * 0.55; var y0 = Math.random() * h * 0.35;
+      var ang = 22 + Math.random() * 16;
+      var dx = w * 0.85; var dy = Math.tan(ang * Math.PI / 180) * dx;
+      gsap.set(c, { x: x0, y: y0, rotate: ang, opacity: 0 });
+      gsap.timeline({ onComplete: function () { c.remove(); } })
+        .to(c, { opacity: 1, duration: 0.18 }, 0)
+        .to(c, { x: x0 + dx, y: y0 + dy, duration: 1.5, ease: 'power1.in' }, 0)
+        .to(c, { opacity: 0, duration: 0.45 }, 1.05);
+    }
+    setTimeout(cometa, 6000 + Math.random() * 7000);
+  }
+
   // ---------- as cenas ----------
   // cena em que uma lista de elementos entra e sai, um de cada vez, sempre no mesmo sítio
   function sequencia(gatilho, itens, entrada, saida, fatia) {
@@ -351,11 +404,27 @@
 
     // 2. as frases do dia difícil, uma a uma
     sequencia('#cenaDificil', gsap.utils.toArray('.linha'),
-      { de: { opacity: 0, y: 70, scale: 0.93 }, para: { opacity: 1, y: 0, scale: 1 } },
-      { opacity: 0, y: -70, scale: 1.05 }, 0.75);
+      { de: { opacity: 0, y: 70, scale: 0.93, filter: 'blur(14px)' }, para: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' } },
+      { opacity: 0, y: -70, scale: 1.05, filter: 'blur(12px)' }, 0.75);
+
+
+    // cartões de capítulo: o título entra letra a letra, a linha abre, e tudo se desfoca e desaparece.
+    // têm de ser criados pela ordem em que aparecem na página (o gsap calcula o espaço das cenas fixas por essa ordem)
+    var capitulos = gsap.utils.toArray('.cena--capitulo');
+    function animarCapitulo(sec) {
+      if (!sec) return;
+      var tlc = gsap.timeline({ scrollTrigger: { trigger: sec, start: 'top top', end: '+=140%', scrub: 0.7, pin: true } });
+      tlc.fromTo(sec.querySelector('.cap-num'), { opacity: 0, y: 20, letterSpacing: '1em' }, { opacity: 1, y: 0, letterSpacing: '0.5em', duration: 0.5, ease: 'power2.out' }, 0);
+      tlc.fromTo(sec.querySelectorAll('.cap-letra'), { yPercent: 120, opacity: 0, rotate: 8 }, { yPercent: 0, opacity: 1, rotate: 0, stagger: 0.07, duration: 0.6, ease: 'power3.out' }, 0.1);
+      tlc.fromTo(sec.querySelector('.cap-linha'), { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power2.inOut' }, 0.5);
+      tlc.to({}, { duration: 0.5 });
+      tlc.to(sec.querySelector('.cap-titulo'), { scale: 1.25, opacity: 0, filter: 'blur(16px)', duration: 0.5, ease: 'power2.in' });
+      tlc.to([sec.querySelector('.cap-num'), sec.querySelector('.cap-linha')], { opacity: 0, duration: 0.4 }, '<');
+    }
 
     // 3. as películas: descer faz a tira de fotos deslizar na horizontal, com paralaxe dentro de cada foto
-    peliculas.forEach(function (pel) {
+    peliculas.forEach(function (pel, ip) {
+      animarCapitulo(capitulos[ip]); // I Nós, II Tu
       var tira = pel.tira;
       var quadros = gsap.utils.toArray('.quadro-cena', tira);
       var dist = function () { return Math.max(0, tira.scrollWidth - window.innerWidth); };
@@ -367,6 +436,7 @@
             var idx = Math.min(pel.total - 1, Math.round(self.progress * (pel.total - 1)));
             pel.contador.textContent = dois(idx + 1) + ' / ' + dois(pel.total);
             pel.barra.style.transform = 'scaleX(' + self.progress.toFixed(4) + ')';
+            pel.sec.style.setProperty('--perf', (-self.progress * dist() * 0.55).toFixed(1) + 'px');
           },
         },
       });
@@ -378,15 +448,17 @@
         if (i === 0) tl.to(foto, { duration: 0.4 }); else tl.fromTo(foto, { scale: 0.8, rotate: i % 2 ? 4 : -4, opacity: 0.25 }, { scale: 1, rotate: 0, opacity: 1, duration: 0.4, ease: 'power2.out' });
         tl.fromTo(leg, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' }, i === 0 ? 0 : 0.18);
         if (i < quadros.length - 1) { tl.to(foto, { duration: 0.3 }).to([foto, leg], { opacity: 0.2, scale: 0.92, duration: 0.3, ease: 'power2.in' }); }
+        if (img) gsap.fromTo(img, { scale: 1.16 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: q, containerAnimation: anim, start: 'left right', end: 'right left', scrub: true } });
         if (img) gsap.fromTo(img, { xPercent: -9 }, { xPercent: 9, ease: 'none', scrollTrigger: { trigger: q, containerAnimation: anim, start: 'left right', end: 'right left', scrub: true } });
       });
     });
 
+    animarCapitulo(capitulos[2]); // III As nossas frases
     // 3b. frases de filmes e séries: letra gigante que anda com o scroll, e uma frase de cada vez no centro
     var dur;
     var tlF = sequencia('#cenaFrases', gsap.utils.toArray('.frase'),
-      { de: { opacity: 0, y: 60, scale: 0.9, rotate: -1.5 }, para: { opacity: 1, y: 0, scale: 1, rotate: 0 } },
-      { opacity: 0, y: -60, scale: 1.07 }, 0.7);
+      { de: { opacity: 0, y: 60, scale: 0.9, rotate: -1.5, filter: 'blur(16px)' }, para: { opacity: 1, y: 0, scale: 1, rotate: 0, filter: 'blur(0px)' } },
+      { opacity: 0, y: -60, scale: 1.07, filter: 'blur(14px)' }, 0.7);
     dur = tlF.duration();
     gsap.utils.toArray('.marquee__linha').forEach(function (r) {
       var dir = Number(r.getAttribute('data-dir'));
@@ -420,6 +492,9 @@
     });
     tr.to({}, { duration: 0.35 });
 
+    animarCapitulo(capitulos[3]); // IV O jogo
+    animarCapitulo(capitulos[4]); // V A carta
+
     // a carta longa: cada parágrafo aparece com calma
     gsap.utils.toArray('#cartaLonga p').forEach(function (p) {
       gsap.from(p, { opacity: 0, y: 28, duration: 1.1, ease: 'power2.out', scrollTrigger: { trigger: p, start: 'top 90%' } });
@@ -433,8 +508,20 @@
     linhasF.forEach(function (l, i) { tf.fromTo(l, { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 1.3 + i * 0.5); });
     var fim = 1.3 + linhasF.length * 0.5;
     tf.fromTo('#assinatura', { opacity: 0 }, { opacity: 1, duration: 0.5 }, fim)
-      .fromTo('#topo', { opacity: 0 }, { opacity: 1, duration: 0.4 }, fim + 0.3)
-      .to({}, { duration: 0.6 });
+      .to({}, { duration: 0.8 });
+
+    // créditos finais: sobem por cima do coração a bater, e no fim aparece o FIM
+    var cr = $('creditos');
+    var tc = gsap.timeline({ scrollTrigger: { trigger: '#cenaCreditos', start: 'top top', end: '+=430%', scrub: 0.9, pin: true, invalidateOnRefresh: true } });
+    tc.fromTo(cr, { y: function () { return window.innerHeight * 0.95; } }, { y: function () { return -cr.offsetHeight - 30; }, ease: 'none', duration: 3 }, 0);
+    tc.fromTo('#creditosFim', { opacity: 0, scale: 0.86, filter: 'blur(14px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.9, ease: 'power2.out' }, 2.5);
+    tc.to({}, { duration: 0.7 });
+
+    // um soco de câmara a cada cena nova
+    ['#cenaDificil', '#cenaFrases', '#cenaInterludio', '#cenaRazoes', '#cenaFinal', '#cenaCreditos', '.cena--tira', '.cena--capitulo'].forEach(function (sel) {
+      gsap.utils.toArray(sel).forEach(function (el2) { ScrollTrigger.create({ trigger: el2, start: 'top 65%', onEnter: function () { pulso(1); } }); });
+    });
+    setTimeout(cometa, 5000);
   }
   animar();
   window.addEventListener('load', function () { ScrollTrigger.refresh(); });
@@ -454,30 +541,82 @@
   // ---------- entrar ----------
   var musica = $('musica');
   var botaoSom = $('som');
-  $('comecar').addEventListener('click', function () {
+  var botaoComecar = $('comecar');
+
+  // espera que as fotos estejam descodificadas, para a experiência não engasgar ao começar
+  function pronto() { botaoComecar.disabled = false; botaoComecar.textContent = 'Toca para começar'; }
+  var decodificadas = Promise.all([].slice.call(document.images).map(function (im) { return im.decode ? im.decode().catch(function () {}) : Promise.resolve(); }));
+  var limite = new Promise(function (r) { setTimeout(r, 7000); });
+  Promise.race([decodificadas.then(function () { return document.fonts ? document.fonts.ready : null; }), limite]).then(pronto);
+
+  function tocarMusica() {
+    if (!C.musica) return;
+    musica.src = C.musica; musica.volume = 0;
+    var tocar = musica.play();
+    if (tocar && tocar.catch) tocar.catch(function () {});
+    gsap.to(musica, { volume: 0.55, duration: 4 });
+    botaoSom.hidden = false; botaoSom.setAttribute('aria-pressed', 'true');
+  }
+
+  // depois do genericoDeAbertura: liberta o scroll e o título aparece
+  function entrar() {
     document.body.classList.remove('bloqueado');
-    if (C.musica) {
-      musica.src = C.musica; musica.volume = 0;
-      var tocar = musica.play();
-      if (tocar && tocar.catch) tocar.catch(function () {});
-      gsap.to(musica, { volume: 0.55, duration: 4 });
-      botaoSom.hidden = false; botaoSom.setAttribute('aria-pressed', 'true');
-    }
-    gsap.to('#cortina', { opacity: 0, duration: parado ? 0 : 1.6, ease: 'power1.inOut', onComplete: function () { $('cortina').remove(); } });
     if (!parado) {
-      gsap.to('#barraCima, #barraBaixo', { height: '4.5svh', duration: 2.2, ease: 'power3.inOut' });
-      gsap.from('.titulo-bloco .pequeno', { opacity: 0, y: 16, duration: 1.2, delay: 0.8 });
+      gsap.from('.titulo-bloco .pequeno', { opacity: 0, y: 16, duration: 1.2, delay: 0.4 });
       if (temAnime) {
         gsap.set('.letra', { opacity: 0 });
-        window.anime({ targets: '.letra', translateY: [90, 0], rotate: [10, 0], opacity: [0, 1], delay: window.anime.stagger(140, { start: 1100 }), duration: 1900, easing: 'easeOutElastic(1, .6)' });
+        window.anime({ targets: '.letra', translateY: [90, 0], rotate: [10, 0], opacity: [0, 1], delay: window.anime.stagger(140, { start: 700 }), duration: 1900, easing: 'easeOutElastic(1, .6)' });
         var sub2 = document.querySelector('.sublinhado path');
-        if (sub2) window.anime({ targets: sub2, strokeDashoffset: [1000, 0], duration: 2200, delay: 2900, easing: 'easeInOutSine' });
+        if (sub2) window.anime({ targets: sub2, strokeDashoffset: [1000, 0], duration: 2200, delay: 2500, easing: 'easeInOutSine' });
       } else {
-        gsap.from('.letra', { opacity: 0, y: 80, rotate: 8, duration: 1.6, stagger: 0.13, ease: 'power3.out', delay: 1.1 });
+        gsap.from('.letra', { opacity: 0, y: 80, rotate: 8, duration: 1.6, stagger: 0.13, ease: 'power3.out', delay: 0.7 });
       }
-      gsap.from('.deslizar', { opacity: 0, duration: 1.4, delay: 3.2 });
+      gsap.from('.deslizar', { opacity: 0, duration: 1.4, delay: 2.8 });
+      // o apelido por baixo do título vai rodando
+      var ap = C.apelidos || ['Necas']; var ia = 0; var roda = $('subRoda');
+      if (ap.length > 1) {
+        setInterval(function () {
+          ia = (ia + 1) % ap.length;
+          gsap.to(roda, { opacity: 0, y: -10, duration: 0.4, onComplete: function () { roda.textContent = ap[ia]; gsap.fromTo(roda, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }); } });
+        }, 2600);
+      }
     }
     ScrollTrigger.refresh();
+  }
+
+  // o genericoDeAbertura de abertura, como num filme: barras de cinema a fechar e três cartões de texto
+  function genericoDeAbertura(depois) {
+    var caixa = $('intro'); var linha = $('introLinha'); var tl; var feito = false;
+    function acabar() {
+      if (feito) return;
+      feito = true;
+      if (tl) tl.kill();
+      gsap.to(caixa, { opacity: 0, duration: 0.9, onComplete: function () { caixa.hidden = true; } });
+      gsap.to('#barraCima, #barraBaixo', { height: '4.5svh', duration: 1.6, ease: 'power3.inOut' });
+      pulso(1.5);
+      depois();
+    }
+    caixa.hidden = false;
+    gsap.set(caixa, { opacity: 1 });
+    gsap.to('#barraCima, #barraBaixo', { height: '12svh', duration: 2.4, ease: 'power3.inOut' });
+    pulso(1.2);
+    tl = gsap.timeline({ onComplete: acabar });
+    var pos = 1.0;
+    C.intro.forEach(function (t) {
+      tl.call(function () { linha.textContent = t; }, null, pos);
+      tl.fromTo(linha, { opacity: 0, filter: 'blur(14px)', letterSpacing: '0.7em', scale: 1.08 }, { opacity: 1, filter: 'blur(0px)', letterSpacing: '0.3em', scale: 1, duration: 1.2, ease: 'power2.out' }, pos);
+      tl.to(linha, { opacity: 0, filter: 'blur(10px)', duration: 0.8, ease: 'power2.in' }, pos + 1.9);
+      pos += 2.9;
+    });
+    tl.to({}, { duration: 0.2 }, pos);
+    $('introPassar').addEventListener('click', acabar);
+  }
+
+  botaoComecar.addEventListener('click', function () {
+    tocarMusica();
+    gsap.to('#cortina', { opacity: 0, duration: parado ? 0 : 1.4, ease: 'power1.inOut', onComplete: function () { $('cortina').remove(); } });
+    if (parado) { entrar(); return; }
+    genericoDeAbertura(entrar);
   });
   botaoSom.addEventListener('click', function () {
     var ligado = botaoSom.getAttribute('aria-pressed') === 'true';

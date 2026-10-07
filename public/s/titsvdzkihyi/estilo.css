@@ -63,6 +63,8 @@ body.gl #estrelas { display: none; }
 .sublinhado { width: min(62vw, 22rem); height: auto; overflow: visible; margin-top: -.4rem; }
 .sublinhado path { stroke-width: 2; filter: drop-shadow(0 0 5px rgba(216,180,95,.6)); }
 
+body.bloqueado .titulo-bloco { opacity: 0; }
+
 /* cena 1 */
 .titulo-bloco { display: grid; gap: 1.2rem; justify-items: center; text-align: center; will-change: transform, opacity; }
 h1 { font-size: clamp(3.6rem, 19vw, 9rem); font-weight: 400; margin: 0; letter-spacing: .02em; line-height: 1; }
@@ -177,11 +179,50 @@ body.cursor-custom, body.cursor-custom * { cursor: none !important; }
 .final-bloco .texto-longo { font-size: clamp(1.6rem, 7vw, 3rem); }
 .final-linha { opacity: 0; }
 .assinatura { color: var(--ouro); font-size: 1.2rem; margin: 0; opacity: 0; }
-#topo { opacity: 0; }
+
+/* genérico de abertura */
+.intro { position: fixed; inset: 0; z-index: 99; display: grid; place-items: center; padding: var(--lado); background: radial-gradient(ellipse at 50% 50%, rgba(13,6,9,.35), rgba(5,2,4,.82)); }
+.intro[hidden] { display: none; }
+.intro__linha { margin: 0; text-align: center; font-size: clamp(1.1rem, 5vw, 1.9rem); letter-spacing: .3em; text-transform: uppercase; font-family: var(--sans); font-weight: 300; color: var(--texto); text-wrap: balance; max-width: 30rem; line-height: 1.7; will-change: transform, opacity, filter; }
+.intro__passar { position: absolute; right: var(--lado); bottom: calc(var(--barra) + 24px); background: none; border: 0; color: var(--suave); font: inherit; font-family: var(--sans); letter-spacing: .2em; text-transform: uppercase; font-size: .75rem; cursor: pointer; padding: 10px; }
+.rodante { display: inline-block; color: var(--ouro); min-width: 1ch; }
+
+/* cartões de capítulo */
+.cena--capitulo { place-items: center; text-align: center; gap: 1rem; align-content: center; }
+.cap-num { margin: 0; font-family: var(--sans); font-size: .8rem; letter-spacing: .5em; text-transform: uppercase; color: var(--ouro); }
+.cap-titulo { margin: 0; font-size: clamp(3rem, 15vw, 8.5rem); font-weight: 400; line-height: 1; font-style: italic; text-wrap: balance; will-change: transform, filter, opacity; }
+.cap-letra { display: inline-block; will-change: transform, opacity; }
+.cap-linha { display: block; width: min(60vw, 18rem); height: 1px; background: linear-gradient(90deg, transparent, var(--ouro), transparent); transform-origin: center; margin-top: 1.4rem; }
+
+/* película com perfurações */
+.cena--tira::before, .cena--tira::after { content: ''; position: absolute; left: 0; right: 0; height: 14px; z-index: 2; pointer-events: none; opacity: .5;
+  background-image: repeating-linear-gradient(90deg, rgba(243,233,223,.22) 0 14px, transparent 14px 34px); background-position-x: var(--perf, 0px); background-size: auto 100%; border-radius: 3px; }
+.cena--tira::before { top: calc(var(--barra) + 4px); }
+.cena--tira::after { bottom: calc(var(--barra) + 4px); }
+
+/* cometas */
+.cometa { position: fixed; left: 0; top: 0; width: 180px; height: 2px; z-index: 3; pointer-events: none; opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,235,200,.9)); border-radius: 2px; filter: drop-shadow(0 0 6px rgba(255,220,160,.9)); will-change: transform, opacity; }
+
+/* créditos finais */
+.cena--creditos { align-content: center; }
+.creditos { position: absolute; left: 0; right: 0; top: 0; display: grid; gap: 2.4rem; justify-items: center; text-align: center; padding: 0 var(--lado); will-change: transform; }
+.credito { display: grid; gap: .3rem; justify-items: center; }
+.credito__papel { font-family: var(--sans); font-size: .72rem; letter-spacing: .4em; text-transform: uppercase; color: var(--ouro); }
+.credito__nome { font-size: clamp(1.5rem, 7vw, 2.8rem); font-style: italic; text-wrap: balance; max-width: 26rem; }
+.credito--solto .credito__papel { font-size: .9rem; letter-spacing: .18em; color: var(--suave); text-transform: none; font-style: italic; font-family: var(--serif); }
+.creditos-fim { position: relative; z-index: 2; display: grid; gap: 1.4rem; justify-items: center; text-align: center; opacity: 0; }
+.creditos-fim__grande { margin: 0; font-size: clamp(5rem, 28vw, 14rem); line-height: 1; font-style: italic; color: var(--ouro); text-shadow: 0 0 50px rgba(216,180,95,.55); }
+.creditos-fim__sub { margin: 0; color: var(--suave); font-size: 1.1rem; font-style: italic; }
+#topo { opacity: 1; }
 
 /* sem animações (reduzir movimento): tudo aparece arrumado, em coluna, já legível */
 body.parado .cena { min-height: auto; padding-block: 14svh; }
 body.parado .linhas, body.parado .razoes-palco, body.parado .frases-palco { height: auto; display: grid; gap: 2.4rem; }
+body.parado .cena--capitulo, body.parado .cometa, body.parado .intro { display: none; }
+body.parado .cena--creditos { min-height: auto; }
+body.parado .creditos { position: static; }
+body.parado .creditos-fim { opacity: 1; margin-top: 3rem; }
 body.parado .linha, body.parado .razao, body.parado .frase, body.parado .final-linha, body.parado .assinatura, body.parado #topo { position: static; opacity: 1; }
 body.parado .razao { display: grid; }
 body.parado .razao__n { display: none; }

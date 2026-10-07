@@ -83,6 +83,7 @@ IA do boneco: só desenho em `docs/IA-DO-BONECO.md` (servidor à parte, sem Fire
 ## Estado e documentos (atualizado em 07-10-2026)
 
 - **Lê primeiro `docs/handoff-07-10-2026-final.md`**: estado, como publicar, pendências e decisões.
+- Depois lê `docs/handoff-07-10-2026-sessao-2.md`: presenças, feed, sumários, cadernos, desktop, cópia automática (versão 2026-10-11).
 - Páginas novas: `Admin` (`/admin`, resumos que a Leonor decide partilhar) e `AdminBoneco`. Página-surpresa estática em `public/s/titsvdzkihyi/` (fora da app, sem login; texto em `conteudo.js`).
 - Serviços novos: `resumoParaVini`, `armazemResumos`, `notificacoes`, `sessao`, `destinoLogin`, `frequenciaProxima`.
 - **Privacidade:** a consola do Vini só mostra o que a Leonor manda. Não criar recolha escondida de dados dela.

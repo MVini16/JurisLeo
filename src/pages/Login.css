@@ -134,6 +134,15 @@
   margin: 0;
 }
 
+/* dica por baixo do título, quando não há registo */
+.login-dica {
+  font-family: 'Georgia', serif;
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 0;
+  opacity: 0.75;
+}
+
 /* botão principal */
 .login-botao {
   position: relative;

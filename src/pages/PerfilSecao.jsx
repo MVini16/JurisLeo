@@ -16,6 +16,9 @@ import { telefoneValido } from '../services/boneco.js';
 import { ESTILOS_CARREGAMENTO, estiloCarregamentoValido } from '../data/carregamento.js';
 import AvisosDeVersao from '../components/definicoes/AvisosDeVersao.jsx';
 import PartilharComOVini from '../components/definicoes/PartilharComOVini.jsx';
+import CofreDados from '../components/definicoes/CofreDados.jsx';
+import { guardarNoCofre } from '../services/cofreConta.js';
+import { diaDe } from '../services/cofre.js';
 import AvatarBoneco from '../components/boneco/AvatarBoneco.jsx';
 import { lerPreferencias, guardarPreferencias } from '../services/preferenciasBrincadeiras.js';
 import { exportarDadosComoFicheiro } from '../services/exportar.js';
@@ -256,6 +259,8 @@ function OsMeusDados() {
     setConfirmarReposicao(false);
     setReposicao('a-repor');
     try {
+      // antes de apagar, guarda tudo no cofre: se foi engano, repõe-se nas cópias guardadas
+      await guardarNoCofre(userId, { id: `${diaDe(new Date())}-antes-de-repor-cadeiras-${Date.now()}`, porCima: true, motivo: 'antes-de-repor' });
       await limparCadeirasAntigas(userId);
       await seedCadeiras(userId);
       setReposicao('feito');
@@ -267,11 +272,13 @@ function OsMeusDados() {
   return (
     <>
       {barney}
-      <GrupoDefinicoes titulo="Cópia de segurança" indice={0} nota="Um ficheiro com tudo o que tens na app: cadeiras, notas, faltas, anotações, casos e mais. Para levares uma só nota para o OneNote, Word ou PDF, usa o botão Exportar dentro da nota.">
+      <CofreDados indice={0} />
+
+      <GrupoDefinicoes titulo="Ficheiro de cópia" indice={2} nota="Um ficheiro com tudo o que tens na app: cadeiras, notas, faltas, anotações, casos e mais. Para levares uma só nota para o OneNote, Word ou PDF, usa o botão Exportar dentro da nota.">
         <LinhaDefinicao icone="base" rotulo="Exportar os meus dados" descricao="Descarrega um ficheiro .json" ocupado={aExportar} aoClicar={exportarDados} tipo="acao" />
       </GrupoDefinicoes>
 
-      <GrupoDefinicoes titulo="Cópia do que está só neste telemóvel" indice={1} nota="Os recordes e selos dos jogos, a aparência e a série de estudo ficam guardados só neste telemóvel. Faz uma cópia antes de instalares a app de novo e repõe-na depois.">
+      <GrupoDefinicoes titulo="Cópia em texto (à mão)" indice={3} nota="Os recordes dos jogos, a aparência e a série de estudo já vão sozinhos para a tua conta. Isto fica só para o caso de não haver rede: copias um texto e repões depois.">
         <LinhaDefinicao icone="base" tipo="acao" rotulo="Copiar os dados deste telemóvel" descricao="Copia um texto para guardares" aoClicar={copiarDadosDoTelemovel} />
         <LinhaDefinicao icone="base" tipo="acao" rotulo="Repor uma cópia" descricao="Cola aqui o texto que guardaste" aoClicar={() => setCopiaAberta((a) => !a)} />
       </GrupoDefinicoes>
@@ -283,10 +290,10 @@ function OsMeusDados() {
       )}
       {avisoCopia && <p className="def-grupo__nota" role="status">{avisoCopia}</p>}
 
-      <PartilharComOVini indice={2} />
-      <AvisosDeVersao indice={3} />
+      <PartilharComOVini indice={4} />
+      <AvisosDeVersao indice={5} />
 
-      <GrupoDefinicoes titulo="Zona de perigo" indice={2} nota="Só serve para arranjar uma conta antiga, criada antes de as cadeiras do 2.º ano estarem certas. Se está tudo bem contigo, não precisas disto.">
+      <GrupoDefinicoes titulo="Zona de perigo" indice={6} nota="Só serve para arranjar uma conta antiga, criada antes de as cadeiras do 2.º ano estarem certas. Se está tudo bem contigo, não precisas disto.">
         <LinhaDefinicao
           icone="aviso"
           perigo
@@ -301,7 +308,7 @@ function OsMeusDados() {
       {confirmarReposicao && (
         <ConfirmarDefinicao
           titulo="Repor as cadeiras do 2.º ano?"
-          texto="Isto apaga as notas e as faltas que registaste nas 5 cadeiras e volta a pô-las a zero. Não se pode desfazer. As anotações, os casos e o resto ficam como estão. Se tiveres dúvidas, exporta primeiro uma cópia dos teus dados."
+          texto="Isto apaga as notas e as faltas que registaste nas 5 cadeiras e volta a pô-las a zero. Antes, a app guarda uma cópia de tudo: se foi engano, repões em Cópias guardadas. As anotações, os casos e o resto ficam como estão."
           marcar="Percebi que isto apaga as minhas notas e faltas"
           rotuloConfirmar="Repor"
           perigo

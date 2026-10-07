@@ -4,6 +4,17 @@
 // (o build escreve-a em /versao.json). deploys só de correções, sem novidades, não mexem aqui e não fazem aparecer o aviso.
 export const NOVIDADES = [
   {
+    versao: '2026-10-12',
+    titulo: 'Os teus dados nunca mais se perdem',
+    itens: [
+      'As aulas que marcaste e os sumários que escreveste na versão anterior voltaram: aparecem outra vez no Calendário e nas Faltas, sozinhos.',
+      'Todos os dias a app guarda uma cópia de tudo na tua conta (aulas, faltas, notas, sumários, tarefas, jogos e escolhas). Em Perfil, Os meus dados, vês se está "Tudo guardado na tua conta" e podes repor uma cópia de qualquer um dos últimos 14 dias.',
+      'Antes de apagares a app do ecrã principal, confirma lá que diz "Tudo guardado". Na maior parte das vezes nem é preciso apagar: basta fechar e abrir.',
+      'O ecrã de entrada já não tem "Registar": entras sempre com o teu email e password de sempre, para não criares uma conta nova vazia sem querer.',
+      'O Vini consegue ver os dados da tua conta na consola dele, para te ajudar se alguma coisa desaparecer. Está explicado em Os meus dados.',
+    ],
+  },
+  {
     versao: '2026-10-11',
     titulo: 'Modo Feed, sumário das aulas e guia completo',
     itens: [

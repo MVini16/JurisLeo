@@ -1,19 +1,19 @@
 // mantém as escolhas e o progresso que vivem no telemóvel também guardados na conta dela, para nunca se perderem
 // (nova versão da app, app reinstalada, outro telemóvel). usa o documento configuracoes/dados que já existe.
-// ao abrir: traz da nuvem o que for mais recente. depois, de tempos a tempos e ao sair da app: envia o que mudou
+// ao abrir: traz da nuvem o que for mais recente. depois, de tempos a tempos e ao sair da app: envia o que mudou.
+// recebe o uid de fora (de useGuardarConta, que espera pela sessão): antes lia-o uma só vez ao montar e,
+// se o firebase ainda não tivesse recuperado a sessão nesse instante, nunca chegava a copiar nada
 import { useEffect } from 'react';
 import { db } from '../services/firebase.js';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
 import { atualizarMeta, aplicarDaNuvem, guardarMeta, lerMeta, planear } from '../services/sincronizarLocal.js';
 import { avisarMudancaDePreferencias } from '../services/preferenciasBrincadeiras.js';
 
 const INTERVALO_MS = 20000;
 const FLAG_RECARREGADO = 'jurisleo-sync-recarregado';
 
-export function useSincronizarLocal() {
+export function useSincronizarLocal(userId) {
   useEffect(() => {
-    const userId = getAuth().currentUser?.uid;
     if (!userId || typeof localStorage === 'undefined') return undefined;
     const ref = doc(db, 'users', userId, 'configuracoes', 'dados');
     let parado = false;
@@ -29,7 +29,7 @@ export function useSincronizarLocal() {
         const { enviar } = planear(localStorage, meta, snap.data()?.copiaLocal || {});
         guardarMeta(localStorage, meta);
         if (Object.keys(enviar).length > 0) {
-          await setDoc(ref, { copiaLocal: enviar }, { merge: true });
+          await setDoc(ref, { copiaLocal: enviar, copiaLocalEm: Date.now() }, { merge: true });
         }
       } catch { /* sem rede: tenta outra vez mais tarde */ } finally {
         aEnviar = false;
@@ -52,7 +52,7 @@ export function useSincronizarLocal() {
           try { jaRecarregou = sessionStorage.getItem(FLAG_RECARREGADO) === '1'; sessionStorage.setItem(FLAG_RECARREGADO, '1'); } catch { jaRecarregou = true; }
           if (!jaRecarregou && chavesAplicadas.some((c) => c !== 'jurisleo-brincadeiras')) window.location.reload();
         }
-        if (Object.keys(enviar).length > 0) await setDoc(ref, { copiaLocal: enviar }, { merge: true });
+        if (Object.keys(enviar).length > 0) await setDoc(ref, { copiaLocal: enviar, copiaLocalEm: Date.now() }, { merge: true });
       } catch { /* sem rede: fica para a próxima */ }
       arrancou = true;
     }
@@ -68,5 +68,5 @@ export function useSincronizarLocal() {
       document.removeEventListener('visibilitychange', aoEsconder);
       window.removeEventListener('pagehide', enviarAlteracoes);
     };
-  }, []);
+  }, [userId]);
 }

@@ -54,7 +54,7 @@ function Onboarding() {
       objetivos: [],
       onboardingFeito: true,
       criadoEm: new Date(),
-    })
+    }, { merge: true }) // merge: se o onboarding voltar a aparecer, não apaga o resto do perfil
 
     // guarda as configurações — o tema já vai sendo sincronizado pelo ThemeContext,
     // aqui só confirmamos o valor atual e as restantes preferências

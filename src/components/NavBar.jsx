@@ -10,7 +10,6 @@ import Icone from './icones/Icone.jsx'
 import { GRUPOS_DESTINOS } from '../data/destinos.js'
 import AlternarModo from './feed/AlternarModo.jsx'
 import { usePreferencias } from '../hooks/usePreferencias.js'
-import { useSincronizarLocal } from '../hooks/useSincronizarLocal.js'
 import './NavBar.css'
 
 // itens da navegação principal
@@ -104,8 +103,7 @@ function NavBar({ children }) {
   const navigate = useNavigate()
   const location = useLocation()
   const social = usePreferencias().modoApp === 'social'
-  // guarda na conta dela as escolhas e o progresso que vivem no telemóvel, para não se perderem
-  useSincronizarLocal()
+  // (a cópia das escolhas e do progresso para a conta passou para o GuardarConta, no App: corre uma vez e espera pela sessão)
   const [menuAberto, setMenuAberto] = useState(false)
   const [modalFrequenciaAberto, setModalFrequenciaAberto] = useState(false)
   const [avisoEmBreve, setAvisoEmBreve] = useState(null)

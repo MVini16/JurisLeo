@@ -60,6 +60,7 @@ export function useCalendario() {
     while (atual <= fim) {
       ocorrencias.push({
         id: `${aula.id}-${atual.toISOString()}`,
+        aulaId: aula.id,
         titulo: aula.titulo,
         data: new Date(atual),
         horaInicio: aula.horaInicio,

@@ -1,0 +1,36 @@
+/* marcação de presença às aulas, dentro do detalhe do evento (modal escuro do calendário) */
+.marcar-aula { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.marcar-aula__titulo { font-size: 13px; font-weight: 700; color: var(--gold); margin: 0; }
+.marcar-aula__ajuda { font-size: 12px; color: rgba(255, 255, 255, 0.55); line-height: 1.4; margin: 0; }
+.marcar-aula__opcoes { display: flex; flex-wrap: wrap; gap: 6px; }
+.marcar-aula__op { padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.18); background: transparent; color: rgba(255, 255, 255, 0.8); font: inherit; font-size: 12px; cursor: pointer; transition: all 0.15s ease; }
+.marcar-aula__op:active { transform: scale(0.97); }
+.marcar-aula__op--presente.ativo { background: var(--aula-fui); border-color: var(--aula-fui); color: var(--bg-dark); font-weight: 700; }
+.marcar-aula__op--faltei.ativo { background: var(--aula-faltei); border-color: var(--aula-faltei); color: var(--bg-dark); font-weight: 700; }
+.marcar-aula__op--faltei-justificada.ativo { background: var(--aula-justificada); border-color: var(--aula-justificada); color: var(--bg-dark); font-weight: 700; }
+.marcar-aula__op--prof-faltou.ativo { background: var(--aula-prof); border-color: var(--aula-prof); color: var(--bg-dark); font-weight: 700; }
+.marcar-aula__op--sem-aula.ativo { background: var(--aula-sem); border-color: var(--aula-sem); color: var(--bg-dark); font-weight: 700; }
+.marcar-aula__op--atalho { border-style: dashed; color: var(--gold); border-color: var(--gold); }
+.marcar-aula__justificacao { display: flex; flex-direction: column; gap: 8px; }
+.marcar-aula__label { font-size: 12px; color: rgba(255, 255, 255, 0.5); }
+.marcar-aula__campo { width: 100%; padding: 9px 10px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(255, 255, 255, 0.05); color: var(--text-dark); font: inherit; font-size: 13px; }
+.marcar-aula__nota { resize: vertical; }
+.marcar-aula__check { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255, 255, 255, 0.8); }
+.marcar-aula__aviso { font-size: 12px; color: var(--aula-justificada); line-height: 1.4; margin: 0; }
+.marcar-aula__erro { font-size: 12px; color: var(--aula-faltei); margin: 0; }
+.marcar-aula__acoes { display: flex; gap: 8px; }
+.marcar-aula__guardar { flex: 2; padding: 11px 0; border-radius: 12px; border: none; background: var(--gold); color: var(--bg-dark); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.marcar-aula__guardar:disabled { opacity: 0.45; cursor: default; }
+.marcar-aula__limpar { flex: 1; padding: 11px 0; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); background: transparent; color: rgba(255, 255, 255, 0.7); font: inherit; font-size: 12px; cursor: pointer; }
+
+/* chip do estado, ao lado do título da aula nas vistas */
+.aula-chip { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; font-size: 10px; font-weight: 700; line-height: 1.5; color: var(--bg-dark); vertical-align: middle; white-space: nowrap; }
+.aula-chip--presente { background: var(--aula-fui); }
+.aula-chip--faltei { background: var(--aula-faltei); }
+.aula-chip--faltei-justificada { background: var(--aula-justificada); }
+.aula-chip--prof-faltou { background: var(--aula-prof); }
+.aula-chip--sem-aula { background: var(--aula-sem); }
+
+/* lembrete de aulas por marcar, no topo do calendário */
+.aulas-por-marcar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 8px 12px 0; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--gold); background: rgba(201, 168, 76, 0.1); color: var(--text-dark); font-size: 13px; }
+.aulas-por-marcar button { flex-shrink: 0; padding: 7px 12px; border-radius: 999px; border: none; background: var(--gold); color: var(--bg-dark); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }

@@ -5,6 +5,7 @@ import { useCadeiras } from '../hooks/useCadeiras.js';
 import { useCadeira } from '../hooks/useCadeira.js';
 import { avaliarCadeira, calcularNotaAC } from '../services/avaliacao.js';
 import { estadoFaltas } from '../services/faltas.js';
+import { faltasEfetivas } from '../services/presencas.js';
 import { getCadeira } from '../data/dadosLeonor.js';
 import './Cadeiras.css';
 
@@ -76,17 +77,18 @@ export default function Cadeiras() {
 }
 
 function CartaoCadeira({ cadeira, onClick }) {
-  const { faltasDados, avaliacaoDados } = useCadeira(cadeira.id);
+  const { faltasDados, avaliacaoDados, marcasAulas } = useCadeira(cadeira.id);
   const infoBase = getCadeira(cadeira.id);
   const cor = cadeira.cor || '#b8963e';
 
   let faltas = null;
   if (faltasDados && cadeira.aulasPraticasPrevistas) {
+    const efetivas = faltasEfetivas(faltasDados, marcasAulas);
     faltas = estadoFaltas({
       aulasPraticasPrevistas: cadeira.aulasPraticasPrevistas,
-      aulasPraticasLecionadas: faltasDados.aulasPraticasLecionadas || 0,
-      faltasInjustificadas: faltasDados.faltasInjustificadas || 0,
-      faltasJustificadas: faltasDados.faltasJustificadas || 0,
+      aulasPraticasLecionadas: efetivas.aulasPraticasLecionadas,
+      faltasInjustificadas: efetivas.faltasInjustificadas,
+      faltasJustificadas: efetivas.faltasJustificadas,
     });
   }
 

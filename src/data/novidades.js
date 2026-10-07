@@ -4,6 +4,17 @@
 // (o build escreve-a em /versao.json). deploys só de correções, sem novidades, não mexem aqui e não fazem aparecer o aviso.
 export const NOVIDADES = [
   {
+    versao: '2026-10-10',
+    titulo: 'Marca as tuas aulas no calendário',
+    itens: [
+      'Abre qualquer aula no Calendário e diz como correu: fui, faltei, faltei com justificação, o professor faltou ou não houve aula. Há também um atalho "Estive doente".',
+      'Nas faltas justificadas escolhes o motivo da lista oficial da faculdade e podes dizer se já entregaste o comprovativo (têm de ser entregues até às 24h do dia útil seguinte).',
+      'As faltas de cada cadeira passam a contar sozinhas a partir do que marcares. As aulas em que o professor faltou ou não houve aula não contam como falta nem como aula dada.',
+      'No topo do Calendário aparece um lembrete quando tens aulas práticas já passadas por marcar.',
+      'Corrigido: as cadeiras já não aparecem como "Excluída" quando ainda não há aulas dadas.',
+    ],
+  },
+  {
     versao: '2026-10-09',
     titulo: 'Entras sem escrever o email',
     itens: [

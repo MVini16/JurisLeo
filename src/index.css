@@ -10,6 +10,12 @@
   --border-light: #E8DDD0;
   --border-dark: #3A2830;
   --selo: #E0554F;
+  /* estados de cada aula no calendário (fui, faltei, justificada, prof faltou, sem aula) */
+  --aula-fui: #5FB985;
+  --aula-faltei: #E5645F;
+  --aula-justificada: #E0B04A;
+  --aula-prof: #7FA6E0;
+  --aula-sem: #A99FB5;
   --postit: #F6E58D;
   --postit-texto: #3A2E10;
 

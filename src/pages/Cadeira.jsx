@@ -5,6 +5,7 @@ import { useTheme } from '../context/useTheme.js';
 import { useCadeira } from '../hooks/useCadeira.js';
 import { avaliarCadeira, calcularNotaAC } from '../services/avaliacao.js';
 import { estadoFaltas } from '../services/faltas.js';
+import { faltasEfetivas } from '../services/presencas.js';
 import { getCadeira } from '../data/dadosLeonor.js';
 import { escolherFrase } from '../hooks/useFrase.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
@@ -33,7 +34,7 @@ function paraNumero(valor) {
 export default function Cadeira() {
   const { id } = useParams();
   const { darkMode } = useTheme();
-  const { cadeira, faltasDados, avaliacaoDados, loading, guardarFaltas, guardarAvaliacao } = useCadeira(id);
+  const { cadeira, faltasDados, avaliacaoDados, marcasAulas, loading, guardarFaltas, guardarAvaliacao } = useCadeira(id);
   const infoBase = getCadeira(id);
 
   if (loading) return <div className="cadeira-pagina"><p className="cadeira-loading">A carregar...</p></div>;
@@ -56,7 +57,7 @@ export default function Cadeira() {
         : <p className="cadeira-loading">A carregar avaliação...</p>}
 
       {faltasDados
-        ? <SeccaoFaltas cadeira={cadeira} faltasDados={faltasDados} guardarFaltas={guardarFaltas} />
+        ? <SeccaoFaltas cadeira={cadeira} faltasDados={faltasDados} marcasAulas={marcasAulas} guardarFaltas={guardarFaltas} />
         : <p className="cadeira-loading">A carregar faltas...</p>}
 
       <p className="cadeira-aviso-geral">
@@ -190,7 +191,7 @@ function SeccaoAvaliacao({ cadeira, infoBase, avaliacaoDados, guardarAvaliacao }
   );
 }
 
-function SeccaoFaltas({ cadeira, faltasDados, guardarFaltas }) {
+function SeccaoFaltas({ cadeira, faltasDados, marcasAulas, guardarFaltas }) {
   const [form, setForm] = useState(() => ({
     aulasPraticasLecionadas: faltasDados.aulasPraticasLecionadas ?? 0,
     faltasInjustificadas: faltasDados.faltasInjustificadas ?? 0,
@@ -199,11 +200,20 @@ function SeccaoFaltas({ cadeira, faltasDados, guardarFaltas }) {
   const [guardando, setGuardando] = useState(false);
   const [guardado, setGuardado] = useState(false);
 
-  const resultado = cadeira.aulasPraticasPrevistas ? estadoFaltas({
-    aulasPraticasPrevistas: cadeira.aulasPraticasPrevistas,
+  // o que ela escreveu à mão + o que marcou aula a aula no calendário
+  const efetivas = faltasEfetivas({
     aulasPraticasLecionadas: paraNumero(form.aulasPraticasLecionadas) || 0,
     faltasInjustificadas: paraNumero(form.faltasInjustificadas) || 0,
     faltasJustificadas: paraNumero(form.faltasJustificadas) || 0,
+  }, marcasAulas);
+  const m = efetivas.marcas;
+  const temMarcas = m.lecionadas + m.profFaltou + m.semAula > 0;
+
+  const resultado = cadeira.aulasPraticasPrevistas ? estadoFaltas({
+    aulasPraticasPrevistas: cadeira.aulasPraticasPrevistas,
+    aulasPraticasLecionadas: efetivas.aulasPraticasLecionadas,
+    faltasInjustificadas: efetivas.faltasInjustificadas,
+    faltasJustificadas: efetivas.faltasJustificadas,
   }) : null;
 
   function atualizar(campo, valor) {
@@ -226,6 +236,22 @@ function SeccaoFaltas({ cadeira, faltasDados, guardarFaltas }) {
     <section className="cadeira-seccao">
       <h2 className="cadeira-seccao__titulo">📋 Faltas</h2>
 
+      <div className="cadeira-faltas-calendario">
+        <p className="cadeira-faltas-calendario__titulo">Marcado no calendário</p>
+        {temMarcas ? (
+          <ul className="cadeira-faltas-calendario__lista">
+            <li>{m.lecionadas} aulas práticas dadas ({m.presentes} com presença)</li>
+            <li>{m.injustificadas} faltas injustificadas</li>
+            <li>{m.justificadas} faltas justificadas{m.semComprovativo > 0 ? `, ${m.semComprovativo} sem comprovativo entregue` : ''}</li>
+            {m.profFaltou > 0 && <li>{m.profFaltou} aulas em que o professor faltou (não contam)</li>}
+            {m.semAula > 0 && <li>{m.semAula} aulas que não se deram (não contam)</li>}
+          </ul>
+        ) : (
+          <p className="cadeira-faltas-calendario__vazio">Ainda não marcaste nenhuma aula. Abre uma aula no Calendário e diz como correu.</p>
+        )}
+      </div>
+
+      <p className="cadeira-faltas-ajuste">Ajuste manual: números de antes de usares o calendário, somados aos de cima.</p>
       <div className="cadeira-campos">
         <CampoNota label="Aulas práticas já dadas" valor={form.aulasPraticasLecionadas} max={cadeira.aulasPraticasPrevistas} onChange={(v) => atualizar('aulasPraticasLecionadas', v)} />
         <CampoNota label="Faltas injustificadas" valor={form.faltasInjustificadas} onChange={(v) => atualizar('faltasInjustificadas', v)} />

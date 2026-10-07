@@ -8,6 +8,7 @@ export function useCadeira(cadeiraId) {
   const [cadeira, setCadeira] = useState(null);
   const [faltasDados, setFaltasDados] = useState(null);
   const [avaliacaoDados, setAvaliacaoDados] = useState(null);
+  const [marcasAulas, setMarcasAulas] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,6 +19,7 @@ export function useCadeira(cadeiraId) {
     const cadeiraRef = doc(db, 'users', userId, 'cadeiras', cadeiraId);
     const faltasRef = doc(cadeiraRef, 'faltas', 'dados');
     const avaliacaoRef = doc(cadeiraRef, 'avaliacao', 'dados');
+    const presencasRef = doc(cadeiraRef, 'presencas', 'dados');
 
     const unsubCadeira = onSnapshot(cadeiraRef, (snap) => {
       setCadeira(snap.exists() ? { id: snap.id, ...snap.data() } : null);
@@ -26,7 +28,10 @@ export function useCadeira(cadeiraId) {
     const unsubFaltas = onSnapshot(faltasRef, (snap) => setFaltasDados(snap.data() || null));
     const unsubAvaliacao = onSnapshot(avaliacaoRef, (snap) => setAvaliacaoDados(snap.data() || null));
 
+    const unsubPresencas = onSnapshot(presencasRef, (snap) => setMarcasAulas(snap.data()?.marcas || {}));
+
     return () => {
+      unsubPresencas();
       unsubCadeira();
       unsubFaltas();
       unsubAvaliacao();
@@ -47,5 +52,5 @@ export function useCadeira(cadeiraId) {
     await setDoc(doc(db, 'users', userId, 'cadeiras', cadeiraId, 'avaliacao', 'dados'), patch, { merge: true });
   }
 
-  return { cadeira, faltasDados, avaliacaoDados, loading, guardarFaltas, guardarAvaliacao };
+  return { cadeira, faltasDados, avaliacaoDados, marcasAulas, loading, guardarFaltas, guardarAvaliacao };
 }

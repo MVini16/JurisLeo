@@ -79,6 +79,15 @@ export const ajudaPorRota = {
       'A estrela marca uma anotação como favorita.',
     ],
   },
+  '/cadernos/:id': {
+    titulo: 'Caderno',
+    texto: 'Um caderno por cadeira, com secções (teóricas, práticas, perguntas para frequência...) e as páginas lá dentro.',
+    pontos: [
+      'Toca numa secção para a abrir ou fechar. O + dentro dela cria uma página nessa secção.',
+      'Toca numa página para ver uma pré-visualização, e em "Abrir página" para escrever.',
+      '"+ Nova secção" cria uma secção tua, com o nome que quiseres.',
+    ],
+  },
   '/anotacoes/:id': {
     titulo: 'Esta anotação',
     texto: 'Escreve à vontade, marca como favorita, e assinala se ainda é rascunho.',
@@ -165,7 +174,7 @@ export const ajudaPorRota = {
 export function resolverAjuda(pathname) {
   if (ajudaPorRota[pathname]) return { chave: pathname, ...ajudaPorRota[pathname] };
 
-  const prefixosDinamicos = ['/cadeiras/', '/anotacoes/', '/casos/'];
+  const prefixosDinamicos = ['/cadeiras/', '/anotacoes/', '/cadernos/', '/casos/'];
   for (const prefixo of prefixosDinamicos) {
     if (pathname.startsWith(prefixo)) {
       const chave = `${prefixo}:id`;

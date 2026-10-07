@@ -15,6 +15,7 @@ const Horario = lazy(() => import('./pages/Horario'))
 const Cadeiras = lazy(() => import('./pages/Cadeiras'))
 const Cadeira = lazy(() => import('./pages/Cadeira'))
 const Anotacoes = lazy(() => import('./pages/Anotacoes'))
+const Caderno = lazy(() => import('./pages/Caderno'))
 const Anotacao = lazy(() => import('./pages/Anotacao'))
 const Casos = lazy(() => import('./pages/Casos'))
 const Caso = lazy(() => import('./pages/Caso'))
@@ -45,6 +46,7 @@ function App() {
           <Route path="/cadeiras" element={<NavBar><Cadeiras /></NavBar>} />
           <Route path="/cadeiras/:id" element={<NavBar><Cadeira /></NavBar>} />
           <Route path="/anotacoes" element={<NavBar><Anotacoes /></NavBar>} />
+          <Route path="/cadernos/:id" element={<NavBar><Caderno /></NavBar>} />
           <Route path="/anotacoes/:id" element={<NavBar><Anotacao /></NavBar>} />
           <Route path="/casos" element={<NavBar><Casos /></NavBar>} />
           <Route path="/casos/:id" element={<NavBar><Caso /></NavBar>} />

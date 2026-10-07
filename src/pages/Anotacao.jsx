@@ -32,7 +32,7 @@ export default function Anotacao() {
         criar={criar}
         guardar={guardar}
         apagar={apagar}
-        onVoltar={() => navigate('/anotacoes')}
+        onVoltar={(cadernoId) => navigate(cadernoId ? `/cadernos/${cadernoId}` : '/anotacoes')}
       />
     </div>
   );
@@ -112,7 +112,7 @@ function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guar
     if (nova) {
       const novoId = await criar(dadosAtuais());
       setGuardando(false);
-      if (novoId) onVoltar();
+      if (novoId) onVoltar(cadeiraId);
     } else {
       await guardar(dadosAtuais());
       setGuardando(false);
@@ -123,14 +123,14 @@ function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guar
 
   async function handleApagar() {
     await apagar();
-    onVoltar();
+    onVoltar(cadeiraId);
   }
 
   return (
     <>
       {provocacao}
       <div className="anotacao-editor__header">
-        <button className="anotacao-editor__voltar" onClick={onVoltar}>‹ Anotações</button>
+        <button className="anotacao-editor__voltar" onClick={() => onVoltar(cadeiraId)}>‹ {cadeira?.abrev ?? 'Livre'}</button>
         <button className={`anotacao-editor__estrela ${favorita ? 'ativa' : ''}`} onClick={() => setFavorita((f) => !f)}>
           {favorita ? '★' : '☆'}
         </button>

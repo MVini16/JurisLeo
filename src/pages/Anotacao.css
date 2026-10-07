@@ -212,3 +212,11 @@
 
 .anotacao-editor__btn-sim { background: #d32f2f; color: #fff; }
 .anotacao-editor__btn-nao { background: rgba(120, 120, 120, 0.15); color: inherit; }
+
+.anotacao-editor__erro {
+  font-size: 0.82rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--selo);
+  background: color-mix(in srgb, var(--selo) 12%, transparent);
+}

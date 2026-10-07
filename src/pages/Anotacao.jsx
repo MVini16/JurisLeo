@@ -1,9 +1,11 @@
 // editor de uma anotação — criar ou editar
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useAnotacao } from '../hooks/useAnotacao.js';
 import { useProvocacoes } from '../hooks/useProvocacoes.jsx';
+import EditorRico from '../components/editor/EditorRico.jsx';
+import { abrirNota, serializarNota, estadoTamanho, folhaValida } from '../services/notaRica.js';
 import { cadeirasS1 } from '../data/dadosLeonor.js';
 import './Anotacao.css';
 
@@ -37,7 +39,11 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
   const [titulo, setTitulo] = useState(anotacao?.titulo || '');
   const [cadeiraId, setCadeiraId] = useState(anotacao?.cadeiraId || cadeiraInicial || cadeirasS1[0].id);
   const [tipo, setTipo] = useState(anotacao?.tipo || 'teorica');
-  const [conteudo, setConteudo] = useState(anotacao?.conteudo || '');
+  // o conteúdo vive dentro do editor; aqui só guardamos a folha e o que é preciso para abrir a nota
+  const editorRef = useRef(null);
+  const [docInicial] = useState(() => abrirNota(anotacao));
+  const [folha, setFolha] = useState(() => folhaValida(anotacao?.folha));
+  const [erroTamanho, setErroTamanho] = useState(false);
   const [tagsTexto, setTagsTexto] = useState((anotacao?.tags || []).join(', '));
   const [favorita, setFavorita] = useState(anotacao?.favorita || false);
   const [rascunho, setRascunho] = useState(anotacao?.rascunho ?? true);
@@ -49,11 +55,13 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
   const cadeira = cadeirasS1.find((c) => c.id === cadeiraId);
 
   function dadosAtuais() {
+    const doc = editorRef.current?.obterDoc() ?? docInicial;
     return {
       titulo: titulo.trim(),
       cadeiraId,
       tipo,
-      conteudo,
+      ...serializarNota(doc),
+      folha,
       tags: tagsTexto.split(',').map((t) => t.trim()).filter(Boolean),
       favorita,
       rascunho,
@@ -62,6 +70,13 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
 
   async function handleGuardar() {
     if (!titulo.trim()) return;
+    // o firestore não guarda documentos acima de 1 mb: avisa em vez de falhar em silêncio
+    const doc = editorRef.current?.obterDoc() ?? docInicial;
+    if (estadoTamanho(doc).estado === 'excedido') {
+      setErroTamanho(true);
+      return;
+    }
+    setErroTamanho(false);
     setGuardando(true);
     if (nova) {
       const novoId = await criar(dadosAtuais());
@@ -115,13 +130,18 @@ function Formulario({ anotacao, nova, cadeiraInicial, criar, guardar, apagar, on
         <button className={`anotacao-editor__tipo-btn ${tipo === 'pratica' ? 'ativo' : ''}`} onClick={() => setTipo('pratica')} style={{ '--cor': cadeira?.cor }}>Prática</button>
       </div>
 
-      <textarea
-        className="anotacao-editor__conteudo"
-        placeholder="Escreve aqui o que deu na aula..."
-        value={conteudo}
-        onChange={(e) => { setConteudo(e.target.value); aoEscrever(); }}
-        rows={14}
+      <EditorRico
+        ref={editorRef}
+        valorInicial={docInicial}
+        folhaInicial={folha}
+        aoMudarFolha={setFolha}
+        aoEscrever={aoEscrever}
       />
+      {erroTamanho && (
+        <p className="anotacao-editor__erro" role="alert">
+          Esta nota ficou grande demais para guardar. Divide-a em duas páginas e tenta outra vez.
+        </p>
+      )}
 
       <input
         className="anotacao-editor__tags"

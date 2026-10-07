@@ -11,6 +11,39 @@
   --selo: #E0554F;
   --postit: #F6E58D;
   --postit-texto: #3A2E10;
+
+  /* notas ricas: cores de texto, marca-texto, folha e blocos de estudo */
+  --nota-cor-vinho: #6B0F1A;
+  --nota-cor-azul: #1F3A5F;
+  --nota-cor-verde: #2E6F5E;
+  --nota-cor-ouro: #8A6D1F;
+  --nota-cor-roxo: #5B3A7A;
+  --nota-cor-laranja: #B5651D;
+  --nota-marca-amarelo: #F3D77A;
+  --nota-marca-rosa: #F4B8C4;
+  --nota-marca-verde: #BFE3C8;
+  --nota-marca-azul: #BCD3F2;
+  --folha-fundo: #FFFDF8;
+  --folha-regua: #D9CDBE;
+  --folha-margem: #C2565F;
+}
+
+/* o tema escuro da app põe a classe dark no html (ThemeContext) */
+html.dark {
+  --nota-cor-vinho: #E3A5B0;
+  --nota-cor-azul: #8FB0E0;
+  --nota-cor-verde: #7CCBB0;
+  --nota-cor-ouro: #E0C070;
+  --nota-cor-roxo: #C0A0E0;
+  --nota-cor-laranja: #E0A060;
+  --nota-marca-amarelo: rgba(243, 215, 122, 0.4);
+  --nota-marca-rosa: rgba(244, 184, 196, 0.4);
+  --nota-marca-verde: rgba(191, 227, 200, 0.35);
+  --nota-marca-azul: rgba(188, 211, 242, 0.35);
+  --folha-fundo: #22161B;
+  --folha-regua: #3C2B33;
+  --folha-margem: #9C3F4A;
+  --selo: #FF8A80;
 }
 
 /* reset básico */

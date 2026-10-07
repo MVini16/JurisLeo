@@ -14,6 +14,7 @@
   --postit-texto: #3A2E10;
 
   /* notas ricas: cores de texto, marca-texto, folha e blocos de estudo */
+  --nota-cor-tinta: #2C1810;
   --nota-cor-vinho: #6B0F1A;
   --nota-cor-azul: #1F3A5F;
   --nota-cor-verde: #2E6F5E;
@@ -38,6 +39,7 @@
 
 /* o tema escuro da app põe a classe dark no html (ThemeContext) */
 html.dark {
+  --nota-cor-tinta: #F5EFE6;
   --nota-cor-vinho: #E3A5B0;
   --nota-cor-azul: #8FB0E0;
   --nota-cor-verde: #7CCBB0;

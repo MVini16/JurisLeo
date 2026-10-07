@@ -65,14 +65,22 @@ export function tamanhoEmBytes(texto) {
   return new TextEncoder().encode(String(texto ?? '')).length;
 }
 
-// 'ok' | 'perto' | 'excedido' — para o aviso no editor e para travar o guardar
-// `bytesDoDesenho` é o que o desenho à mão ocupa na mesma nota
-export function estadoTamanho(doc, bytesDoDesenho = 0) {
+// o que o texto da nota ocupa no documento do firestore (sem o desenho)
+export function bytesDoDocumento(doc) {
   const { rico, conteudo } = serializarNota(doc);
-  const total = tamanhoEmBytes(rico) + tamanhoEmBytes(conteudo) + bytesDoDesenho + MARGEM_OUTROS_CAMPOS_BYTES;
+  return tamanhoEmBytes(rico) + tamanhoEmBytes(conteudo) + MARGEM_OUTROS_CAMPOS_BYTES;
+}
+
+// 'ok' | 'perto' | 'excedido' a partir do total de bytes da nota
+export function classificarTamanho(total) {
   if (total >= LIMITE_FIRESTORE_BYTES) return { estado: 'excedido', bytes: total };
   if (total >= LIMITE_FIRESTORE_BYTES * FRACAO_AVISO) return { estado: 'perto', bytes: total };
   return { estado: 'ok', bytes: total };
+}
+
+// para o aviso no editor e para travar o guardar; `bytesDoDesenho` é o que o desenho à mão ocupa na mesma nota
+export function estadoTamanho(doc, bytesDoDesenho = 0) {
+  return classificarTamanho(bytesDoDocumento(doc) + bytesDoDesenho);
 }
 
 export function contarPalavras(texto) {

@@ -3,8 +3,12 @@
 import { useState } from 'react';
 import { useEditorState } from '@tiptap/react';
 import { TIPOS_BLOCO } from './extensoes.js';
+import { CORES as CORES_DO_DESENHO, LARGURAS } from '../../services/desenho.js';
 
-const ABAS = ['Base', 'Parágrafo', 'Inserir', 'Vista'];
+const ABAS = ['Base', 'Parágrafo', 'Inserir', 'Desenhar', 'Vista'];
+const NOMES_COR = { tinta: 'Preto', azul: 'Azul', vinho: 'Vinho', verde: 'Verde', ouro: 'Dourado', roxo: 'Roxo' };
+const FERRAMENTAS = [['caneta', 'Caneta'], ['marcador', 'Marcador'], ['borracha', 'Borracha']];
+const NOMES_ESPESSURA = ['Fina', 'Média', 'Grossa'];
 
 const CORES = [['vinho', 'Vinho'], ['azul', 'Azul'], ['verde', 'Verde'], ['ouro', 'Dourado'], ['roxo', 'Roxo']];
 const MARCAS = [['amarelo', 'Amarelo'], ['rosa', 'Rosa'], ['verde', 'Verde'], ['azul', 'Azul']];
@@ -29,8 +33,10 @@ function Botao({ ativo, desativado, titulo, onClick, children, className = '' })
   );
 }
 
-export default function BarraEditor({ editor, folha, aoMudarFolha, aoFoco }) {
+export default function BarraEditor({ editor, folha, aoMudarFolha, aoFoco, desenho, aoMudarAba }) {
   const [aba, setAba] = useState('Base');
+  const [confirmarLimpar, setConfirmarLimpar] = useState(false);
+  const noDesenho = aba === 'Desenhar';
 
   const e = useEditorState({
     editor,
@@ -75,12 +81,22 @@ export default function BarraEditor({ editor, folha, aoMudarFolha, aoFoco }) {
       <div className="er-barra__topo">
         <div className="er-abas" role="tablist">
           {ABAS.map((a) => (
-            <button key={a} role="tab" type="button" aria-selected={aba === a} className="er-aba" onClick={() => setAba(a)}>{a}</button>
+            <button
+              key={a}
+              role="tab"
+              type="button"
+              aria-selected={aba === a}
+              className="er-aba"
+              onClick={() => { setAba(a); setConfirmarLimpar(false); aoMudarAba?.(a); }}
+            >
+              {a}
+            </button>
           ))}
         </div>
         <div className="er-historico">
-          <Botao titulo="Desfazer" desativado={!e.desfazer} onClick={() => cadeia().undo().run()}>↶</Botao>
-          <Botao titulo="Refazer" desativado={!e.refazer} onClick={() => cadeia().redo().run()}>↷</Botao>
+          {/* no separador do desenho, desfazer e refazer mexem nos traços e não no texto */}
+          <Botao titulo={noDesenho ? 'Desfazer traço' : 'Desfazer'} desativado={noDesenho ? !desenho.podeDesfazer : !e.desfazer} onClick={() => (noDesenho ? desenho.desfazer() : cadeia().undo().run())}>↶</Botao>
+          <Botao titulo={noDesenho ? 'Refazer traço' : 'Refazer'} desativado={noDesenho ? !desenho.podeRefazer : !e.refazer} onClick={() => (noDesenho ? desenho.refazer() : cadeia().redo().run())}>↷</Botao>
         </div>
       </div>
 
@@ -159,6 +175,43 @@ export default function BarraEditor({ editor, folha, aoMudarFolha, aoFoco }) {
                 <Botao titulo="Apagar tabela" onClick={() => cadeia().deleteTable().run()}>Apagar tabela</Botao>
               </>
             )}
+          </>
+        )}
+
+        {aba === 'Desenhar' && (
+          <>
+            {FERRAMENTAS.map(([tipo, nome]) => (
+              <Botao key={tipo} ativo={desenho.ferramenta.tipo === tipo} titulo={nome} onClick={() => desenho.mudarFerramenta({ tipo })}>{nome}</Botao>
+            ))}
+            {desenho.ferramenta.tipo !== 'borracha' && (
+              <>
+                <span className="er-sep" />
+                {NOMES_ESPESSURA.map((nome, i) => (
+                  <Botao key={nome} ativo={desenho.ferramenta.espessura === i + 1} titulo={`Espessura ${nome.toLowerCase()}`} onClick={() => desenho.mudarFerramenta({ espessura: i + 1 })}>
+                    <span className="er-espessura" style={{ height: `${LARGURAS.caneta[i] / 2}px` }} />
+                  </Botao>
+                ))}
+                <span className="er-sep" />
+                {CORES_DO_DESENHO.map((id) => (
+                  <Botao key={id} ativo={desenho.ferramenta.cor === id} titulo={`Cor ${NOMES_COR[id]}`} className="er-amostra" onClick={() => desenho.mudarFerramenta({ cor: id })}>
+                    <span className="er-amostra__cor" style={{ background: `var(--nota-cor-${id})` }} />
+                  </Botao>
+                ))}
+              </>
+            )}
+            <span className="er-sep" />
+            <Botao ativo={desenho.ferramenta.soCaneta} titulo="Só a caneta desenha, o dedo faz scroll" onClick={() => desenho.mudarFerramenta({ soCaneta: !desenho.ferramenta.soCaneta })}>Só Apple Pencil</Botao>
+            <span className="er-sep" />
+            {confirmarLimpar ? (
+              <>
+                <span className="er-rotulo">Apagar tudo?</span>
+                <Botao titulo="Sim, apagar o desenho todo" onClick={() => { desenho.limpar(); setConfirmarLimpar(false); }}>Sim</Botao>
+                <Botao titulo="Não apagar" onClick={() => setConfirmarLimpar(false)}>Não</Botao>
+              </>
+            ) : (
+              <Botao titulo="Apagar o desenho todo" desativado={desenho.numTracos === 0} onClick={() => setConfirmarLimpar(true)}>Limpar</Botao>
+            )}
+            <span className="er-contagem">{desenho.numTracos} {desenho.numTracos === 1 ? 'traço' : 'traços'}</span>
           </>
         )}
 

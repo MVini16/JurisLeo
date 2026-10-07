@@ -8,7 +8,7 @@ import { useAnotacoes } from '../hooks/useAnotacoes.js';
 import EditorRico from '../components/editor/EditorRico.jsx';
 import ExportarNotas from '../components/exportar/ExportarNotas.jsx';
 import { paginasParaExportar } from '../services/exportarNotas.js';
-import { abrirNota, serializarNota, estadoTamanho, folhaValida } from '../services/notaRica.js';
+import { abrirNota, serializarNota, estadoTamanho, folhaValida, tamanhoEmBytes } from '../services/notaRica.js';
 import { cadernoDaNota, seccaoDaNota, seccoesDoCaderno, seccoesPadrao, mesmoNome, normalizarNomeSeccao, CADERNO_LIVRE } from '../services/cadernos.js';
 import { cadeirasS1, idsCadeiras, nomesCadernos } from '../data/dadosLeonor.js';
 import './Anotacao.css';
@@ -116,6 +116,7 @@ function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guar
       tipo: mesmoNome(seccao, 'Práticas') ? 'pratica' : 'teorica',
       ...serializarNota(doc),
       folha,
+      desenho: editorRef.current?.obterDesenho() ?? (anotacao?.desenho ?? ''),
       tags: tagsTexto.split(',').map((t) => t.trim()).filter(Boolean),
       favorita,
       rascunho,
@@ -126,7 +127,7 @@ function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guar
     if (!titulo.trim()) return;
     // o firestore não guarda documentos acima de 1 mb: avisa em vez de falhar em silêncio
     const doc = editorRef.current?.obterDoc() ?? docInicial;
-    if (estadoTamanho(doc).estado === 'excedido') {
+    if (estadoTamanho(doc, tamanhoEmBytes(editorRef.current?.obterDesenho() ?? '')).estado === 'excedido') {
       setErroTamanho(true);
       return;
     }
@@ -222,6 +223,7 @@ function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guar
         ref={editorRef}
         valorInicial={docInicial}
         folhaInicial={folha}
+        desenhoInicial={anotacao?.desenho ?? ''}
         aoMudarFolha={setFolha}
         aoEscrever={aoEscrever}
       />

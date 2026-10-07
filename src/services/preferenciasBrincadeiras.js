@@ -22,6 +22,7 @@ const PADRAO = {
   partilhaEstudo: false,
   partilhaJogos: false,
   partilhaEstado: false,
+  partilhaTarefas: false,
 };
 
 // quem quiser reagir a mudanças (o boneco, as definições) subscreve aqui

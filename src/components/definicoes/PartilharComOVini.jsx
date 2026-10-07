@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { usePreferencias } from '../../hooks/usePreferencias.js';
 import { guardarPreferencias } from '../../services/preferenciasBrincadeiras.js';
 import { lerDiasDeEstudo, lerRespondidasDeHoje } from '../../services/estudoLocal.js';
-import { lerPerfilJogos } from '../../services/jogosLocal.js';
+import { useTarefas } from '../../hooks/useTarefas.js';
+import { lerPerfilJogos, lerRecordes } from '../../services/jogosLocal.js';
 import { diaDe, serieDeDias } from '../../services/modoEstudo.js';
 import { partilharTexto } from '../../services/partilha.js';
-import { montarResumo } from '../../services/resumoParaVini.js';
+import { contarTarefas, estudoDaSemana, melhorSerie, montarResumo } from '../../services/resumoParaVini.js';
 import { ESTADOS } from '../../data/boneco.js';
 import { GrupoDefinicoes, LinhaDefinicao } from './PecasDefinicoes.jsx';
 
@@ -20,23 +21,29 @@ const AVISOS = {
 
 export default function PartilharComOVini({ indice = 0 }) {
   const prefs = usePreferencias();
+  const { tarefas } = useTarefas();
   const [estado, setEstado] = useState('');
   const [aviso, setAviso] = useState('');
   const [previa, setPrevia] = useState('');
 
-  const escolhas = { estudo: prefs.partilhaEstudo, jogos: prefs.partilhaJogos, estado: prefs.partilhaEstado };
-  const algumLigado = escolhas.estudo || escolhas.jogos || escolhas.estado;
+  const escolhas = { estudo: prefs.partilhaEstudo, jogos: prefs.partilhaJogos, estado: prefs.partilhaEstado, tarefas: prefs.partilhaTarefas };
+  const algumLigado = escolhas.estudo || escolhas.jogos || escolhas.estado || escolhas.tarefas;
 
   // o texto vê-se antes de sair, para ela saber exatamente o que o Vini vai receber
   function prepararTexto() {
     const hoje = diaDe(Date.now());
+    const dias = lerDiasDeEstudo();
     return montarResumo({
       quando: Date.now(),
       escolhas,
       dados: {
-        serie: serieDeDias(lerDiasDeEstudo(), hoje),
+        serie: serieDeDias(dias, hoje),
+        diasNaSemana: estudoDaSemana(dias, hoje),
+        melhorSerie: melhorSerie(dias),
         cartoesHoje: lerRespondidasDeHoje(hoje),
         perfilJogos: lerPerfilJogos(),
+        recordes: lerRecordes(),
+        tarefas: contarTarefas(tarefas, hoje),
         estado: ESTADOS.find((e) => e.id === estado)?.rotulo ?? '',
       },
     });
@@ -62,8 +69,9 @@ export default function PartilharComOVini({ indice = 0 }) {
       titulo="Partilhar com o Vini" indice={indice}
       nota="Está tudo desligado. O Vini só fica a saber o que tu escolheres e só quando carregares em enviar. Podes ver o texto antes de sair. Nada é enviado sozinho."
     >
-      {interruptor('partilhaEstudo', 'O meu estudo', 'Dias seguidos e flashcards de hoje')}
-      {interruptor('partilhaJogos', 'Os meus jogos', 'O meu nível, selos e jogadas')}
+      {interruptor('partilhaEstudo', 'O meu estudo', 'Dias seguidos, melhor série, dias da semana e flashcards de hoje')}
+      {interruptor('partilhaJogos', 'Os meus jogos', 'Nível, XP, selos, jogadas e recordes')}
+      {interruptor('partilhaTarefas', 'As minhas tarefas', 'Quantas tenho por fazer, atrasadas e feitas')}
       {interruptor('partilhaEstado', 'Como estou', 'Escolho eu como me sinto')}
       {prefs.partilhaEstado && ESTADOS.map((e) => (
         <LinhaDefinicao

@@ -16,17 +16,51 @@ export function formatarQuando(data) {
 
 // as escolhas dela: { estudo, jogos, estado } (cada uma ligada ou desligada).
 // `dados`: { serie, cartoesHoje, perfilJogos, estado } vêm do telemóvel dela na hora de enviar
+// quantos dos últimos 7 dias (contando com hoje) ela estudou, e a maior série de sempre
+export function estudoDaSemana(dias, hoje) {
+  const [a, m, d] = hoje.split('-').map(Number);
+  const janela = new Set(Array.from({ length: 7 }, (_, i) => {
+    const x = new Date(a, m - 1, d - i);
+    return `${x.getFullYear()}-${dois(x.getMonth() + 1)}-${dois(x.getDate())}`;
+  }));
+  return dias.filter((dia) => janela.has(dia)).length;
+}
+
+export function melhorSerie(dias) {
+  const emDias = (dia) => { const [a, m, d] = dia.split('-').map(Number); return Math.round(Date.UTC(a, m - 1, d) / 86400000); };
+  const ordem = [...new Set(dias)].sort().map(emDias);
+  let melhor = 0;
+  let atual = 0;
+  ordem.forEach((n, i) => {
+    atual = i > 0 && n - ordem[i - 1] === 1 ? atual + 1 : 1;
+    melhor = Math.max(melhor, atual);
+  });
+  return melhor;
+}
+
+const NOMES_JOGOS = { vf: 'Verdadeiro ou Falso', jurista: 'Quem Quer Ser Jurista', caso: 'Caso Prático', pares: 'Liga os Pares', diario: 'Audiência do dia' };
+
 export function montarResumo({ quando, escolhas, dados }) {
   const linhas = [CABECALHO, `Quando: ${formatarQuando(quando)}`];
   if (escolhas.estudo) {
     const serie = dados.serie ?? 0;
     const dias = serie === 1 ? '1 dia seguido' : `${serie} dias seguidos`;
-    linhas.push(`Estudo: ${serie > 0 ? dias : 'sem série de estudo neste momento'}, ${dados.cartoesHoje ?? 0} flashcards hoje`);
+    const partes = [serie > 0 ? dias : 'sem série de estudo neste momento', `${dados.cartoesHoje ?? 0} flashcards hoje`];
+    if (dados.diasNaSemana != null) partes.push(`estudou ${dados.diasNaSemana} dos últimos 7 dias`);
+    if (dados.melhorSerie) partes.push(`melhor série ${dados.melhorSerie} dias`);
+    linhas.push(`Estudo: ${partes.join(', ')}`);
   }
   if (escolhas.jogos) {
     const p = dados.perfilJogos ?? {};
     const nivel = nivelDeCarreira(p.xp);
-    linhas.push(`Jogos: ${nivel.titulo}, ${p.selos?.length ?? 0} selos, ${p.jogadas ?? 0} jogadas`);
+    const partes = [nivel.titulo, `${p.xp ?? 0} XP`, `${p.selos?.length ?? 0} selos`, `${p.jogadas ?? 0} jogadas`, `${p.perfeitas ?? 0} perfeitas`, `${p.audiencias ?? 0} audiências do dia`];
+    linhas.push(`Jogos: ${partes.join(', ')}`);
+    const recordes = Object.entries(dados.recordes ?? {}).filter(([, v]) => Number.isFinite(v) && v > 0);
+    if (recordes.length > 0) linhas.push(`Recordes: ${recordes.map(([k, v]) => `${NOMES_JOGOS[k] ?? k} ${v}`).join(', ')}`);
+  }
+  if (escolhas.tarefas && dados.tarefas) {
+    const t = dados.tarefas;
+    linhas.push(`Tarefas: ${t.porFazer} por fazer, ${t.atrasadas} atrasadas, ${t.feitas} feitas`);
   }
   if (escolhas.estado && dados.estado) linhas.push(`Como estou: ${dados.estado}`);
   return linhas.join('\n');
@@ -49,16 +83,26 @@ export function lerResumo(texto) {
     estudo: campos.Estudo ?? null,
     jogos: campos.Jogos ?? null,
     estado: campos['Como estou'] ?? null,
+    recordes: campos.Recordes ?? null,
+    tarefas: campos.Tarefas ?? null,
   };
 }
 
 // junta um resumo à lista (o mais recente primeiro), sem repetir o mesmo e sem a lista crescer sem fim
 export function juntarResumo(lista, resumo) {
   if (!resumo) return lista;
-  if (lista.some((r) => r.quando === resumo.quando && r.estudo === resumo.estudo && r.jogos === resumo.jogos && r.estado === resumo.estado)) return lista;
+  if (lista.some((r) => r.quando === resumo.quando && r.estudo === resumo.estudo && r.jogos === resumo.jogos && r.estado === resumo.estado && r.tarefas === resumo.tarefas && r.recordes === resumo.recordes)) return lista;
   return [{ id: `${Date.now()}-${lista.length}`, ...resumo }, ...lista].slice(0, MAX_RESUMOS);
 }
 
 export function removerResumo(lista, id) {
   return lista.filter((r) => r.id !== id);
+}
+
+// as tarefas por fazer, atrasadas (prazo antes de hoje) e feitas. `hoje` em AAAA-MM-DD
+export function contarTarefas(tarefas, hoje) {
+  const feitas = tarefas.filter((t) => t.concluida).length;
+  const abertas = tarefas.filter((t) => !t.concluida);
+  const atrasadas = abertas.filter((t) => t.prazo && String(t.prazo).slice(0, 10) < hoje).length;
+  return { porFazer: abertas.length, atrasadas, feitas };
 }

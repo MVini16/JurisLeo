@@ -7,7 +7,7 @@ export const NOVIDADES = [
     versao: '2026-10-08',
     titulo: 'Partilhar com o Vini, se quiseres',
     itens: [
-      'Nas Definições, em "Os meus dados", há agora "Partilhar com o Vini". Está tudo desligado. Escolhes tu o que o Vini pode ver (o teu estudo, os teus jogos, como estás) e só se carregares em enviar. Podes ver o texto antes de sair.',
+      'Nas Definições, em "Os meus dados", há agora "Partilhar com o Vini". Está tudo desligado. Escolhes tu o que o Vini pode ver (o teu estudo, os teus jogos, as tuas tarefas, como estás) e só se carregares em enviar. Podes ver o texto antes de sair.',
       'Endereços que não existem já não deixam o ecrã em branco: voltam ao início.',
     ],
   },

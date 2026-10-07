@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { apagarResumo, colarResumo, lerResumos } from '../services/armazemResumos.js';
 import './Admin.css';
 
+const CAMPOS = [['Estudo', 'estudo'], ['Jogos', 'jogos'], ['Recordes', 'recordes'], ['Tarefas', 'tarefas'], ['Como estava', 'estado']];
+
 function Campo({ rotulo, valor }) {
   return (
     <div className="admin-campo">
@@ -55,6 +57,7 @@ export default function Admin() {
         <div className="admin-cartao"><small>Última partilha</small><b>{recente ? recente.quando : 'ainda nenhuma'}</b></div>
         <div className="admin-cartao"><small>Estudo</small><b>{recente?.estudo ?? 'não partilhado'}</b></div>
         <div className="admin-cartao"><small>Jogos</small><b>{recente?.jogos ?? 'não partilhado'}</b></div>
+        <div className="admin-cartao"><small>Tarefas</small><b>{recente?.tarefas ?? 'não partilhado'}</b></div>
         <div className="admin-cartao"><small>Como estava</small><b>{recente?.estado ?? 'não partilhado'}</b></div>
       </section>
 
@@ -76,7 +79,7 @@ export default function Admin() {
               <li key={r.id}>
                 <button type="button" className="admin-item" aria-current={i === Math.min(escolhido, resumos.length - 1)} onClick={() => setEscolhido(i)}>
                   <b>{r.quando}</b>
-                  <small>{[r.estudo && 'estudo', r.jogos && 'jogos', r.estado && 'como estava'].filter(Boolean).join(', ') || 'sem detalhes'}</small>
+                  <small>{CAMPOS.filter(([, k]) => r[k]).map(([n]) => n.toLowerCase()).join(', ') || 'sem detalhes'}</small>
                 </button>
               </li>
             ))}
@@ -84,9 +87,7 @@ export default function Admin() {
           {aberto && (
             <article className="admin-detalhe">
               <h2>{aberto.quando}</h2>
-              <Campo rotulo="Estudo" valor={aberto.estudo} />
-              <Campo rotulo="Jogos" valor={aberto.jogos} />
-              <Campo rotulo="Como estava" valor={aberto.estado} />
+              {CAMPOS.map(([nome, chave]) => <Campo key={chave} rotulo={nome} valor={aberto[chave]} />)}
               <button type="button" className="admin-apagar" onClick={() => apagar(aberto.id)}>Apagar este resumo</button>
             </article>
           )}

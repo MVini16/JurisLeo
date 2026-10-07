@@ -1,60 +1,39 @@
-// perfil — dados académicos, preferências e logout
-import { useState, useEffect } from 'react';
+// definições — o perfil e tudo o que se pode mudar, arrumado em grupos (à maneira das definições do TikTok):
+// cartão de perfil, pesquisa, grupos de linhas com ícone, valor à direita e seta, e subpáginas
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { db } from '../services/firebase.js';
 import { logout } from '../services/auth.js';
-import { limparCadeirasAntigas, seedCadeiras } from '../services/initFirestore.js';
-import { exportarDadosComoFicheiro } from '../services/exportar.js';
 import { useTheme } from '../context/useTheme.js';
 import { useBarney } from '../hooks/useBarney.jsx';
-import { lerPreferencias, guardarPreferencias } from '../services/preferenciasBrincadeiras.js';
-import './Perfil.css';
+import { usePerfil } from '../hooks/usePerfil.js';
+import { lerPreferencias } from '../services/preferenciasBrincadeiras.js';
+import { pesquisarDefinicoes, localDaDefinicao, rotaDaSeccao } from '../services/definicoes.js';
+import IconeDefinicao from '../components/definicoes/IconeDefinicao.jsx';
+import { GrupoDefinicoes, LinhaDefinicao, ConfirmarDefinicao } from '../components/definicoes/PecasDefinicoes.jsx';
+import '../components/definicoes/Definicoes.css';
+
+function resumoDasBrincadeiras(prefs) {
+  const ligadas = [prefs.barney, prefs.provocacoes].filter(Boolean).length;
+  if (ligadas === 2) return 'Ligadas';
+  return ligadas === 0 ? 'Desligadas' : 'Algumas';
+}
 
 export default function Perfil() {
-  const { darkMode, toggleTheme } = useTheme();
+  const { darkMode } = useTheme();
   const navigate = useNavigate();
-  const [perfil, setPerfil] = useState(null);
+  const { perfil } = usePerfil();
+  const { elemento: barney, tocar: tocarAvatar } = useBarney();
+  const [termo, setTermo] = useState('');
+  const [confirmarSair, setConfirmarSair] = useState(false);
   const [aSair, setASair] = useState(false);
-  const [aRepor, setARepor] = useState(false);
-  const [reposto, setReposto] = useState(false);
-  const [aExportar, setAExportar] = useState(false);
-  const [brincadeiras, setBrincadeiras] = useState(() => lerPreferencias());
-  const { elemento: barney, disparar: dispararBarney, tocar: tocarAvatar } = useBarney();
 
-  useEffect(() => {
-    const auth = getAuth();
-    const userId = auth.currentUser?.uid;
-    if (!userId) return;
-    const unsub = onSnapshot(doc(db, 'users', userId, 'perfil', 'dados'), (snap) => {
-      setPerfil(snap.data() || null);
-    });
-    return () => unsub();
-  }, []);
-
-  // as brincadeiras ficam só neste telemóvel (localstorage), por isso não passam pelo firestore
-  function mudarBrincadeira(parcial) {
-    setBrincadeiras(guardarPreferencias(parcial));
-  }
-
-  async function sair() {
-    setASair(true);
-    await logout();
-    navigate('/login');
-  }
-
-  // repara contas de teste criadas antes da correção do seed para o 2.º ano —
-  // apaga as cadeiras do 1.º ano e recria as 5 reais
-  async function reporCadeiras() {
-    const userId = getAuth().currentUser?.uid;
-    if (!userId) return;
-    setARepor(true);
-    await limparCadeirasAntigas(userId);
-    await seedCadeiras(userId);
-    setARepor(false);
-    setReposto(true);
-  }
+  const prefs = lerPreferencias();
+  const email = getAuth().currentUser?.email;
+  const resultados = pesquisarDefinicoes(termo);
+  const aPesquisar = termo.trim().length > 0;
 
   // volta a mostrar o tutorial do dashboard na próxima vez que lá entrar
   async function reverTutorial() {
@@ -64,122 +43,94 @@ export default function Perfil() {
     navigate('/dashboard');
   }
 
-  // descarrega uma cópia de segurança de todos os dados, em json
-  async function exportarDados() {
-    const userId = getAuth().currentUser?.uid;
-    if (!userId) return;
-    setAExportar(true);
-    try {
-      await exportarDadosComoFicheiro(userId);
-      dispararBarney('exportacao');
-    } finally {
-      setAExportar(false);
-    }
+  async function sair() {
+    setASair(true);
+    await logout();
+    navigate('/login');
   }
 
-  const email = getAuth().currentUser?.email;
+  function abrir(definicao) {
+    const { destino } = definicao;
+    if (destino.tipo === 'secao') navigate(rotaDaSeccao(destino.secao));
+    else if (destino.tipo === 'rota') navigate(destino.rota);
+    else if (destino.acao === 'tutorial') reverTutorial();
+    else setConfirmarSair(true);
+  }
 
   return (
-    <div className={`perfil-pagina ${darkMode ? 'dark' : ''}`}>
+    <div className={`def-pagina ${darkMode ? 'dark' : ''}`}>
       {barney}
-      <header className="perfil-header">
-        <div className="perfil-avatar" onClick={tocarAvatar}>{(perfil?.nome || 'L').charAt(0).toUpperCase()}</div>
-        <h1 className="perfil-nome">{perfil?.nome || 'Leonor'}</h1>
-        <p className="perfil-email">{email}</p>
+
+      <header className="def-perfil">
+        <button className="def-perfil__avatar" onClick={tocarAvatar} aria-label="Avatar">{(perfil?.nome || 'L').charAt(0).toUpperCase()}</button>
+        <h1 className="def-perfil__nome">{perfil?.nome || 'Leonor'}</h1>
+        <p className="def-perfil__curso">{[perfil?.curso, perfil?.ano].filter(Boolean).join(' · ') || 'Licenciatura em Direito'}</p>
+        {email && <p className="def-perfil__email">{email}</p>}
       </header>
 
-      <section className="perfil-seccao">
-        <h2 className="perfil-seccao__titulo">Dados académicos</h2>
-        <LinhaInfo label="Curso" valor={perfil?.curso} />
-        <LinhaInfo label="Ano" valor={perfil?.ano} />
-        <LinhaInfo label="Turma" valor={perfil?.turma} />
-        <LinhaInfo label="Subturma" valor={perfil?.subturma} />
-        <LinhaInfo label="Ano letivo" valor={perfil?.anoLetivo} />
-      </section>
+      <label className="def-pesquisa">
+        <IconeDefinicao nome="pesquisa" tamanho={18} />
+        <input
+          type="search"
+          placeholder="Pesquisar nas definições"
+          aria-label="Pesquisar nas definições"
+          value={termo}
+          onChange={(e) => setTermo(e.target.value)}
+        />
+        {aPesquisar && <button type="button" className="def-pesquisa__limpar" onClick={() => setTermo('')} aria-label="Limpar a pesquisa">×</button>}
+      </label>
 
-      <section className="perfil-seccao">
-        <h2 className="perfil-seccao__titulo">Preferências</h2>
-        <div className="perfil-linha">
-          <span className="perfil-linha__label">Tema escuro</span>
-          <button className={`perfil-toggle ${darkMode ? 'ativo' : ''}`} onClick={toggleTheme}>
-            <span className="perfil-toggle__bolinha" />
-          </button>
-        </div>
-        <div className="perfil-linha">
-          <span className="perfil-linha__label">Piadas do Barney</span>
-          <button
-            className={`perfil-toggle ${brincadeiras.barney ? 'ativo' : ''}`}
-            role="switch"
-            aria-checked={brincadeiras.barney}
-            aria-label="Piadas do Barney"
-            onClick={() => mudarBrincadeira({ barney: !brincadeiras.barney })}
-          >
-            <span className="perfil-toggle__bolinha" />
-          </button>
-        </div>
-        <div className="perfil-linha">
-          <span className="perfil-linha__label">Mensagens do Vini ao escrever</span>
-          <button
-            className={`perfil-toggle ${brincadeiras.provocacoes ? 'ativo' : ''}`}
-            role="switch"
-            aria-checked={brincadeiras.provocacoes}
-            aria-label="Mensagens do Vini ao escrever"
-            onClick={() => mudarBrincadeira({ provocacoes: !brincadeiras.provocacoes })}
-          >
-            <span className="perfil-toggle__bolinha" />
-          </button>
-        </div>
-        {brincadeiras.provocacoes && (
-          <div className="perfil-opcoes" role="group" aria-label="Frequência das mensagens do Vini">
-            <span className="perfil-opcoes__label">A cada</span>
-            {[5, 10, 20].map((min) => (
-              <button
-                key={min}
-                className={`perfil-opcao ${brincadeiras.frequenciaMin === min ? 'ativo' : ''}`}
-                aria-pressed={brincadeiras.frequenciaMin === min}
-                onClick={() => mudarBrincadeira({ frequenciaMin: min })}
-              >
-                {min} min a escrever
-              </button>
-            ))}
-          </div>
-        )}
-        <button className="perfil-btn-tutorial" onClick={reverTutorial}>Rever o tutorial</button>
-        <button className="perfil-btn-tutorial" onClick={() => navigate('/ajuda')}>Central de ajuda</button>
-      </section>
+      {aPesquisar ? (
+        <GrupoDefinicoes titulo={resultados.length > 0 ? `${resultados.length} ${resultados.length === 1 ? 'resultado' : 'resultados'}` : ''}>
+          {resultados.length === 0 && <p className="def-vazio">Não encontrei nada para «{termo.trim()}». Experimenta outra palavra.</p>}
+          {resultados.map((d) => (
+            <LinhaDefinicao
+              key={d.id}
+              tipo="link"
+              rotulo={d.rotulo}
+              descricao={localDaDefinicao(d)}
+              aoClicar={() => abrir(d)}
+            />
+          ))}
+        </GrupoDefinicoes>
+      ) : (
+        <>
+          <GrupoDefinicoes titulo="Conta" indice={0}>
+            <LinhaDefinicao icone="pessoa" rotulo="Dados académicos" valor={perfil?.ano} aoClicar={() => navigate(rotaDaSeccao('dados'))} />
+          </GrupoDefinicoes>
 
-      <section className="perfil-seccao">
-        <h2 className="perfil-seccao__titulo">Os teus dados</h2>
-        <p className="perfil-manutencao-texto">
-          Descarrega uma cópia de segurança de tudo — cadeiras, notas, faltas, anotações, casos e mais — num ficheiro.
-        </p>
-        <button className="perfil-btn-reparar" onClick={exportarDados} disabled={aExportar}>
-          {aExportar ? 'A preparar...' : '⬇ Exportar os meus dados'}
-        </button>
-      </section>
+          <GrupoDefinicoes titulo="Aplicação" indice={1}>
+            <LinhaDefinicao icone="paleta" rotulo="Aparência" valor={darkMode ? 'Escuro' : 'Claro'} aoClicar={() => navigate(rotaDaSeccao('aparencia'))} />
+            <LinhaDefinicao icone="sorriso" rotulo="Brincadeiras" valor={resumoDasBrincadeiras(prefs)} aoClicar={() => navigate(rotaDaSeccao('brincadeiras'))} />
+          </GrupoDefinicoes>
 
-      <section className="perfil-seccao">
-        <h2 className="perfil-seccao__titulo">Manutenção</h2>
-        <p className="perfil-manutencao-texto">
-          Se esta conta ainda tem as cadeiras antigas do 1.º ano, repõe as 5 cadeiras reais do 2.º ano.
-        </p>
-        <button className="perfil-btn-reparar" onClick={reporCadeiras} disabled={aRepor}>
-          {aRepor ? 'A repor...' : reposto ? '✓ Cadeiras repostas' : 'Repor cadeiras do 2.º ano'}
-        </button>
-      </section>
+          <GrupoDefinicoes titulo="Dados" indice={2}>
+            <LinhaDefinicao icone="base" rotulo="Os meus dados" aoClicar={() => navigate(rotaDaSeccao('os-meus-dados'))} />
+          </GrupoDefinicoes>
 
-      <button className="perfil-btn-sair" onClick={sair} disabled={aSair}>
-        {aSair ? 'A sair...' : 'Terminar sessão'}
-      </button>
+          <GrupoDefinicoes titulo="Suporte" indice={3}>
+            <LinhaDefinicao icone="ajuda" rotulo="Central de ajuda" aoClicar={() => navigate('/ajuda')} />
+            <LinhaDefinicao icone="livro" rotulo="Rever o tutorial" tipo="acao" aoClicar={reverTutorial} />
+            <LinhaDefinicao icone="info" rotulo="Sobre o JurisLeo" aoClicar={() => navigate(rotaDaSeccao('sobre'))} />
+          </GrupoDefinicoes>
+
+          <GrupoDefinicoes indice={4}>
+            <LinhaDefinicao icone="sair" rotulo="Terminar sessão" tipo="acao" perigo aoClicar={() => setConfirmarSair(true)} />
+          </GrupoDefinicoes>
+        </>
+      )}
+
+      {confirmarSair && (
+        <ConfirmarDefinicao
+          titulo="Terminar sessão?"
+          texto="Vais ter de entrar outra vez com o teu email e a tua palavra-passe."
+          rotuloConfirmar={aSair ? 'A sair...' : 'Terminar sessão'}
+          perigo
+          aoConfirmar={sair}
+          aoCancelar={() => setConfirmarSair(false)}
+        />
+      )}
     </div>
   );
 }
 
-function LinhaInfo({ label, valor }) {
-  return (
-    <div className="perfil-linha">
-      <span className="perfil-linha__label">{label}</span>
-      <span className="perfil-linha__valor">{valor || '—'}</span>
-    </div>
-  );
-}

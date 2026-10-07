@@ -61,13 +61,22 @@ export const ajudaPorRota = {
     ],
   },
   '/perfil': {
-    titulo: 'Perfil',
-    texto: 'Os teus dados académicos, o tema da app, e é aqui que terminas sessão.',
+    titulo: 'Definições',
+    texto: 'Tudo o que podes mudar, arrumado em grupos. Toca numa linha para abrir.',
     pontos: [
-      'O interruptor muda o tema em qualquer dispositivo onde entrares.',
-      '"Rever o tutorial" mostra outra vez a introdução do Dashboard.',
-      '"Repor cadeiras" só serve para arranjar contas de teste antigas.',
-      '"Terminar sessão" sai da tua conta.',
+      'A pesquisa no topo encontra qualquer definição, mesmo que não saibas onde está.',
+      'Em Aparência mudas o tema e a folha com que as notas novas começam.',
+      'Em Brincadeiras ligas ou desligas o Barney e as mensagens do Vini.',
+      'Em Os meus dados tiras uma cópia de segurança de tudo.',
+      '"Terminar sessão" pede confirmação antes de sair.',
+    ],
+  },
+  '/perfil/:secao': {
+    titulo: 'Definições',
+    texto: 'As mudanças guardam-se logo, sem botão de guardar.',
+    pontos: [
+      'A seta no topo volta às definições.',
+      'As brincadeiras e a folha das notas ficam guardadas só neste aparelho; o tema vale em todos.',
     ],
   },
   '/anotacoes': {
@@ -179,7 +188,7 @@ export const ajudaPorRota = {
 export function resolverAjuda(pathname) {
   if (ajudaPorRota[pathname]) return { chave: pathname, ...ajudaPorRota[pathname] };
 
-  const prefixosDinamicos = ['/cadeiras/', '/anotacoes/', '/cadernos/', '/casos/'];
+  const prefixosDinamicos = ['/cadeiras/', '/anotacoes/', '/cadernos/', '/casos/', '/perfil/'];
   for (const prefixo of prefixosDinamicos) {
     if (pathname.startsWith(prefixo)) {
       const chave = `${prefixo}:id`;

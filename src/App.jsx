@@ -29,6 +29,7 @@ const Ajuda = lazy(() => import('./pages/Ajuda'))
 const Tarefas = lazy(() => import('./pages/Tarefas'))
 const Calendario = lazy(() => import('./pages/Calendario'))
 const Perfil = lazy(() => import('./pages/Perfil'))
+const PerfilSecao = lazy(() => import('./pages/PerfilSecao'))
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
           <Route path="/tarefas" element={<NavBar><Tarefas /></NavBar>} />
           <Route path="/calendario" element={<NavBar><Calendario /></NavBar>} />
           <Route path="/perfil" element={<NavBar><Perfil /></NavBar>} />
+          <Route path="/perfil/:secao" element={<NavBar><PerfilSecao /></NavBar>} />
         </Routes>
       </Suspense>
     </BrowserRouter>

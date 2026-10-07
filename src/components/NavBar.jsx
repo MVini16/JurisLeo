@@ -100,7 +100,9 @@ function NavBar({ children }) {
   const [avisoEmBreve, setAvisoEmBreve] = useState(null)
 
   // índice do item activo para o slider
-  const indiceActivo = itens.findIndex(i => i.path === location.pathname)
+  // um separador está ativo na própria página e nas suas subpáginas (ex.: /perfil e /perfil/aparencia)
+  const estaActivo = (path) => location.pathname === path || location.pathname.startsWith(`${path}/`)
+  const indiceActivo = itens.findIndex(i => estaActivo(i.path))
 
   // tópico de ajuda da página actual, para a dica de primeira visita e o botão de ajuda
   const ajuda = resolverAjuda(location.pathname)
@@ -133,7 +135,7 @@ function NavBar({ children }) {
           {itens.map((item) => (
             <button
               key={item.path}
-              className={`sidebar-item ${location.pathname === item.path ? 'activo' : ''}`}
+              className={`sidebar-item ${estaActivo(item.path) ? 'activo' : ''}`}
               onClick={() => navigate(item.path)}
             >
               <span className="sidebar-item-icon">{item.icon}</span>
@@ -210,7 +212,7 @@ function NavBar({ children }) {
           {itens.map((item) => (
             <button
               key={item.path}
-              className={`tabbar-item ${location.pathname === item.path ? 'activo' : ''}`}
+              className={`tabbar-item ${estaActivo(item.path) ? 'activo' : ''}`}
               onClick={() => navigate(item.path)}
             >
               <span className="tabbar-icon">{item.icon}</span>

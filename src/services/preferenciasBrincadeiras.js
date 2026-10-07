@@ -1,8 +1,8 @@
-// preferências das brincadeiras (barney e provocações) — ficam só neste telemóvel, em localstorage,
-// para não mexer na estrutura do firestore. tudo ligado por omissão; a leonor desliga no perfil
+// preferências da app (brincadeiras e folha das notas novas) — ficam só neste telemóvel, em localstorage,
+// para não mexer na estrutura do firestore. tudo ligado por omissão; a leonor muda nas definições
 
 const CHAVE = 'jurisleo-brincadeiras';
-const PADRAO = { barney: true, provocacoes: true, frequenciaMin: 10 };
+const PADRAO = { barney: true, provocacoes: true, frequenciaMin: 10, folhaNotas: 'pautado' };
 
 export function lerPreferencias() {
   try {

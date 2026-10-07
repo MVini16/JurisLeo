@@ -10,6 +10,7 @@ import ExportarNotas from '../components/exportar/ExportarNotas.jsx';
 import SeletorModelos from '../components/editor/SeletorModelos.jsx';
 import { paginasParaExportar } from '../services/exportarNotas.js';
 import { lerDesenho } from '../services/desenho.js';
+import { lerPreferencias } from '../services/preferenciasBrincadeiras.js';
 import { abrirNota, serializarNota, estadoTamanho, folhaValida, tamanhoEmBytes } from '../services/notaRica.js';
 import { cadernoDaNota, seccaoDaNota, seccoesDoCaderno, seccoesPadrao, mesmoNome, normalizarNomeSeccao, CADERNO_LIVRE } from '../services/cadernos.js';
 import { cadeirasS1, idsCadeiras, nomesCadernos } from '../data/dadosLeonor.js';
@@ -60,7 +61,8 @@ function Formulario({ anotacao, nova, cadeiraInicial, seccaoInicial, criar, guar
   // o conteúdo vive dentro do editor; aqui só guardamos a folha e o que é preciso para abrir a nota
   const editorRef = useRef(null);
   const [docInicial] = useState(() => abrirNota(anotacao));
-  const [folha, setFolha] = useState(() => folhaValida(anotacao?.folha));
+  // uma nota nova começa na folha que ela escolheu nas definições; as que já existem mantêm a sua
+  const [folha, setFolha] = useState(() => folhaValida(anotacao?.folha ?? (nova ? lerPreferencias().folhaNotas : undefined)));
   const [erroTamanho, setErroTamanho] = useState(false);
   const [tagsTexto, setTagsTexto] = useState((anotacao?.tags || []).join(', '));
   const [favorita, setFavorita] = useState(anotacao?.favorita || false);

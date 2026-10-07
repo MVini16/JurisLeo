@@ -60,25 +60,23 @@ Projeto Firebase: `jurisleo-67124` (ver `.firebaserc`).
 
 ---
 
-## Estrutura de ficheiros (levantada em 17-09-2026)
+## Estrutura de ficheiros (atualizada em 07-10-2026)
 
-Entrada: `index.html` → `src/main.jsx` → `src/App.jsx` (rotas).
+Entrada: `index.html` → `src/main.jsx` → `src/App.jsx` (rotas). `main.jsx` liga também `iniciarAnimacoes()` e os estilos `styles/animacoes.css` e `styles/imprimir.css`.
 
-Páginas (`src/pages/`): `SplashScreen`, `Login`, `Onboarding` (sem NavBar) · `Dashboard`, `Horario`, `Cadeiras`, `Tarefas`, `Calendario`, `Perfil` (com `NavBar`).
+Páginas (`src/pages/`): `SplashScreen`, `Login`, `Onboarding` (sem NavBar) · `Dashboard`, `Horario`, `Cadeiras`, `Cadeira`, `Anotacoes`, `Caderno`, `Anotacao`, `Casos`, `Caso`, `Estudo`, `Glossario`, `Artigos`, `Leituras`, `Pesquisa`, `Flashcards`, `Ajuda`, `Tarefas`, `Calendario`, `Perfil` (Definições) e `PerfilSecao` (com `NavBar`).
 
-Componentes (`src/components/`): `NavBar`, `ModalCriarEvento`.
+Componentes (`src/components/`): `NavBar`, `ModalCriarEvento`, `Barney`, `ProvocacaoVini`, `Estante`, `boneco/` (botão flutuante, conversa e avatares), `editor/` (editor rico das notas: barra, desenho à mão, modelos, procurar, índice, flashcard da seleção), `estudo/SessaoVertical` (revisão de flashcards em ecrã inteiro, 4 aspetos), `exportar/`, `definicoes/`.
 
-Hooks (`src/hooks/`): `useDashboard`, `useCalendario`.
+Hooks (`src/hooks/`): dados (`useDashboard`, `useCalendario`, `useTarefas`, `useFlashcards`, ...) e `useBarney`, `useProvocacoes`, `usePreferencias`.
 
-Contexto (`src/context/`): `ThemeContext` (+ `useTheme.js`).
+Serviços (`src/services/`): Firebase (`firebase.js`, `auth.js`, `initFirestore.js`, `initCalendario.js`, `flashcards.js`) e lógica pura testada (`avaliacao`, `faltas`, `notaRica`, `notaFerramentas`, `cadernos`, `desenho`, `exportarNotas`, `docxNotas`, `partilha`, `modoEstudo`, `boneco`, `brincadeiras`, `animacoes`, `definicoes`, `repeticaoEspacada`).
 
-Serviços (`src/services/`): `firebase.js` (config + `db`/`auth`), `auth.js` (registar/login/logout, chama `initFirestore` e `initCalendario` no registo), `initFirestore.js`, `initCalendario.js`, `avaliacao.js` + `avaliacao.test.js`, `faltas.js` + `faltas.test.js`.
+Dados (`src/data/`): `dadosLeonor.js`, `motivosFalta.js`, `boneco.js` (frases e aparência do boneco, editáveis), `provocacoes.js`, `easterEggs.js`, `modelosPagina.js`, `ajuda.js`.
 
-Dados (`src/data/`): `dadosLeonor.js` (cadeiras reais, cores), `motivosFalta.js`.
+**Preferências da Leonor** (`jurisleo-brincadeiras` em localStorage, nunca no Firebase): brincadeiras, folha das notas, modo de estudo, pacote de animações e tudo do boneco. Ver `services/preferenciasBrincadeiras.js`.
 
-Config: `vite.config.js`, `eslint.config.js`, `firebase.json`, `firestore.rules`, `firestore.indexes.json`, `.firebaserc` (projeto `jurisleo-67124`).
-
----
+IA do boneco: só desenho em `docs/IA-DO-BONECO.md` (servidor à parte, sem Firebase, sem chave no cliente).
 
 ## Design
 

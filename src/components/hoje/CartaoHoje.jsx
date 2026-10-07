@@ -36,7 +36,7 @@ export default function CartaoHoje({ tarefas }) {
 
   if (variante === 'nenhum') return null;
 
-  const irRever = () => navigate('/flashcards');
+  const irRever = (cadeiraId = 'todas') => navigate('/flashcards', { state: { rever: cadeiraId } });
 
   if (variante === 'serie') {
     const progresso = progressoDaMeta(respondidas);
@@ -58,7 +58,7 @@ export default function CartaoHoje({ tarefas }) {
             </p>
           </div>
         </div>
-        <button type="button" className="hoje-botao" onClick={irRever}>{prontos > 0 ? 'Continuar a rever' : 'Ver os flashcards'}</button>
+        <button type="button" className="hoje-botao" onClick={() => irRever()}>{prontos > 0 ? 'Continuar a rever' : 'Ver os flashcards'}</button>
       </section>
     );
   }
@@ -68,10 +68,14 @@ export default function CartaoHoje({ tarefas }) {
       <section className="hoje cartao-hoje" aria-label="Para rever">
         <h2 className="hoje-titulo">Para rever</h2>
         <div className="hoje-stories">
+          <button type="button" className={`hoje-story ${prontos > 0 ? 'novo' : ''}`} style={{ '--c': '#C9A84C' }} onClick={() => irRever()} aria-label={`Tudo: ${prontos > 0 ? `${prontos} para rever` : 'em dia'}`}>
+            <i>Tudo{prontos > 0 && <em>{prontos}</em>}</i>
+            <span>{prontos > 0 ? 'Começar' : 'Em dia'}</span>
+          </button>
           {cadeirasS1.map((c) => {
             const n = porCadeira[c.id] || 0;
             return (
-              <button key={c.id} type="button" className={`hoje-story ${n > 0 ? 'novo' : ''}`} style={{ '--c': c.cor }} onClick={irRever} aria-label={`${c.abrev}: ${n > 0 ? `${n} para rever` : 'em dia'}`}>
+              <button key={c.id} type="button" className={`hoje-story ${n > 0 ? 'novo' : ''}`} style={{ '--c': c.cor }} onClick={() => irRever(c.id)} aria-label={`${c.abrev}: ${n > 0 ? `${n} para rever` : 'em dia'}`}>
                 <i>{c.abrev}{n > 0 && <em>{n}</em>}</i>
                 <span>{n > 0 ? 'Rever' : 'Em dia'}</span>
               </button>
@@ -103,7 +107,7 @@ export default function CartaoHoje({ tarefas }) {
   return (
     <section className="hoje hoje-barra" aria-label="Hoje">
       <div className="hoje-pilula"><b>{serie}</b><small>{serie === 1 ? 'dia seguido' : 'dias seguidos'}</small></div>
-      <button type="button" className="hoje-pilula" onClick={irRever}><b>{prontos}</b><small>para rever</small></button>
+      <button type="button" className="hoje-pilula" onClick={() => irRever()}><b>{prontos}</b><small>para rever</small></button>
       <button type="button" className="hoje-pilula" onClick={() => navigate('/tarefas')}><b>{aVencer}</b><small>{aVencer === 1 ? 'tarefa a vencer' : 'tarefas a vencer'}</small></button>
     </section>
   );

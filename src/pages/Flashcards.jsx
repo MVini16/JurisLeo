@@ -1,5 +1,6 @@
 // flashcards com repetição espaçada
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useTheme } from '../context/useTheme.js';
 import { useFlashcards } from '../hooks/useFlashcards.js';
 import { estaPronto, ordenarPorPrioridade } from '../services/repeticaoEspacada.js';
@@ -21,10 +22,21 @@ export default function Flashcards() {
   const [filaSessao, setFilaSessao] = useState(null);
   const { elemento: barney, disparar: dispararBarney } = useBarney();
   const prefs = usePreferencias();
+  const location = useLocation();
+  const [arrancou, setArrancou] = useState(false);
 
   const prontos = flashcards.filter((f) => estaPronto(f));
   const filtrados = flashcards.filter((f) => filtroCadeira === 'todas' || f.cadeiraId === filtroCadeira);
   const filaRevisao = ordenarPorPrioridade(prontos.filter((f) => filtroCadeira === 'todas' || f.cadeiraId === filtroCadeira));
+
+  // vindo do Dashboard (toque num story ou em "continuar a rever"), começa logo a revisão dessa cadeira
+  const pedido = location.state?.rever;
+  if (pedido && !arrancou && !loading) {
+    const doPedido = ordenarPorPrioridade(prontos.filter((f) => pedido === 'todas' || f.cadeiraId === pedido));
+    setArrancou(true);
+    if (pedido !== 'todas') setFiltroCadeira(pedido);
+    if (doPedido.length > 0) setFilaSessao(doPedido);
+  }
 
   return (
     <div className={`flashcards-pagina ${darkMode ? 'dark' : ''}`}>

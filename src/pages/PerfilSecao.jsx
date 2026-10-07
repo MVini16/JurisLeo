@@ -61,6 +61,13 @@ function Aparencia() {
         ))}
       </GrupoDefinicoes>
 
+      <GrupoDefinicoes titulo="Estante dos cadernos" indice={1} nota="Podes mudar a qualquer momento, também na própria página das notas.">
+        {[['lombadas', 'Prateleira', 'Lombadas com a cor de cada cadeira.'], ['capas', 'Capas', 'Capas de caderno com fita, em grelha.']].map(([id, nome, descricao]) => (
+          <LinhaDefinicao key={id} tipo="opcao" rotulo={nome} descricao={descricao} marcada={(prefs.estanteEstilo === 'capas' ? 'capas' : 'lombadas') === id}
+            aoClicar={() => setPrefs(guardarPreferencias({ estanteEstilo: id }))} />
+        ))}
+      </GrupoDefinicoes>
+
       <GrupoDefinicoes titulo="Animações" indice={2} nota="Escolhe como as páginas e as listas aparecem. Se o telemóvel tiver «reduzir movimento» ligado, a app respeita isso.">
         {PACOTES_ANIMACAO.map((p) => (
           <LinhaDefinicao

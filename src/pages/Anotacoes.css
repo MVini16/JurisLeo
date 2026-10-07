@@ -218,3 +218,6 @@
 @media (prefers-reduced-motion: reduce) {
   .anotacao-card, .notas-abas__ind { animation-duration: 0.01ms; animation-delay: 0s; transition-duration: 0.01ms; }
 }
+
+.anotacoes-estante-topo { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.anotacoes-estilo { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--gold); background: transparent; color: inherit; font: inherit; font-size: 12px; cursor: pointer; }

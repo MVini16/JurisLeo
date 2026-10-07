@@ -5,6 +5,9 @@ import { useTheme } from '../context/useTheme.js';
 import { useAnotacoes } from '../hooks/useAnotacoes.js';
 import BotaoVoltar from '../components/BotaoVoltar.jsx';
 import Estante from '../components/Estante.jsx';
+import { usePreferencias } from '../hooks/usePreferencias.js';
+import { guardarPreferencias } from '../services/preferenciasBrincadeiras.js';
+import Icone from '../components/icones/Icone.jsx';
 import {
   CADERNO_LIVRE, ABAS_NOTAS, filtrarNotas, contarPorAba, contarPorCaderno,
   cadernoDaNota, seccaoDaNota, previewTexto, dataCurta,
@@ -23,6 +26,7 @@ const VAZIO_POR_ABA = {
 export default function Anotacoes() {
   const { darkMode } = useTheme();
   const navigate = useNavigate();
+  const estiloEstante = usePreferencias().estanteEstilo === 'capas' ? 'capas' : 'lombadas';
   const { anotacoes, loading } = useAnotacoes();
   const [aba, setAba] = useState('todas');
   const [pesquisa, setPesquisa] = useState('');
@@ -57,8 +61,14 @@ export default function Anotacoes() {
         onChange={(e) => setPesquisa(e.target.value)}
       />
 
-      <p className="anotacoes-etiqueta">Cadernos</p>
-      <Estante cadernos={cadernos} onAbrir={(id) => navigate(`/cadernos/${id}`)} />
+      <div className="anotacoes-estante-topo">
+        <p className="anotacoes-etiqueta">Cadernos</p>
+        <button type="button" className="anotacoes-estilo no-print" onClick={() => guardarPreferencias({ estanteEstilo: estiloEstante === 'capas' ? 'lombadas' : 'capas' })}
+          aria-label={estiloEstante === 'capas' ? 'Ver como prateleira' : 'Ver como capas'}>
+          <Icone nome={estiloEstante === 'capas' ? 'livro' : 'cartas'} tamanho={18} /> {estiloEstante === 'capas' ? 'Prateleira' : 'Capas'}
+        </button>
+      </div>
+      <Estante cadernos={cadernos} estilo={estiloEstante} onAbrir={(id) => navigate(`/cadernos/${id}`)} />
 
       <div className="notas-abas" role="tablist" aria-label="Ver páginas">
         {ABAS_NOTAS.map((a) => (

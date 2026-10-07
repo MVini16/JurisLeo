@@ -5,6 +5,8 @@ const CHAVE = 'jurisleo-brincadeiras';
 const PADRAO = {
   // 'normal' é a app de sempre; 'social' abre no feed vertical e troca a barra de baixo (ela alterna quando quiser)
   modoApp: 'normal',
+  // a estante dos cadernos: 'lombadas' (prateleira) ou 'capas' (capas com fita); ela alterna quando quiser
+  estanteEstilo: 'lombadas',
   barney: true,
   provocacoes: true,
   frequenciaMin: 10,

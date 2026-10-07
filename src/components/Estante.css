@@ -93,3 +93,18 @@
 @media (prefers-reduced-motion: reduce) {
   .lombada { animation-duration: 0.01ms; animation-delay: 0s; transition-duration: 0.01ms; }
 }
+
+/* estilo "capas": grelha de capas em tecido, com lombada e fita dourada; viram um pouco ao passar o dedo */
+.capas { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 16px; padding: 6px 4px 14px; }
+.capa { all: unset; box-sizing: border-box; position: relative; aspect-ratio: 3 / 4; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; padding: 14px 10px 12px 20px; border-radius: 4px 12px 12px 4px; color: var(--text-dark); cursor: pointer; transform-origin: left center; transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease; animation: capa-entra 0.45s ease both; animation-delay: calc(var(--i) * 60ms); background: radial-gradient(circle at 30% 18%, rgba(255, 255, 255, 0.2), transparent 55%), repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 6px), var(--c); box-shadow: -4px 4px 0 rgba(0, 0, 0, 0.22), 0 10px 20px rgba(0, 0, 0, 0.25); -webkit-tap-highlight-color: transparent; }
+.capa::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 3px; background: rgba(0, 0, 0, 0.28); }
+.capa::after { content: ''; position: absolute; right: 14px; top: -2px; width: 13px; height: 48px; background: var(--gold); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%); }
+.capa:hover, .capa:focus-visible { transform: perspective(700px) rotateY(-14deg) translateY(-4px); box-shadow: -8px 8px 0 rgba(0, 0, 0, 0.2), 0 16px 28px rgba(0, 0, 0, 0.3); }
+.capa:active { transform: perspective(700px) rotateY(-20deg) scale(0.98); }
+.capa:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.capa__nome { font-size: 15px; line-height: 1.2; text-wrap: balance; }
+.capa__total { font-family: system-ui, sans-serif; font-size: 11px; opacity: 0.8; }
+.capa--livre { color: var(--bg-dark); }
+.capa--livre::before { background: rgba(0, 0, 0, 0.18); }
+@keyframes capa-entra { from { opacity: 0; transform: translateY(14px) scale(0.96); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .capa { animation: none; transition: none; } }

@@ -132,6 +132,7 @@
   var estrelas = [];
   var rolar = 0;
   var coracao = { p: 0 };
+  window.CINEMA = { coracao: coracao }; // a camada 3D (cinema.js) lê daqui o quanto as estrelas já são um coração
   var NUM_CORACAO = 120;
   function medir() {
     var d = Math.min(window.devicePixelRatio || 1, 2);
@@ -152,6 +153,7 @@
     }
   }
   function desenhar(t) {
+    if (document.body.classList.contains('gl')) { if (!parado) requestAnimationFrame(desenhar); return; } // com a camada 3D ligada, o céu 2D descansa
     var w = window.innerWidth; var h = window.innerHeight;
     ctx.clearRect(0, 0, w, h);
     var p = coracao.p;
@@ -315,7 +317,8 @@
     $('memoGrande').textContent = C.jogo.final;
     $('memoFinal').hidden = false;
     if (!parado) {
-      gsap.from('#memoFinal', { opacity: 0, y: 30, scale: 0.9, duration: 1.2, ease: 'power3.out' });
+      if (temAnime) window.anime({ targets: '#memoGrande', scale: [0.5, 1], opacity: [0, 1], duration: 1800, easing: 'easeOutElastic(1, .55)' });
+      gsap.from('#memoVitoria', { opacity: 0, y: 20, duration: 1.2, ease: 'power3.out' });
       for (var k = 0; k < 6; k++) setTimeout(function () { coracoes(Math.random() * window.innerWidth, window.innerHeight * (0.3 + Math.random() * 0.5), 14, true); }, k * 350);
     }
   }
@@ -436,6 +439,18 @@
   animar();
   window.addEventListener('load', function () { ScrollTrigger.refresh(); });
 
+  // ---------- desenhos de traço com anime.js ----------
+  var temAnime = typeof window.anime !== 'undefined';
+  if (temAnime && !parado) {
+    var corp = document.querySelector('.cortina__coracao path');
+    if (corp) {
+      window.anime({ targets: corp, strokeDashoffset: [window.anime.setDashoffset, 0], duration: 2600, easing: 'easeInOutSine', delay: 400,
+        complete: function () { window.anime({ targets: '.cortina__coracao', scale: [1, 1.12, 1], duration: 1400, easing: 'easeInOutSine', loop: true }); } });
+    }
+    var sub = document.querySelector('.sublinhado path');
+    if (sub) { sub.style.strokeDasharray = '1000'; sub.style.strokeDashoffset = '1000'; }
+  }
+
   // ---------- entrar ----------
   var musica = $('musica');
   var botaoSom = $('som');
@@ -452,7 +467,14 @@
     if (!parado) {
       gsap.to('#barraCima, #barraBaixo', { height: '4.5svh', duration: 2.2, ease: 'power3.inOut' });
       gsap.from('.titulo-bloco .pequeno', { opacity: 0, y: 16, duration: 1.2, delay: 0.8 });
-      gsap.from('.letra', { opacity: 0, y: 80, rotate: 8, duration: 1.6, stagger: 0.13, ease: 'power3.out', delay: 1.1 });
+      if (temAnime) {
+        gsap.set('.letra', { opacity: 0 });
+        window.anime({ targets: '.letra', translateY: [90, 0], rotate: [10, 0], opacity: [0, 1], delay: window.anime.stagger(140, { start: 1100 }), duration: 1900, easing: 'easeOutElastic(1, .6)' });
+        var sub2 = document.querySelector('.sublinhado path');
+        if (sub2) window.anime({ targets: sub2, strokeDashoffset: [1000, 0], duration: 2200, delay: 2900, easing: 'easeInOutSine' });
+      } else {
+        gsap.from('.letra', { opacity: 0, y: 80, rotate: 8, duration: 1.6, stagger: 0.13, ease: 'power3.out', delay: 1.1 });
+      }
       gsap.from('.deslizar', { opacity: 0, duration: 1.4, delay: 3.2 });
     }
     ScrollTrigger.refresh();

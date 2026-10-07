@@ -16,13 +16,19 @@ function versaoDaApp() {
   }
 }
 
-// a página-surpresa (public/s/) usa o gsap: copia-o do node_modules para a pasta dela no build, para não o guardar no repositório
-function copiarGsapParaASurpresa() {
+// a página-surpresa (public/s/) usa gsap, three e anime.js: copia-os do node_modules para a pasta dela no build, para não os guardar no repositório
+function copiarBibliotecasDaSurpresa() {
+  const ficheiros = [
+    ['gsap.min.js', 'node_modules/gsap/dist/gsap.min.js'],
+    ['ScrollTrigger.min.js', 'node_modules/gsap/dist/ScrollTrigger.min.js'],
+    ['three.module.min.js', 'node_modules/three/build/three.module.min.js'],
+    ['anime.min.js', 'node_modules/animejs/lib/anime.min.js'],
+  ]
   return {
-    name: 'copiar-gsap-surpresa',
+    name: 'copiar-bibliotecas-surpresa',
     generateBundle() {
-      for (const f of ['gsap.min.js', 'ScrollTrigger.min.js']) {
-        this.emitFile({ type: 'asset', fileName: `s/titsvdzkihyi/${f}`, source: readFileSync(`node_modules/gsap/dist/${f}`) })
+      for (const [nome, origem] of ficheiros) {
+        this.emitFile({ type: 'asset', fileName: `s/titsvdzkihyi/${nome}`, source: readFileSync(origem) })
       }
     },
   }
@@ -49,7 +55,7 @@ export default defineConfig({
     react(),
     versaoDaApp(),
     exigirChavesDoFirebase(),
-    copiarGsapParaASurpresa(),
+    copiarBibliotecasDaSurpresa(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],

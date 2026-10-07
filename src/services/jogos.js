@@ -3,7 +3,6 @@
 
 // o jurista pede 11: dez degraus e uma pergunta de reserva para a ajuda "saltar"
 export const PERGUNTAS_POR_JOGO = { vf: 15, jurista: 11, caso: 5, pares: 6 };
-export const SEGUNDOS_VF = 60;
 export const TAMANHO_MAX_PAR = 70; // pares com texto maior ficam de fora (não cabem nos botões)
 
 // ---------- baralhar e escolher ----------
@@ -114,9 +113,28 @@ export function baralharOpcoes(pergunta, aleatorio = Math.random) {
 
 // ---------- verdadeiro ou falso ----------
 
-// pontos de uma resposta certa: 10, mais 5 por cada certa seguida (até 4 extra, ou seja, 30 no máximo)
+// o relógio é de resistência: começa em 30s, cada certa dá mais 2s e cada erro tira 4s (nunca passa de 60s)
+export const SEGUNDOS_VF = 30;
+export const SEGUNDOS_MAX_VF = 60;
+export const BONUS_CERTA_VF = 2;
+export const PENALIZACAO_ERRO_VF = 4;
+
+export function relogioVF(restante, acertou) {
+  const novo = restante + (acertou ? BONUS_CERTA_VF : -PENALIZACAO_ERRO_VF);
+  return Math.min(SEGUNDOS_MAX_VF, Math.max(0, novo));
+}
+
+// quem acerta muitas seguidas multiplica os pontos: x1 (1 e 2 seguidas), x2 (3 a 5), x3 (6 a 9), x4 (10 ou mais)
+export function multiplicadorVF(seguidas) {
+  if (seguidas >= 10) return 4;
+  if (seguidas >= 6) return 3;
+  if (seguidas >= 3) return 2;
+  return 1;
+}
+
+// pontos de uma resposta certa, com `seguidas` já a contar com esta
 export function pontosVF(seguidas) {
-  return 10 + 5 * Math.min(Math.max(seguidas - 1, 0), 4);
+  return 10 * multiplicadorVF(seguidas);
 }
 
 export function resultadoVF(respostas) {
@@ -144,6 +162,16 @@ export function tituloGarantido(nivel) {
   return patamar === undefined ? 'Sem título (por agora)' : ESCADA[patamar];
 }
 
+// pontos por degrau subido; quem falha fica só com o último patamar, quem desiste leva tudo o que subiu
+export const PONTOS_POR_DEGRAU = 100;
+
+export function pontosDoJurista({ nivel, resultado, degraus }) {
+  if (resultado === 'completou') return degraus * PONTOS_POR_DEGRAU;
+  if (resultado === 'desistiu') return nivel * PONTOS_POR_DEGRAU;
+  const patamar = [...PATAMARES].reverse().find((p) => nivel > p);
+  return patamar === undefined ? 0 : (patamar + 1) * PONTOS_POR_DEGRAU;
+}
+
 // "50/50": esconde duas respostas erradas. devolve os índices a esconder
 export function meiaMeia(pergunta, aleatorio = Math.random) {
   const erradas = pergunta.opcoes.map((_, i) => i).filter((i) => i !== pergunta.certa);
@@ -153,6 +181,26 @@ export function meiaMeia(pergunta, aleatorio = Math.random) {
 // "pergunta ao Vini": não diz a resposta, diz onde ir ver
 export function pistaDoVini(pergunta) {
   return `O Vini diz: a resposta está em ${pergunta.fonte}. Vai espreitar.`;
+}
+
+// ---------- caso prático: a aposta ----------
+
+// antes de responder escolhe-se a convicção: 1 (prudente), 2 (convicta) ou 3 (tudo ou nada). certa: 20 x aposta; errada: perde 8 por cada nível acima do 1
+export const APOSTAS = [
+  { id: 1, rotulo: 'Prudente', descricao: 'Sem risco' },
+  { id: 2, rotulo: 'Convicta', descricao: 'Dobro, arriscas 8' },
+  { id: 3, rotulo: 'Tudo ou nada', descricao: 'Triplo, arriscas 16' },
+];
+export const PONTOS_CASO = 20;
+export const CUSTO_DICA_CASO = 10;
+
+export function pontosDoCaso(aposta, acertou) {
+  return acertou ? PONTOS_CASO * aposta : 0 - 8 * (aposta - 1);
+}
+
+// o total nunca desce abaixo de zero
+export function totalDoCaso(movimentos) {
+  return Math.max(0, movimentos.reduce((s, m) => s + m, 0));
 }
 
 // ---------- ligar os pares ----------
@@ -169,12 +217,24 @@ export function eParCerto(idEsquerda, idDireita) {
   return !!idEsquerda && idEsquerda === idDireita;
 }
 
-// 20 pontos por par, menos 5 por cada erro (sem ficar negativo no par), mais até 60 de bónus de tempo
-export function pontosPares({ certos, erros, segundos, tempoLimite = 90 }) {
-  const base = certos * 20 - erros * 5;
-  const bonus = certos > 0 ? Math.max(0, Math.round(((tempoLimite - segundos) / tempoLimite) * 60)) : 0;
-  return Math.max(0, base + bonus);
+// ligar os pares em rondas: 90s de início, mais 15s por cada ronda completa, até 3 rondas
+export const TEMPO_INICIAL_PARES = 90;
+export const TEMPO_POR_RONDA_PARES = 15;
+export const RONDAS_PARES = 3;
+
+// quem liga pares seguidos sem errar multiplica os pontos: x1 (1 e 2), x2 (3 a 5), x3 (6 ou mais)
+export function multiplicadorPares(seguidos) {
+  if (seguidos >= 6) return 3;
+  if (seguidos >= 3) return 2;
+  return 1;
 }
+
+export function pontosDoPar(seguidos) {
+  return 20 * multiplicadorPares(seguidos);
+}
+
+// um erro tira 5 pontos
+export const PENALIZACAO_PAR = 5;
 
 // ---------- recordes ----------
 

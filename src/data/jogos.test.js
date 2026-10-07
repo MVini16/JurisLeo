@@ -46,9 +46,9 @@ describe('o banco dos minijogos', () => {
 
   it('há quatro jogos e cada um tem perguntas suficientes', () => {
     expect(JOGOS.map((j) => j.id)).toEqual(['vf', 'jurista', 'caso', 'pares']);
-    expect(VERDADEIRO_FALSO.length).toBeGreaterThanOrEqual(10);
-    expect(ESCOLHA_MULTIPLA.length).toBeGreaterThanOrEqual(10);
-    expect(CASOS.length).toBeGreaterThanOrEqual(5);
-    expect(PARES.length).toBeGreaterThanOrEqual(12);
+    expect(VERDADEIRO_FALSO.length).toBeGreaterThanOrEqual(40);
+    expect(ESCOLHA_MULTIPLA.length).toBeGreaterThanOrEqual(30);
+    expect(CASOS.length).toBeGreaterThanOrEqual(10);
+    expect(PARES.length).toBeGreaterThanOrEqual(30);
   });
 });

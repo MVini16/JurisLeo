@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
   misturar, escolherN, filtrarPorCadeira, flashcardsParaVF, flashcardParaEscolha, flashcardsParaEscolha, flashcardsParaPares, montarRonda,
-  baralharOpcoes, pontosVF, resultadoVF, tituloGarantido, meiaMeia, pistaDoVini, prepararTabuleiro, eParCerto, pontosPares, registarRecorde,
+  baralharOpcoes, pontosVF, resultadoVF, tituloGarantido, meiaMeia, pistaDoVini, prepararTabuleiro, eParCerto, registarRecorde,
+  relogioVF, multiplicadorVF, pontosDoJurista, pontosDoCaso, totalDoCaso, multiplicadorPares, pontosDoPar,
   PERGUNTAS_POR_JOGO, ESCADA, construirPerguntaDela,
 } from './jogos.js';
 import { VERDADEIRO_FALSO, ESCOLHA_MULTIPLA, CASOS, PARES } from '../data/jogos.js';
@@ -92,12 +93,49 @@ describe('montarRonda', () => {
 });
 
 describe('verdadeiro ou falso', () => {
-  it('pontos crescem com as seguidas até ao limite', () => {
-    expect([1, 2, 3, 4, 5, 6, 20].map(pontosVF)).toEqual([10, 15, 20, 25, 30, 30, 30]);
+  it('o multiplicador sobe com as seguidas', () => {
+    expect([1, 2, 3, 5, 6, 9, 10, 30].map(multiplicadorVF)).toEqual([1, 1, 2, 2, 3, 3, 4, 4]);
+    expect([1, 3, 6, 10].map(pontosVF)).toEqual([10, 20, 30, 40]);
   });
   it('um erro quebra a série', () => {
-    expect(resultadoVF([true, true, false, true])).toEqual({ pontos: 10 + 15 + 10, certas: 3, erradas: 1, melhorSerie: 2 });
+    // 10 + 10 + (erro) + 10  = 30
+    expect(resultadoVF([true, true, false, true])).toEqual({ pontos: 30, certas: 3, erradas: 1, melhorSerie: 2 });
     expect(resultadoVF([])).toEqual({ pontos: 0, certas: 0, erradas: 0, melhorSerie: 0 });
+    expect(resultadoVF([true, true, true]).pontos).toBe(10 + 10 + 20);
+  });
+  it('o relógio ganha 2s por certa, perde 4s por erro e tem teto e chão', () => {
+    expect(relogioVF(30, true)).toBe(32);
+    expect(relogioVF(30, false)).toBe(26);
+    expect(relogioVF(59, true)).toBe(60);
+    expect(relogioVF(3, false)).toBe(0);
+  });
+});
+
+describe('pontos do jurista', () => {
+  it('quem completa leva tudo, quem desiste leva o que subiu, quem falha leva o último patamar', () => {
+    expect(pontosDoJurista({ nivel: 10, resultado: 'completou', degraus: 10 })).toBe(1000);
+    expect(pontosDoJurista({ nivel: 7, resultado: 'desistiu', degraus: 10 })).toBe(700);
+    expect(pontosDoJurista({ nivel: 7, resultado: 'falhou', degraus: 10 })).toBe(600);
+    expect(pontosDoJurista({ nivel: 4, resultado: 'falhou', degraus: 10 })).toBe(300);
+    expect(pontosDoJurista({ nivel: 1, resultado: 'falhou', degraus: 10 })).toBe(0);
+  });
+});
+
+describe('caso prático: a aposta', () => {
+  it('certa dá 20 vezes a aposta, errada tira 8 por nível acima do 1', () => {
+    expect([1, 2, 3].map((a) => pontosDoCaso(a, true))).toEqual([20, 40, 60]);
+    expect([1, 2, 3].map((a) => pontosDoCaso(a, false))).toEqual([0, -8, -16]);
+  });
+  it('o total nunca é negativo', () => {
+    expect(totalDoCaso([-8, -16])).toBe(0);
+    expect(totalDoCaso([40, -8, 20])).toBe(52);
+  });
+});
+
+describe('pares em rondas', () => {
+  it('o multiplicador sobe com os pares seguidos', () => {
+    expect([1, 2, 3, 5, 6, 12].map(multiplicadorPares)).toEqual([1, 1, 2, 2, 3, 3]);
+    expect([1, 3, 6].map(pontosDoPar)).toEqual([20, 40, 60]);
   });
 });
 
@@ -138,11 +176,6 @@ describe('ligar os pares', () => {
     expect(eParCerto('a', 'a')).toBe(true);
     expect(eParCerto('a', 'b')).toBe(false);
     expect(eParCerto(null, null)).toBe(false);
-  });
-  it('pontuação com erros e bónus de tempo', () => {
-    expect(pontosPares({ certos: 6, erros: 0, segundos: 0 })).toBe(180);
-    expect(pontosPares({ certos: 6, erros: 2, segundos: 90 })).toBe(110);
-    expect(pontosPares({ certos: 0, erros: 5, segundos: 10 })).toBe(0);
   });
 });
 

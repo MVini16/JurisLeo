@@ -27,6 +27,7 @@
       <svg class="cortina__coracao" viewBox="-26 -22 52 46" aria-hidden="true"><path d="M0 -6 C -9 -20 -25 -9 -17 5 C -12 13 -4 18 0 22 C 4 18 12 13 17 5 C 25 -9 9 -20 0 -6 Z"/></svg>
       <p class="cortina__texto" id="abertura"></p>
       <button class="botao" id="comecar" type="button" disabled>A preparar as nossas fotos...</button>
+      <button class="botao botao--suave" id="continuar" type="button" hidden></button>
     </div>
   </div>
 
@@ -50,6 +51,28 @@
     <p class="intro__linha" id="introLinha"></p>
     <button class="intro__passar" id="introPassar" type="button">passar &rsaquo;</button>
   </div>
+
+  <!-- ajudas: índice dos capítulos, capítulo atual, dica para deslizar, aviso para virar o telemóvel -->
+  <button class="menu-botao" id="menuBotao" type="button" aria-expanded="false" aria-controls="menuPainel" hidden><span></span><span></span><span></span></button>
+  <nav class="menu-painel" id="menuPainel" aria-label="Capítulos" hidden>
+    <p class="menu-painel__titulo" id="menuTitulo"></p>
+    <ol class="menu-lista" id="menuLista"></ol>
+    <div class="menu-acoes">
+      <button type="button" class="botao botao--suave" id="menuAnterior"></button>
+      <button type="button" class="botao botao--suave" id="menuSeguinte"></button>
+    </div>
+    <div class="menu-opcoes">
+      <button type="button" class="menu-opcao" id="opCalmo" aria-pressed="false"></button>
+      <button type="button" class="menu-opcao" id="opEcra"></button>
+      <button type="button" class="menu-opcao" id="opCarta"></button>
+      <button type="button" class="menu-opcao" id="opTopo"></button>
+    </div>
+  </nav>
+  <p class="capitulo-atual" id="capituloAtual" aria-live="polite" hidden></p>
+  <p class="dica-deslizar" id="dicaDeslizar" aria-hidden="true"></p>
+  <div class="aviso-orientacao" id="avisoOrientacao" aria-hidden="true"><p></p></div>
+  <div class="vinheta" id="vinheta" aria-hidden="true"></div>
+  <div class="luz-capitulo" id="luzCapitulo" aria-hidden="true"></div>
 
   <button class="som" id="som" type="button" aria-pressed="false" aria-label="Ligar ou desligar a música" hidden>♪</button>
 
@@ -140,6 +163,24 @@
       <p class="memo-msg" id="valesMsg" aria-live="polite"></p>
     </section>
 
+    <!-- nível 5: balões -->
+    <section class="cap cap--baloes" id="baloes">
+      <p class="nivel">Nível 5</p>
+      <h2 class="titulo-cap" id="baloesTitulo"></h2>
+      <p class="sub-cap" id="baloesSub"></p>
+      <div class="baloes" id="baloesCeu"></div>
+      <p class="frase-baloes" id="baloesFrase" aria-live="polite"></p>
+    </section>
+
+    <!-- nível 6: puzzle da foto -->
+    <section class="cap cap--puzzle" id="puzzle">
+      <p class="nivel">Nível 6</p>
+      <h2 class="titulo-cap" id="puzzleTitulo"></h2>
+      <p class="sub-cap" id="puzzleSub"></p>
+      <div class="puzzle" id="puzzleGrelha"></div>
+      <p class="memo-msg" id="puzzleMsg" aria-live="polite"></p>
+    </section>
+
     <!-- capítulo v: o nosso código -->
     <section class="cap cap--codigo" id="codigo">
       <div class="diploma" id="diploma">
@@ -166,10 +207,63 @@
       </div>
     </section>
 
+    <!-- capítulo vi: os nossos sítios -->
+    <section class="cap cap--mapa" id="mapa">
+      <h2 class="titulo-cap" id="mapaTitulo"></h2>
+      <p class="sub-cap" id="mapaSub"></p>
+      <div class="mapa" id="mapaCaixa">
+        <svg class="mapa__svg" id="mapaSvg" viewBox="0 0 100 100" aria-hidden="true"></svg>
+        <div class="mapa__pinos" id="mapaPinos"></div>
+      </div>
+      <div class="mapa-postal" id="mapaPostal" aria-live="polite"></div>
+    </section>
+
+    <section class="cap cap--roda" id="roda">
+      <h2 class="titulo-cap" id="rodaTitulo"></h2>
+      <p class="sub-cap" id="rodaSub"></p>
+      <div class="roda-caixa">
+        <span class="roda-ponteiro" aria-hidden="true">▼</span>
+        <svg class="roda" id="rodaSvg" viewBox="-110 -110 220 220" aria-hidden="true"></svg>
+      </div>
+      <button class="botao" id="rodaGirar" type="button"></button>
+      <p class="memo-msg" id="rodaMsg" aria-live="polite"></p>
+    </section>
+
+    <section class="cap cap--frasco" id="frasco">
+      <h2 class="titulo-cap" id="frascoTitulo"></h2>
+      <p class="sub-cap" id="frascoSub"></p>
+      <button class="frasco" id="frascoBotao" type="button" aria-label="Tirar um bilhete do frasco">
+        <svg viewBox="0 0 120 150" aria-hidden="true">
+          <rect class="frasco__tampa" x="30" y="6" width="60" height="16" rx="4"/>
+          <path class="frasco__vidro" d="M34 22 H86 V34 Q104 44 104 70 V128 Q104 144 88 144 H32 Q16 144 16 128 V70 Q16 44 34 34 Z"/>
+          <g class="frasco__papeis" id="frascoPapeis"></g>
+        </svg>
+      </button>
+      <div class="bilhete" id="bilhete" aria-live="polite"></div>
+    </section>
+
     <section class="cap cap--carta" id="carta">
       <div class="carta-intro" id="cartaIntro"></div>
       <h2 class="titulo-cap" id="cartaTitulo"></h2>
       <div class="carta-longa" id="cartaLonga"></div>
+    </section>
+
+    <!-- a lanterna: o dedo é a luz -->
+    <section class="cap cap--lanterna" id="lanterna">
+      <h2 class="titulo-cap" id="lanternaTitulo"></h2>
+      <p class="sub-cap" id="lanternaSub"></p>
+      <div class="lanterna" id="lanternaCaixa"><p class="lanterna__texto" id="lanternaTexto"></p></div>
+    </section>
+
+    <!-- desenhar um coração -->
+    <section class="cap cap--desenhar" id="desenhar">
+      <h2 class="titulo-cap" id="desenharTitulo"></h2>
+      <p class="sub-cap" id="desenharSub"></p>
+      <div class="desenho" id="desenhoCaixa">
+        <svg class="desenho__guia" viewBox="0 0 200 180" aria-hidden="true"><path id="desenhoCaminho" d="M100 168 C 60 135 12 105 12 60 C 12 30 35 12 60 12 C 80 12 94 24 100 40 C 106 24 120 12 140 12 C 165 12 188 30 188 60 C 188 105 140 135 100 168 Z"/></svg>
+        <canvas class="desenho__tela" id="desenhoTela"></canvas>
+      </div>
+      <p class="memo-msg" id="desenharMsg" aria-live="polite"></p>
     </section>
 
     <!-- abraço à distância: carregar e não largar -->
@@ -224,6 +318,7 @@
   <script src="conteudo.js"></script>
   <script src="prologo.js"></script>
   <script src="extra.js"></script>
+  <script src="mais.js"></script>
   <script src="app.js"></script>
   <script type="module" src="cinema.js"></script>
 </body>

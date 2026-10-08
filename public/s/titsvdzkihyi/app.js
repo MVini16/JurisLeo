@@ -37,6 +37,7 @@
     t.momentos.forEach(function (m, i) {
       var q = el('article', 'quadro-cena');
       var foto = el('div', 'quadro-foto');
+      foto.appendChild(el('i', 'quadro-flash'));
       foto.style.setProperty('--h', String(340 + (i + ti * 5) * 27));
       if (m.foto) {
         var img = el('img');
@@ -63,6 +64,7 @@
   antesDe($('cenaFrases'), C.capitulos.frases);
   antesDe($('jogo'), C.capitulos.jogo);
   antesDe($('codigo'), C.capitulos.codigo);
+  antesDe($('mapa'), C.capitulos.sitios);
   antesDe($('carta'), C.capitulos.carta);
 
   C.interludio.forEach(function (linha) {
@@ -307,6 +309,7 @@
   // ---------- as partes novas (extra.js) ----------
   window.FX = { coracoes: coracoes };
   window.EXTRA.montar({ parado: parado, coracoes: function (x, y, n, e) { coracoes(x, y, n, e); }, pulso: function (f) { pulso(f); } });
+  window.MAIS.montar({ parado: parado, coracoes: function (x, y, n, e) { coracoes(x, y, n, e); }, pulso: function (f) { pulso(f); }, ir: function (y, d) { irPara(y, d); } });
 
   // ---------- minijogo da memória ----------
   var jogo = { aberta: [], bloqueio: false, certas: 0, jogadas: 0 };
@@ -382,6 +385,7 @@
   function pulso(f) {
     if (parado || !window.CINEMA) return;
     gsap.fromTo(window.CINEMA, { pulso: f || 1 }, { pulso: 0, duration: 1.8, ease: 'power3.out', overwrite: 'auto' }); // 'auto' só corta o pulso anterior, não o acender do céu
+    gsap.fromTo('#vinheta', { opacity: Math.min(0.9, 0.45 * (f || 1)) }, { opacity: 0, duration: 1.4, ease: 'power2.out', overwrite: 'auto' });
   }
 
   // fogo de artifício dourado, para o FIM: vários rebentamentos com gravidade
@@ -463,8 +467,8 @@
     var capitulos = gsap.utils.toArray('.cena--capitulo');
     function animarCapitulo(sec) {
       if (!sec) return;
-      var tlc = gsap.timeline({ scrollTrigger: { trigger: sec, start: 'top top', end: '+=140%', scrub: 0.7, pin: true } });
-      tlc.fromTo(sec.querySelector('.cap-num'), { opacity: 0, y: 20, letterSpacing: '1em' }, { opacity: 1, y: 0, letterSpacing: '0.5em', duration: 0.5, ease: 'power2.out' }, 0);
+      var tlc = gsap.timeline({ scrollTrigger: { trigger: sec, start: 'top top', end: '+=140%', scrub: 0.7, pin: true, onEnter: function () { if (window.MAIS) window.MAIS.luzDeCapitulo(); } } });
+      tlc.fromTo(sec.querySelector('.cap-num'), { opacity: 0, y: 20, letterSpacing: '1em', rotateX: -90, transformPerspective: 500 }, { opacity: 1, y: 0, letterSpacing: '0.5em', rotateX: 0, duration: 0.5, ease: 'power2.out' }, 0);
       tlc.fromTo(sec.querySelectorAll('.cap-letra'), { yPercent: 120, opacity: 0, rotate: 8 }, { yPercent: 0, opacity: 1, rotate: 0, stagger: 0.07, duration: 0.6, ease: 'power3.out' }, 0.1);
       tlc.fromTo(sec.querySelector('.cap-linha'), { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power2.inOut' }, 0.5);
       tlc.to({}, { duration: 0.5 });
@@ -508,6 +512,8 @@
           tl.to([quadros[i - 1].querySelector('.quadro-foto'), quadros[i - 1].querySelector('.quadro-legenda')], { opacity: 0.2, scale: 0.9, duration: 0.5, ease: 'power2.in' }, chega);
           tl.to(tira, { x: function () { return alvo(i); }, duration: 1, ease: 'power2.inOut' }, chega);
           tl.fromTo(foto, { scale: 0.8, rotate: i % 2 ? 5 : -5, opacity: 0.25 }, { scale: 1, rotate: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, chega + 0.2);
+          var flash = foto.querySelector('.quadro-flash');
+          if (flash) tl.fromTo(flash, { opacity: 0 }, { keyframes: [{ opacity: 0.85, duration: 0.05 }, { opacity: 0, duration: 0.35 }], ease: 'none' }, chega + 0.95);
         }
         // a foto revela-se como uma polaroid e a legenda escreve-se letra a letra
         if (img && i > 0) tl.fromTo(img, { filter: 'sepia(0.85) brightness(1.45) contrast(0.8) blur(5px)' }, { filter: 'sepia(0) brightness(1) contrast(1) blur(0px)', duration: 0.9, ease: 'power2.out' }, chega + 0.25);
@@ -559,7 +565,8 @@
 
     animarCapitulo(capitulos[3]); // IV Os jogos
     animarCapitulo(capitulos[4]); // V O nosso código
-    animarCapitulo(capitulos[5]); // VI A carta
+    animarCapitulo(capitulos[5]); // VI Os nossos sítios
+    animarCapitulo(capitulos[6]); // VII A carta
 
     // a contagem das estrelas, presa ao scroll, logo antes do coração
     window.EXTRA.animarContagem();
@@ -593,6 +600,7 @@
   animar();
   // os efeitos globais (letras que se formam, blocos que entram e saem) vêm depois de todas as cenas fixas
   window.EXTRA.animarResto();
+  window.MAIS.animar();
 
   // scroll suave com o rato (lenis); no telemóvel fica o scroll nativo, que é o mais fiável no safari
   var lenis = null;
@@ -604,6 +612,10 @@
     lenis.stop();
   }
   window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+  function irPara(y, depressa) {
+    if (lenis) lenis.scrollTo(y, { duration: depressa ? 0.01 : 2.2, immediate: !!depressa });
+    else window.scrollTo({ top: y, behavior: depressa || parado ? 'auto' : 'smooth' });
+  }
 
   // ---------- desenhos de traço com anime.js ----------
   var temAnime = typeof window.anime !== 'undefined';
@@ -697,6 +709,19 @@
     gsap.to('#cortina', { opacity: 0, duration: parado ? 0 : 1.4, ease: 'power1.inOut', onComplete: function () { $('cortina').remove(); } });
     // primeiro o prólogo (a carta que eu tentei escrever), depois o genérico e o filme
     window.PROLOGO({ parado: parado, pulso: pulso, depois: function () { if (parado) entrar(); else genericoDeAbertura(entrar); } });
+  });
+  var botaoContinuar = $('continuar');
+  var guardado = window.MAIS.posicaoGuardada();
+  if (guardado > window.innerHeight * 2) {
+    botaoContinuar.textContent = (C.ui && C.ui.continuar) || 'Continuar onde ficaste';
+    botaoContinuar.hidden = false;
+  }
+  botaoContinuar.addEventListener('click', function () {
+    tocarMusica();
+    gsap.to('#cortina', { opacity: 0, duration: parado ? 0 : 0.9, onComplete: function () { $('cortina').remove(); } });
+    gsap.set('#barraCima, #barraBaixo', { height: '4.5svh' });
+    entrar();
+    setTimeout(function () { ScrollTrigger.refresh(); irPara(guardado, true); }, 120);
   });
   botaoSom.addEventListener('click', function () {
     var ligado = botaoSom.getAttribute('aria-pressed') === 'true';

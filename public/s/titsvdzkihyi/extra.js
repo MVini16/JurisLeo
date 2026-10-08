@@ -165,7 +165,7 @@
       if (parado) { num.textContent = '20'; } else {
         var o = { v: 0 };
         gsap.to(o, { v: 20, duration: 2.2, delay: 0.9, ease: 'power3.out', onUpdate: function () { num.textContent = String(Math.round(o.v)); },
-          onComplete: function () { var c = centroDe(num); ctx.coracoes(c.x, c.y, 26, true); ctx.pulso(1.4); } });
+          onComplete: function () { var c = centroDe(num); ctx.coracoes(c.x, c.y, 26, true); ctx.pulso(1.4); if (certas === Q.perguntas.length && window.MAIS) window.MAIS.confetti(90); } });
         if (window.anime) window.anime({ targets: vinte, scale: [0.4, 1], opacity: [0, 1], duration: 2200, delay: 700, easing: 'easeOutElastic(1, .5)' });
       }
       return cart;

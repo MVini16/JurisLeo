@@ -200,7 +200,7 @@ import * as THREE from './three.module.min.js';
   window.addEventListener('resize', medir);
 
   // ---- a câmara anda com o scroll, com suavidade; o rato (ou o dedo) inclina-a um pouco ----
-  var alvoP = 0; var p = 0; var ultScroll = window.scrollY; var vel = 0; var roll = 0; var velSuave = 0;
+  var alvoP = 0; var p = 0; var ultScroll = window.scrollY; var vel = 0; var roll = 0; var velSuave = 0; var calmoAtual = false;
   var mx = 0; var my = 0; var sx = 0; var sy = 0;
   window.addEventListener('pointermove', function (e) { mx = e.clientX / window.innerWidth - 0.5; my = e.clientY / window.innerHeight - 0.5; }, { passive: true });
   function progresso() {
@@ -260,6 +260,13 @@ import * as THREE from './three.module.min.js';
     // "velocidade de dobra": a descer depressa, as estrelas crescem e brilham mais
     velSuave += (Math.min(1, Math.abs(vel) / 45) - velSuave) * 0.08;
     mat.uniforms.uVel.value = velSuave;
+    // modo calmo: menos estrelas desenhadas e a aurora em resolução mais baixa
+    var querCalmo = !!estado.calmo;
+    if (querCalmo !== calmoAtual) {
+      calmoAtual = querCalmo;
+      geo.setDrawRange(0, Math.floor(N * (querCalmo ? 0.35 : (nivel === 1 ? 0.75 : nivel === 2 ? 0.5 : 1))));
+      if (aurora) { aurora.div = querCalmo ? 12 : 6; medir(); }
+    }
     var aceso = estado.acender == null ? 1 : estado.acender;
     mat.uniforms.uAcender.value = aceso;
     if (aurora) {

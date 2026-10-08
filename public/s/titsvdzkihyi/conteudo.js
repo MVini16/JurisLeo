@@ -7,7 +7,7 @@ window.CONTEUDO = {
   // o genérico de abertura, como num filme
   intro: ['Vini apresenta', 'Um filme que não cabia numa carta', 'Com a Leonor no papel principal'],
   // os cartões de capítulo
-  capitulos: { nos: ['Capítulo I', 'Nós'], tu: ['Capítulo II', 'Tu'], frases: ['Capítulo III', 'As nossas frases'], jogo: ['Capítulo IV', 'Os jogos'], codigo: ['Capítulo V', 'O nosso código'], carta: ['Capítulo VI', 'A carta'] },
+  capitulos: { nos: ['Capítulo I', 'Nós'], tu: ['Capítulo II', 'Tu'], frases: ['Capítulo III', 'As nossas frases'], jogo: ['Capítulo IV', 'Os jogos'], codigo: ['Capítulo V', 'O nosso código'], sitios: ['Capítulo VI', 'Os nossos sítios'], carta: ['Capítulo VII', 'A carta'] },
   // o prólogo: a carta que eu tentei escrever, antes do filme começar
   prologo: {
     antes: 'Antes de começarmos',
@@ -125,6 +125,87 @@ window.CONTEUDO = {
     'Eu escolho-te hoje e escolho-te amanhã. E no dia a seguir, outra vez.',
     'Amo-te, Nô. Mais do que consigo escrever.',
   ],
+  // ---------- partes novas (mais.js) ----------
+  // nível 5: balões com uma palavra cada; rebentados todos, formam a frase
+  baloes: {
+    titulo: 'Rebenta os balões',
+    sub: 'Cada um guarda uma palavra. Rebenta-os todos.',
+    palavras: ['És', 'a', 'minha', 'pessoa', 'preferida', 'Def'],
+    feito: 'És a minha pessoa preferida, Def.',
+  },
+  // nível 6: puzzle de uma foto, peças a rodar
+  puzzle: {
+    titulo: 'Põe a foto direita',
+    sub: 'Toca nas peças para as rodar até a foto ficar certa.',
+    foto: 'fotos/02.jpg',
+    feito: 'Encaixamos sempre. Mesmo quando começamos tortos.',
+  },
+  // capítulo vi: os nossos sítios (só sítios que já estão nas legendas das fotos)
+  mapa: {
+    titulo: 'O mapa dos nossos sítios',
+    sub: 'Toca em cada ponto.',
+    sitios: [
+      { nome: 'Lisboa', x: 21, y: 46, foto: 'fotos/11.jpg', texto: 'A nossa casa. Onde a terceira vez das luzes de Natal vai ser de vez.' },
+      { nome: 'Belém', x: 12, y: 57, foto: 'fotos/08.jpg', texto: 'Tu nos meus braços e eu a sentir-me o homem mais sortudo do mundo.' },
+      { nome: 'Algarve', x: 26, y: 78, foto: 'fotos/03.jpg', texto: 'Escadas de madeira, praia, bola, sol e tu.' },
+      { nome: 'Málaga', x: 62, y: 84, foto: 'fotos/01.jpg', texto: 'O desenho que quase se perdeu no aeroporto. E o alívio dos dois.' },
+    ],
+  },
+  // roda dos próximos encontros
+  roda: {
+    titulo: 'A roda dos próximos encontros',
+    sub: 'Gira a roda. O que sair, fazemos.',
+    opcoes: ['Jantar onde tu escolheres', 'Piquenique em Belém', 'Pôr do sol num miradouro', 'Maratona de Gossip Girl', 'Açaí e passeio à beira-mar', 'Um dia sem telemóveis', 'Cozinhar juntos (eu lavo a loiça)', 'Ver as luzes de Natal (à terceira é de vez)'],
+    botao: 'Girar',
+    saiu: 'Saiu:',
+    depois: 'Combinado? Eu já disse que sim.',
+  },
+  // frasco de bilhetinhos
+  frasco: {
+    titulo: 'O frasco dos bilhetinhos',
+    sub: 'Toca no frasco. Sai sempre um bilhete diferente.',
+    bilhetes: [
+      'Hoje estás bonita. Ontem também. Amanhã vai ser igual.',
+      'Lembrei-me de ti agora. E daqui a bocado vou lembrar-me outra vez.',
+      'Bebe água e come qualquer coisa. Ordens do namorado.',
+      'Se a frequência correr mal a culpa é do professor.',
+      'Gosto da tua gargalhada mais do que de futebol. Quase.',
+      'Estás a ler isto e eu já estou com saudades.',
+      'Ninguém faz caretas tão bem como tu.',
+      'Um abraço daqueles que duram mais do que devem.',
+      'Tu consegues. Eu sei porque já te vi conseguir.',
+      'Vale um beijo. Cobra quando quiseres.',
+      'És a minha notificação preferida.',
+      'Def. Só isso. Já sabes o resto.',
+    ],
+    vazio: 'Já leste todos. Volta amanhã que eu ponho mais.',
+  },
+  // a lanterna: um ecrã escuro onde o dedo é a luz
+  lanterna: {
+    titulo: 'Acende a luz',
+    sub: 'Passa o dedo pelo escuro.',
+    texto: 'Nos dias escuros é só procurares. Eu estou cá.',
+  },
+  // desenhar um coração por cima do tracejado
+  desenhar: {
+    titulo: 'Desenha um coração',
+    sub: 'Segue o tracejado com o dedo.',
+    feito: 'Desenhaste-o melhor do que eu. Como sempre.',
+  },
+  // o índice e os textos dos botões de ajuda
+  ui: {
+    menu: 'Capítulos',
+    continuar: 'Continuar onde ficaste',
+    dica: 'continua a deslizar',
+    calmo: 'Modo calmo',
+    calmoAjuda: 'Menos efeitos, para telemóveis mais lentos',
+    ecra: 'Ecrã inteiro',
+    guardarCarta: 'Guardar a carta',
+    recomecar: 'Voltar ao início',
+    anterior: 'Anterior',
+    seguinte: 'Seguinte',
+    orientacao: 'Vira o telemóvel ao alto. Fica mais bonito assim.',
+  },
   // frases minhas, que não vêm de filme nenhum. cada uma entra com uma animação diferente
   minhasTitulo: ['Frases que não vêm de filme nenhum.', 'Vêm de mim.'],
   minhas: [

@@ -205,6 +205,10 @@ window.CONTEUDO = {
     anterior: 'Anterior',
     seguinte: 'Seguinte',
     orientacao: 'Vira o telemóvel ao alto. Fica mais bonito assim.',
+    inclinar: 'Toca e inclina o telemóvel',
+    inclinarFeito: 'Agora o céu segue-te',
+    inclinarNao: 'Este telemóvel não deixou',
+    inclinarMenu: 'Céu que se inclina',
   },
   // frases minhas, que não vêm de filme nenhum. cada uma entra com uma animação diferente
   minhasTitulo: ['Frases que não vêm de filme nenhum.', 'Vêm de mim.'],

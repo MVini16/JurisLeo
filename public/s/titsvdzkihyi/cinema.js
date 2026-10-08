@@ -26,6 +26,9 @@ import * as THREE from './three.module.min.js';
   var COMPRIMENTO = 320; // quanto a câmara viaja do início ao fim do scroll
   var LONGE = 85; // a partir daqui as estrelas desvanecem
   var pixelMax = fraco ? 1 : 2;
+  // no iphone a aurora é desenhada um pouco mais pequena (o ecrã tem 3x de densidade e o safari agradece)
+  var ios = document.documentElement.classList.contains('ios');
+  var divBase = ios ? 8 : 6;
   estado.estrelas = N;
 
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, pixelMax));
@@ -171,7 +174,7 @@ import * as THREE from './three.module.min.js';
         depthTest: false, depthWrite: false,
       });
       cenaA.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), matA));
-      aurora = { r: rendA, cena: cenaA, cam: camA, mat: matA, div: 6 };
+      aurora = { r: rendA, cena: cenaA, cam: camA, mat: matA, div: divBase };
     } catch {
       aurora = null; // sem aurora, fica o fundo escuro e as luzes em css
     }
@@ -202,7 +205,8 @@ import * as THREE from './three.module.min.js';
   // ---- a câmara anda com o scroll, com suavidade; o rato (ou o dedo) inclina-a um pouco ----
   var alvoP = 0; var p = 0; var ultScroll = window.scrollY; var vel = 0; var roll = 0; var velSuave = 0; var calmoAtual = false;
   var mx = 0; var my = 0; var sx = 0; var sy = 0;
-  window.addEventListener('pointermove', function (e) { mx = e.clientX / window.innerWidth - 0.5; my = e.clientY / window.innerHeight - 0.5; }, { passive: true });
+  // só o rato: no telemóvel, arrastar o dedo para descer não deve abanar a câmara (lá quem manda é a inclinação)
+  window.addEventListener('pointermove', function (e) { if (e.pointerType !== 'mouse') return; mx = e.clientX / window.innerWidth - 0.5; my = e.clientY / window.innerHeight - 0.5; }, { passive: true });
   function progresso() {
     var max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
     return Math.min(1, Math.max(0, window.scrollY / max));
@@ -236,6 +240,9 @@ import * as THREE from './three.module.min.js';
     vel += (dy - vel) * 0.12;
     roll += ((-vel * 0.0016) - roll) * 0.08;
 
+    // com o céu que se inclina ligado (iphone.js), a inclinação do telemóvel faz de rato
+    var inc = window.INCLINACAO;
+    if (inc && inc.ativo) { mx = inc.x * 1.6; my = inc.y * 1.6; }
     sx += (mx - sx) * 0.05; sy += (my - sy) * 0.05;
     var z = -COMPRIMENTO * p;
     camara.position.set(sx * 3.2 + Math.sin(t * 0.21) * 0.6, -sy * 2.2 + Math.cos(t * 0.17) * 0.5, z);
@@ -265,7 +272,7 @@ import * as THREE from './three.module.min.js';
     if (querCalmo !== calmoAtual) {
       calmoAtual = querCalmo;
       geo.setDrawRange(0, Math.floor(N * (querCalmo ? 0.35 : (nivel === 1 ? 0.75 : nivel === 2 ? 0.5 : 1))));
-      if (aurora) { aurora.div = querCalmo ? 12 : 6; medir(); }
+      if (aurora) { aurora.div = querCalmo ? 12 : divBase; medir(); }
     }
     var aceso = estado.acender == null ? 1 : estado.acender;
     mat.uniforms.uAcender.value = aceso;

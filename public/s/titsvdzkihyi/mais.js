@@ -27,6 +27,8 @@
   var ctx; var parado = false;
   var CHAVE_POS = 'surpresa-posicao';
   var CHAVE_CALMO = 'surpresa-calmo';
+  var CHAVE_INC = 'surpresa-inclinar';
+  var ligarInclinar = null; // montado em montarAjudas
   function calmo() { return document.body.classList.contains('calmo'); }
 
   // ---------- confetti e estrelas cadentes (usados por várias cenas) ----------
@@ -458,6 +460,42 @@
     $('menuSeguinte').addEventListener('click', function () { fechar(); irParaCapitulo(capituloAtual() + 1); });
     $('opTopo').addEventListener('click', function () { fechar(); ctx.ir(0); });
 
+    // o céu que se inclina (iphone.js): no iphone a autorização só se pode pedir depois de um toque,
+    // por isso há um botão no título e uma opção no menu. no android liga-se sozinho
+    var I = window.INCLINACAO;
+    var chip = $('chipInclinar'); var opInc = $('opInclinar');
+    function marcarInclinar() { opInc.setAttribute('aria-pressed', I && I.ativo ? 'true' : 'false'); }
+    ligarInclinar = function () {
+      return I.pedir().then(function (ok) {
+        if (!ok) { guardar(CHAVE_INC, false); return false; }
+        // há telemóveis sem giroscópio: se não chegar nada, desliga-se outra vez
+        return I.funciona(900).then(function (anda) {
+          if (!anda) I.desligar();
+          marcarInclinar(); guardar(CHAVE_INC, anda);
+          return anda;
+        });
+      });
+    };
+    if (I && I.disponivel && !parado) {
+      opInc.hidden = false;
+      opInc.textContent = U.inclinarMenu || 'Céu que se inclina';
+      marcarInclinar();
+      opInc.addEventListener('click', function () {
+        if (I.ativo) { I.desligar(); guardar(CHAVE_INC, false); marcarInclinar(); return; }
+        ligarInclinar().then(function (ok) { if (ok) ctx.pulso(1); });
+      });
+      chip.textContent = U.inclinar || 'Inclina o telemóvel';
+      chip.addEventListener('click', function () {
+        chip.disabled = true;
+        ligarInclinar().then(function (ok) {
+          chip.classList.add('chip-inclinar--feito');
+          chip.textContent = ok ? (U.inclinarFeito || 'Agora o céu segue-te') : (U.inclinarNao || 'Este telemóvel não deixou');
+          if (ok) { ctx.pulso(1.2); ctx.coracoes(window.innerWidth / 2, window.innerHeight * 0.62, 10, true); }
+          gsap.to(chip, { opacity: 0, y: -10, duration: 0.7, delay: 2.2, onComplete: function () { chip.hidden = true; } });
+        });
+      });
+    }
+
     // modo calmo: menos efeitos (grão, cometas, rastos, partículas), lembrado neste telemóvel
     function aplicarCalmo(sim) {
       document.body.classList.toggle('calmo', sim);
@@ -621,5 +659,17 @@
     luzDeCapitulo: luzDeCapitulo,
     confetti: confetti,
     posicaoGuardada: function () { return Number(ler(CHAVE_POS, 0)) || 0; },
+    // no toque de começar: se da outra vez ela ligou o céu que se inclina, volta a ligar (é um toque, o iphone deixa)
+    aoComecar: function () {
+      var I = window.INCLINACAO;
+      if (ligarInclinar && I && I.disponivel && !I.ativo && !parado && ler(CHAVE_INC, false)) ligarInclinar();
+    },
+    // depois da abertura: mostra o botão "inclina o telemóvel" no título (só onde é preciso pedir)
+    mostrarInclinar: function () {
+      var I = window.INCLINACAO; var chip = $('chipInclinar');
+      if (!I || !I.disponivel || !I.precisaPedir || I.ativo || parado || !chip || !chip.textContent) return;
+      chip.hidden = false;
+      gsap.fromTo(chip, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.9, delay: 3.6, ease: 'power2.out' });
+    },
   };
 })();

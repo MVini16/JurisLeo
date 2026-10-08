@@ -22,7 +22,7 @@
   h1.setAttribute('aria-label', C.nome);
   $('subFixo').textContent = 'Para a minha';
   $('subRoda').textContent = (C.apelidos && C.apelidos[0]) || 'Necas';
-  C.nome.split('').forEach(function (l) { var s = el('span', 'letra', l); s.setAttribute('aria-hidden', 'true'); h1.appendChild(s); });
+  C.nome.split('').forEach(function (l, i) { var s = el('span', 'letra', l); s.setAttribute('aria-hidden', 'true'); s.style.setProperty('--i', i); h1.appendChild(s); });
 
   C.dificil.forEach(function (linha) { $('linhasDificil').appendChild(el('p', 'linha', linha)); });
 
@@ -238,8 +238,10 @@
 
   // ---------- efeitos de rato e de toque: corações a nascer onde tocas ----------
   var ativos = 0;
+  // no iphone, menos corações no ecrã ao mesmo tempo (cada um é uma camada)
+  var LIMITE_CORACOES = document.documentElement.classList.contains('ios') ? 70 : 140;
   function coracoes(x, y, n, espalhar) {
-    if (parado || ativos > 140) return;
+    if (parado || ativos > LIMITE_CORACOES) return;
     for (var i = 0; i < n; i++) {
       var h = el('span', 'fx-coracao', '♥');
       h.style.fontSize = (10 + Math.random() * 16) + 'px';
@@ -664,6 +666,7 @@
         gsap.from('.letra', { opacity: 0, y: 80, rotate: 8, duration: 1.6, stagger: 0.13, ease: 'power3.out', delay: 0.7 });
       }
       gsap.from('.deslizar', { opacity: 0, duration: 1.4, delay: 2.8 });
+      window.MAIS.mostrarInclinar();
       // o apelido por baixo do título vai rodando
       var ap = C.apelidos || ['Necas']; var ia = 0; var roda = $('subRoda');
       if (ap.length > 1) {
@@ -706,6 +709,7 @@
 
   botaoComecar.addEventListener('click', function () {
     tocarMusica();
+    window.MAIS.aoComecar();
     gsap.to('#cortina', { opacity: 0, duration: parado ? 0 : 1.4, ease: 'power1.inOut', onComplete: function () { $('cortina').remove(); } });
     // primeiro o prólogo (a carta que eu tentei escrever), depois o genérico e o filme
     window.PROLOGO({ parado: parado, pulso: pulso, depois: function () { if (parado) entrar(); else genericoDeAbertura(entrar); } });
@@ -718,6 +722,7 @@
   }
   botaoContinuar.addEventListener('click', function () {
     tocarMusica();
+    window.MAIS.aoComecar();
     gsap.to('#cortina', { opacity: 0, duration: parado ? 0 : 0.9, onComplete: function () { $('cortina').remove(); } });
     gsap.set('#barraCima, #barraBaixo', { height: '4.5svh' });
     entrar();

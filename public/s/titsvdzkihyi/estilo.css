@@ -29,7 +29,8 @@ body.aurora .luzes { opacity: .45; }
 body.gl #gl { display: block; }
 body.gl #estrelas { display: none; }
 #estrelas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-.luzes { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+/* margem de sobra: com o céu que se inclina (iphone.js) o fundo mexe-se e a borda não pode aparecer */
+.luzes { position: fixed; inset: -48px; z-index: 1; pointer-events: none; overflow: hidden; }
 .luzes i { position: absolute; width: 90vmax; height: 90vmax; border-radius: 50%; opacity: .5; will-change: transform; }
 .luzes i:nth-child(1) { left: -45vmax; top: -30vmax; background: radial-gradient(circle, rgba(142,31,51,.55), transparent 62%); animation: deriva1 28s ease-in-out infinite alternate; }
 .luzes i:nth-child(2) { right: -50vmax; bottom: -40vmax; background: radial-gradient(circle, rgba(216,180,95,.25), transparent 62%); animation: deriva2 34s ease-in-out infinite alternate; }
@@ -75,6 +76,13 @@ h1 { font-size: clamp(3.6rem, 19vw, 9rem); font-weight: 400; margin: 0; letter-s
 .letra { display: inline-block; will-change: transform, opacity; }
 .deslizar { font-family: var(--sans); font-size: .8rem; letter-spacing: .25em; text-transform: uppercase; color: var(--ouro); margin: 4rem 0 0; animation: pulsa 2.4s ease-in-out infinite; }
 @keyframes pulsa { 50% { opacity: .35; transform: translateY(6px); } }
+/* o botão "inclina o telemóvel" (iphone): um telemóvel pequeno a abanar, para se perceber sem ler */
+.chip-inclinar { margin: .6rem auto 0; padding: 10px 18px; min-height: 44px; border-radius: 999px; border: 1px solid rgba(216,180,95,.55); background: rgba(13,6,9,.55); color: var(--ouro); font-family: var(--sans); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; gap: .7em; opacity: 0; -webkit-tap-highlight-color: transparent; }
+.chip-inclinar[hidden] { display: none; }
+.chip-inclinar::before { content: ''; width: 10px; height: 17px; border: 1.5px solid currentColor; border-radius: 3px; box-shadow: inset 0 -3px 0 -1.5px currentColor; animation: abanaTelemovel 2.4s ease-in-out infinite; }
+.chip-inclinar--feito::before { animation: none; transform: rotate(0); }
+.chip-inclinar:disabled { cursor: default; }
+@keyframes abanaTelemovel { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-22deg); } 45% { transform: rotate(18deg); } 65% { transform: rotate(-8deg); } 80% { transform: rotate(0); } }
 .luz-varrer { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 35%, rgba(255,235,200,.16) 50%, transparent 65%); transform: translateX(-120%); }
 
 /* cena 2 */
@@ -634,5 +642,29 @@ body.parado .prologo--parado .escrita--tentativa { text-decoration: line-through
 body.parado .prologo--parado .prologo__palco { position: static; display: grid; gap: 1.2rem; margin: 2.4rem 0; padding: 0; }
 body.parado .prologo--parado .voo { display: none; }
 body.parado .contagem__linha { opacity: 1; }
+/* ---------- iphone (safari): o mesmo filme, desenhado de forma que o safari aguenta a 60 imagens por segundo ----------
+   - o grão deixa de se misturar (mix-blend) com tudo o que está por baixo, incluindo o céu 3D: fica parado e mais leve
+   - vidro fosco (backdrop-filter) só nos botões pequenos; nos cartões grandes que passam com o scroll sai
+   - o texto dourado deixa de ser um gradiente recortado (no safari pisca quando as letras se mexem) e passa a ser cor:
+     as letras do nome acendem uma a uma, como uma onda, e os nomes dos créditos brilham
+   - nada de camadas por letra (will-change) nas letras que se mexem: no iphone cada camada gasta memória */
+.ios .granulado { animation: none; mix-blend-mode: normal; opacity: .035; }
+.ios .carta, .ios .quiz-cartao { backdrop-filter: none; -webkit-backdrop-filter: none; }
+.ios .quiz-cartao { background: linear-gradient(170deg, rgba(40,20,28,.82), rgba(22,10,15,.78)); }
+.ios .vale::after { mix-blend-mode: normal; opacity: .45; }
+.ios .luz-capitulo { mix-blend-mode: normal; }
+.ios .carimbo { mix-blend-mode: normal; }
+.ios h1 .letra { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: #f3e9df; animation: none; }
+.ios .credito__nome { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--texto); animation: none; }
+.ios .carta-longa p:last-child { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--ouro); animation: none; }
+.ios .letra, .ios .cap-letra, .ios .pg .ch, .ios .pq .ch, .ios .minha .char, .ios .minha div[aria-hidden], .ios .mascara__in { will-change: auto; }
+.ios .intro__linha, .ios .cap-titulo { will-change: transform, opacity; }
+@media (prefers-reduced-motion: no-preference) {
+  .ios h1 .letra { animation: letraAcende 5s ease-in-out infinite; animation-delay: calc(var(--i, 0) * .16s); }
+  .ios .credito__nome { animation: nomeBrilha 4s ease-in-out infinite; }
+  .ios .carta-longa p:last-child { animation: nomeBrilha 6s ease-in-out infinite; }
+}
+@keyframes letraAcende { 0%, 62%, 100% { color: #f3e9df; text-shadow: none; } 76% { color: #ffe2a8; text-shadow: 0 0 22px rgba(255,214,140,.55); } }
+@keyframes nomeBrilha { 0%, 100% { text-shadow: 0 0 0 rgba(255,226,168,0); } 50% { text-shadow: 0 0 18px rgba(255,226,168,.45); } }
 @media (prefers-reduced-motion: reduce) { .po-dourado, .petalas, .intro::before, h1 .letra, .credito__nome, .vale::after, .frase__aspas, .ornamento__coracao, .carta__selo, .abraco-botao, .pino::after, .dica-deslizar--ver, .cena--tira::before, .cena--tira::after { animation: none !important; }
   .deslizar, .granulado, .luzes i, .botao::after, .progresso b, .carta-longa p:last-child { animation: none; } }

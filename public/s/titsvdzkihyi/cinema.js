@@ -93,10 +93,11 @@ import * as THREE from './three.module.min.js';
       uRodar: { value: 0 },
       uAlto: { value: 4 },
       uAcender: { value: 1 },
+      uVel: { value: 0 },
     },
     vertexShader: [
       'attribute vec3 aEstrela; attribute vec3 aCoracao; attribute vec4 aRnd;',
-      'uniform float uTempo; uniform float uMorph; uniform vec3 uCam; uniform float uLonge; uniform float uTam; uniform float uBater; uniform float uRodar; uniform float uAlto; uniform float uAcender;',
+      'uniform float uTempo; uniform float uMorph; uniform vec3 uCam; uniform float uLonge; uniform float uTam; uniform float uBater; uniform float uRodar; uniform float uAlto; uniform float uAcender; uniform float uVel;',
       'varying float vAlfa; varying vec3 vCor;',
       'mat2 rot(float a){ float s = sin(a); float c = cos(a); return mat2(c, -s, s, c); }',
       'void main(){',
@@ -111,9 +112,9 @@ import * as THREE from './three.module.min.js';
       '  float dist = -mv.z;',
       '  gl_Position = projectionMatrix * mv;',
       '  float brilho = 0.68 + 0.32 * sin(uTempo * 1.7 + aRnd.x * 40.0);',
-      '  gl_PointSize = clamp(uTam * aRnd.y * (70.0 / max(dist, 1.0)) * (1.0 + t * 1.1), 1.0, 30.0);',
+      '  gl_PointSize = clamp(uTam * aRnd.y * (70.0 / max(dist, 1.0)) * (1.0 + t * 1.1) * (1.0 + uVel * 0.9), 1.0, 34.0);',
       '  float fade = smoothstep(uLonge, uLonge * 0.5, dist) * smoothstep(0.4, 3.5, dist);',
-      '  vAlfa = fade * brilho * mix(0.85, 1.0, t) * uAcender;',
+      '  vAlfa = fade * brilho * mix(0.85, 1.0, t) * uAcender * (1.0 + uVel * 0.6);',
       '  vec3 base = mix(vec3(1.0, 0.94, 0.86), vec3(0.88, 0.72, 0.38), aRnd.z);',
       '  vCor = mix(base, vec3(1.0, 0.42, 0.52), t * 0.85);',
       '}',
@@ -199,7 +200,7 @@ import * as THREE from './three.module.min.js';
   window.addEventListener('resize', medir);
 
   // ---- a câmara anda com o scroll, com suavidade; o rato (ou o dedo) inclina-a um pouco ----
-  var alvoP = 0; var p = 0; var ultScroll = window.scrollY; var vel = 0; var roll = 0;
+  var alvoP = 0; var p = 0; var ultScroll = window.scrollY; var vel = 0; var roll = 0; var velSuave = 0;
   var mx = 0; var my = 0; var sx = 0; var sy = 0;
   window.addEventListener('pointermove', function (e) { mx = e.clientX / window.innerWidth - 0.5; my = e.clientY / window.innerHeight - 0.5; }, { passive: true });
   function progresso() {
@@ -256,6 +257,9 @@ import * as THREE from './three.module.min.js';
     mat.uniforms.uRodar.value = t * 0.35;
     mat.uniforms.uBater.value = morph > 0.9 ? 1 + 0.05 * Math.max(0, Math.sin(t * 4.2)) + 0.012 * Math.sin(t * 1.3) : 1;
 
+    // "velocidade de dobra": a descer depressa, as estrelas crescem e brilham mais
+    velSuave += (Math.min(1, Math.abs(vel) / 45) - velSuave) * 0.08;
+    mat.uniforms.uVel.value = velSuave;
     var aceso = estado.acender == null ? 1 : estado.acender;
     mat.uniforms.uAcender.value = aceso;
     if (aurora) {

@@ -99,8 +99,9 @@ h1 { font-size: clamp(3.6rem, 19vw, 9rem); font-weight: 400; margin: 0; letter-s
 .tira-progresso i { display: block; height: 100%; width: 100%; background: var(--ouro); transform: scaleX(0); transform-origin: left; }
 @media (min-width: 900px) {
   .quadro-cena { width: 78vw; grid-template-columns: minmax(0, 24rem) minmax(0, 26rem); gap: 4rem; justify-content: center; align-content: center; }
+  .tira { padding-inline: 11vw; } /* a primeira e a última foto também podem ficar ao centro */
   .quadro-foto { height: min(66svh, 34rem); }
-  .quadro-legenda { text-align: left; justify-items: start; }
+  .quadro-legenda { text-align: left; justify-items: start; align-content: center; align-self: center; }
 }
 
 /* cena 3b: frases gigantes */
@@ -385,6 +386,58 @@ body.cursor-custom, body.cursor-custom * { cursor: none !important; }
 .contagem__depois { display: grid; gap: .5rem; }
 .contagem__linha { margin: 0; color: var(--suave); font-size: clamp(1.1rem, 4.6vw, 1.45rem); text-wrap: balance; }
 
+/* ---------- revisão: mais vida e mais alinhado ---------- */
+/* coração que viaja na ponta da barra de progresso */
+.progresso b { position: absolute; top: -7px; left: -7px; font-size: 12px; line-height: 1; color: var(--ouro); text-shadow: 0 0 8px rgba(216,180,95,.9); will-change: transform; animation: bate 1.2s ease-in-out infinite; }
+@keyframes bate { 0%, 100% { scale: 1; } 15% { scale: 1.35; } 30% { scale: 1; } 45% { scale: 1.2; } }
+
+/* anel de luz que pulsa a cada razão */
+.razoes-anel { position: absolute; left: 50%; top: 50%; width: min(70vw, 26rem); aspect-ratio: 1; margin: calc(min(70vw, 26rem) / -2) 0 0 calc(min(70vw, 26rem) / -2); border-radius: 50%; border: 1px solid rgba(216,180,95,.7); box-shadow: 0 0 40px rgba(216,180,95,.35), inset 0 0 40px rgba(216,180,95,.2); opacity: 0; pointer-events: none; }
+.razao { perspective: 900px; }
+
+/* ornamento por cima dos títulos das partes: linha, coração, linha */
+.ornamento { display: block; width: 160px; height: 20px; margin: 0 auto .9rem; overflow: visible; }
+.ornamento__linha { fill: none; stroke: var(--ouro); stroke-width: 1; stroke-linecap: round; opacity: .8; }
+.ornamento__coracao { fill: var(--vinho); stroke: var(--ouro); stroke-width: .8; filter: drop-shadow(0 0 4px rgba(216,180,95,.6)); }
+
+/* a linha de cada artigo do código desenha-se de cima para baixo */
+.artigo { position: relative; border-left: 0; }
+.artigo::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: linear-gradient(var(--ouro), rgba(216,180,95,.15)); transform-origin: top; transform: scaleY(var(--traco, 1)); }
+
+/* brilho que passa pelos botões de vez em quando */
+.botao { position: relative; overflow: hidden; }
+.botao::after { content: ''; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, rgba(255,240,210,.35) 50%, transparent 65%); transform: translateX(-120%); animation: brilhoBotao 4.5s ease-in-out infinite; pointer-events: none; }
+@keyframes brilhoBotao { 0%, 62% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
+
+/* o fim da carta brilha em dourado, devagar */
+.carta-longa p:last-child { background: linear-gradient(90deg, var(--ouro), #fff1cf, var(--ouro)); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: ouroCorre 6s linear infinite; }
+@keyframes ouroCorre { to { background-position: -200% 0; } }
+
+/* título das minhas frases: uma etiqueta, alinhada ao centro */
+.minhas-titulo { font-family: var(--sans); font-style: normal; font-size: .8rem; letter-spacing: .28em; text-transform: uppercase; }
+.minhas-titulo { left: 0; right: 0; margin-left: auto; margin-right: auto; width: max-content; max-width: calc(100% - 2 * var(--lado)); padding: .7em 1.2em; border: 1px solid rgba(216,180,95,.45); border-radius: 999px; background: rgba(13,6,9,.45); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); text-wrap: balance; line-height: 1.6; }
+
+/* no computador, tudo maior: o texto acompanha o ecrã */
+@media (min-width: 900px) {
+  .linha { font-size: clamp(2.4rem, 3.4vw, 3.6rem); }
+  .linhas, .razoes-palco, .frases-palco, .minhas-palco { width: min(100%, 52rem); }
+  .razao__t { font-size: clamp(2.2rem, 3vw, 3.2rem); max-width: 40rem; }
+  .minha__txt { font-size: clamp(2.6rem, 3.6vw, 4.2rem); }
+  .minha--grande .minha__txt { font-size: clamp(5rem, 9vw, 9rem); }
+  .frase__txt { font-size: clamp(3.4rem, 4.6vw, 5.4rem); }
+  .frase__pt, .frase__nosso { font-size: 1.5rem; }
+  .texto-longo--grande { font-size: clamp(3rem, 4.2vw, 4.6rem); }
+  .momento__titulo { font-size: clamp(2.2rem, 2.6vw, 3rem); }
+  .momento__texto { font-size: 1.3rem; }
+  .quadro-foto { width: min(100%, 28rem); height: min(70svh, 38rem); }
+  .titulo-cap { font-size: clamp(3rem, 3.6vw, 4rem); }
+  .sub-cap { font-size: 1.15rem; max-width: 34rem; }
+  .carta-longa { font-size: 1.35rem; max-width: 40rem; }
+  .contagem__antes { font-size: 2.6rem; }
+  .final-bloco .texto-longo { font-size: clamp(2.4rem, 3.2vw, 3.6rem); }
+  .minhas-titulo { font-size: .9rem; }
+}
+
 /* sem animações (reduzir movimento): tudo aparece arrumado, em coluna, já legível */
 body.parado .cena { min-height: auto; padding-block: 14svh; }
 body.parado .linhas, body.parado .razoes-palco, body.parado .frases-palco { height: auto; display: grid; gap: 2.4rem; }
@@ -415,4 +468,4 @@ body.parado .prologo--parado .escrita--tentativa { text-decoration: line-through
 body.parado .prologo--parado .prologo__palco { position: static; display: grid; gap: 1.2rem; margin: 2.4rem 0; padding: 0; }
 body.parado .prologo--parado .voo { display: none; }
 body.parado .contagem__linha { opacity: 1; }
-@media (prefers-reduced-motion: reduce) { .deslizar, .granulado, .luzes i { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .deslizar, .granulado, .luzes i, .botao::after, .progresso b, .carta-longa p:last-child { animation: none; } }

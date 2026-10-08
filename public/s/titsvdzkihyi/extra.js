@@ -544,6 +544,16 @@
   }
 
   // ---------- a promessa cumprida: a introdução da carta ----------
+  function montarOrnamentos() {
+    document.querySelectorAll('.cap .titulo-cap').forEach(function (t) {
+      var o = svgEl('svg', { class: 'ornamento', viewBox: '0 0 160 20', 'aria-hidden': 'true' });
+      o.appendChild(svgEl('path', { class: 'ornamento__linha', d: 'M2 10 H62' }));
+      o.appendChild(svgEl('path', { class: 'ornamento__linha', d: 'M98 10 H158' }));
+      o.appendChild(svgEl('path', { class: 'ornamento__coracao', d: 'M80 16 C 74 11 70 8 72 5 C 74 2 78 3 80 6 C 82 3 86 2 88 5 C 90 8 86 11 80 16 Z' }));
+      t.parentNode.insertBefore(o, t);
+    });
+  }
+
   function montarCartaIntro() {
     (C.cartaIntro || []).forEach(function (l, i) { $('cartaIntro').appendChild(el('p', i ? 'carta-intro__sub' : 'carta-intro__grande', l)); });
   }
@@ -584,21 +594,28 @@
     });
 
     // artigos do código: número, epígrafe e texto entram por partes
+    // (de uma vez, ao entrar: preso ao scroll ficava meio escrito e parecia cortado)
     gsap.utils.toArray('.artigo').forEach(function (a) {
-      gsap.timeline({ scrollTrigger: { trigger: a, start: 'top 88%', end: 'top 55%', scrub: 0.6 } })
-        .fromTo(a.querySelector('.artigo__n'), { letterSpacing: '0.9em', opacity: 0 }, { letterSpacing: '0.3em', opacity: 1, duration: 0.5 })
-        .fromTo(a.querySelector('.artigo__epigrafe'), { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4 }, 0.2)
-        .fromTo(a.querySelector('.artigo__texto'), { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.6, ease: 'none' }, 0.35);
+      gsap.timeline({ scrollTrigger: { trigger: a, start: 'top 90%', toggleActions: 'play none none reverse' } })
+        .fromTo(a.querySelector('.artigo__n'), { letterSpacing: '0.9em', opacity: 0 }, { letterSpacing: '0.3em', opacity: 1, duration: 0.6, ease: 'power2.out' })
+        .fromTo(a.querySelector('.artigo__epigrafe'), { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.15)
+        .fromTo(a.querySelector('.artigo__texto'), { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.9, ease: 'power2.inOut' }, 0.3)
+        .fromTo(a, { '--traco': 0 }, { '--traco': 1, duration: 0.8, ease: 'power2.out' }, 0);
     });
     // a assinatura do vini escreve-se sozinha quando aparece
     gsap.fromTo('#assinaturaVini', { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 1.6, ease: 'power1.inOut', scrollTrigger: { trigger: '.assinaturas', start: 'top 80%' } });
 
     // a carta longa: cada parágrafo sobe ao entrar e apaga-se devagar ao chegar ao topo
+    // (entra depressa, enquanto ainda está em baixo, para se ler sempre bem; só apaga já a sair por cima)
     gsap.utils.toArray('#cartaLonga p').forEach(function (p) {
-      gsap.timeline({ scrollTrigger: { trigger: p, start: 'top 95%', end: 'bottom top', scrub: 0.6 } })
-        .fromTo(p, { opacity: 0, y: 40, filter: 'blur(6px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.25 })
-        .to(p, { duration: 0.55 })
-        .to(p, { opacity: 0.08, y: -20, duration: 0.2 });
+      gsap.fromTo(p, { opacity: 0, y: 36, filter: 'blur(6px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', ease: 'power2.out', scrollTrigger: { trigger: p, start: 'top 100%', end: 'top 82%', scrub: 0.5 } });
+      gsap.to(p, { opacity: 0.12, y: -16, ease: 'none', immediateRender: false, scrollTrigger: { trigger: p, start: 'bottom 22%', end: 'bottom 0%', scrub: 0.5 } });
+    });
+    // um ornamento (linha, coração, linha) desenha-se por cima de cada título das partes
+    gsap.utils.toArray('.ornamento').forEach(function (o) {
+      gsap.timeline({ scrollTrigger: { trigger: o, start: 'top 90%', toggleActions: 'play none none reverse' } })
+        .fromTo(o.querySelectorAll('.ornamento__linha'), { drawSVG: '50% 50%' }, { drawSVG: '0% 100%', duration: 1.1, ease: 'power2.inOut' })
+        .fromTo(o.querySelector('.ornamento__coracao'), { scale: 0, rotate: -40, transformOrigin: '50% 50%' }, { scale: 1, rotate: 0, duration: 0.8, ease: 'back.out(3)' }, 0.35);
     });
 
     // títulos que inclinam com a velocidade do scroll
@@ -624,6 +641,7 @@
       montarAbraco();
       montarContagem();
       montarCartaIntro();
+      montarOrnamentos();
     },
     animarMinhas: animarMinhas,
     animarContagem: animarContagem,
